@@ -31,22 +31,22 @@ const valueFormatter = (value: number) => {
 
 const ImpactBarChart = () => {
   return (
-    <Card className="shadow-md mb-32 border bg-background">
-      <CardHeader className="pb-2">
+    <Card className="shadow-md mb-24 border bg-background overflow-hidden">
+      <CardHeader className="pb-0">
         <CardTitle className="text-xl">Verified Impact Metrics</CardTitle>
         <CardDescription>
           All metrics are verified via blockchain and external validation
         </CardDescription>
       </CardHeader>
-      <CardContent className="pb-10">
-        <div className="h-[250px] w-full">
+      <CardContent className="p-4">
+        <div className="h-[220px] w-full mt-1">
           <ChartContainer config={chartConfig}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart 
                 data={impactData} 
-                margin={{ top: 5, right: 20, left: 20, bottom: 45 }}
-                barSize={25}
-                barGap={4}
+                margin={{ top: 5, right: 10, left: 10, bottom: 40 }}
+                barSize={20}
+                barGap={2}
               >
                 <defs>
                   {impactData.map((entry, index) => (
@@ -63,16 +63,17 @@ const ImpactBarChart = () => {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.4} />
                 <XAxis 
                   dataKey="category" 
-                  angle={-35} 
+                  angle={-45} 
                   textAnchor="end" 
-                  height={60} 
-                  tick={{ fontSize: 9 }}
-                  tickMargin={15}
+                  height={70} 
+                  tick={{ fontSize: 8 }}
+                  tickMargin={18}
+                  interval={0}
                 />
                 <YAxis 
-                  tick={{ fontSize: 10 }}
+                  tick={{ fontSize: 9 }}
                   tickFormatter={valueFormatter}
-                  width={50}
+                  width={40}
                 />
                 <ChartTooltip 
                   cursor={{ fill: 'rgba(180, 180, 180, 0.1)' }}
@@ -80,7 +81,7 @@ const ImpactBarChart = () => {
                 />
                 <Legend 
                   verticalAlign="top"
-                  height={25}
+                  height={20}
                   formatter={(value) => <span className="text-xs font-medium">{value}</span>}
                 />
                 <Bar 
