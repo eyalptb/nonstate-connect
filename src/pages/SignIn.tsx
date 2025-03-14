@@ -22,11 +22,20 @@ const SignIn = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!usernameOrEmail || !password) {
+      toast.error("Missing credentials", {
+        description: "Please enter both username/email and password",
+      });
+      return;
+    }
+    
     setIsLoading(true);
 
     try {
-      // Trim the input to remove any spaces
-      const cleanedInput = usernameOrEmail.trim();
+      // Trim and normalize the input to remove any spaces and lowercase it
+      const cleanedInput = usernameOrEmail.trim().toLowerCase();
+      console.log('Attempting login with:', cleanedInput);
       
       // Check if the input is an email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -47,6 +56,7 @@ const SignIn = () => {
 
       navigate("/dashboard");
     } catch (error: any) {
+      console.error('Login error:', error);
       toast.error("Authentication failed", {
         description: error.message || "Please check your credentials and try again",
       });
