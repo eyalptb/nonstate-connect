@@ -1,48 +1,56 @@
-
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  Index,
+  Dashboard,
+  Impact,
+  Funding,
+  Messaging,
+  SignIn,
+  SignUp,
+  ResetPassword,
+  UpdatePassword,
+  NotFound,
+} from "./pages";
+import { AuthProvider } from "./contexts/AuthContext";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
-
-import Index from "./pages/Index";
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
-import ResetPassword from "./pages/ResetPassword";
-import UpdatePassword from "./pages/UpdatePassword";
-import Dashboard from "./pages/Dashboard";
-import Funding from "./pages/Funding";
-import Impact from "./pages/Impact";
-import NotFound from "./pages/NotFound";
-import Messaging from "./pages/Messaging";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import IntegrationHub from "./pages/IntegrationHub";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
+function App() {
+  return (
+    <Router>
       <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/sign-in" element={<SignIn />} />
-            <Route path="/sign-up" element={<SignUp />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/update-password" element={<UpdatePassword />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/funding" element={<Funding />} />
-            <Route path="/impact" element={<Impact />} />
-            <Route path="/messages/*" element={<Messaging />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider defaultTheme="light" storageKey="theme">
+            <div className="min-h-screen bg-background">
+              <Navbar />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/impact" element={<Impact />} />
+                <Route path="/funding" element={<Funding />} />
+                <Route path="/messaging" element={<Messaging />} />
+                <Route path="/integration-hub" element={<IntegrationHub />} />
+                <Route path="/sign-in" element={<SignIn />} />
+                <Route path="/sign-up" element={<SignUp />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/update-password" element={<UpdatePassword />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <Footer />
+              <Toaster />
+            </div>
+          </ThemeProvider>
+        </QueryClientProvider>
       </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+    </Router>
+  );
+}
 
 export default App;
