@@ -1,15 +1,23 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { LogOut, User } from "lucide-react";
 
 interface MainNavItem {
   title: string;
@@ -64,12 +72,18 @@ const mainNav: MainNavItem[] = [
 
 export function Navbar({ mainNav: propMainNav }: NavbarProps) {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, profile, signOut, isAdmin } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navItems = propMainNav || mainNav;
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/");
   };
 
   // Filter nav items based on user role
@@ -115,10 +129,13 @@ export function Navbar({ mainNav: propMainNav }: NavbarProps) {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end">
                 <DropdownMenuItem>
-                  <Link to="/dashboard" className="w-full">Dashboard</Link>
+                  <Link to="/profile" className="w-full flex items-center">
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Link to="/profile" className="w-full">Profile</Link>
+                  <Link to="/dashboard" className="w-full">Dashboard</Link>
                 </DropdownMenuItem>
                 {isAdmin && (
                   <DropdownMenuItem>
@@ -126,13 +143,18 @@ export function Navbar({ mainNav: propMainNav }: NavbarProps) {
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout} className="text-red-500">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Link to="/sign-in" className="text-sm font-medium hover:underline">
-              Sign In
-            </Link>
+            <Button asChild variant="default" size="sm">
+              <Link to="/sign-in">
+                Sign In
+              </Link>
+            </Button>
           )}
         </div>
         <div className="md:hidden">
@@ -163,16 +185,28 @@ export function Navbar({ mainNav: propMainNav }: NavbarProps) {
                 </Link>
               ))
             ) : null}
-            <ModeToggle />
-            {user ? (
-              <>
+            <div className="flex justify-between items-center mt-2">
+              <ModeToggle />
+              {user ? (
+                <Button variant="destructive" size="sm" onClick={handleLogout} className="flex items-center">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </Button>
+              ) : (
+                <Button asChild variant="default" size="sm">
+                  <Link to="/sign-in">Sign In</Link>
+                </Button>
+              )}
+            </div>
+            {user && (
+              <div className="space-y-2 mt-2 border-t pt-2">
+                <Link to="/profile" className="flex items-center">
+                  <User className="mr-2 h-4 w-4" />
+                  Profile
+                </Link>
                 <Link to="/dashboard">Dashboard</Link>
-                <Link to="/profile">Profile</Link>
                 {isAdmin && <Link to="/admin">Admin Dashboard</Link>}
-                <button onClick={() => signOut()}>Logout</button>
-              </>
-            ) : (
-              <Link to="/sign-in">Sign In</Link>
+              </div>
             )}
           </nav>
         </div>

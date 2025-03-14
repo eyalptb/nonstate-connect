@@ -7,9 +7,19 @@ import { DividerWithText } from "@/components/auth/DividerWithText";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { SignInLayout } from "@/components/auth/SignInLayout";
 import { isEmailFormat } from "@/utils/auth/userAuth";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
-  const { signInWithEmail, signInWithGoogle, signInWithUsername } = useAuth();
+  const { signInWithEmail, signInWithGoogle, signInWithUsername, user } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect to profile if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate("/profile");
+    }
+  }, [user, navigate]);
 
   const handleGoogleSignIn = async () => {
     try {

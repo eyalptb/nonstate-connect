@@ -47,9 +47,9 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
           description: "Welcome to CollabCoin!"
         });
         
-        // Force redirect to dashboard immediately
-        console.log("Redirecting to dashboard for test user...");
-        navigate("/dashboard");
+        // Force redirect to profile page immediately
+        console.log("Redirecting to profile for test user...");
+        navigate("/profile");
         
         setIsLoading(false);
         return;
@@ -66,9 +66,9 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
         description: "Welcome to CollabCoin!"
       });
       
-      // Force immediate redirect without delay
-      console.log("Redirecting to dashboard after successful login...");
-      navigate("/dashboard");
+      // Force immediate redirect to profile page
+      console.log("Redirecting to profile after successful login...");
+      navigate("/profile");
       
     } catch (error: any) {
       console.error('Login error:', error);
