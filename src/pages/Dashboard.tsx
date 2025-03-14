@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import TokenWallet from "@/components/TokenWallet";
+import ProjectContribution from "@/components/ProjectContribution";
+import TokenMarketplace from "@/components/TokenMarketplace";
 
 const Dashboard = () => {
   const { user, profile, loading, signOut } = useAuth();
@@ -69,6 +72,19 @@ const Dashboard = () => {
               <p className="text-muted-foreground mb-4">Start a new collaborative project.</p>
               <Button className="w-full">New Project</Button>
             </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            <div>
+              <TokenWallet />
+            </div>
+            <div>
+              <ProjectContribution />
+            </div>
+          </div>
+          
+          <div className="mb-12">
+            <TokenMarketplace />
           </div>
         </div>
       </main>
