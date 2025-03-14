@@ -2,8 +2,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Network, Shield, Globe } from "lucide-react";
+import { useAuth, SignUpButton, SignInButton } from "@clerk/clerk-react";
 
 const JoinCta = () => {
+  const { isSignedIn } = useAuth();
+
   return (
     <section id="join" className="py-20 relative overflow-hidden">
       {/* Background decorative elements */}
@@ -52,12 +55,24 @@ const JoinCta = () => {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="font-semibold">
-                Create An Account
-              </Button>
-              <Button size="lg" variant="outline" className="font-semibold">
-                Learn How It Works
-              </Button>
+              {isSignedIn ? (
+                <Button size="lg" className="font-semibold" onClick={() => window.location.href = '/dashboard'}>
+                  Go to Dashboard
+                </Button>
+              ) : (
+                <>
+                  <SignUpButton mode="modal">
+                    <Button size="lg" className="font-semibold">
+                      Create An Account
+                    </Button>
+                  </SignUpButton>
+                  <SignInButton mode="modal">
+                    <Button size="lg" variant="outline" className="font-semibold">
+                      Sign In
+                    </Button>
+                  </SignInButton>
+                </>
+              )}
             </div>
           </CardContent>
         </Card>

@@ -9,16 +9,21 @@ import {
   Menu,
   X
 } from "lucide-react";
+import { useAuth, useUser, UserButton, SignInButton, SignUpButton } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isLoaded, isSignedIn } = useAuth();
+  const { user } = useUser();
+  const navigate = useNavigate();
   
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
     <header className="fixed w-full top-0 z-50 bg-background/80 backdrop-blur-md border-b">
       <div className="container mx-auto flex justify-between items-center h-16 px-4">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
           <Network className="h-6 w-6 text-primary" />
           <span className="font-bold text-xl">NonStateConnect</span>
         </div>
@@ -34,7 +39,26 @@ const Navbar = () => {
           <a href="#about" className="text-foreground/80 hover:text-primary transition-colors">
             About
           </a>
-          <Button>Join Network</Button>
+          
+          {isLoaded && (
+            <>
+              {isSignedIn ? (
+                <div className="flex items-center gap-4">
+                  <Button onClick={() => navigate('/dashboard')}>Dashboard</Button>
+                  <UserButton afterSignOutUrl="/" />
+                </div>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <SignInButton mode="modal">
+                    <Button variant="outline">Sign In</Button>
+                  </SignInButton>
+                  <SignUpButton mode="modal">
+                    <Button>Join Network</Button>
+                  </SignUpButton>
+                </div>
+              )}
+            </>
+          )}
         </nav>
 
         {/* Mobile menu button */}
@@ -72,7 +96,36 @@ const Navbar = () => {
             >
               About
             </a>
-            <Button className="w-full">Join Network</Button>
+            
+            {isLoaded && (
+              <>
+                {isSignedIn ? (
+                  <>
+                    <Button 
+                      className="w-full"
+                      onClick={() => {
+                        navigate('/dashboard');
+                        toggleMenu();
+                      }}
+                    >
+                      Dashboard
+                    </Button>
+                    <div className="py-2 flex justify-center">
+                      <UserButton afterSignOutUrl="/" />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <SignInButton mode="modal">
+                      <Button variant="outline" className="w-full">Sign In</Button>
+                    </SignInButton>
+                    <SignUpButton mode="modal">
+                      <Button className="w-full">Join Network</Button>
+                    </SignUpButton>
+                  </>
+                )}
+              </>
+            )}
           </nav>
         </div>
       )}
