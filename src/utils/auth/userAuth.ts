@@ -54,18 +54,32 @@ export const handleSignInWithUsername = async (username: string, password: strin
     console.log(`Attempting sign in with username: ${username}`);
     
     // First, we need to find the email associated with this username
-    const { data, error } = await supabase.functions.invoke('username-lookup', {
+    const { data, error: lookupError } = await supabase.functions.invoke('username-lookup', {
       body: { username }
     });
     
-    if (error || !data || data.error) {
-      console.error('Username lookup failed:', error || data?.error);
+    if (lookupError) {
+      console.error('Username lookup error:', lookupError);
       return { 
-        error: new Error('Invalid username or password. Please check your credentials and try again.') 
+        error: new Error(`Username lookup failed: ${lookupError.message}`) 
       };
     }
     
-    console.log(`Found email for username ${username}, attempting login`);
+    if (!data || data.error) {
+      console.error('Username lookup failed:', data?.error || 'No data returned');
+      return { 
+        error: new Error(data?.error || 'Username not found. Please check your username or register.') 
+      };
+    }
+    
+    if (!data.email) {
+      console.error('No email found for username:', username);
+      return {
+        error: new Error('No email associated with this username. Please contact support.')
+      };
+    }
+    
+    console.log(`Found email for username ${username}, attempting login with email: ${data.email}`);
     
     // Now try to sign in with the email we found
     const loginResult = await supabase.auth.signInWithPassword({

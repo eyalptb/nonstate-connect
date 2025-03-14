@@ -31,7 +31,8 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     setIsLoading(true);
 
     try {
-      console.log(`Attempting login with: ${usernameOrEmail} (${isEmailFormat(usernameOrEmail) ? 'email' : 'username'})`);
+      const loginType = isEmailFormat(usernameOrEmail) ? 'email' : 'username';
+      console.log(`Attempting login with: ${usernameOrEmail} (${loginType})`);
       
       const result = await onSignIn(usernameOrEmail, password);
 
@@ -50,8 +51,17 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     } catch (error: any) {
       console.error('Login error:', error);
       
+      let errorMessage = "Please check your credentials and try again";
+      
+      // Check for specific error messages
+      if (error.message && error.message.includes("Username not found")) {
+        errorMessage = "Username not found. Please check your username or sign up.";
+      } else if (error.message && error.message.includes("Invalid login credentials")) {
+        errorMessage = "Invalid password. Please check your password and try again.";
+      }
+      
       toast.error("Authentication failed", {
-        description: error.message || "Please check your credentials and try again",
+        description: errorMessage,
       });
     } finally {
       setIsLoading(false);
@@ -97,4 +107,3 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
       </Button>
     </form>
   );
-};

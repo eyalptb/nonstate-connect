@@ -15,58 +15,60 @@ serve(async (req) => {
 
   try {
     // Create Supabase client
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-    )
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
+    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
+    
+    console.log('Creating Supabase client with URL:', supabaseUrl);
+    const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
     // Get username from request body
-    const { username } = await req.json()
+    const { username } = await req.json();
     
     if (!username) {
+      console.log('No username provided in request');
       return new Response(
         JSON.stringify({ error: 'Username is required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      );
     }
 
-    console.log(`Looking up email for username: ${username}`)
+    console.log(`Looking up email for username: ${username}`);
 
     // Query the profiles table for a matching username
     const { data, error } = await supabaseClient
       .from('profiles')
       .select('id, email')
       .eq('username', username)
-      .maybeSingle()
+      .maybeSingle();
 
     if (error) {
-      console.error('Error fetching profile:', error)
+      console.error('Error fetching profile:', error);
       return new Response(
-        JSON.stringify({ error: 'Error looking up username' }),
+        JSON.stringify({ error: 'Error looking up username', details: error.message }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      );
     }
 
-    if (!data) {
-      console.log(`No user found with username: ${username}`)
+    if (!data || !data.email) {
+      console.log(`No user found with username: ${username} or email is null`);
       return new Response(
-        JSON.stringify({ error: 'Username not found' }),
+        JSON.stringify({ error: 'Username not found or email is missing' }),
         { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      );
     }
 
-    console.log(`Found email for username ${username}`)
+    console.log(`Found email for username ${username}: ${data.email}`);
     
     // Return the email associated with this username
     return new Response(
       JSON.stringify({ id: data.id, email: data.email }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    );
   } catch (error) {
-    console.error('Unexpected error:', error)
+    console.error('Unexpected error:', error);
     return new Response(
-      JSON.stringify({ error: 'An unexpected error occurred' }),
+      JSON.stringify({ error: 'An unexpected error occurred', details: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    );
   }
-})
+});
