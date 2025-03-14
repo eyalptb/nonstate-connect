@@ -58,15 +58,17 @@ export const fetchAllUsers = async (): Promise<UserWithRoles[]> => {
     if (rolesError) throw rolesError;
 
     // Combine the data
-    // Explicitly define the type of profile to avoid TypeScript inference issues
-    type ProfileType = { 
+    interface ProfileType { 
       id: string; 
       first_name: string | null; 
       last_name: string | null; 
-      created_at: string 
-    };
+      created_at: string;
+    }
     
-    const combinedUsers = (usersData as ProfileType[]).map(profile => {
+    // Make sure the data is properly typed
+    const profiles = usersData as ProfileType[];
+    
+    const combinedUsers = profiles.map(profile => {
       const authUser = authUsers?.users.find(u => u.id === profile.id);
       const userRoles = rolesData
         .filter(r => r.user_id === profile.id)
