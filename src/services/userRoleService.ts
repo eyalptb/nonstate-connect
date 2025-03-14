@@ -68,10 +68,10 @@ export const fetchAllUsers = async (): Promise<UserWithRoles[]> => {
     // Make sure the data is properly typed
     const profiles = usersData as ProfileType[];
     
-    // Define the type for role data to fix the "property 'id' does not exist on type 'never'" error
+    // Define the type for role data
     interface RoleData {
       user_id: string;
-      role: string;
+      role: AppRole;
     }
     
     // Cast the roles data to the correct type
@@ -81,7 +81,7 @@ export const fetchAllUsers = async (): Promise<UserWithRoles[]> => {
       const authUser = authUsers?.users.find(u => u.id === profile.id);
       const userRoles = typedRolesData
         .filter(r => r.user_id === profile.id)
-        .map(r => r.role as AppRole);
+        .map(r => r.role);
       
       return {
         id: profile.id,
