@@ -32,9 +32,12 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     try {
       console.log('Attempting login with:', usernameOrEmail);
       
-      // Special message for admin login attempt
+      // Special debugging for admin login attempt
       if (usernameOrEmail === 'jonnyCat') {
         console.log('Admin login attempt detected in form');
+        toast.info("Attempting admin login", {
+          description: "Checking admin credentials..."
+        });
       }
       
       // Check if the input is an email
@@ -64,7 +67,7 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
       // Special handling for admin login errors
       if (usernameOrEmail === 'jonnyCat') {
         toast.error("Admin authentication failed", {
-          description: "Please verify that the admin user exists in Supabase and the password is correct. The admin uses email: 016eyal@gmail.com",
+          description: "Please verify that the admin user exists in Supabase with email 016eyal@gmail.com and the password is correct.",
         });
       } else {
         toast.error("Authentication failed", {

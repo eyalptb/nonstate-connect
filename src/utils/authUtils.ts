@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { ProfileType } from '@/types/auth';
 
@@ -81,6 +80,13 @@ export const handleSignInWithEmail = async (email: string, password: string) => 
   try {
     console.log(`Attempting to sign in with email: ${email}`);
     
+    console.log('Login credentials check:', {
+      emailProvided: !!email,
+      emailLength: email?.length,
+      passwordProvided: !!password,
+      passwordLength: password?.length
+    });
+    
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -91,6 +97,7 @@ export const handleSignInWithEmail = async (email: string, password: string) => 
       return { error };
     }
     
+    console.log('Login successful:', data.user?.email);
     return { error: null };
   } catch (error) {
     console.error('Error signing in with email:', error);
@@ -102,51 +109,44 @@ export const handleSignInWithUsername = async (username: string, password: strin
   try {
     console.log(`Attempting sign in with username: ${username}`);
     
-    // Special case for admin user
     if (username === 'jonnyCat') {
-      console.log('Detected admin user jonnyCat, using direct email login');
-      // Log the specific user details we're trying to use for admin login
+      console.log('Detected admin user jonnyCat, attempting direct login');
+      
+      const adminEmail = '016eyal@gmail.com';
       console.log('Admin login details:', {
-        email: '016eyal@gmail.com',
+        email: adminEmail,
         passwordLength: password ? password.length : 0
       });
       
-      const result = await handleSignInWithEmail('016eyal@gmail.com', password);
+      const result = await handleSignInWithEmail(adminEmail, password);
       
-      if (result.error) {
-        console.error('Admin login failed:', result.error);
-        // Provide more specific error for admin user
-        return { 
-          error: new Error(`Admin login failed: ${result.error.message}. Please confirm the admin user exists in Supabase.`) 
-        };
+      if (!result.error) {
+        console.log('Admin login succeeded with direct email');
+        return { error: null };
       }
       
-      return result;
+      console.error('Admin login failed with direct email:', result.error);
+      
+      return { 
+        error: new Error(`Admin login failed: ${result.error.message}. Please make sure the admin account exists in Supabase with email 016eyal@gmail.com.`) 
+      };
     }
     
-    // Check if the input is actually an email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isEmail = emailRegex.test(username);
     
     if (isEmail) {
-      // If it's an email, use the email login method
       return handleSignInWithEmail(username, password);
     }
     
-    // For username-based login, try multiple email formats
-    // This is needed because Supabase auth doesn't natively support username login
     const formats = [
-      // Try with lowercase username
       `${username.trim().toLowerCase()}@username.local`,
-      // Try with original case
       `${username.trim()}@username.local`,
-      // Try with other potential formats
       `user_${username.trim().toLowerCase()}@username.local`
     ];
     
     console.log('Trying username login with formats:', formats);
     
-    // Try each format until one works
     for (const emailFormat of formats) {
       console.log(`Attempting login with format: ${emailFormat}`);
       
@@ -163,7 +163,6 @@ export const handleSignInWithUsername = async (username: string, password: strin
       console.log(`Login failed with format ${emailFormat}:`, error);
     }
     
-    // If we get here, none of the formats worked
     console.error('All username login formats failed');
     return { 
       error: new Error('Invalid username or password. Please check your credentials and try again.') 
@@ -178,7 +177,6 @@ export const handleSignOut = async () => {
   return await supabase.auth.signOut();
 };
 
-// New function to assign admin role
 export const assignAdminRole = async (userId: string): Promise<boolean> => {
   try {
     const { error } = await supabase
@@ -199,7 +197,6 @@ export const assignAdminRole = async (userId: string): Promise<boolean> => {
   }
 };
 
-// New function to assign standard user role
 export const assignUserRole = async (userId: string): Promise<boolean> => {
   try {
     const { error } = await supabase
