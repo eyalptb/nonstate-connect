@@ -39,13 +39,13 @@ const ImpactBarChart = () => {
         </CardDescription>
       </CardHeader>
       <CardContent id="impact-metrics-content" className="p-4">
-        <div id="impact-barchart-container" className="h-[320px] w-full mt-1">
+        <div id="impact-barchart-container" className="h-auto min-h-[400px] w-full mt-1">
           <ChartContainer id="impact-chart-container" config={chartConfig}>
-            <ResponsiveContainer id="impact-responsive-container" width="100%" height="100%">
+            <ResponsiveContainer id="impact-responsive-container" width="100%" height={400}>
               <BarChart 
                 id="impact-bar-chart"
                 data={impactData} 
-                margin={{ top: 5, right: 10, left: 10, bottom: 50 }}
+                margin={{ top: 5, right: 10, left: 10, bottom: 60 }}
                 barSize={20}
                 barGap={2}
               >
@@ -68,8 +68,8 @@ const ImpactBarChart = () => {
                   angle={-45} 
                   textAnchor="end" 
                   height={70} 
-                  tick={{ fontSize: 8 }}
-                  tickMargin={18}
+                  tick={{ fontSize: 10 }}
+                  tickMargin={20}
                   interval={0}
                 />
                 <YAxis 
