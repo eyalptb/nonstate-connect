@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { Home } from "lucide-react";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -83,6 +84,17 @@ const SignIn = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background">
+      <div className="absolute top-4 left-4">
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate('/')}
+          className="flex items-center gap-2 text-primary hover:text-primary/90"
+        >
+          <Home size={18} />
+          Back to Home
+        </Button>
+      </div>
+      
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold">Welcome Back to NonStateConnect</h1>
         <p className="text-muted-foreground mt-2">Sign in to continue your decentralized collaboration</p>
