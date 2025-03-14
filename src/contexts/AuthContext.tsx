@@ -1,32 +1,17 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+
+import React, { createContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-
-type ProfileType = {
-  id: string;
-  first_name: string | null;
-  last_name: string | null;
-  avatar_url: string | null;
-  blockchain_did: string | null;
-  created_at?: string;
-  updated_at?: string;
-};
-
-type UserRoleType = 'admin' | 'user';
-
-type AuthContextType = {
-  session: Session | null;
-  user: User | null;
-  profile: ProfileType | null;
-  isAdmin: boolean;
-  loading: boolean;
-  signOut: () => Promise<void>;
-  signInWithGoogle: () => Promise<{ error: Error | null }>;
-  signInWithEmail: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signInWithUsername: (username: string, password: string) => Promise<{ error: Error | null }>;
-  refreshProfile: () => Promise<void>;
-};
+import { AuthContextType, ProfileType } from '@/types/auth';
+import { 
+  fetchUserProfile, 
+  checkUserAdminRole,
+  handleSignInWithGoogle,
+  handleSignInWithEmail,
+  handleSignInWithUsername,
+  handleSignOut
+} from '@/utils/authUtils';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -71,42 +56,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const fetchProfile = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (error) {
-        console.error('Error fetching profile:', error);
-        return;
-      }
-
-      setProfile(data as ProfileType);
-    } catch (error) {
-      console.error('Error fetching profile:', error);
+    const profileData = await fetchUserProfile(userId);
+    if (profileData) {
+      setProfile(profileData);
     }
   };
 
   const checkUserRole = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', userId)
-        .eq('role', 'admin')
-        .maybeSingle();
-
-      if (error) {
-        console.error('Error fetching user role:', error);
-        return;
-      }
-
-      setIsAdmin(!!data);
-    } catch (error) {
-      console.error('Error checking user role:', error);
-    }
+    const hasAdminRole = await checkUserAdminRole(userId);
+    setIsAdmin(hasAdminRole);
   };
 
   const refreshProfile = async () => {
@@ -117,94 +75,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    await handleSignOut();
     setProfile(null);
     setIsAdmin(false);
     toast.success("Successfully logged out");
   };
 
   const signInWithGoogle = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`,
-        },
-      });
-      
-      if (error) {
-        console.error('Error signing in with Google:', error);
-        return { error: error };
-      }
-      
-      return { error: null };
-    } catch (error) {
-      console.error('Error signing in with Google:', error);
-      return { error: error as Error };
-    }
+    return handleSignInWithGoogle();
   };
 
   const signInWithEmail = async (email: string, password: string) => {
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      return { error: error };
-    } catch (error) {
-      console.error('Error signing in with email:', error);
-      return { error: error as Error };
-    }
+    return handleSignInWithEmail(email, password);
   };
 
   const signInWithUsername = async (username: string, password: string) => {
-    try {
-      // Check if the input is actually an email
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const isEmail = emailRegex.test(username);
-      
-      if (isEmail) {
-        // If it's an email, use the email login method
-        return signInWithEmail(username, password);
-      }
-      
-      // For username-based login:
-      // 1. Prepare the username: clean, trim and lowercase
-      const cleanUsername = username.trim().toLowerCase();
-      console.log('Attempting to sign in with username:', cleanUsername);
-      
-      // 2. Try to sign in with the username in email format
-      const { error } = await supabase.auth.signInWithPassword({
-        email: `${cleanUsername}@username.local`,
-        password,
-      });
-      
-      // Debug in case of error
-      if (error) {
-        console.error('Authentication error:', error);
-        
-        // You may want to try alternative formats if the first attempt fails
-        // This could help if users were created with different email formats
-        if (error.message === 'Invalid login credentials') {
-          console.log('Trying alternative username format...');
-          
-          // Try without lowercasing
-          const { error: altError } = await supabase.auth.signInWithPassword({
-            email: `${username.trim()}@username.local`,
-            password,
-          });
-          
-          if (!altError) {
-            return { error: null };
-          }
-        }
-      }
-      
-      return { error: error };
-    } catch (error) {
-      console.error('Error signing in with username:', error);
-      return { error: error as Error };
-    }
+    return handleSignInWithUsername(username, password);
   };
 
   return (
@@ -227,10 +113,4 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+export { AuthContext };
