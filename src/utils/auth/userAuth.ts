@@ -53,24 +53,31 @@ export const handleSignInWithUsername = async (username: string, password: strin
   try {
     console.log(`Attempting sign in with username: "${username}"`);
     
-    // Special handling for test user 'jonnyCat'
-    if (username === 'jonnyCat') {
+    // Special handling for test user 'jonnyCat' with case-insensitive check
+    if (username.toLowerCase() === 'jonnycat') {
       console.log('Debug mode: Using test credentials for jonnyCat');
+      
+      // Use the explicit test email
+      const testEmail = '016eyal@gmail.com';
+      console.log(`Using test email: ${testEmail} for login`);
+      
       // Attempt to sign in with the hardcoded email for jonnyCat
-      const { error: loginError } = await supabase.auth.signInWithPassword({
-        email: '016eyal@gmail.com',
+      const { data, error: loginError } = await supabase.auth.signInWithPassword({
+        email: testEmail,
         password,
       });
       
       if (loginError) {
         console.error('Login failed for test user jonnyCat:', loginError);
+        console.log('Attempted password:', password);
+        
         if (loginError.message.includes('Invalid login credentials')) {
           return { error: new Error('Incorrect password for jonnyCat. Please try again.') };
         }
         return { error: loginError };
       }
       
-      console.log('Login successful for test user jonnyCat');
+      console.log('Login successful for test user jonnyCat:', data?.user?.email);
       return { error: null };
     }
     
