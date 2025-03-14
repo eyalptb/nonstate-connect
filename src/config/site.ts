@@ -1,11 +1,11 @@
 
 export const siteConfig = {
-  name: "NonStateConnect",
-  description: "A platform for nonstate actors to collaborate securely",
-  url: "https://nonstateconnect.org",
-  ogImage: "https://nonstateconnect.org/og-image.png",
+  name: "ParaCollab",
+  description: "A collaborative platform for parachute game enthusiasts",
+  url: "https://paracollab.org",
+  ogImage: "https://paracollab.org/og-image.png",
   links: {
-    github: "https://github.com/nonstateconnect",
-    twitter: "https://twitter.com/nonstateconnect",
+    github: "https://github.com/paracollab",
+    twitter: "https://twitter.com/paracollab",
   },
 };

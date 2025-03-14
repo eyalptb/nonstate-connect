@@ -1,10 +1,10 @@
 
-import { LucideProps, Network, Menu, X } from "lucide-react";
+import { LucideProps, Parachute, Menu, X } from "lucide-react";
 
 export type IconProps = LucideProps;
 
 export const Icons = {
-  logo: Network,
+  logo: Parachute,
   menu: Menu,
   close: X,
 };

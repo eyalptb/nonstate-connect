@@ -1,5 +1,5 @@
 
-import { Network } from "lucide-react";
+import { Parachute } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -10,11 +10,11 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <Network className="h-6 w-6 text-primary" />
-              <span className="font-bold text-xl">NonStateConnect</span>
+              <Parachute className="h-6 w-6 text-primary" />
+              <span className="font-bold text-xl">ParaCollab</span>
             </div>
             <p className="text-foreground/70 mb-6 max-w-md">
-              A blockchain-based platform for NGOs, activists, and communities to collaborate securely on global challenges.
+              A collaborative platform for parachute game enthusiasts and communities to work together on global challenges.
             </p>
           </div>
           
@@ -41,7 +41,7 @@ const Footer = () => {
         
         <div className="border-t border-border mt-12 pt-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-foreground/60 mb-4 md:mb-0">
-            &copy; {currentYear} NonStateConnect. All rights reserved.
+            &copy; {currentYear} ParaCollab. All rights reserved.
           </p>
           <div className="flex space-x-6">
             <a href="#" className="text-foreground/60 hover:text-primary transition-colors">
