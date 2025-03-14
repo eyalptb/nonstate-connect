@@ -21,7 +21,10 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!usernameOrEmail || !password) {
+    // Trim the username/email to avoid issues with spaces
+    const trimmedUsernameOrEmail = usernameOrEmail.trim();
+    
+    if (!trimmedUsernameOrEmail || !password) {
       toast.error("Missing credentials", {
         description: "Please enter both username/email and password",
       });
@@ -31,10 +34,10 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     setIsLoading(true);
 
     try {
-      const loginType = isEmailFormat(usernameOrEmail) ? 'email' : 'username';
-      console.log(`Attempting login with: ${usernameOrEmail} (${loginType})`);
+      const loginType = isEmailFormat(trimmedUsernameOrEmail) ? 'email' : 'username';
+      console.log(`Attempting login with: ${trimmedUsernameOrEmail} (${loginType})`);
       
-      const result = await onSignIn(usernameOrEmail, password);
+      const result = await onSignIn(trimmedUsernameOrEmail, password);
 
       if (result.error) {
         throw result.error;
