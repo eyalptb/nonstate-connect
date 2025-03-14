@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -57,7 +58,15 @@ export const fetchAllUsers = async (): Promise<UserWithRoles[]> => {
     if (rolesError) throw rolesError;
 
     // Combine the data
-    const combinedUsers = usersData.map(profile => {
+    // Explicitly define the type of profile to avoid TypeScript inference issues
+    type ProfileType = { 
+      id: string; 
+      first_name: string | null; 
+      last_name: string | null; 
+      created_at: string 
+    };
+    
+    const combinedUsers = (usersData as ProfileType[]).map(profile => {
       const authUser = authUsers?.users.find(u => u.id === profile.id);
       const userRoles = rolesData
         .filter(r => r.user_id === profile.id)
