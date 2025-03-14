@@ -11,7 +11,7 @@ import {
   handleSignInWithEmail,
   handleSignInWithUsername,
   handleSignOut
-} from '@/utils/authUtils';
+} from '@/utils/auth';
 
 // Create the context with an undefined default value
 // The actual value will be provided by the AuthProvider
