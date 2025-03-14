@@ -24,7 +24,8 @@ export function ProposalList({ status }: ProposalListProps) {
   const categories = useMemo(() => {
     const allProposals = [...mockProposals.active, ...mockProposals.completed];
     const uniqueCategories = new Set(allProposals.map(p => p.category));
-    return Array.from(uniqueCategories);
+    // Filter out any empty strings and ensure all values are valid
+    return Array.from(uniqueCategories).filter(category => category && category.trim() !== "");
   }, []);
   
   // Filter proposals based on search query and category
