@@ -39,56 +39,57 @@ const ImpactProjectCard = ({ project }: ImpactProjectCardProps) => {
   };
 
   return (
-    <Card key={project.id}>
-      <CardHeader className="pb-2">
-        <div className="flex justify-between">
-          <div>
-            <CardTitle>{project.name}</CardTitle>
-            <CardDescription className="flex items-center gap-2 mt-1">
-              <Badge variant="outline">{project.category}</Badge>
-              <span>{project.location}</span>
+    <Card id={`project-card-${project.id}`} key={project.id}>
+      <CardHeader id={`project-header-${project.id}`} className="pb-2">
+        <div id={`project-header-content-${project.id}`} className="flex justify-between">
+          <div id={`project-title-container-${project.id}`}>
+            <CardTitle id={`project-title-${project.id}`}>{project.name}</CardTitle>
+            <CardDescription id={`project-description-${project.id}`} className="flex items-center gap-2 mt-1">
+              <Badge id={`project-category-${project.id}`} variant="outline">{project.category}</Badge>
+              <span id={`project-location-${project.id}`}>{project.location}</span>
             </CardDescription>
           </div>
-          <div className="text-sm">
-            <div className="font-medium">Impact Progress</div>
-            <div className="mt-1 flex items-center gap-2">
-              <Progress value={project.impactProgress} className="h-2 w-24" />
-              <span>{project.impactProgress}%</span>
+          <div id={`project-progress-container-${project.id}`} className="text-sm">
+            <div id={`project-progress-label-${project.id}`} className="font-medium">Impact Progress</div>
+            <div id={`project-progress-bar-container-${project.id}`} className="mt-1 flex items-center gap-2">
+              <Progress id={`project-progress-bar-${project.id}`} value={project.impactProgress} className="h-2 w-24" />
+              <span id={`project-progress-value-${project.id}`}>{project.impactProgress}%</span>
             </div>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="text-sm text-muted-foreground mb-4">
+      <CardContent id={`project-content-${project.id}`}>
+        <div id={`project-claims-summary-${project.id}`} className="text-sm text-muted-foreground mb-4">
           <span className="font-medium text-foreground">Claims: </span>
           {project.impactClaims.map((claim, i) => (
-            <span key={claim.id}>
+            <span id={`project-claim-summary-${project.id}-${claim.id}`} key={claim.id}>
               {claim.metric} ({claim.claim})
               {i < project.impactClaims.length - 1 ? ", " : ""}
             </span>
           ))}
         </div>
-        <div className="flex items-center gap-2 text-xs">
-          <span className="text-muted-foreground">IPFS Hash:</span>
-          <code className="bg-muted p-1 rounded">{project.ipfsHash}</code>
+        <div id={`project-ipfs-container-${project.id}`} className="flex items-center gap-2 text-xs">
+          <span id={`project-ipfs-label-${project.id}`} className="text-muted-foreground">IPFS Hash:</span>
+          <code id={`project-ipfs-hash-${project.id}`} className="bg-muted p-1 rounded">{project.ipfsHash}</code>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between">
+      <CardFooter id={`project-footer-${project.id}`} className="flex justify-between">
         <Button
+          id={`project-details-button-${project.id}`}
           variant="outline"
           size="sm"
           onClick={toggleExpanded}
         >
           {expanded ? "Hide Details" : "View Details"}
         </Button>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm">Verify Claim</Button>
-          <Button size="sm">View Evidence</Button>
+        <div id={`project-action-buttons-${project.id}`} className="flex gap-2">
+          <Button id={`project-verify-button-${project.id}`} variant="outline" size="sm">Verify Claim</Button>
+          <Button id={`project-evidence-button-${project.id}`} size="sm">View Evidence</Button>
         </div>
       </CardFooter>
       
       {expanded && (
-        <div className="px-6 pb-6">
+        <div id={`project-expanded-content-${project.id}`} className="px-6 pb-6">
           <ImpactClaimTable claims={project.impactClaims} />
         </div>
       )}

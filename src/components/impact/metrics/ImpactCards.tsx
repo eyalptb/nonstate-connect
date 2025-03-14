@@ -51,27 +51,27 @@ export const impactCards = [
 
 const ImpactCards = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div id="impact-metrics-cards-grid" className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {impactCards.map((card, index) => (
-        <Card key={index}>
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">{card.title}</CardTitle>
-              <div className={`p-2 rounded-full ${card.color}`}>
+        <Card id={`impact-card-${index}`} key={index}>
+          <CardHeader id={`impact-card-header-${index}`} className="pb-2">
+            <div id={`impact-card-title-container-${index}`} className="flex items-center justify-between">
+              <CardTitle id={`impact-card-title-${index}`} className="text-lg">{card.title}</CardTitle>
+              <div id={`impact-card-icon-${index}`} className={`p-2 rounded-full ${card.color}`}>
                 <card.icon className="h-5 w-5" />
               </div>
             </div>
-            <CardDescription>{card.description}</CardDescription>
+            <CardDescription id={`impact-card-description-${index}`}>{card.description}</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
+          <CardContent id={`impact-card-content-${index}`}>
+            <div id={`impact-card-metrics-${index}`} className="space-y-3">
               {card.metrics.map((metric, i) => (
-                <div key={i} className="space-y-0.5">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">{metric.label}</span>
-                    <span className="font-medium">{metric.value}</span>
+                <div id={`impact-metric-${index}-${i}`} key={i} className="space-y-0.5">
+                  <div id={`impact-metric-label-value-${index}-${i}`} className="flex items-center justify-between text-sm">
+                    <span id={`impact-metric-label-${index}-${i}`} className="text-muted-foreground">{metric.label}</span>
+                    <span id={`impact-metric-value-${index}-${i}`} className="font-medium">{metric.value}</span>
                   </div>
-                  <div className="text-xs text-right text-muted-foreground">
+                  <div id={`impact-metric-change-${index}-${i}`} className="text-xs text-right text-muted-foreground">
                     {metric.change}
                   </div>
                 </div>

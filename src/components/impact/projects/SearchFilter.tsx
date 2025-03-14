@@ -13,16 +13,17 @@ const SearchFilter = ({ onSearch }: SearchFilterProps) => {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between gap-4">
-      <div className="relative w-full sm:w-96">
+    <div id="impact-search-filter-container" className="flex flex-col sm:flex-row justify-between gap-4">
+      <div id="impact-search-input-wrapper" className="relative w-full sm:w-96">
         <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
         <Input 
+          id="impact-search-input"
           placeholder="Search projects or impact claims..." 
           className="pl-10"
           onChange={handleSearch}
         />
       </div>
-      <Button variant="outline" size="icon">
+      <Button id="impact-filter-button" variant="outline" size="icon">
         <Filter className="h-4 w-4" />
       </Button>
     </div>

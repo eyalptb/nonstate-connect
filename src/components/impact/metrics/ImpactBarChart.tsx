@@ -31,18 +31,19 @@ const valueFormatter = (value: number) => {
 
 const ImpactBarChart = () => {
   return (
-    <Card className="shadow-md mb-24 border bg-background overflow-hidden">
-      <CardHeader className="pb-0">
-        <CardTitle className="text-xl">Verified Impact Metrics</CardTitle>
-        <CardDescription>
+    <Card id="impact-metrics-card" className="shadow-md mb-24 border bg-background overflow-hidden">
+      <CardHeader id="impact-metrics-header" className="pb-0">
+        <CardTitle id="impact-metrics-title" className="text-xl">Verified Impact Metrics</CardTitle>
+        <CardDescription id="impact-metrics-description">
           All metrics are verified via blockchain and external validation
         </CardDescription>
       </CardHeader>
-      <CardContent className="p-4">
-        <div className="h-[220px] w-full mt-1">
-          <ChartContainer config={chartConfig}>
-            <ResponsiveContainer width="100%" height="100%">
+      <CardContent id="impact-metrics-content" className="p-4">
+        <div id="impact-barchart-container" className="h-[220px] w-full mt-1">
+          <ChartContainer id="impact-chart-container" config={chartConfig}>
+            <ResponsiveContainer id="impact-responsive-container" width="100%" height="100%">
               <BarChart 
+                id="impact-bar-chart"
                 data={impactData} 
                 margin={{ top: 5, right: 10, left: 10, bottom: 40 }}
                 barSize={20}
@@ -60,8 +61,9 @@ const ImpactBarChart = () => {
                     </linearGradient>
                   ))}
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.4} />
+                <CartesianGrid id="impact-chart-grid" strokeDasharray="3 3" vertical={false} opacity={0.4} />
                 <XAxis 
+                  id="impact-chart-xaxis"
                   dataKey="category" 
                   angle={-45} 
                   textAnchor="end" 
@@ -71,20 +73,24 @@ const ImpactBarChart = () => {
                   interval={0}
                 />
                 <YAxis 
+                  id="impact-chart-yaxis"
                   tick={{ fontSize: 9 }}
                   tickFormatter={valueFormatter}
                   width={40}
                 />
                 <ChartTooltip 
+                  id="impact-chart-tooltip"
                   cursor={{ fill: 'rgba(180, 180, 180, 0.1)' }}
                   content={<ChartTooltipContent />} 
                 />
                 <Legend 
+                  id="impact-chart-legend"
                   verticalAlign="top"
                   height={20}
                   formatter={(value) => <span className="text-xs font-medium">{value}</span>}
                 />
                 <Bar 
+                  id="impact-chart-bars"
                   dataKey="value" 
                   name="Verified Impact" 
                   radius={[4, 4, 0, 0]}
