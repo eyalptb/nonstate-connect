@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,15 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     try {
       console.log('Attempting login with:', usernameOrEmail);
       
+      // Special case instruction for jonnyCat test user
+      if (usernameOrEmail === 'jonnyCat' && password !== 'password123') {
+        toast.error("Authentication failed", {
+          description: "For jonnyCat user, the password is 'password123'",
+        });
+        setIsLoading(false);
+        return;
+      }
+      
       const result = await onSignIn(usernameOrEmail, password);
 
       if (result.error) {
@@ -48,16 +58,9 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     } catch (error: any) {
       console.error('Login error:', error);
       
-      // Special case for the SQL-created user
-      if (usernameOrEmail === 'jonnyCat' && password !== 'password123') {
-        toast.error("Authentication failed", {
-          description: "For jonnyCat user, the password should be 'password123'",
-        });
-      } else {
-        toast.error("Authentication failed", {
-          description: error.message || "Please check your credentials and try again",
-        });
-      }
+      toast.error("Authentication failed", {
+        description: error.message || "Please check your credentials and try again",
+      });
     } finally {
       setIsLoading(false);
     }
