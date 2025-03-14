@@ -25,7 +25,7 @@ export function ProposalSearchFilter({
   };
 
   const handleClearFilter = () => {
-    setCategoryFilter("");
+    setCategoryFilter("all");
   };
 
   return (
@@ -58,7 +58,7 @@ export function ProposalSearchFilter({
             <SelectValue placeholder="All categories" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All categories</SelectItem>
+            <SelectItem value="all">All categories</SelectItem>
             {categories.map((category) => (
               <SelectItem key={category} value={category}>
                 {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -66,7 +66,7 @@ export function ProposalSearchFilter({
             ))}
           </SelectContent>
         </Select>
-        {categoryFilter && (
+        {categoryFilter !== "all" && (
           <Button
             variant="ghost"
             size="icon"

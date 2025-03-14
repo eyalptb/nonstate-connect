@@ -16,7 +16,7 @@ export function ProposalList({ status }: ProposalListProps) {
   
   // Search and filter states
   const [searchQuery, setSearchQuery] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
   
   const proposals = status === "active" ? mockProposals.active : mockProposals.completed;
   
@@ -35,7 +35,7 @@ export function ProposalList({ status }: ProposalListProps) {
         proposal.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         proposal.description.toLowerCase().includes(searchQuery.toLowerCase());
         
-      const matchesCategory = categoryFilter === "" || proposal.category === categoryFilter;
+      const matchesCategory = categoryFilter === "all" || proposal.category === categoryFilter;
       
       return matchesSearch && matchesCategory;
     });
@@ -94,7 +94,7 @@ export function ProposalList({ status }: ProposalListProps) {
         <Card>
           <CardContent className="py-10 text-center">
             <p className="text-muted-foreground">
-              {searchQuery || categoryFilter 
+              {searchQuery || categoryFilter !== "all" 
                 ? "No matching proposals found. Try adjusting your search or filters." 
                 : `No ${status} proposals found`}
             </p>
@@ -106,7 +106,7 @@ export function ProposalList({ status }: ProposalListProps) {
             <ProposalCard
               key={proposal.id}
               proposal={proposal}
-              onVote={proposal.status === "active" ? handleVote : submitVote}
+              onVote={handleVote}
               balance={balance}
             />
           ))}
