@@ -48,23 +48,6 @@ export const handleSignInWithUsername = async (username: string, password: strin
   try {
     console.log(`Attempting sign in with username: ${username}`);
     
-    // Special case for jonnyCat user
-    if (username === 'jonnyCat') {
-      console.log('Using special login case for jonnyCat');
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: 'jonny@example.com',
-        password,
-      });
-      
-      if (!error) {
-        console.log('Login successful for jonnyCat');
-        return { error: null };
-      }
-      
-      console.log(`Login failed for jonnyCat:`, error);
-      // Continue with other formats if this fails
-    }
-    
     // Check if the input is actually an email (user might have typed an email in username field)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (emailRegex.test(username)) {

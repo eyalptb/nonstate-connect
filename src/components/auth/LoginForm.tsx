@@ -32,15 +32,6 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     try {
       console.log('Attempting login with:', usernameOrEmail);
       
-      // Special case instruction for jonnyCat test user
-      if (usernameOrEmail === 'jonnyCat' && password !== 'password123') {
-        toast.error("Authentication failed", {
-          description: "For jonnyCat user, the password is 'password123'",
-        });
-        setIsLoading(false);
-        return;
-      }
-      
       const result = await onSignIn(usernameOrEmail, password);
 
       if (result.error) {
