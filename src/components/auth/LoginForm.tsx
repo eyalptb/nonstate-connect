@@ -41,7 +41,7 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
       }
 
       toast.success("Login successful", {
-        description: "Welcome back to CollabCoin!"
+        description: "Welcome to CollabCoin!"
       });
       
       // Short delay to show success message before redirecting
@@ -54,12 +54,17 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
       let errorMessage = "Please check your credentials and try again";
       
       // Check for specific error messages
-      if (error.message && error.message.includes("Username not found")) {
-        errorMessage = "Username not found. Please check your username or sign up.";
-      } else if (error.message && error.message.includes("incorrect")) {
-        errorMessage = "Incorrect password. Please try again.";
-      } else if (error.message && error.message.includes("Edge Function")) {
-        errorMessage = "Login service is temporarily unavailable. Please try again later or use email login.";
+      if (error.message) {
+        if (error.message.includes("Username not found")) {
+          errorMessage = "Username not found. Please check your username or sign up.";
+        } else if (error.message.includes("incorrect")) {
+          errorMessage = "Incorrect password. Please try again.";
+        } else if (error.message.includes("Edge Function")) {
+          errorMessage = "Login service is temporarily unavailable. Please try again later.";
+        } else {
+          // Use the actual error message
+          errorMessage = error.message;
+        }
       }
       
       toast.error("Authentication failed", {

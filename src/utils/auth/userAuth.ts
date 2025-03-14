@@ -51,58 +51,38 @@ export const isEmailFormat = (input: string): boolean => {
 
 export const handleSignInWithUsername = async (username: string, password: string) => {
   try {
-    // Log exactly what we're sending to the edge function
     console.log(`Attempting sign in with username: "${username}"`);
     
-    // Try to find the email associated with this username
-    const { data, error: lookupError } = await supabase.functions.invoke('username-lookup', {
+    // Call the edge function to lookup the email for this username
+    const { data, error } = await supabase.functions.invoke('username-lookup', {
       body: { username }
     });
     
     console.log('Username lookup response:', data);
     
-    if (lookupError) {
-      console.error('Username lookup error:', lookupError);
-      return { 
-        error: new Error(`Username lookup failed: ${lookupError.message}`) 
-      };
+    if (error) {
+      console.error('Username lookup error:', error);
+      return { error: new Error(`Username lookup failed: ${error.message}`) };
     }
     
-    if (!data || data.error) {
-      console.error('Username lookup failed:', data?.error || 'No data returned');
-      return { 
-        error: new Error(data?.error || 'Username not found. Please check your username or register.') 
-      };
-    }
-    
-    if (!data.email) {
+    if (!data || !data.email) {
       console.error('No email found for username:', username);
       return {
-        error: new Error('No email associated with this username. Please contact support.')
+        error: new Error('Username not found. Please check your username or register.')
       };
     }
     
     console.log(`Found email for username: "${username}", attempting login with email: ${data.email}`);
     
-    // Now try to sign in with the email we found
-    const loginResult = await supabase.auth.signInWithPassword({
+    // Now sign in with the email
+    const { error: loginError } = await supabase.auth.signInWithPassword({
       email: data.email,
       password,
     });
     
-    if (loginResult.error) {
-      console.error('Login failed with looked up email:', loginResult.error);
-      
-      // More specific error message for invalid credentials
-      if (loginResult.error.message.includes('Invalid login credentials')) {
-        return { 
-          error: new Error('The password you entered is incorrect. Please try again.') 
-        };
-      }
-      
-      return { 
-        error: new Error('Login failed. Please check your credentials and try again.') 
-      };
+    if (loginError) {
+      console.error('Login failed with looked up email:', loginError);
+      return { error: new Error('Incorrect password. Please try again.') };
     }
     
     console.log('Login successful with username:', username);
