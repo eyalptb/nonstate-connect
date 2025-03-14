@@ -4,7 +4,7 @@ import { Shield, Globe, Network } from "lucide-react";
 
 const Hero = () => {
   return (
-    <div className="relative overflow-hidden pt-20">
+    <div className="relative overflow-hidden pt-16">
       {/* Decorative background elements */}
       <div className="absolute inset-0 bg-gradient-hero -z-10"></div>
       <div className="absolute inset-0 grid-pattern opacity-20 -z-10"></div>
