@@ -10,12 +10,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { Loader, Search, UserPlus, RefreshCw } from "lucide-react";
 
+type AppRole = 'admin' | 'user';
+
 type UserWithRoles = {
   id: string;
   email: string;
   created_at: string;
   full_name: string;
-  roles: string[];
+  roles: AppRole[];
 };
 
 export const UserRoleManagement = () => {
@@ -23,14 +25,14 @@ export const UserRoleManagement = () => {
   const [users, setUsers] = useState<UserWithRoles[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedRole, setSelectedRole] = useState<AppRole | "">("");
   const [selectedUser, setSelectedUser] = useState("");
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
       
-      // Fetch all users from the auth.users table via the Supabase Management API
+      // Fetch all users from the profiles table
       const { data: usersData, error: usersError } = await supabase
         .from('profiles')
         .select('id, first_name, last_name, created_at');
@@ -54,7 +56,7 @@ export const UserRoleManagement = () => {
         const authUser = authUsers?.users.find(u => u.id === profile.id);
         const userRoles = rolesData
           .filter(r => r.user_id === profile.id)
-          .map(r => r.role);
+          .map(r => r.role as AppRole);
         
         return {
           id: profile.id,
@@ -99,7 +101,7 @@ export const UserRoleManagement = () => {
         .from('user_roles')
         .insert({
           user_id: selectedUser,
-          role: selectedRole,
+          role: selectedRole as AppRole
         });
 
       if (error) {
@@ -120,7 +122,7 @@ export const UserRoleManagement = () => {
     }
   };
 
-  const removeRole = async (userId: string, role: string) => {
+  const removeRole = async (userId: string, role: AppRole) => {
     try {
       const { error } = await supabase
         .from('user_roles')
@@ -184,7 +186,7 @@ export const UserRoleManagement = () => {
           </div>
           <div className="w-full">
             <label className="text-xs mb-1 block">Role</label>
-            <Select value={selectedRole} onValueChange={setSelectedRole}>
+            <Select value={selectedRole} onValueChange={(value) => setSelectedRole(value as AppRole)}>
               <SelectTrigger>
                 <SelectValue placeholder="Select role" />
               </SelectTrigger>
