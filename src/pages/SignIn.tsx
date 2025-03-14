@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { Icons } from "@/components/icons";
+import { Loader } from "lucide-react";
 
 const SignIn = () => {
   const { signInWithEmail, signInWithGoogle } = useAuth();
@@ -86,7 +87,7 @@ const SignIn = () => {
                   disabled={isGoogleLoading}
                 >
                   {isGoogleLoading ? (
-                    <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
                   ) : (
                     <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
                       <path
@@ -159,7 +160,7 @@ const SignIn = () => {
                   </div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? (
-                      <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                      <Loader className="mr-2 h-4 w-4 animate-spin" />
                     ) : null}
                     Sign In
                   </Button>
