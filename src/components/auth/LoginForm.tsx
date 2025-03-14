@@ -32,7 +32,7 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
 
     try {
       const loginType = isEmailFormat(usernameOrEmail) ? 'email' : 'username';
-      console.log(`Attempting login with: ${usernameOrEmail} (${loginType})`);
+      console.log(`Attempting login with: "${usernameOrEmail}" (${loginType})`);
       
       const result = await onSignIn(usernameOrEmail, password);
 
@@ -56,10 +56,10 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
       // Check for specific error messages
       if (error.message && error.message.includes("Username not found")) {
         errorMessage = "Username not found. Please check your username or sign up.";
-      } else if (error.message && error.message.includes("Invalid login credentials")) {
-        errorMessage = "Invalid password. Please check your password and try again.";
+      } else if (error.message && error.message.includes("incorrect")) {
+        errorMessage = "Incorrect password. Please try again.";
       } else if (error.message && error.message.includes("Edge Function")) {
-        errorMessage = "Login service is currently unavailable. Please try again later or use email login.";
+        errorMessage = "Login service is temporarily unavailable. Please try again later or use email login.";
       }
       
       toast.error("Authentication failed", {

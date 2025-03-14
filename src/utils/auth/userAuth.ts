@@ -51,14 +51,15 @@ export const isEmailFormat = (input: string): boolean => {
 
 export const handleSignInWithUsername = async (username: string, password: string) => {
   try {
-    // Preserve the original username when sending to the edge function
-    // This ensures we try all possible formats on the server side
-    console.log(`Attempting sign in with username: ${username}`);
+    // Log exactly what we're sending to the edge function
+    console.log(`Attempting sign in with username: "${username}"`);
     
     // Try to find the email associated with this username
     const { data, error: lookupError } = await supabase.functions.invoke('username-lookup', {
       body: { username }
     });
+    
+    console.log('Username lookup response:', data);
     
     if (lookupError) {
       console.error('Username lookup error:', lookupError);
@@ -81,7 +82,7 @@ export const handleSignInWithUsername = async (username: string, password: strin
       };
     }
     
-    console.log(`Found email for username ${username}, attempting login with email: ${data.email}`);
+    console.log(`Found email for username: "${username}", attempting login with email: ${data.email}`);
     
     // Now try to sign in with the email we found
     const loginResult = await supabase.auth.signInWithPassword({
@@ -91,8 +92,16 @@ export const handleSignInWithUsername = async (username: string, password: strin
     
     if (loginResult.error) {
       console.error('Login failed with looked up email:', loginResult.error);
+      
+      // More specific error message for invalid credentials
+      if (loginResult.error.message.includes('Invalid login credentials')) {
+        return { 
+          error: new Error('The password you entered is incorrect. Please try again.') 
+        };
+      }
+      
       return { 
-        error: new Error('Invalid username or password. Please check your credentials and try again.') 
+        error: new Error('Login failed. Please check your credentials and try again.') 
       };
     }
     

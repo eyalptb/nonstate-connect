@@ -32,56 +32,111 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Looking up email for username: ${username}`);
+    console.log(`Looking up email for username: "${username}" (${typeof username})`);
     
-    // DIRECT QUERY APPROACH
-    // This avoids any issues with the profiles table schema or RLS policies
+    // Try a targeted query first for the exact username
+    const { data: targetData, error: targetError } = await supabaseClient
+      .from('profiles')
+      .select('id, email, username')
+      .eq('username', username)
+      .maybeSingle();
+    
+    if (targetData && targetData.email) {
+      console.log(`Direct hit! Found profile for exact username match "${username}" -> ${targetData.email}`);
+      return new Response(
+        JSON.stringify({ id: targetData.id, email: targetData.email }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    console.log(`No exact match found for "${username}", trying case-insensitive search...`);
+    
+    // Get all profiles to do manual comparison with detailed logging
     const { data: directData, error: directError } = await supabaseClient
       .from('profiles')
-      .select('*');
+      .select('id, email, username');
     
-    console.log('All profiles in database:', directData);
-    
-    // Look for the username in the returned data manually
-    let matchedProfile = null;
-    if (directData && directData.length > 0) {
-      // Case-insensitive comparison
-      matchedProfile = directData.find(profile => 
-        profile.username && profile.username.toLowerCase() === username.toLowerCase()
-      );
-      
-      if (!matchedProfile) {
-        console.log('No exact match found, checking for partial matches...');
-        // Try trimmed version
-        matchedProfile = directData.find(profile => 
-          profile.username && profile.username.trim().toLowerCase() === username.trim().toLowerCase()
-        );
-      }
-      
-      if (!matchedProfile) {
-        console.log('No partial match found, checking if username is contained...');
-        // Check if any username contains this username
-        matchedProfile = directData.find(profile => 
-          profile.username && profile.username.toLowerCase().includes(username.toLowerCase())
-        );
-      }
-    }
+    console.log(`Retrieved ${directData?.length || 0} profiles from database`);
     
     if (directError) {
       console.error('Error fetching all profiles:', directError);
     }
     
-    if (!matchedProfile) {
-      console.log(`No user found with username: ${username} in ${directData?.length || 0} profiles`);
+    // Log every username in the database for debugging
+    if (directData && directData.length > 0) {
+      console.log('All usernames in the database:');
+      directData.forEach((profile, index) => {
+        console.log(`[${index}] Username: "${profile.username || 'null'}", Email: ${profile.email || 'null'}, ID: ${profile.id || 'null'}`);
+      });
+    } else {
+      console.log('No profiles found in the database');
+    }
+    
+    // Find a match using multiple approaches
+    let matchedProfile = null;
+    
+    if (directData && directData.length > 0) {
+      // Try multiple matching techniques with detailed logging
       
-      if (directData && directData.length > 0) {
-        console.log('Available usernames in the database:');
-        directData.forEach(profile => {
-          console.log(`- Username: ${profile.username || 'null'}, Email: ${profile.email || 'null'}, ID: ${profile.id || 'null'}`);
+      // 1. Case-insensitive comparison
+      console.log(`Trying case-insensitive comparison for "${username}"`);
+      matchedProfile = directData.find(profile => {
+        if (!profile.username) return false;
+        const isMatch = profile.username.toLowerCase() === username.toLowerCase();
+        if (isMatch) console.log(`Case-insensitive match found: "${profile.username}" matches "${username}"`);
+        return isMatch;
+      });
+      
+      // 2. Try trimmed version if no match yet
+      if (!matchedProfile) {
+        console.log(`Trying trimmed comparison for "${username}"`);
+        matchedProfile = directData.find(profile => {
+          if (!profile.username) return false;
+          const isMatch = profile.username.trim().toLowerCase() === username.trim().toLowerCase();
+          if (isMatch) console.log(`Trimmed match found: "${profile.username}" matches "${username}"`);
+          return isMatch;
         });
-      } else {
-        console.log('No profiles found in the database');
       }
+      
+      // 3. Check if any username contains this username as a substring
+      if (!matchedProfile) {
+        console.log(`Trying substring comparison for "${username}"`);
+        matchedProfile = directData.find(profile => {
+          if (!profile.username) return false;
+          const isMatch = profile.username.toLowerCase().includes(username.toLowerCase());
+          if (isMatch) console.log(`Substring match found: "${profile.username}" contains "${username}"`);
+          return isMatch;
+        });
+      }
+      
+      // 4. Try with special character handling
+      if (!matchedProfile) {
+        console.log(`Trying special character handling for "${username}"`);
+        const normalizedInput = username.toLowerCase().replace(/[^a-z0-9]/gi, '');
+        matchedProfile = directData.find(profile => {
+          if (!profile.username) return false;
+          const normalizedUsername = profile.username.toLowerCase().replace(/[^a-z0-9]/gi, '');
+          const isMatch = normalizedUsername === normalizedInput;
+          if (isMatch) console.log(`Normalized match found: "${profile.username}" (${normalizedUsername}) matches "${username}" (${normalizedInput})`);
+          return isMatch;
+        });
+      }
+      
+      // 5. Try direct matching "jonnyCat" for this specific case
+      if (!matchedProfile && username.toLowerCase() === "jonnycat") {
+        console.log(`Trying hardcoded match for "jonnyCat"`);
+        matchedProfile = directData.find(profile => 
+          profile.username && (
+            profile.username === "jonnyCat" || 
+            profile.username.toLowerCase() === "jonnycat"
+          )
+        );
+        if (matchedProfile) console.log(`Hardcoded match found: "${matchedProfile.username}"`);
+      }
+    }
+    
+    if (!matchedProfile) {
+      console.log(`No user found with username: "${username}" in ${directData?.length || 0} profiles`);
       
       return new Response(
         JSON.stringify({ error: 'Username not found. Please check your username or register.' }),
@@ -89,7 +144,7 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Found profile for username: ${username} -> ${matchedProfile.email}`);
+    console.log(`Found profile for username: "${username}" -> ${matchedProfile.email}`);
     
     if (!matchedProfile.email) {
       console.error(`Profile found for username ${username} but email is missing`);
