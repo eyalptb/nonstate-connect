@@ -1,104 +1,84 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export type AppRole = 'admin' | 'user';
-
-export type UserWithRoles = {
+type UserRole = {
   id: string;
-  email: string;
-  created_at: string;
-  full_name: string;
-  roles: AppRole[];
-};
+  user_id: string;
+  role: 'admin' | 'user';
+  created_at?: string;
+}
 
-export const fetchAllUsers = async (): Promise<UserWithRoles[]> => {
+export const fetchUserRoles = async () => {
   try {
-    // Fetch all users from the profiles table
-    const { data: usersData, error: usersError } = await supabase
-      .from('profiles')
-      .select('id, first_name, last_name, created_at');
-
-    if (usersError) throw usersError;
-
-    // For each user, fetch their email from auth.users
-    const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
-    
-    if (authError) throw authError;
-
-    // For each user, fetch their roles
-    const { data: rolesData, error: rolesError } = await supabase
+    const { data, error } = await supabase
       .from('user_roles')
-      .select('user_id, role');
+      .select('*');
 
-    if (rolesError) throw rolesError;
+    if (error) {
+      throw error;
+    }
 
-    // Combine the data
-    const combinedUsers = usersData.map(profile => {
-      const authUser = authUsers?.users.find(u => u.id === profile.id);
-      const userRoles = rolesData
-        .filter(r => r.user_id === profile.id)
-        .map(r => r.role as AppRole);
-      
-      return {
-        id: profile.id,
-        email: authUser?.email || 'Unknown',
-        created_at: profile.created_at,
-        full_name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'N/A',
-        roles: userRoles,
-      };
-    });
-
-    return combinedUsers;
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    toast.error('Failed to load users');
+    return data as UserRole[];
+  } catch (error: any) {
+    toast.error('Failed to fetch user roles', { description: error.message });
     return [];
   }
 };
 
-export const assignUserRole = async (userId: string, role: AppRole): Promise<boolean> => {
+export const assignUserRole = async (userId: string, role: 'admin' | 'user') => {
   try {
-    const { error } = await supabase
+    // Check if the role assignment already exists
+    const { data: existingRole, error: fetchError } = await supabase
       .from('user_roles')
-      .insert({
-        user_id: userId,
-        role: role
-      });
+      .select('*')
+      .eq('user_id', userId)
+      .eq('role', role)
+      .single();
+
+    if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 is the "no rows returned" error
+      throw fetchError;
+    }
+
+    // If role already exists, return it
+    if (existingRole) {
+      return { data: existingRole as UserRole, error: null };
+    }
+
+    // Otherwise, insert the new role
+    const { data, error } = await supabase
+      .from('user_roles')
+      .insert({ 
+        user_id: userId, 
+        role 
+      })
+      .select()
+      .single();
 
     if (error) {
-      if (error.code === '23505') { // Unique constraint violation
-        toast.error('User already has this role');
-      } else {
-        throw error;
-      }
-      return false;
+      throw error;
     }
-    
-    toast.success(`Role ${role} assigned successfully`);
-    return true;
-  } catch (error) {
-    console.error('Error assigning role:', error);
-    toast.error('Failed to assign role');
-    return false;
+
+    return { data: data as UserRole, error: null };
+  } catch (error: any) {
+    toast.error('Failed to assign user role', { description: error.message });
+    return { data: null, error };
   }
 };
 
-export const removeUserRole = async (userId: string, role: AppRole): Promise<boolean> => {
+export const removeUserRole = async (roleId: string) => {
   try {
     const { error } = await supabase
       .from('user_roles')
       .delete()
-      .eq('user_id', userId)
-      .eq('role', role);
+      .eq('id', roleId);
 
-    if (error) throw error;
-    
-    toast.success(`Role ${role} removed successfully`);
-    return true;
-  } catch (error) {
-    console.error('Error removing role:', error);
-    toast.error('Failed to remove role');
-    return false;
+    if (error) {
+      throw error;
+    }
+
+    return { error: null };
+  } catch (error: any) {
+    toast.error('Failed to remove user role', { description: error.message });
+    return { error };
   }
 };
