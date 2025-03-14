@@ -9,6 +9,106 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      conversation_participants: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          id: string
+          public_key: string | null
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          id?: string
+          public_key?: string | null
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          public_key?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_participants_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          created_at: string
+          id: string
+          last_message: string | null
+          last_message_time: string | null
+          metadata: Json | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_message?: string | null
+          last_message_time?: string | null
+          metadata?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_message?: string | null
+          last_message_time?: string | null
+          metadata?: Json | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          blockchain_verification_hash: string | null
+          conversation_id: string
+          created_at: string
+          encrypted_content: string
+          id: string
+          metadata: Json | null
+          read: boolean
+          sender_id: string
+        }
+        Insert: {
+          blockchain_verification_hash?: string | null
+          conversation_id: string
+          created_at?: string
+          encrypted_content: string
+          id?: string
+          metadata?: Json | null
+          read?: boolean
+          sender_id: string
+        }
+        Update: {
+          blockchain_verification_hash?: string | null
+          conversation_id?: string
+          created_at?: string
+          encrypted_content?: string
+          id?: string
+          metadata?: Json | null
+          read?: boolean
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
