@@ -13,9 +13,8 @@ import {
   handleSignOut
 } from '@/utils/authUtils';
 
-// Re-export useAuth from hooks to maintain backward compatibility
-export { useAuth } from '@/hooks/useAuth';
-
+// Create the context with an undefined default value
+// The actual value will be provided by the AuthProvider
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -116,4 +115,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// Export the context and the hook
 export { AuthContext };
+// Export the hook directly from this file to avoid circular dependencies
+export { useAuth } from '@/hooks/useAuth';
