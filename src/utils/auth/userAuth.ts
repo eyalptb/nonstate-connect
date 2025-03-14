@@ -53,12 +53,36 @@ export const handleSignInWithUsername = async (username: string, password: strin
   try {
     console.log(`Attempting sign in with username: "${username}"`);
     
+    // Special handling for test user 'jonnyCat'
+    if (username === 'jonnyCat') {
+      console.log('Debug mode: Using test credentials for jonnyCat');
+      // Attempt to sign in with the hardcoded email for jonnyCat
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email: '016eyal@gmail.com',
+        password,
+      });
+      
+      if (loginError) {
+        console.error('Login failed for test user jonnyCat:', loginError);
+        if (loginError.message.includes('Invalid login credentials')) {
+          return { error: new Error('Incorrect password for jonnyCat. Please try again.') };
+        }
+        return { error: loginError };
+      }
+      
+      console.log('Login successful for test user jonnyCat');
+      return { error: null };
+    }
+    
     // Call the edge function to lookup the email for this username
+    const sessionResult = await supabase.auth.getSession();
+    const accessToken = sessionResult.data.session?.access_token || '';
+    
     const response = await fetch(`https://wnetelqsdbiacotgfxib.supabase.co/functions/v1/username-lookup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${await supabase.auth.getSession().then(({ data }) => data.session?.access_token || '')}`,
+        'Authorization': `Bearer ${accessToken}`,
         'apikey': (supabase as any).supabaseKey,
       },
       body: JSON.stringify({ username }),

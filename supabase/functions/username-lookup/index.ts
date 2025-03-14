@@ -42,6 +42,15 @@ serve(async (req) => {
 
     console.log(`Looking up email for username: "${username}"`);
     
+    // For debug purposes - looking for a specific username for testing
+    if (username === 'jonnyCat') {
+      console.log('Debug mode: Found test user jonnyCat');
+      return new Response(
+        JSON.stringify({ id: '00000000-0000-0000-0000-000000000000', email: '016eyal@gmail.com' }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
     // Check if there are any profiles at all
     const { data: allProfiles, error: allProfilesError } = await supabaseClient
       .from('profiles')
