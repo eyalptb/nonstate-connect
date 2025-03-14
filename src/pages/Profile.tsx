@@ -62,7 +62,6 @@ const Profile = () => {
                 variant="destructive" 
                 className="w-full" 
                 onClick={handleLogout}
-                startIcon={<LogOut className="h-4 w-4 mr-2" />}
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
