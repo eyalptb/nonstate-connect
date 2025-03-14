@@ -177,3 +177,24 @@ export const handleSignInWithUsername = async (username: string, password: strin
 export const handleSignOut = async () => {
   return await supabase.auth.signOut();
 };
+
+// New function to assign admin role
+export const assignAdminRole = async (userId: string): Promise<boolean> => {
+  try {
+    const { error } = await supabase
+      .from('user_roles')
+      .insert([
+        { user_id: userId, role: 'admin' }
+      ]);
+
+    if (error) {
+      console.error('Error assigning admin role:', error);
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error in assignAdminRole:', error);
+    return false;
+  }
+};

@@ -7,11 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 const SignUp = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -23,18 +26,46 @@ const SignUp = () => {
     return null;
   }
 
+  const assignAdminRole = async (userId: string) => {
+    try {
+      const { error } = await supabase
+        .from('user_roles')
+        .insert([
+          { user_id: userId, role: 'admin' }
+        ]);
+
+      if (error) {
+        console.error('Error assigning admin role:', error);
+        return false;
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Error in assignAdminRole:', error);
+      return false;
+    }
+  };
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
+    // Check for special admin credentials
+    const isAdminSignup = username === 'jonnyCat' || email === '016eyal@gmail.com';
+    
     try {
-      const { error } = await supabase.auth.signUp({
-        email,
+      // For special admin user, always use the designated email
+      const signupEmail = isAdminSignup ? '016eyal@gmail.com' : email;
+      
+      // Perform signup
+      const { data, error } = await supabase.auth.signUp({
+        email: signupEmail,
         password,
         options: {
           data: {
             first_name: firstName,
             last_name: lastName,
+            username: username || undefined, // Add username to metadata
           },
           emailRedirectTo: `${window.location.origin}/`,
         },
@@ -49,10 +80,31 @@ const SignUp = () => {
         return;
       }
 
-      toast({
-        title: "Check your email",
-        description: "We've sent you a confirmation link to complete your registration",
-      });
+      // If this is a special admin signup and we have a user
+      if (isAdminSignup && data.user) {
+        console.log('Admin signup detected, assigning admin role');
+        const roleAssigned = await assignAdminRole(data.user.id);
+        
+        if (roleAssigned) {
+          console.log('Admin role assigned successfully');
+          toast({
+            title: "Admin account created",
+            description: "Your admin account has been set up successfully",
+          });
+        } else {
+          console.error('Failed to assign admin role');
+          toast({
+            variant: "destructive",
+            title: "Admin setup incomplete",
+            description: "Your account was created but admin privileges could not be assigned",
+          });
+        }
+      } else {
+        toast({
+          title: "Check your email",
+          description: "We've sent you a confirmation link to complete your registration",
+        });
+      }
       
       // Navigate to home page after successful sign-up
       navigate("/");
@@ -98,8 +150,9 @@ const SignUp = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background">
+      <Toaster />
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold">Join NonStateConnect</h1>
+        <h1 className="text-3xl font-bold">Join CollabCoin</h1>
         <p className="text-muted-foreground mt-2">Create an account to start collaborating securely</p>
       </div>
       
@@ -128,6 +181,21 @@ const SignUp = () => {
                   required
                 />
               </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="johndoe"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+              <p className="text-xs text-muted-foreground">
+                This will be used for login
+              </p>
             </div>
             
             <div className="space-y-2">
