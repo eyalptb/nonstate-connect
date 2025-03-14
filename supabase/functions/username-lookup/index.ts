@@ -34,29 +34,56 @@ serve(async (req) => {
 
     console.log(`Looking up email for username: ${username}`);
 
-    // Sanitize the username - convert to lowercase and remove special characters
-    const sanitizedUsername = username.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-    console.log(`Sanitized username for lookup: ${sanitizedUsername}`);
-
-    // First try exact match (case-sensitive)
+    // Try various formats of the username to increase chances of finding a match
+    // 1. Try the original username as provided
     let { data, error } = await supabaseClient
       .from('profiles')
       .select('id, email')
       .eq('username', username)
       .maybeSingle();
-
-    // If no match found, try with the sanitized version
+    
+    // 2. If not found, try with trimmed username
     if (!data && !error) {
-      console.log(`No exact match found, trying with sanitized username: ${sanitizedUsername}`);
+      const trimmed = username.trim();
+      console.log(`No match for original username, trying trimmed: ${trimmed}`);
       
-      const { data: sanitizedData, error: sanitizedError } = await supabaseClient
+      const result = await supabaseClient
         .from('profiles')
         .select('id, email')
-        .ilike('username', sanitizedUsername)
+        .eq('username', trimmed)
         .maybeSingle();
       
-      data = sanitizedData;
-      error = sanitizedError;
+      data = result.data;
+      error = result.error;
+    }
+    
+    // 3. If still not found, try case-insensitive search
+    if (!data && !error) {
+      console.log('No match for trimmed username, trying case-insensitive search');
+      
+      const result = await supabaseClient
+        .from('profiles')
+        .select('id, email')
+        .ilike('username', username)
+        .maybeSingle();
+      
+      data = result.data;
+      error = result.error;
+    }
+    
+    // 4. Last resort: try with alphanumeric characters only, case insensitive
+    if (!data && !error) {
+      const alphanumericOnly = username.trim().replace(/[^a-zA-Z0-9]/g, '');
+      console.log(`No case-insensitive match, trying alphanumeric only: ${alphanumericOnly}`);
+      
+      const result = await supabaseClient
+        .from('profiles')
+        .select('id, email')
+        .ilike('username', alphanumericOnly)
+        .maybeSingle();
+      
+      data = result.data;
+      error = result.error;
     }
 
     if (error) {
@@ -68,25 +95,27 @@ serve(async (req) => {
     }
 
     if (!data || !data.email) {
-      console.log(`No user found with username: ${username} or sanitized: ${sanitizedUsername}`);
+      console.log(`No user found with username: ${username} after multiple lookup attempts`);
       
-      // Log all usernames in the profiles table for debugging
+      // Debug: Log all usernames in the profiles table
       const { data: allProfiles, error: profilesError } = await supabaseClient
         .from('profiles')
-        .select('username')
+        .select('username, email, id')
         .not('username', 'is', null);
       
       if (!profilesError && allProfiles) {
-        console.log('Available usernames in the database:', allProfiles.map(p => p.username));
+        console.log('Available usernames in the database:', allProfiles.map(p => `${p.username} (${p.id})`));
+      } else {
+        console.log('Error fetching all profiles:', profilesError);
       }
       
       return new Response(
-        JSON.stringify({ error: 'Username not found or email is missing' }),
+        JSON.stringify({ error: 'Username not found. Please check your username or register.' }),
         { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log(`Found email for username: ${data.email}`);
+    console.log(`Found email for username: ${username} -> ${data.email}`);
     
     // Return the email associated with this username
     return new Response(

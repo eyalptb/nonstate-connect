@@ -51,13 +51,13 @@ export const isEmailFormat = (input: string): boolean => {
 
 export const handleSignInWithUsername = async (username: string, password: string) => {
   try {
-    // Don't convert to lowercase here - we'll let the edge function handle the case sensitivity
-    const sanitizedUsername = username.trim().replace(/[^a-zA-Z0-9]/g, '');
-    console.log(`Attempting sign in with username: ${sanitizedUsername}`);
+    // Preserve the original username when sending to the edge function
+    // This ensures we try all possible formats on the server side
+    console.log(`Attempting sign in with username: ${username}`);
     
     // First, we need to find the email associated with this username
     const { data, error: lookupError } = await supabase.functions.invoke('username-lookup', {
-      body: { username: sanitizedUsername }
+      body: { username: username }
     });
     
     if (lookupError) {
@@ -75,13 +75,13 @@ export const handleSignInWithUsername = async (username: string, password: strin
     }
     
     if (!data.email) {
-      console.error('No email found for username:', sanitizedUsername);
+      console.error('No email found for username:', username);
       return {
         error: new Error('No email associated with this username. Please contact support.')
       };
     }
     
-    console.log(`Found email for username ${sanitizedUsername}, attempting login with email: ${data.email}`);
+    console.log(`Found email for username ${username}, attempting login with email: ${data.email}`);
     
     // Now try to sign in with the email we found
     const loginResult = await supabase.auth.signInWithPassword({
@@ -96,7 +96,7 @@ export const handleSignInWithUsername = async (username: string, password: strin
       };
     }
     
-    console.log('Login successful with username:', sanitizedUsername);
+    console.log('Login successful with username:', username);
     return { error: null };
   } catch (error) {
     console.error('Error signing in with username:', error);

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,15 +21,10 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Trim the username/email to avoid issues with spaces and special characters
-    // For email, we only trim whitespace but keep special chars needed for email format
-    // For username, we remove any non-alphanumeric characters
+    // Only trim whitespace but preserve the format otherwise
     const trimmedInput = usernameOrEmail.trim();
-    const cleanedInput = isEmailFormat(trimmedInput) 
-      ? trimmedInput 
-      : trimmedInput;
     
-    if (!cleanedInput || !password) {
+    if (!trimmedInput || !password) {
       toast.error("Missing credentials", {
         description: "Please enter both username/email and password",
       });
@@ -38,10 +34,10 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     setIsLoading(true);
 
     try {
-      const loginType = isEmailFormat(cleanedInput) ? 'email' : 'username';
-      console.log(`Attempting login with: ${cleanedInput} (${loginType})`);
+      const loginType = isEmailFormat(trimmedInput) ? 'email' : 'username';
+      console.log(`Attempting login with: ${trimmedInput} (${loginType})`);
       
-      const result = await onSignIn(cleanedInput, password);
+      const result = await onSignIn(trimmedInput, password);
 
       if (result.error) {
         throw result.error;
