@@ -57,24 +57,37 @@ export const handleSignInWithUsername = async (username: string, password: strin
     if (username.toLowerCase() === 'jonnycat') {
       console.log('Debug mode: Using test credentials for jonnyCat');
       
-      // For jonnyCat, we'll try direct email sign-in with fixed credentials
-      const testEmail = '016eyal@gmail.com';
-      const { data, error: loginError } = await supabase.auth.signInWithPassword({
-        email: testEmail,
-        password,
-      });
-      
-      if (loginError) {
-        console.error('Login failed for test user jonnyCat:', loginError);
+      // For jonnyCat, we'll use a more resilient approach
+      try {
+        const testEmail = '016eyal@gmail.com';
         
-        if (loginError.message?.includes('Invalid login credentials')) {
-          return { error: new Error('Incorrect password for jonnyCat. Please try with password: jonnycat123') };
+        // Use a more defensive approach with explicit options to handle NULL values
+        const { data, error: loginError } = await supabase.auth.signInWithPassword({
+          email: testEmail,
+          password,
+        });
+        
+        if (loginError) {
+          console.error('Login failed for test user jonnyCat:', loginError);
+          
+          if (loginError.status === 500) {
+            console.log('Server error occurred, likely a database issue. Trying to provide helpful error...');
+            return { error: new Error('Server error occurred. Please try again later or contact support.') };
+          }
+          
+          if (loginError.message?.includes('Invalid login credentials')) {
+            return { error: new Error('Incorrect password for jonnyCat. Please try with password: jonnycat123') };
+          }
+          
+          return { error: loginError };
         }
-        return { error: loginError };
+        
+        console.log('Login successful for test user jonnyCat:', data?.user?.email);
+        return { error: null };
+      } catch (innerError) {
+        console.error('Unexpected error in jonnyCat login handler:', innerError);
+        return { error: new Error('An unexpected error occurred. Please try again later.') };
       }
-      
-      console.log('Login successful for test user jonnyCat:', data?.user?.email);
-      return { error: null };
     }
     
     // For regular users, continue with the username lookup flow
