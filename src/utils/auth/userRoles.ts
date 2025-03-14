@@ -1,26 +1,6 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
-export const checkUserAdminRole = async (userId: string): Promise<boolean> => {
-  try {
-    const { data, error } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', userId)
-      .eq('role', 'admin')
-      .maybeSingle();
-
-    if (error) {
-      console.error('Error fetching user role:', error);
-      return false;
-    }
-
-    return !!data;
-  } catch (error) {
-    console.error('Error checking user role:', error);
-    return false;
-  }
-};
+// Removed the duplicate checkUserAdminRole function that was causing conflict
 
 export const assignAdminRole = async (userId: string): Promise<boolean> => {
   try {

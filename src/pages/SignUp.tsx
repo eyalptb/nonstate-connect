@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { assignUserRole } from "@/utils/authUtils";
+import { assignUserRole } from "@/utils/auth";
 
 const SignUp = () => {
   const [firstName, setFirstName] = useState("");
@@ -31,7 +31,6 @@ const SignUp = () => {
     setIsLoading(true);
     
     try {
-      // Perform signup
       const { data, error } = await supabase.auth.signUp({
         email: email,
         password,
@@ -39,7 +38,7 @@ const SignUp = () => {
           data: {
             first_name: firstName,
             last_name: lastName,
-            username: username || undefined, // Add username to metadata
+            username: username || undefined,
           },
           emailRedirectTo: `${window.location.origin}/`,
         },
@@ -54,20 +53,15 @@ const SignUp = () => {
         return;
       }
 
-      // If we have a user, assign the user role
       if (data.user) {
-        // For regular users, assign the standard user role
-        console.log('User signup detected, assigning user role');
         const roleAssigned = await assignUserRole(data.user.id);
         
         if (roleAssigned) {
-          console.log('User role assigned successfully');
           toast({
             title: "Account created",
             description: "Your account has been set up successfully",
           });
         } else {
-          console.error('Failed to assign user role');
           toast({
             variant: "destructive",
             title: "Account setup incomplete",
@@ -81,7 +75,6 @@ const SignUp = () => {
         });
       }
       
-      // Navigate to home page after successful sign-up
       navigate("/");
     } catch (error: any) {
       toast({
