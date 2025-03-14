@@ -87,10 +87,6 @@ export const handleSignInWithEmail = async (email: string, password: string) => 
       passwordLength: password?.length
     });
     
-    if (email === '016eyal@gmail.com') {
-      console.log('Admin email detected, attempting special handling');
-    }
-    
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -112,31 +108,6 @@ export const handleSignInWithEmail = async (email: string, password: string) => 
 export const handleSignInWithUsername = async (username: string, password: string) => {
   try {
     console.log(`Attempting sign in with username: ${username}`);
-    
-    if (username === 'jonnyCat') {
-      console.log('Detected admin user jonnyCat, attempting special login flow');
-      
-      const adminEmail = '016eyal@gmail.com';
-      console.log('Using admin email:', adminEmail);
-      
-      try {
-        const result = await handleSignInWithEmail(adminEmail, password);
-        
-        if (!result.error) {
-          console.log('Admin login succeeded with direct email');
-          return { error: null };
-        }
-        
-        console.error('Admin login failed with direct email:', result.error);
-        
-        return { 
-          error: new Error(`Admin login failed. If you haven't created the admin account yet, please sign up first with username 'jonnyCat' and email '016eyal@gmail.com'.`) 
-        };
-      } catch (innerError) {
-        console.error('Error in admin login special flow:', innerError);
-        return { error: innerError as Error };
-      }
-    }
     
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isEmail = emailRegex.test(username);
