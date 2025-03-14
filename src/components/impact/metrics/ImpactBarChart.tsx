@@ -39,13 +39,13 @@ const ImpactBarChart = () => {
         </CardDescription>
       </CardHeader>
       <CardContent id="impact-metrics-content" className="p-4">
-        <div id="impact-barchart-container" className="h-[320px] w-full mt-1"> {/* Increased height from 220px to 320px */}
+        <div id="impact-barchart-container" className="h-[320px] w-full mt-1">
           <ChartContainer id="impact-chart-container" config={chartConfig}>
             <ResponsiveContainer id="impact-responsive-container" width="100%" height="100%">
               <BarChart 
                 id="impact-bar-chart"
                 data={impactData} 
-                margin={{ top: 5, right: 10, left: 10, bottom: 50 }} {/* Increased bottom margin from 40 to 50 */}
+                margin={{ top: 5, right: 10, left: 10, bottom: 50 }}
                 barSize={20}
                 barGap={2}
               >
