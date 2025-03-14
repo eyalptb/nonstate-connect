@@ -53,25 +53,35 @@ export const handleSignInWithUsername = async (username: string, password: strin
   try {
     console.log(`Attempting sign in with username: ${username}`);
     
-    // First, check if we need to query the profiles table to get the user's email
-    // This would require a custom endpoint/function to look up a user by username
-    // For now, we'll just attempt the login with the username as the "email" part
-    // (Supabase only supports email/password authentication natively)
+    // First, we need to find the email associated with this username
+    const { data, error } = await supabase.functions.invoke('username-lookup', {
+      body: { username }
+    });
     
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: username, // Try with the raw username input
+    if (error || !data || data.error) {
+      console.error('Username lookup failed:', error || data?.error);
+      return { 
+        error: new Error('Invalid username or password. Please check your credentials and try again.') 
+      };
+    }
+    
+    console.log(`Found email for username ${username}, attempting login`);
+    
+    // Now try to sign in with the email we found
+    const loginResult = await supabase.auth.signInWithPassword({
+      email: data.email,
       password,
     });
     
-    if (!error) {
-      console.log('Login successful with username:', username);
-      return { error: null };
+    if (loginResult.error) {
+      console.error('Login failed with looked up email:', loginResult.error);
+      return { 
+        error: new Error('Invalid username or password. Please check your credentials and try again.') 
+      };
     }
     
-    console.log(`Login failed with username ${username}:`, error);
-    return { 
-      error: new Error('Invalid username or password. Please check your credentials and try again.') 
-    };
+    console.log('Login successful with username:', username);
+    return { error: null };
   } catch (error) {
     console.error('Error signing in with username:', error);
     return { error: error as Error };
