@@ -32,28 +32,6 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     try {
       console.log('Attempting login with:', usernameOrEmail);
       
-      // Special handling for admin login attempt
-      if (usernameOrEmail === 'jonnyCat') {
-        console.log('Admin login attempt detected in form');
-        toast.info("Attempting admin login", {
-          description: "Checking admin credentials..."
-        });
-        
-        // For the admin user, use these defaults if no account exists
-        const adminEmail = '016eyal@gmail.com';
-        
-        // Debug info
-        console.log('Using admin email:', adminEmail);
-        console.log('Password length:', password.length);
-      }
-      
-      // Check if the input is an email
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const isEmail = emailRegex.test(usernameOrEmail);
-      
-      // Display what we're using for login
-      console.log(`Using ${isEmail ? 'email' : 'username'} login method`);
-      
       const result = await onSignIn(usernameOrEmail, password);
 
       if (result.error) {
@@ -71,16 +49,9 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     } catch (error: any) {
       console.error('Login error:', error);
       
-      // Special handling for admin login errors
-      if (usernameOrEmail === 'jonnyCat') {
-        toast.error("Admin authentication failed", {
-          description: "If you're trying to log in as admin but don't have an admin account yet, please sign up first with username 'jonnyCat' and email '016eyal@gmail.com'.",
-        });
-      } else {
-        toast.error("Authentication failed", {
-          description: error.message || "Please check your credentials and try again",
-        });
-      }
+      toast.error("Authentication failed", {
+        description: error.message || "Please check your credentials and try again",
+      });
     } finally {
       setIsLoading(false);
     }
