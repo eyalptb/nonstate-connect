@@ -1,14 +1,14 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Legend, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Legend, Cell, Tooltip } from "recharts";
 
 export const impactData = [
-  { category: "Trees Planted", value: 250000, color: "#22c55e" },
-  { category: "Clean Water (liters)", value: 5000000, color: "#3b82f6" },
-  { category: "Carbon Offset (tons)", value: 35000, color: "#8b5cf6" },
-  { category: "Communities Served", value: 120, color: "#f59e0b" },
-  { category: "Policies Influenced", value: 18, color: "#ec4899" },
+  { category: "Trees Planted", value: 250000, color: "#4ade80" },
+  { category: "Clean Water (liters)", value: 5000000, color: "#60a5fa" },
+  { category: "Carbon Offset (tons)", value: 35000, color: "#a78bfa" },
+  { category: "Communities Served", value: 120, color: "#fbbf24" },
+  { category: "Policies Influenced", value: 18, color: "#f472b6" },
 ];
 
 export const chartConfig = {
@@ -19,31 +19,83 @@ export const chartConfig = {
   policyData: { theme: { light: "#ec4899", dark: "#f472b6" } },
 };
 
+// Custom formatter to display values with appropriate formatting
+const valueFormatter = (value: number) => {
+  if (value >= 1000000) {
+    return `${(value / 1000000).toFixed(1)}M`;
+  } else if (value >= 1000) {
+    return `${(value / 1000).toFixed(1)}K`;
+  }
+  return value.toString();
+};
+
 const ImpactBarChart = () => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Verified Impact Metrics</CardTitle>
+    <Card className="shadow-md">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-xl">Verified Impact Metrics</CardTitle>
         <CardDescription>
           All metrics are verified via blockchain and external validation
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[400px] w-full">
+        <div className="h-[450px] w-full pt-4">
           <ChartContainer config={chartConfig}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart 
                 data={impactData} 
-                margin={{ top: 20, right: 30, left: 40, bottom: 40 }}
+                margin={{ top: 10, right: 30, left: 20, bottom: 70 }}
+                barSize={60}
+                barGap={8}
               >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="category" angle={-45} textAnchor="end" height={60} />
-                <YAxis />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Legend />
-                <Bar dataKey="value" name="Verified Impact" radius={[4, 4, 0, 0]}>
+                <defs>
                   {impactData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
+                    <linearGradient 
+                      key={`gradient-${index}`}
+                      id={`colorGradient-${index}`} 
+                      x1="0" y1="0" x2="0" y2="1"
+                    >
+                      <stop offset="0%" stopColor={entry.color} stopOpacity={0.9}/>
+                      <stop offset="100%" stopColor={entry.color} stopOpacity={0.6}/>
+                    </linearGradient>
+                  ))}
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.4} />
+                <XAxis 
+                  dataKey="category" 
+                  angle={-45} 
+                  textAnchor="end" 
+                  height={70} 
+                  tick={{ fontSize: 12 }}
+                  tickMargin={15}
+                />
+                <YAxis 
+                  tick={{ fontSize: 12 }}
+                  tickFormatter={valueFormatter}
+                  width={60}
+                />
+                <ChartTooltip 
+                  cursor={{ fill: 'rgba(180, 180, 180, 0.1)' }}
+                  content={<ChartTooltipContent />} 
+                />
+                <Legend 
+                  verticalAlign="top"
+                  height={36}
+                  formatter={(value) => <span className="text-sm font-medium">{value}</span>}
+                />
+                <Bar 
+                  dataKey="value" 
+                  name="Verified Impact" 
+                  radius={[6, 6, 0, 0]}
+                  animationDuration={1500}
+                >
+                  {impactData.map((entry, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={`url(#colorGradient-${index})`}
+                      stroke={entry.color}
+                      strokeWidth={1}
+                    />
                   ))}
                 </Bar>
               </BarChart>
