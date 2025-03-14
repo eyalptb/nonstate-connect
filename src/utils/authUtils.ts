@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { ProfileType } from '@/types/auth';
 
@@ -186,11 +185,9 @@ export const handleSignOut = async () => {
 
 export const assignAdminRole = async (userId: string): Promise<boolean> => {
   try {
-    const { error } = await supabase
-      .from('user_roles')
-      .insert([
-        { user_id: userId, role: 'admin' }
-      ]);
+    const { error } = await supabase.functions.invoke('admin-assign-role', {
+      body: { userId, role: 'admin' }
+    });
 
     if (error) {
       console.error('Error assigning admin role:', error);
@@ -206,11 +203,9 @@ export const assignAdminRole = async (userId: string): Promise<boolean> => {
 
 export const assignUserRole = async (userId: string): Promise<boolean> => {
   try {
-    const { error } = await supabase
-      .from('user_roles')
-      .insert([
-        { user_id: userId, role: 'user' }
-      ]);
+    const { error } = await supabase.functions.invoke('admin-assign-role', {
+      body: { userId, role: 'user' }
+    });
 
     if (error) {
       console.error('Error assigning user role:', error);
