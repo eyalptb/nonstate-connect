@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,14 +32,31 @@ const SignUp = () => {
     setIsLoading(true);
     
     try {
+      // Clean inputs: trim whitespace and remove special characters from username
+      const trimmedEmail = email.trim();
+      const trimmedUsername = username.trim().replace(/[^a-zA-Z0-9]/g, '');
+      const trimmedFirstName = firstName.trim();
+      const trimmedLastName = lastName.trim();
+      
+      // Validation
+      if (!trimmedEmail || !password || !trimmedUsername) {
+        toast({
+          variant: "destructive",
+          title: "Missing information",
+          description: "Email, username and password are required",
+        });
+        setIsLoading(false);
+        return;
+      }
+      
       const { data, error } = await supabase.auth.signUp({
-        email: email,
+        email: trimmedEmail,
         password,
         options: {
           data: {
-            first_name: firstName,
-            last_name: lastName,
-            username: username || undefined,
+            first_name: trimmedFirstName,
+            last_name: trimmedLastName,
+            username: trimmedUsername,
           },
           emailRedirectTo: `${window.location.origin}/`,
         },
