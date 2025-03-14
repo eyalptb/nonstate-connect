@@ -34,11 +34,15 @@ serve(async (req) => {
 
     console.log(`Looking up email for username: ${username}`);
 
+    // First ensure username is properly sanitized
+    const sanitizedUsername = username.trim().replace(/[^a-zA-Z0-9]/g, '');
+    console.log(`Sanitized username for lookup: ${sanitizedUsername}`);
+
     // Query the profiles table for a matching username
     const { data, error } = await supabaseClient
       .from('profiles')
       .select('id, email')
-      .eq('username', username)
+      .eq('username', sanitizedUsername)
       .maybeSingle();
 
     if (error) {
@@ -50,14 +54,14 @@ serve(async (req) => {
     }
 
     if (!data || !data.email) {
-      console.log(`No user found with username: ${username} or email is null`);
+      console.log(`No user found with username: ${sanitizedUsername} or email is missing`);
       return new Response(
         JSON.stringify({ error: 'Username not found or email is missing' }),
         { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log(`Found email for username ${username}: ${data.email}`);
+    console.log(`Found email for username ${sanitizedUsername}: ${data.email}`);
     
     // Return the email associated with this username
     return new Response(

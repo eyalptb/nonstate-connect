@@ -51,11 +51,13 @@ export const isEmailFormat = (input: string): boolean => {
 
 export const handleSignInWithUsername = async (username: string, password: string) => {
   try {
-    console.log(`Attempting sign in with username: ${username}`);
+    // Ensure username is sanitized
+    const sanitizedUsername = username.trim().replace(/[^a-zA-Z0-9]/g, '');
+    console.log(`Attempting sign in with username: ${sanitizedUsername}`);
     
     // First, we need to find the email associated with this username
     const { data, error: lookupError } = await supabase.functions.invoke('username-lookup', {
-      body: { username }
+      body: { username: sanitizedUsername }
     });
     
     if (lookupError) {
@@ -73,13 +75,13 @@ export const handleSignInWithUsername = async (username: string, password: strin
     }
     
     if (!data.email) {
-      console.error('No email found for username:', username);
+      console.error('No email found for username:', sanitizedUsername);
       return {
         error: new Error('No email associated with this username. Please contact support.')
       };
     }
     
-    console.log(`Found email for username ${username}, attempting login with email: ${data.email}`);
+    console.log(`Found email for username ${sanitizedUsername}, attempting login with email: ${data.email}`);
     
     // Now try to sign in with the email we found
     const loginResult = await supabase.auth.signInWithPassword({
@@ -94,7 +96,7 @@ export const handleSignInWithUsername = async (username: string, password: strin
       };
     }
     
-    console.log('Login successful with username:', username);
+    console.log('Login successful with username:', sanitizedUsername);
     return { error: null };
   } catch (error) {
     console.error('Error signing in with username:', error);
