@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 type ProfileType = {
   id: string;
@@ -98,11 +99,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/dashboard`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
         },
       });
+      
+      if (error) {
+        toast(`Google sign-in error: ${error.message}`);
+        console.error('Error signing in with Google:', error);
+      }
+      
       return { error: error };
     } catch (error) {
       console.error('Error signing in with Google:', error);
+      toast(`Google sign-in error: ${error instanceof Error ? error.message : 'Unknown error'}`);
       return { error: error as Error };
     }
   };
