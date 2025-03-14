@@ -32,12 +32,19 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     try {
       console.log('Attempting login with:', usernameOrEmail);
       
-      // Special debugging for admin login attempt
+      // Special handling for admin login attempt
       if (usernameOrEmail === 'jonnyCat') {
         console.log('Admin login attempt detected in form');
         toast.info("Attempting admin login", {
           description: "Checking admin credentials..."
         });
+        
+        // For the admin user, use these defaults if no account exists
+        const adminEmail = '016eyal@gmail.com';
+        
+        // Debug info
+        console.log('Using admin email:', adminEmail);
+        console.log('Password length:', password.length);
       }
       
       // Check if the input is an email
@@ -67,7 +74,7 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
       // Special handling for admin login errors
       if (usernameOrEmail === 'jonnyCat') {
         toast.error("Admin authentication failed", {
-          description: "Please verify that the admin user exists in Supabase with email 016eyal@gmail.com and the password is correct.",
+          description: "If you're trying to log in as admin but don't have an admin account yet, please sign up first with username 'jonnyCat' and email '016eyal@gmail.com'.",
         });
       } else {
         toast.error("Authentication failed", {
