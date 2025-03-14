@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Container } from "@/components/ui/container";
@@ -15,7 +15,7 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState("users");
 
   // Redirect non-admin users
-  React.useEffect(() => {
+  useEffect(() => {
     if (!loading && !isAdmin) {
       navigate("/dashboard");
     }
