@@ -198,3 +198,24 @@ export const assignAdminRole = async (userId: string): Promise<boolean> => {
     return false;
   }
 };
+
+// New function to assign standard user role
+export const assignUserRole = async (userId: string): Promise<boolean> => {
+  try {
+    const { error } = await supabase
+      .from('user_roles')
+      .insert([
+        { user_id: userId, role: 'user' }
+      ]);
+
+    if (error) {
+      console.error('Error assigning user role:', error);
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error in assignUserRole:', error);
+    return false;
+  }
+};

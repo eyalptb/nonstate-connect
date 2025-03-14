@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
+import { assignAdminRole, assignUserRole } from "@/utils/authUtils";
 
 const SignUp = () => {
   const [firstName, setFirstName] = useState("");
@@ -25,26 +25,6 @@ const SignUp = () => {
     navigate("/");
     return null;
   }
-
-  const assignAdminRole = async (userId: string) => {
-    try {
-      const { error } = await supabase
-        .from('user_roles')
-        .insert([
-          { user_id: userId, role: 'admin' }
-        ]);
-
-      if (error) {
-        console.error('Error assigning admin role:', error);
-        return false;
-      }
-      
-      return true;
-    } catch (error) {
-      console.error('Error in assignAdminRole:', error);
-      return false;
-    }
-  };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,24 +60,48 @@ const SignUp = () => {
         return;
       }
 
-      // If this is a special admin signup and we have a user
-      if (isAdminSignup && data.user) {
-        console.log('Admin signup detected, assigning admin role');
-        const roleAssigned = await assignAdminRole(data.user.id);
+      // If we have a user, assign the appropriate role
+      if (data.user) {
+        let roleAssigned = false;
         
-        if (roleAssigned) {
-          console.log('Admin role assigned successfully');
-          toast({
-            title: "Admin account created",
-            description: "Your admin account has been set up successfully",
-          });
+        // If this is a special admin signup
+        if (isAdminSignup) {
+          console.log('Admin signup detected, assigning admin role');
+          roleAssigned = await assignAdminRole(data.user.id);
+          
+          if (roleAssigned) {
+            console.log('Admin role assigned successfully');
+            toast({
+              title: "Admin account created",
+              description: "Your admin account has been set up successfully",
+            });
+          } else {
+            console.error('Failed to assign admin role');
+            toast({
+              variant: "destructive",
+              title: "Admin setup incomplete",
+              description: "Your account was created but admin privileges could not be assigned",
+            });
+          }
         } else {
-          console.error('Failed to assign admin role');
-          toast({
-            variant: "destructive",
-            title: "Admin setup incomplete",
-            description: "Your account was created but admin privileges could not be assigned",
-          });
+          // For regular users, assign the standard user role
+          console.log('Regular signup detected, assigning user role');
+          roleAssigned = await assignUserRole(data.user.id);
+          
+          if (roleAssigned) {
+            console.log('User role assigned successfully');
+            toast({
+              title: "Account created",
+              description: "Your account has been set up successfully",
+            });
+          } else {
+            console.error('Failed to assign user role');
+            toast({
+              variant: "destructive",
+              title: "Account setup incomplete",
+              description: "Your account was created but user privileges could not be assigned",
+            });
+          }
         }
       } else {
         toast({
