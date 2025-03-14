@@ -40,7 +40,6 @@ serve(async (req) => {
       console.log('Debug mode: Found test user jonnyCat');
       
       // For this test user, we'll return the email directly without querying the database
-      // This avoids potential issues with database configurations
       return new Response(
         JSON.stringify({ 
           id: 'test-user-id', 

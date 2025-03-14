@@ -64,7 +64,6 @@ export const handleSignInWithUsername = async (username: string, password: strin
         // Direct login attempt with the known email
         console.log(`Attempting direct login for test user with email: ${testEmail}`);
         
-        // Create a separate supabase client just for this operation to avoid session conflicts
         const { error: loginError } = await supabase.auth.signInWithPassword({
           email: testEmail,
           password,
