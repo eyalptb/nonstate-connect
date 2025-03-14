@@ -53,27 +53,22 @@ export const handleSignInWithUsername = async (username: string, password: strin
   try {
     console.log(`Attempting sign in with username: ${username}`);
     
-    // Re-check if the input is actually an email (user might have typed an email in username field)
-    if (isEmailFormat(username)) {
-      console.log('Input appears to be an email, redirecting to email login flow');
-      return handleSignInWithEmail(username, password);
-    }
-    
-    // Try with a standardized email format for username login
-    const userEmail = `${username.trim().toLowerCase()}@collabcoin.app`;
-    console.log(`Trying username login with format: ${userEmail}`);
+    // First, check if we need to query the profiles table to get the user's email
+    // This would require a custom endpoint/function to look up a user by username
+    // For now, we'll just attempt the login with the username as the "email" part
+    // (Supabase only supports email/password authentication natively)
     
     const { data, error } = await supabase.auth.signInWithPassword({
-      email: userEmail,
+      email: username, // Try with the raw username input
       password,
     });
     
     if (!error) {
-      console.log('Login successful with format:', userEmail);
+      console.log('Login successful with username:', username);
       return { error: null };
     }
     
-    console.log(`Login failed with format ${userEmail}:`, error);
+    console.log(`Login failed with username ${username}:`, error);
     return { 
       error: new Error('Invalid username or password. Please check your credentials and try again.') 
     };

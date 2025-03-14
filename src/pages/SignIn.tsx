@@ -6,6 +6,7 @@ import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
 import { DividerWithText } from "@/components/auth/DividerWithText";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { SignInLayout } from "@/components/auth/SignInLayout";
+import { isEmailFormat } from "@/utils/auth/userAuth";
 
 const SignIn = () => {
   const { signInWithEmail, signInWithGoogle, signInWithUsername } = useAuth();
@@ -31,10 +32,7 @@ const SignIn = () => {
     console.log(`Sign-in attempt with: ${usernameOrEmail}`);
     
     // Check if the input is an email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isEmail = emailRegex.test(usernameOrEmail);
-    
-    if (isEmail) {
+    if (isEmailFormat(usernameOrEmail)) {
       return signInWithEmail(usernameOrEmail, password);
     } else {
       return signInWithUsername(usernameOrEmail, password);

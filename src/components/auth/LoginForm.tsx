@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
+import { isEmailFormat } from "@/utils/auth/userAuth";
 
 interface LoginFormProps {
   onSignIn: (usernameOrEmail: string, password: string) => Promise<{ error: Error | null }>;
@@ -16,12 +17,6 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
-  // Helper function to determine if input is an email
-  const isEmail = (input: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(input);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +31,7 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     setIsLoading(true);
 
     try {
-      console.log(`Attempting login with: ${usernameOrEmail} (${isEmail(usernameOrEmail) ? 'email' : 'username'})`);
+      console.log(`Attempting login with: ${usernameOrEmail} (${isEmailFormat(usernameOrEmail) ? 'email' : 'username'})`);
       
       const result = await onSignIn(usernameOrEmail, password);
 
