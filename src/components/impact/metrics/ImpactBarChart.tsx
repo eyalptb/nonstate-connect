@@ -31,7 +31,7 @@ const valueFormatter = (value: number) => {
 
 const ImpactBarChart = () => {
   return (
-    <Card className="shadow-md">
+    <Card className="shadow-md mt-8 z-10 relative bg-background">
       <CardHeader className="pb-2">
         <CardTitle className="text-xl">Verified Impact Metrics</CardTitle>
         <CardDescription>
@@ -39,7 +39,7 @@ const ImpactBarChart = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[450px] w-full pt-4">
+        <div className="h-[400px] w-full pt-4">
           <ChartContainer config={chartConfig}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart 
