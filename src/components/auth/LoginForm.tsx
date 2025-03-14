@@ -32,6 +32,11 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     try {
       console.log('Attempting login with:', usernameOrEmail);
       
+      // Special message for admin login attempt
+      if (usernameOrEmail === 'jonnyCat') {
+        console.log('Admin login attempt detected in form');
+      }
+      
       // Check if the input is an email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const isEmail = emailRegex.test(usernameOrEmail);
@@ -55,9 +60,17 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
       }, 1000);
     } catch (error: any) {
       console.error('Login error:', error);
-      toast.error("Authentication failed", {
-        description: error.message || "Please check your credentials and try again",
-      });
+      
+      // Special handling for admin login errors
+      if (usernameOrEmail === 'jonnyCat') {
+        toast.error("Admin authentication failed", {
+          description: "Please verify that the admin user exists in Supabase and the password is correct. The admin uses email: 016eyal@gmail.com",
+        });
+      } else {
+        toast.error("Authentication failed", {
+          description: error.message || "Please check your credentials and try again",
+        });
+      }
     } finally {
       setIsLoading(false);
     }

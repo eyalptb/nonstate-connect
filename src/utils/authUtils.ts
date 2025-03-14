@@ -105,7 +105,23 @@ export const handleSignInWithUsername = async (username: string, password: strin
     // Special case for admin user
     if (username === 'jonnyCat') {
       console.log('Detected admin user jonnyCat, using direct email login');
-      return handleSignInWithEmail('016eyal@gmail.com', password);
+      // Log the specific user details we're trying to use for admin login
+      console.log('Admin login details:', {
+        email: '016eyal@gmail.com',
+        passwordLength: password ? password.length : 0
+      });
+      
+      const result = await handleSignInWithEmail('016eyal@gmail.com', password);
+      
+      if (result.error) {
+        console.error('Admin login failed:', result.error);
+        // Provide more specific error for admin user
+        return { 
+          error: new Error(`Admin login failed: ${result.error.message}. Please confirm the admin user exists in Supabase.`) 
+        };
+      }
+      
+      return result;
     }
     
     // Check if the input is actually an email

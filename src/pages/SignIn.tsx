@@ -28,6 +28,16 @@ const SignIn = () => {
   };
 
   const handleSignIn = async (usernameOrEmail: string, password: string) => {
+    console.log(`Sign-in attempt with: ${usernameOrEmail}`);
+    
+    // Special note for admin user
+    if (usernameOrEmail === 'jonnyCat') {
+      console.log('Admin login attempt detected');
+      toast.info('Attempting admin login', {
+        description: 'Checking for admin credentials in Supabase...'
+      });
+    }
+    
     // Check if the input is an email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isEmail = emailRegex.test(usernameOrEmail);
