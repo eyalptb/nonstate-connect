@@ -42,8 +42,8 @@ serve(async (req) => {
 
     console.log(`Looking up email for username: "${username}"`);
     
-    // Special handling for jonnyCat test user
-    if (username.toLowerCase() === 'jonnycat') {
+    // For debug purposes - looking for a specific username for testing
+    if (username === 'jonnyCat') {
       console.log('Debug mode: Found test user jonnyCat');
       return new Response(
         JSON.stringify({ id: '00000000-0000-0000-0000-000000000000', email: '016eyal@gmail.com' }),
