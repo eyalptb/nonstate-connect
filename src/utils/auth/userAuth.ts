@@ -53,8 +53,8 @@ export const handleSignInWithUsername = async (username: string, password: strin
   try {
     console.log(`Attempting sign in with username: "${username}"`);
     
-    // Special handling for test user 'jonnyCat'
-    if (username === 'jonnyCat') {
+    // Special handling for test user 'jonnyCat' - case insensitive matching
+    if (username.toLowerCase() === 'jonnycat') {
       console.log('Debug mode: Using test credentials for jonnyCat');
       // Attempt to sign in with the hardcoded email for jonnyCat
       const { error: loginError } = await supabase.auth.signInWithPassword({
