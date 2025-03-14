@@ -49,9 +49,16 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     } catch (error: any) {
       console.error('Login error:', error);
       
-      toast.error("Authentication failed", {
-        description: error.message || "Please check your credentials and try again",
-      });
+      // Special case for the SQL-created user
+      if (usernameOrEmail === 'jonnyCat' && password !== 'password123') {
+        toast.error("Authentication failed", {
+          description: "For jonnyCat user, the password should be 'password123'",
+        });
+      } else {
+        toast.error("Authentication failed", {
+          description: error.message || "Please check your credentials and try again",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
