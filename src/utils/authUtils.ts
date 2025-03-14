@@ -79,6 +79,8 @@ export const handleSignInWithGoogle = async () => {
 
 export const handleSignInWithEmail = async (email: string, password: string) => {
   try {
+    console.log(`Attempting to sign in with email: ${email}`);
+    
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -98,6 +100,14 @@ export const handleSignInWithEmail = async (email: string, password: string) => 
 
 export const handleSignInWithUsername = async (username: string, password: string) => {
   try {
+    console.log(`Attempting sign in with username: ${username}`);
+    
+    // Special case for admin user
+    if (username === 'jonnyCat') {
+      console.log('Detected admin user jonnyCat, using direct email login');
+      return handleSignInWithEmail('016eyal@gmail.com', password);
+    }
+    
     // Check if the input is actually an email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isEmail = emailRegex.test(username);
