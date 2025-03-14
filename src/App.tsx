@@ -23,6 +23,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Navbar } from "./components/Navbar";
 import Footer from "./components/Footer";
 import Governance from "./pages/Governance";
+import Admin from "./pages/Admin";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ function App() {
                 <Route path="/sign-up" element={<SignUp />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/update-password" element={<UpdatePassword />} />
+                <Route path="/admin" element={<Admin />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Footer />

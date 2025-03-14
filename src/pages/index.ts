@@ -1,4 +1,3 @@
-
 export { default as Dashboard } from "./Dashboard";
 export { default as Funding } from "./Funding";
 export { default as Impact } from "./Impact";
@@ -13,3 +12,4 @@ export { default as UpdatePassword } from "./UpdatePassword";
 export { default as Governance } from "./Governance";
 export { default as ProposalDetail } from "./ProposalDetail";
 export { default as Features } from "./Features";
+export { default as Admin } from "./Admin";

@@ -15,6 +15,7 @@ interface MainNavItem {
   title: string;
   href: string;
   disabled?: boolean;
+  adminOnly?: boolean;
 }
 
 interface NavbarProps {
@@ -54,17 +55,25 @@ const mainNav: MainNavItem[] = [
     title: "Governance",
     href: "/governance",
   },
+  {
+    title: "Admin",
+    href: "/admin",
+    adminOnly: true,
+  },
 ];
 
 export function Navbar({ mainNav: propMainNav }: NavbarProps) {
   const location = useLocation();
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, signOut, isAdmin } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navItems = propMainNav || mainNav;
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  // Filter nav items based on user role
+  const filteredNavItems = navItems.filter(item => !item.adminOnly || (item.adminOnly && isAdmin));
 
   return (
     <div className="border-b">
@@ -75,8 +84,8 @@ export function Navbar({ mainNav: propMainNav }: NavbarProps) {
         </Link>
         <div className="hidden md:flex items-center gap-6">
           <nav className="flex items-center space-x-6 text-sm font-medium">
-            {navItems?.length ? (
-              navItems.map(
+            {filteredNavItems?.length ? (
+              filteredNavItems.map(
                 (item, i) => (
                   <Link
                     key={i}
@@ -111,6 +120,11 @@ export function Navbar({ mainNav: propMainNav }: NavbarProps) {
                 <DropdownMenuItem>
                   <Link to="/profile" className="w-full">Profile</Link>
                 </DropdownMenuItem>
+                {isAdmin && (
+                  <DropdownMenuItem>
+                    <Link to="/admin" className="w-full">Admin Dashboard</Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
               </DropdownMenuContent>
@@ -134,8 +148,8 @@ export function Navbar({ mainNav: propMainNav }: NavbarProps) {
       {isMenuOpen && (
         <div className="md:hidden p-4">
           <nav className="flex flex-col gap-4 text-sm font-medium">
-            {navItems?.length ? (
-              navItems.map((item, i) => (
+            {filteredNavItems?.length ? (
+              filteredNavItems.map((item, i) => (
                 <Link
                   key={i}
                   to={item.href}
@@ -154,6 +168,7 @@ export function Navbar({ mainNav: propMainNav }: NavbarProps) {
               <>
                 <Link to="/dashboard">Dashboard</Link>
                 <Link to="/profile">Profile</Link>
+                {isAdmin && <Link to="/admin">Admin Dashboard</Link>}
                 <button onClick={() => signOut()}>Logout</button>
               </>
             ) : (
