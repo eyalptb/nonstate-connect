@@ -13,6 +13,7 @@ import {
   UpdatePassword,
   NotFound,
   IntegrationHub,
+  ProposalDetail,
 } from "./pages";
 import { AuthProvider } from "./contexts/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -40,6 +41,7 @@ function App() {
                 <Route path="/messaging" element={<Messaging />} />
                 <Route path="/integration-hub" element={<IntegrationHub />} />
                 <Route path="/governance" element={<Governance />} />
+                <Route path="/governance/proposal/:id" element={<ProposalDetail />} />
                 <Route path="/sign-in" element={<SignIn />} />
                 <Route path="/sign-up" element={<SignUp />} />
                 <Route path="/reset-password" element={<ResetPassword />} />

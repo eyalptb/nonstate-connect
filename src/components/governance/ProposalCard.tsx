@@ -1,10 +1,11 @@
 
 import React from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ThumbsUp, ThumbsDown, AlertTriangle, CheckCircle, Clock } from "lucide-react";
+import { ThumbsUp, ThumbsDown, AlertTriangle, CheckCircle, Clock, ExternalLink } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ProposalVotingDialog } from "./ProposalVotingDialog";
 import { ProposalType } from "./types";
@@ -67,9 +68,15 @@ export function ProposalCard({ proposal, onVote, balance }: ProposalCardProps) {
       </CardContent>
       {proposal.status === "active" && (
         <CardFooter className="border-t pt-4 flex justify-between">
-          <div className="text-sm text-muted-foreground">
-            Voting ends {formatDistanceToNow(proposal.endTime, { addSuffix: true })}
-          </div>
+          <Link to={`/governance/proposal/${proposal.id}`}>
+            <Button 
+              variant="outline" 
+              size="sm"
+            >
+              View Details
+              <ExternalLink className="ml-1 h-3 w-3" />
+            </Button>
+          </Link>
           <div className="flex gap-2">
             <ProposalVotingDialog 
               proposal={proposal} 
@@ -108,17 +115,37 @@ export function ProposalCard({ proposal, onVote, balance }: ProposalCardProps) {
       )}
       {proposal.status === "passed" && proposal.executedAt && (
         <CardFooter className="border-t pt-4 flex justify-between">
-          <div className="text-sm text-muted-foreground">
-            Executed {formatDistanceToNow(proposal.executedAt, { addSuffix: true })}
+          <Link to={`/governance/proposal/${proposal.id}`}>
+            <Button 
+              variant="outline" 
+              size="sm"
+            >
+              View Details
+              <ExternalLink className="ml-1 h-3 w-3" />
+            </Button>
+          </Link>
+          <div>
+            <div className="text-sm text-muted-foreground">
+              Executed {formatDistanceToNow(proposal.executedAt, { addSuffix: true })}
+            </div>
+            <Button variant="outline" size="sm" disabled>
+              <CheckCircle className="mr-2 h-4 w-4" />
+              Executed
+            </Button>
           </div>
-          <Button variant="outline" size="sm" disabled>
-            <CheckCircle className="mr-2 h-4 w-4" />
-            Executed
-          </Button>
         </CardFooter>
       )}
       {proposal.status === "rejected" && (
-        <CardFooter className="border-t pt-4">
+        <CardFooter className="border-t pt-4 flex justify-between">
+          <Link to={`/governance/proposal/${proposal.id}`}>
+            <Button 
+              variant="outline" 
+              size="sm"
+            >
+              View Details
+              <ExternalLink className="ml-1 h-3 w-3" />
+            </Button>
+          </Link>
           <div className="text-sm text-muted-foreground">
             Voting ended {formatDistanceToNow(proposal.endTime, { addSuffix: true })}
           </div>
