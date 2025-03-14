@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,7 +9,6 @@ import { ThumbsUp, ThumbsDown, AlertTriangle, CheckCircle, Clock } from "lucide-
 import { formatDistanceToNow } from "date-fns";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
-// Updated interface to include the optional executedAt property
 interface Proposal {
   id: string;
   title: string;
@@ -26,7 +24,6 @@ interface Proposal {
   executedAt?: Date;
 }
 
-// Mock data for proposals - in a real app, this would come from your DAO contract
 const mockProposals = {
   active: [
     {
@@ -130,9 +127,7 @@ export function ProposalList({ status }: ProposalListProps) {
   };
 
   const submitVote = async (proposalId: string) => {
-    // In a real implementation, this would call your DAO contract
     try {
-      // Simulate spending tokens to vote
       const success = await spendTokens(
         votingAmount,
         `Vote on proposal: ${proposals.find(p => p.id === proposalId)?.title.substring(0, 20)}...`
@@ -326,10 +321,10 @@ export function ProposalList({ status }: ProposalListProps) {
                 </div>
               </CardFooter>
             )}
-            {proposal.status === "passed" && (
+            {proposal.status === "passed" && proposal.executedAt && (
               <CardFooter className="border-t pt-4 flex justify-between">
                 <div className="text-sm text-muted-foreground">
-                  Executed {formatDistanceToNow(proposal.executedAt!, { addSuffix: true })}
+                  Executed {formatDistanceToNow(proposal.executedAt, { addSuffix: true })}
                 </div>
                 <Button variant="outline" size="sm" disabled>
                   <CheckCircle className="mr-2 h-4 w-4" />
