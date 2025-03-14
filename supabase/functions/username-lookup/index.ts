@@ -74,7 +74,7 @@ serve(async (req) => {
       console.log('No profiles found in database');
     }
     
-    // Try direct match first
+    // Try case-insensitive match
     const { data: profileData, error: profileError } = await supabaseClient
       .from('profiles')
       .select('id, email, username')
@@ -90,7 +90,7 @@ serve(async (req) => {
     
     console.log(`Retrieved ${profileData?.length || 0} profiles matching username "${username}"`);
     
-    // If direct match found, return it
+    // If match found, return it
     if (profileData && profileData.length > 0) {
       const matchedProfile = profileData[0];
       console.log(`Found profile for username: "${username}" -> ${matchedProfile.email}`);
