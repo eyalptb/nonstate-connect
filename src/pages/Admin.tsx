@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { UserRoleManagement } from "@/components/admin/UserRoleManagement";
+import { UserManagement } from "@/components/admin/UserManagement";
 import { Loader } from "lucide-react";
 
 const Admin = () => {
@@ -49,13 +50,28 @@ const Admin = () => {
         onValueChange={setActiveTab}
         className="space-y-4"
       >
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="users">User Management</TabsTrigger>
+          <TabsTrigger value="roles">Role Management</TabsTrigger>
           <TabsTrigger value="settings">System Settings</TabsTrigger>
           <TabsTrigger value="logs">Audit Logs</TabsTrigger>
         </TabsList>
 
         <TabsContent value="users" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>User Management</CardTitle>
+              <CardDescription>
+                Create, update, and delete users
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <UserManagement />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="roles" className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>User Role Management</CardTitle>
