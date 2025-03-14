@@ -7,9 +7,14 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 }
 
+console.log("Edge function loaded: username-lookup");
+
 serve(async (req) => {
+  console.log("Request received:", req.method, req.url);
+  
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
+    console.log("Handling OPTIONS request");
     return new Response('ok', { headers: corsHeaders })
   }
 
@@ -22,7 +27,10 @@ serve(async (req) => {
     const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
     // Get username from request body
-    const { username } = await req.json();
+    const requestBody = await req.json();
+    const { username } = requestBody;
+    
+    console.log('Request body:', requestBody);
     
     if (!username) {
       console.log('No username provided in request');

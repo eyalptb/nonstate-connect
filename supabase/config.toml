@@ -1,4 +1,7 @@
 
+# This is the project config file that you can use to configure your project.
+# It's a TOML file, see https://toml.io/ for more information.
+
 project_id = "wnetelqsdbiacotgfxib"
 
 [functions.username-lookup]
