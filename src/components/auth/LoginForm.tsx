@@ -21,10 +21,7 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Only trim whitespace but preserve the format otherwise
-    const trimmedInput = usernameOrEmail.trim();
-    
-    if (!trimmedInput || !password) {
+    if (!usernameOrEmail || !password) {
       toast.error("Missing credentials", {
         description: "Please enter both username/email and password",
       });
@@ -34,10 +31,10 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     setIsLoading(true);
 
     try {
-      const loginType = isEmailFormat(trimmedInput) ? 'email' : 'username';
-      console.log(`Attempting login with: ${trimmedInput} (${loginType})`);
+      const loginType = isEmailFormat(usernameOrEmail) ? 'email' : 'username';
+      console.log(`Attempting login with: ${usernameOrEmail} (${loginType})`);
       
-      const result = await onSignIn(trimmedInput, password);
+      const result = await onSignIn(usernameOrEmail, password);
 
       if (result.error) {
         throw result.error;
@@ -62,7 +59,7 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
       } else if (error.message && error.message.includes("Invalid login credentials")) {
         errorMessage = "Invalid password. Please check your password and try again.";
       } else if (error.message && error.message.includes("Edge Function")) {
-        errorMessage = "Login service is currently unavailable. Please try again later.";
+        errorMessage = "Login service is currently unavailable. Please try again later or use email login.";
       }
       
       toast.error("Authentication failed", {

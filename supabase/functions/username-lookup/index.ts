@@ -33,80 +33,54 @@ serve(async (req) => {
     }
 
     console.log(`Looking up email for username: ${username}`);
-
-    // Try various formats of the username to increase chances of finding a match
-    // 1. Try the original username as provided
-    let { data, error } = await supabaseClient
+    
+    // DIRECT QUERY APPROACH
+    // This avoids any issues with the profiles table schema or RLS policies
+    const { data: directData, error: directError } = await supabaseClient
       .from('profiles')
-      .select('id, email')
-      .eq('username', username)
-      .maybeSingle();
+      .select('*');
     
-    // 2. If not found, try with trimmed username
-    if (!data && !error) {
-      const trimmed = username.trim();
-      console.log(`No match for original username, trying trimmed: ${trimmed}`);
-      
-      const result = await supabaseClient
-        .from('profiles')
-        .select('id, email')
-        .eq('username', trimmed)
-        .maybeSingle();
-      
-      data = result.data;
-      error = result.error;
-    }
+    console.log('All profiles in database:', directData);
     
-    // 3. If still not found, try case-insensitive search
-    if (!data && !error) {
-      console.log('No match for trimmed username, trying case-insensitive search');
-      
-      const result = await supabaseClient
-        .from('profiles')
-        .select('id, email')
-        .ilike('username', username)
-        .maybeSingle();
-      
-      data = result.data;
-      error = result.error;
-    }
-    
-    // 4. Last resort: try with alphanumeric characters only, case insensitive
-    if (!data && !error) {
-      const alphanumericOnly = username.trim().replace(/[^a-zA-Z0-9]/g, '');
-      console.log(`No case-insensitive match, trying alphanumeric only: ${alphanumericOnly}`);
-      
-      const result = await supabaseClient
-        .from('profiles')
-        .select('id, email')
-        .ilike('username', alphanumericOnly)
-        .maybeSingle();
-      
-      data = result.data;
-      error = result.error;
-    }
-
-    if (error) {
-      console.error('Error fetching profile:', error);
-      return new Response(
-        JSON.stringify({ error: 'Error looking up username', details: error.message }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    // Look for the username in the returned data manually
+    let matchedProfile = null;
+    if (directData && directData.length > 0) {
+      // Case-insensitive comparison
+      matchedProfile = directData.find(profile => 
+        profile.username && profile.username.toLowerCase() === username.toLowerCase()
       );
+      
+      if (!matchedProfile) {
+        console.log('No exact match found, checking for partial matches...');
+        // Try trimmed version
+        matchedProfile = directData.find(profile => 
+          profile.username && profile.username.trim().toLowerCase() === username.trim().toLowerCase()
+        );
+      }
+      
+      if (!matchedProfile) {
+        console.log('No partial match found, checking if username is contained...');
+        // Check if any username contains this username
+        matchedProfile = directData.find(profile => 
+          profile.username && profile.username.toLowerCase().includes(username.toLowerCase())
+        );
+      }
     }
-
-    if (!data || !data.email) {
-      console.log(`No user found with username: ${username} after multiple lookup attempts`);
+    
+    if (directError) {
+      console.error('Error fetching all profiles:', directError);
+    }
+    
+    if (!matchedProfile) {
+      console.log(`No user found with username: ${username} in ${directData?.length || 0} profiles`);
       
-      // Debug: Log all usernames in the profiles table
-      const { data: allProfiles, error: profilesError } = await supabaseClient
-        .from('profiles')
-        .select('username, email, id')
-        .not('username', 'is', null);
-      
-      if (!profilesError && allProfiles) {
-        console.log('Available usernames in the database:', allProfiles.map(p => `${p.username} (${p.id})`));
+      if (directData && directData.length > 0) {
+        console.log('Available usernames in the database:');
+        directData.forEach(profile => {
+          console.log(`- Username: ${profile.username || 'null'}, Email: ${profile.email || 'null'}, ID: ${profile.id || 'null'}`);
+        });
       } else {
-        console.log('Error fetching all profiles:', profilesError);
+        console.log('No profiles found in the database');
       }
       
       return new Response(
@@ -115,11 +89,19 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Found email for username: ${username} -> ${data.email}`);
+    console.log(`Found profile for username: ${username} -> ${matchedProfile.email}`);
+    
+    if (!matchedProfile.email) {
+      console.error(`Profile found for username ${username} but email is missing`);
+      return new Response(
+        JSON.stringify({ error: 'Username found but email is missing. Please contact support.' }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
     
     // Return the email associated with this username
     return new Response(
-      JSON.stringify({ id: data.id, email: data.email }),
+      JSON.stringify({ id: matchedProfile.id, email: matchedProfile.email }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {

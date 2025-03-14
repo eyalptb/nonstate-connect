@@ -55,9 +55,9 @@ export const handleSignInWithUsername = async (username: string, password: strin
     // This ensures we try all possible formats on the server side
     console.log(`Attempting sign in with username: ${username}`);
     
-    // First, we need to find the email associated with this username
+    // Try to find the email associated with this username
     const { data, error: lookupError } = await supabase.functions.invoke('username-lookup', {
-      body: { username: username }
+      body: { username }
     });
     
     if (lookupError) {
