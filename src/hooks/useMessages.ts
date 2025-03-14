@@ -24,31 +24,38 @@ export const useMessages = (conversationId: string | null) => {
     if (!conversationId || !user) return;
     
     try {
+      // Get participants from conversation_participants table
       const { data, error } = await supabase
         .from('conversation_participants')
         .select(`
           id,
           user_id,
-          public_key,
-          profiles:user_id (
-            first_name,
-            last_name,
-            avatar_url
-          )
+          public_key
         `)
         .eq('conversation_id', conversationId);
       
       if (error) throw error;
       
       if (data) {
-        const formattedParticipants = data.map(p => ({
-          id: p.id,
-          user_id: p.user_id,
-          public_key: p.public_key,
-          first_name: p.profiles?.first_name || null,
-          last_name: p.profiles?.last_name || null,
-          avatar_url: p.profiles?.avatar_url || null,
-        }));
+        // Fetch profile information for each participant
+        const formattedParticipants = await Promise.all(
+          data.map(async (p) => {
+            const { data: profileData } = await supabase
+              .from('profiles')
+              .select('first_name, last_name, avatar_url')
+              .eq('id', p.user_id)
+              .single();
+            
+            return {
+              id: p.id,
+              user_id: p.user_id,
+              public_key: p.public_key,
+              first_name: profileData?.first_name || null,
+              last_name: profileData?.last_name || null,
+              avatar_url: profileData?.avatar_url || null,
+            };
+          })
+        );
         
         setParticipants(formattedParticipants);
       }

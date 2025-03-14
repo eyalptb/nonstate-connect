@@ -116,30 +116,39 @@ export const useConversations = () => {
       // For each conversation, get the participants
       const enhancedConversations = await Promise.all(
         conversationsData.map(async (conversation) => {
+          // Get participants for this conversation
           const { data: participants } = await supabase
             .from('conversation_participants')
             .select(`
               id,
               user_id,
-              public_key,
-              profiles:user_id (
-                first_name,
-                last_name,
-                avatar_url
-              )
+              public_key
             `)
             .eq('conversation_id', conversation.id);
+            
+          // Separately fetch profile information for each participant
+          const enhancedParticipants = await Promise.all(
+            (participants || []).map(async (participant) => {
+              const { data: userProfile } = await supabase
+                .from('profiles')
+                .select('first_name, last_name, avatar_url')
+                .eq('id', participant.user_id)
+                .single();
+                
+              return {
+                id: participant.id,
+                user_id: participant.user_id,
+                public_key: participant.public_key,
+                first_name: userProfile?.first_name || null,
+                last_name: userProfile?.last_name || null,
+                avatar_url: userProfile?.avatar_url || null,
+              };
+            })
+          );
           
           return {
             ...conversation,
-            participants: participants?.map(p => ({
-              id: p.id,
-              user_id: p.user_id,
-              public_key: p.public_key,
-              first_name: p.profiles?.first_name || null,
-              last_name: p.profiles?.last_name || null,
-              avatar_url: p.profiles?.avatar_url || null,
-            })) || []
+            participants: enhancedParticipants
           };
         })
       );
