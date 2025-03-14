@@ -58,7 +58,7 @@ export const handleSignInWithUsername = async (username: string, password: strin
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${supabase.auth.getSession().then(({ data }) => data.session?.access_token)}`,
+        'Authorization': `Bearer ${await supabase.auth.getSession().then(({ data }) => data.session?.access_token || '')}`,
         'apikey': (supabase as any).supabaseKey,
       },
       body: JSON.stringify({ username }),
@@ -73,6 +73,12 @@ export const handleSignInWithUsername = async (username: string, password: strin
     // Check if there's an error message in the response
     if (data && data.error) {
       console.error('Username lookup failed:', data.error);
+      
+      // Check if the profiles table is empty (no users have set usernames)
+      if (data.profilesExist === false) {
+        return { error: new Error('Username login is not available yet. Please use email login instead.') };
+      }
+      
       return { error: new Error(data.error) };
     }
     
