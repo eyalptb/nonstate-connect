@@ -44,13 +44,18 @@ export const handleSignInWithEmail = async (email: string, password: string) => 
   }
 };
 
+export const isEmailFormat = (input: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(input);
+};
+
 export const handleSignInWithUsername = async (username: string, password: string) => {
   try {
     console.log(`Attempting sign in with username: ${username}`);
     
-    // Check if the input is actually an email (user might have typed an email in username field)
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (emailRegex.test(username)) {
+    // Re-check if the input is actually an email (user might have typed an email in username field)
+    if (isEmailFormat(username)) {
+      console.log('Input appears to be an email, redirecting to email login flow');
       return handleSignInWithEmail(username, password);
     }
     

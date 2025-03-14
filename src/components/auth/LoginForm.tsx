@@ -17,6 +17,12 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Helper function to determine if input is an email
+  const isEmail = (input: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(input);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -30,7 +36,7 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     setIsLoading(true);
 
     try {
-      console.log('Attempting login with:', usernameOrEmail);
+      console.log(`Attempting login with: ${usernameOrEmail} (${isEmail(usernameOrEmail) ? 'email' : 'username'})`);
       
       const result = await onSignIn(usernameOrEmail, password);
 
