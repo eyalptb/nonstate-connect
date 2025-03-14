@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 import { ProfileType } from '@/types/auth';
 
@@ -89,6 +90,35 @@ export const handleSignInWithEmail = async (email: string, password: string) => 
     
     if (email === '016eyal@gmail.com') {
       console.log('Admin email detected, attempting special handling');
+      
+      // First try to confirm the email for the admin user if needed
+      try {
+        // Try to get the user by email to get the user ID
+        const { data: userData, error: userError } = await supabase.auth.admin
+          .listUsers({
+            filters: {
+              email: email
+            }
+          });
+          
+        if (!userError && userData?.users.length > 0) {
+          const adminUserId = userData.users[0].id;
+          
+          // Try to auto-confirm the admin email through the edge function
+          await supabase.functions.invoke('admin-assign-role', {
+            body: { 
+              userId: adminUserId, 
+              role: 'admin',
+              email: email
+            }
+          });
+          
+          console.log('Admin email confirmation attempted');
+        }
+      } catch (confirmError) {
+        console.log('Error in admin email confirmation attempt:', confirmError);
+        // Continue with login attempt even if confirmation fails
+      }
     }
     
     const { data, error } = await supabase.auth.signInWithPassword({
