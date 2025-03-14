@@ -25,18 +25,21 @@ const SignIn = () => {
     setIsLoading(true);
 
     try {
+      // Trim the input to remove any spaces
+      const cleanedInput = usernameOrEmail.trim();
+      
       // Check if the input is an email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const isEmail = emailRegex.test(usernameOrEmail);
+      const isEmail = emailRegex.test(cleanedInput);
       
       let error;
       if (isEmail) {
         // If it's an email, use email login
-        const result = await signInWithEmail(usernameOrEmail, password);
+        const result = await signInWithEmail(cleanedInput, password);
         error = result.error;
       } else {
         // If it's not an email, use username login
-        const result = await signInWithUsername(usernameOrEmail, password);
+        const result = await signInWithUsername(cleanedInput, password);
         error = result.error;
       }
 

@@ -170,8 +170,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       
       // If it's not an email, we assume it's a username
+      // IMPORTANT: Trim the username to remove any spaces
+      const cleanUsername = username.trim();
+      
       const { error } = await supabase.auth.signInWithPassword({
-        email: `${username}@username.local`, // We use a placeholder email format
+        email: `${cleanUsername}@username.local`, // Clean username in the email format
         password,
       });
       return { error: error };
