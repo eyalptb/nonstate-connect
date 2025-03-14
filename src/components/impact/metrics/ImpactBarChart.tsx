@@ -79,7 +79,6 @@ const ImpactBarChart = () => {
                   width={40}
                 />
                 <ChartTooltip 
-                  id="impact-chart-tooltip"
                   cursor={{ fill: 'rgba(180, 180, 180, 0.1)' }}
                   content={<ChartTooltipContent />} 
                 />
