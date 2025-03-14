@@ -51,7 +51,7 @@ export const isEmailFormat = (input: string): boolean => {
 
 export const handleSignInWithUsername = async (username: string, password: string) => {
   try {
-    // Ensure username is sanitized
+    // Don't convert to lowercase here - we'll let the edge function handle the case sensitivity
     const sanitizedUsername = username.trim().replace(/[^a-zA-Z0-9]/g, '');
     console.log(`Attempting sign in with username: ${sanitizedUsername}`);
     

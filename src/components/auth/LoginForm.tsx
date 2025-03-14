@@ -26,7 +26,7 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
     const trimmedInput = usernameOrEmail.trim();
     const cleanedInput = isEmailFormat(trimmedInput) 
       ? trimmedInput 
-      : trimmedInput.replace(/[^a-zA-Z0-9]/g, '');
+      : trimmedInput;
     
     if (!cleanedInput || !password) {
       toast.error("Missing credentials", {
@@ -65,6 +65,8 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
         errorMessage = "Username not found. Please check your username or sign up.";
       } else if (error.message && error.message.includes("Invalid login credentials")) {
         errorMessage = "Invalid password. Please check your password and try again.";
+      } else if (error.message && error.message.includes("Edge Function")) {
+        errorMessage = "Login service is currently unavailable. Please try again later.";
       }
       
       toast.error("Authentication failed", {
@@ -114,4 +116,4 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
       </Button>
     </form>
   );
-};
+}

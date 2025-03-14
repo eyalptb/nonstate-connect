@@ -34,16 +34,30 @@ serve(async (req) => {
 
     console.log(`Looking up email for username: ${username}`);
 
-    // First ensure username is properly sanitized
-    const sanitizedUsername = username.trim().replace(/[^a-zA-Z0-9]/g, '');
+    // Sanitize the username - convert to lowercase and remove special characters
+    const sanitizedUsername = username.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
     console.log(`Sanitized username for lookup: ${sanitizedUsername}`);
 
-    // Query the profiles table for a matching username
-    const { data, error } = await supabaseClient
+    // First try exact match (case-sensitive)
+    let { data, error } = await supabaseClient
       .from('profiles')
       .select('id, email')
-      .eq('username', sanitizedUsername)
+      .eq('username', username)
       .maybeSingle();
+
+    // If no match found, try with the sanitized version
+    if (!data && !error) {
+      console.log(`No exact match found, trying with sanitized username: ${sanitizedUsername}`);
+      
+      const { data: sanitizedData, error: sanitizedError } = await supabaseClient
+        .from('profiles')
+        .select('id, email')
+        .ilike('username', sanitizedUsername)
+        .maybeSingle();
+      
+      data = sanitizedData;
+      error = sanitizedError;
+    }
 
     if (error) {
       console.error('Error fetching profile:', error);
@@ -54,14 +68,25 @@ serve(async (req) => {
     }
 
     if (!data || !data.email) {
-      console.log(`No user found with username: ${sanitizedUsername} or email is missing`);
+      console.log(`No user found with username: ${username} or sanitized: ${sanitizedUsername}`);
+      
+      // Log all usernames in the profiles table for debugging
+      const { data: allProfiles, error: profilesError } = await supabaseClient
+        .from('profiles')
+        .select('username')
+        .not('username', 'is', null);
+      
+      if (!profilesError && allProfiles) {
+        console.log('Available usernames in the database:', allProfiles.map(p => p.username));
+      }
+      
       return new Response(
         JSON.stringify({ error: 'Username not found or email is missing' }),
         { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log(`Found email for username ${sanitizedUsername}: ${data.email}`);
+    console.log(`Found email for username: ${data.email}`);
     
     // Return the email associated with this username
     return new Response(
