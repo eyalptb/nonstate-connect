@@ -74,11 +74,14 @@ export const fetchAllUsers = async (): Promise<UserWithRoles[]> => {
       role: AppRole;
     }
     
-    // Cast the roles data to the correct type
-    const typedRolesData = rolesData as RoleData[];
+    // Explicitly check if rolesData is an array before casting
+    const typedRolesData = Array.isArray(rolesData) ? rolesData as RoleData[] : [];
     
     const combinedUsers = profiles.map(profile => {
-      const authUser = authUsers?.users.find(u => u.id === profile.id);
+      // Safely find the auth user
+      const authUser = authUsers?.users?.find(u => u.id === profile.id);
+      
+      // Filter roles for this user
       const userRoles = typedRolesData
         .filter(r => r.user_id === profile.id)
         .map(r => r.role);
