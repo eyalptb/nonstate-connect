@@ -52,6 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchProfile = async (userId: string) => {
     try {
+      // Fix: Use the correct type for the profiles table
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
