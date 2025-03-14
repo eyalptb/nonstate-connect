@@ -15,7 +15,7 @@ const SignIn = () => {
       <div className="w-full max-w-md">
         <ClerkSignIn 
           signUpUrl="/sign-up"
-          routing="path"
+          path="/sign-in"
           redirectUrl="/dashboard"
           appearance={{
             elements: {
