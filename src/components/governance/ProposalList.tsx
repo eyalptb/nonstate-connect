@@ -10,6 +10,22 @@ import { ThumbsUp, ThumbsDown, AlertTriangle, CheckCircle, Clock } from "lucide-
 import { formatDistanceToNow } from "date-fns";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
+// Updated interface to include the optional executedAt property
+interface Proposal {
+  id: string;
+  title: string;
+  description: string;
+  proposer: string;
+  proposerName: string;
+  createdAt: Date;
+  endTime: Date;
+  votesFor: number;
+  votesAgainst: number;
+  status: string;
+  category: string;
+  executedAt?: Date;
+}
+
 // Mock data for proposals - in a real app, this would come from your DAO contract
 const mockProposals = {
   active: [
@@ -92,7 +108,7 @@ interface ProposalListProps {
 
 export function ProposalList({ status }: ProposalListProps) {
   const { toast } = useToast();
-  const { balance, useTokens } = useTokens();
+  const { balance, useTokens: spendTokens } = useTokens();
   const [votingProposalId, setVotingProposalId] = useState<string | null>(null);
   const [votingFor, setVotingFor] = useState(true);
   const [votingAmount, setVotingAmount] = useState(1);
@@ -117,7 +133,7 @@ export function ProposalList({ status }: ProposalListProps) {
     // In a real implementation, this would call your DAO contract
     try {
       // Simulate spending tokens to vote
-      const success = await useTokens(
+      const success = await spendTokens(
         votingAmount,
         `Vote on proposal: ${proposals.find(p => p.id === proposalId)?.title.substring(0, 20)}...`
       );

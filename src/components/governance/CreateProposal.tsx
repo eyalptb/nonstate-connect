@@ -23,7 +23,7 @@ type ProposalFormValues = z.infer<typeof proposalSchema>;
 
 export function CreateProposal() {
   const { toast } = useToast();
-  const { balance, useTokens } = useTokens();
+  const { balance, useTokens: spendTokens } = useTokens();
   
   const proposalCost = 50; // Cost in tokens to create a proposal
   
@@ -49,7 +49,7 @@ export function CreateProposal() {
     
     try {
       // In a real implementation, this would also call your DAO contract
-      const success = await useTokens(
+      const success = await spendTokens(
         proposalCost,
         `Created proposal: ${data.title.substring(0, 20)}...`
       );
