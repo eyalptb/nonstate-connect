@@ -1,15 +1,9 @@
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Network,
-  Menu,
-  X,
-  User,
-  LogOut,
-} from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { useMediaQuery } from '@/hooks/use-mobile';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,169 +11,167 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
+import { Network, Menu, X, User, Coins, LogOut, MessageCircle } from 'lucide-react';
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, profile, signOut } = useAuth();
-  const navigate = useNavigate();
-  
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const location = useLocation();
+  const { user, signOut } = useAuth();
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
-  const handleSignOut = async () => {
-    await signOut();
-    navigate("/");
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  const navbarClass = `fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
+    scrolled || mobileMenuOpen ? 'bg-background/95 backdrop-blur-sm shadow-sm' : 'bg-transparent'
+  }`;
+
+  const navLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'Projects', path: '/projects' },
+    { name: 'Funding', path: '/funding' },
+    { name: 'Messages', path: '/messages' },
+  ];
 
   return (
-    <header className="fixed w-full top-0 z-50 bg-background/80 backdrop-blur-md border-b">
-      <div className="container mx-auto flex justify-between items-center h-16 px-4">
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
-          <Network className="h-6 w-6 text-primary" />
-          <span className="font-bold text-xl">NonStateConnect</span>
-        </div>
+    <nav className={navbarClass}>
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2">
+            <Network className="w-6 h-6 text-primary" />
+            <span className="font-semibold text-lg">CollabNet</span>
+          </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8">
-          <a href="#features" className="text-foreground/80 hover:text-primary transition-colors">
-            Features
-          </a>
-          <a href="#projects" className="text-foreground/80 hover:text-primary transition-colors">
-            Projects
-          </a>
-          <a href="#about" className="text-foreground/80 hover:text-primary transition-colors">
-            About
-          </a>
-          
-          {user ? (
-            <div className="flex items-center gap-4">
-              <Button onClick={() => navigate('/dashboard')}>Dashboard</Button>
+          {/* Desktop Navigation */}
+          {!isMobile && (
+            <div className="hidden md:flex items-center gap-6">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`text-sm hover:text-primary transition-colors ${
+                    location.pathname === link.path
+                      ? 'text-primary font-medium'
+                      : 'text-foreground/80'
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {/* Auth Buttons / User Menu */}
+          <div className="flex items-center gap-2">
+            {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                    {profile?.avatar_url ? (
-                      <img
-                        src={profile.avatar_url}
-                        alt={profile.first_name || 'User'}
-                        className="h-10 w-10 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-base font-medium text-primary">
-                        {(profile?.first_name?.[0] || user.email?.[0] || 'U').toUpperCase()}
-                      </div>
-                    )}
+                  <Button variant="ghost" size="icon" className="rounded-full">
+                    <User className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>
-                    {profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}` : user.email}
+                    {user.email?.split('@')[0] || 'Account'}
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate('/profile')}>
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard" className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleSignOut}>
+                  <DropdownMenuItem asChild>
+                    <Link to="/messages" className="cursor-pointer">
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Messages
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard" className="cursor-pointer">
+                      <Coins className="mr-2 h-4 w-4" />
+                      CollabCoins
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut} className="cursor-pointer">
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>Sign out</span>
+                    Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </div>
-          ) : (
-            <div className="flex items-center gap-4">
-              <Button variant="outline" onClick={() => navigate('/sign-in')}>
-                Sign In
-              </Button>
-              <Button onClick={() => navigate('/sign-up')}>
-                Join Network
-              </Button>
-            </div>
-          )}
-        </nav>
+            ) : (
+              <div className="flex items-center gap-2">
+                {!isMobile && (
+                  <Button asChild variant="outline">
+                    <Link to="/sign-in">Sign in</Link>
+                  </Button>
+                )}
+                <Button asChild>
+                  <Link to="/sign-up">Sign up</Link>
+                </Button>
+              </div>
+            )}
 
-        {/* Mobile menu button */}
-        <button 
-          className="block md:hidden p-2 text-foreground" 
-          onClick={toggleMenu}
-          aria-label="Toggle menu"
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+            {/* Mobile Menu Toggle */}
+            {isMobile && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="fixed top-16 left-0 right-0 bg-background border-b border-border md:hidden z-40">
-          <nav className="container mx-auto px-4 py-4 flex flex-col space-y-4">
-            <a 
-              href="#features" 
-              className="py-2 text-foreground/80 hover:text-primary transition-colors"
-              onClick={toggleMenu}
-            >
-              Features
-            </a>
-            <a 
-              href="#projects" 
-              className="py-2 text-foreground/80 hover:text-primary transition-colors"
-              onClick={toggleMenu}
-            >
-              Projects
-            </a>
-            <a 
-              href="#about" 
-              className="py-2 text-foreground/80 hover:text-primary transition-colors"
-              onClick={toggleMenu}
-            >
-              About
-            </a>
-            
-            {user ? (
-              <>
-                <Button 
-                  className="w-full"
-                  onClick={() => {
-                    navigate('/dashboard');
-                    toggleMenu();
-                  }}
+      {/* Mobile Menu */}
+      {isMobile && mobileMenuOpen && (
+        <div className="md:hidden bg-background/95 backdrop-blur-sm border-t">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex flex-col space-y-3">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`py-2 px-3 rounded-md ${
+                    location.pathname === link.path
+                      ? 'bg-muted font-medium'
+                      : 'hover:bg-muted/50'
+                  }`}
                 >
-                  Dashboard
-                </Button>
-                <Button 
-                  variant="outline"
-                  className="w-full"
-                  onClick={handleSignOut}
+                  {link.name}
+                </Link>
+              ))}
+              {!user && (
+                <Link
+                  to="/sign-in"
+                  className="py-2 px-3 rounded-md hover:bg-muted/50"
                 >
-                  Sign Out
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => {
-                    navigate('/sign-in');
-                    toggleMenu();
-                  }}
-                >
-                  Sign In
-                </Button>
-                <Button 
-                  className="w-full"
-                  onClick={() => {
-                    navigate('/sign-up');
-                    toggleMenu();
-                  }}
-                >
-                  Join Network
-                </Button>
-              </>
-            )}
-          </nav>
+                  Sign in
+                </Link>
+              )}
+            </div>
+          </div>
         </div>
       )}
-    </header>
+    </nav>
   );
 };
 

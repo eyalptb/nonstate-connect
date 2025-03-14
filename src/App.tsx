@@ -12,6 +12,7 @@ import SignUp from "./pages/SignUp";
 import ResetPassword from "./pages/ResetPassword";
 import UpdatePassword from "./pages/UpdatePassword";
 import Dashboard from "./pages/Dashboard";
+import Funding from "./pages/Funding";
 import NotFound from "./pages/NotFound";
 import Messaging from "./pages/Messaging";
 
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/update-password" element={<UpdatePassword />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/funding" element={<Funding />} />
             <Route path="/messages/*" element={<Messaging />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
