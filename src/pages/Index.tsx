@@ -1,5 +1,5 @@
 
-import Navbar from "@/components/Navbar";
+import { Navbar } from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import Projects from "@/components/Projects";
@@ -10,7 +10,6 @@ import TokenWallet from "@/components/TokenWallet";
 const Index = () => {
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
       <main className="flex-grow">
         <Hero />
         <div className="container mx-auto px-4 py-12 mt-20">
@@ -23,7 +22,6 @@ const Index = () => {
         <Projects />
         <JoinCta />
       </main>
-      <Footer />
     </div>
   );
 };

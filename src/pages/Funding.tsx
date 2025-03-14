@@ -1,7 +1,5 @@
 
 import { useState } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import FundingProjects from "@/components/FundingProjects";
 import CreateFundingProject from "@/components/CreateFundingProject";
 import { useAuth } from "@/contexts/AuthContext";
@@ -16,7 +14,6 @@ const Funding = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
       <main className="flex-grow">
         <div className="bg-gradient-to-b from-primary/10 to-background pt-24 pb-16">
           <div className="container mx-auto px-4">
@@ -87,7 +84,6 @@ const Funding = () => {
           </Tabs>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

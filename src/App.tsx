@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import {
@@ -11,14 +12,14 @@ import {
   ResetPassword,
   UpdatePassword,
   NotFound,
+  IntegrationHub,
 } from "./pages";
 import { AuthProvider } from "./contexts/AuthContext";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
-import Navbar from "./components/Navbar";
+import { Navbar } from "./components/Navbar";
 import Footer from "./components/Footer";
-import IntegrationHub from "./pages/IntegrationHub";
 
 const queryClient = new QueryClient();
 

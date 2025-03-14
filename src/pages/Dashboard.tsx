@@ -3,8 +3,6 @@ import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import TokenWallet from "@/components/TokenWallet";
 import ProjectContribution from "@/components/ProjectContribution";
 import TokenMarketplace from "@/components/TokenMarketplace";
@@ -31,7 +29,6 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
       <main className="flex-grow container mx-auto px-4 py-20 mt-16">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-4 mb-8">
@@ -88,7 +85,6 @@ const Dashboard = () => {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

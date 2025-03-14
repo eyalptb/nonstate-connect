@@ -1,23 +1,24 @@
-import { useState } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
 
-import { siteConfig } from "@/config/site"
-import { cn } from "@/lib/utils"
-import { Icons } from "@/components/icons"
-import { ModeToggle } from "@/components/mode-toggle"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { useAuth } from "@/contexts/AuthContext"
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
+import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
+import { Icons } from "@/components/icons";
+import { ModeToggle } from "@/components/mode-toggle";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface MainNavItem {
-  title: string
-  href: string
-  disabled?: boolean
+  title: string;
+  href: string;
+  disabled?: boolean;
 }
 
 interface NavbarProps {
-  mainNav?: MainNavItem[]
+  mainNav?: MainNavItem[];
 }
 
 const mainNav = [
@@ -47,10 +48,11 @@ const mainNav = [
   },
 ];
 
-export function Navbar({ mainNav, }: NavbarProps) {
-  const pathname = usePathname()
+export function Navbar({ mainNav: propMainNav }: NavbarProps) {
+  const location = useLocation();
   const { user, profile, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navItems = propMainNav || mainNav;
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -59,21 +61,22 @@ export function Navbar({ mainNav, }: NavbarProps) {
   return (
     <div className="border-b">
       <div className="container flex h-16 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 font-semibold">
+        <Link to="/" className="flex items-center gap-2 font-semibold">
           <Icons.logo className="h-6 w-6" />
           {siteConfig.name}
         </Link>
         <div className="hidden md:flex items-center gap-6">
           <nav className="flex items-center space-x-6 text-sm font-medium">
-            {mainNav?.length ? (
-              mainNav.map(
+            {navItems?.length ? (
+              navItems.map(
                 (item, i) => (
                   <Link
                     key={i}
-                    href={item.href}
+                    to={item.href}
                     className={cn(
                       "transition-colors hover:text-foreground/80",
-                      item.disabled && "pointer-events-none opacity-50"
+                      item.disabled && "pointer-events-none opacity-50",
+                      location.pathname === item.href && "text-primary font-semibold"
                     )}
                   >
                     {item.title}
@@ -93,19 +96,19 @@ export function Navbar({ mainNav, }: NavbarProps) {
                   </Avatar>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
+              <DropdownMenuContent className="w-56" align="end">
                 <DropdownMenuItem>
-                  <Link href="/dashboard" className="w-full">Dashboard</Link>
+                  <Link to="/dashboard" className="w-full">Dashboard</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <Link href="/profile" className="w-full">Profile</Link>
+                  <Link to="/profile" className="w-full">Profile</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Link href="/sign-in" className="text-sm font-medium hover:underline">
+            <Link to="/sign-in" className="text-sm font-medium hover:underline">
               Sign In
             </Link>
           )}
@@ -123,14 +126,15 @@ export function Navbar({ mainNav, }: NavbarProps) {
       {isMenuOpen && (
         <div className="md:hidden p-4">
           <nav className="flex flex-col gap-4 text-sm font-medium">
-            {mainNav?.length ? (
-              mainNav.map((item, i) => (
+            {navItems?.length ? (
+              navItems.map((item, i) => (
                 <Link
                   key={i}
-                  href={item.href}
+                  to={item.href}
                   className={cn(
                     "transition-colors hover:text-foreground/80",
-                    item.disabled && "pointer-events-none opacity-50"
+                    item.disabled && "pointer-events-none opacity-50",
+                    location.pathname === item.href && "text-primary font-semibold"
                   )}
                 >
                   {item.title}
@@ -140,16 +144,18 @@ export function Navbar({ mainNav, }: NavbarProps) {
             <ModeToggle />
             {user ? (
               <>
-                <Link href="/dashboard">Dashboard</Link>
-                <Link href="/profile">Profile</Link>
+                <Link to="/dashboard">Dashboard</Link>
+                <Link to="/profile">Profile</Link>
                 <button onClick={() => signOut()}>Logout</button>
               </>
             ) : (
-              <Link href="/sign-in">Sign In</Link>
+              <Link to="/sign-in">Sign In</Link>
             )}
           </nav>
         </div>
       )}
     </div>
-  )
+  );
 }
+
+export default Navbar;
