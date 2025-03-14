@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4"
 
@@ -18,13 +19,6 @@ serve(async (req) => {
   }
 
   try {
-    // Create Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
-    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
-    
-    console.log('Creating Supabase client with URL:', supabaseUrl);
-    const supabaseClient = createClient(supabaseUrl, supabaseKey);
-
     // Get username from request body
     const requestBody = await req.json();
     const { username } = requestBody;
@@ -55,6 +49,14 @@ serve(async (req) => {
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+    
+    // For non-test users, continue with regular database lookup
+    // Create Supabase client
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
+    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
+    
+    console.log('Creating Supabase client with URL:', supabaseUrl);
+    const supabaseClient = createClient(supabaseUrl, supabaseKey);
     
     // Check if there are any profiles at all
     const { data: allProfiles, error: allProfilesError } = await supabaseClient
