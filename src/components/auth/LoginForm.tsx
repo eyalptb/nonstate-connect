@@ -105,4 +105,4 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
       </Button>
     </form>
   );
-}
+};

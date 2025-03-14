@@ -54,24 +54,24 @@ export const handleSignInWithUsername = async (username: string, password: strin
     console.log(`Attempting sign in with username: "${username}"`);
     
     // Call the edge function to lookup the email for this username
-    const { data, error } = await supabase.functions.invoke('username-lookup', {
+    const { data, error: functionError } = await supabase.functions.invoke('username-lookup', {
       body: { username }
     });
     
     console.log('Username lookup response:', data);
     
-    if (error) {
-      console.error('Username lookup error:', error);
-      return { error: new Error(`Username lookup failed: ${error.message}`) };
+    if (functionError) {
+      console.error('Username lookup function error:', functionError);
+      return { error: new Error(`Username lookup failed: ${functionError.message}`) };
     }
     
-    if (!data || data.error) {
-      const errorMessage = data?.error || 'Username not found. Please check your username or register.';
-      console.error('Username lookup failed:', errorMessage);
-      return { error: new Error(errorMessage) };
+    // Check if there's an error message in the response
+    if (data && data.error) {
+      console.error('Username lookup failed:', data.error);
+      return { error: new Error(data.error) };
     }
     
-    if (!data.email) {
+    if (!data || !data.email) {
       console.error('No email found for username:', username);
       return {
         error: new Error('Username not found. Please check your username or register.')

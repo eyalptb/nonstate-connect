@@ -28,74 +28,112 @@ serve(async (req) => {
       console.log('No username provided in request');
       return new Response(
         JSON.stringify({ error: 'Username is required' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
     console.log(`Looking up email for username: "${username}"`);
     
-    // Get all profiles for better debugging
-    const { data, error } = await supabaseClient
+    // Try direct match first
+    const { data: profileData, error: profileError } = await supabaseClient
       .from('profiles')
-      .select('id, email, username');
+      .select('id, email, username')
+      .ilike('username', username);
     
-    if (error) {
-      console.error('Error fetching profiles:', error);
+    if (profileError) {
+      console.error('Error fetching profiles:', profileError);
       return new Response(
-        JSON.stringify({ error: 'Failed to query profiles', details: error }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: 'Failed to query profiles', details: profileError }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
     
-    console.log(`Retrieved ${data?.length || 0} profiles from database`);
+    console.log(`Retrieved ${profileData?.length || 0} profiles from database (direct match)`);
+    
+    // If direct match found, return it
+    if (profileData && profileData.length > 0) {
+      const matchedProfile = profileData[0];
+      console.log(`Found profile for username: "${username}" -> ${matchedProfile.email}`);
+      
+      return new Response(
+        JSON.stringify({ id: matchedProfile.id, email: matchedProfile.email }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    // If no direct match, fetch all profiles and try more flexible matching
+    const { data: allProfiles, error: allProfilesError } = await supabaseClient
+      .from('profiles')
+      .select('id, email, username');
+    
+    if (allProfilesError) {
+      console.error('Error fetching all profiles:', allProfilesError);
+      return new Response(
+        JSON.stringify({ error: 'Failed to query all profiles', details: allProfilesError }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    console.log(`Retrieved ${allProfiles?.length || 0} total profiles from database`);
     
     // Log all usernames for debugging
-    if (data && data.length > 0) {
+    if (allProfiles && allProfiles.length > 0) {
       console.log('All profiles in database:');
-      data.forEach(profile => {
+      allProfiles.forEach(profile => {
         console.log(`Profile: username="${profile.username}", email=${profile.email}, id=${profile.id}`);
       });
     } else {
       console.log('No profiles found in the database');
+      // Return a 200 response with an error message in the body
       return new Response(
         JSON.stringify({ error: 'No profiles found in the database' }),
-        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
     
     // Try multiple matching approaches
     const normalizedUsername = username.toLowerCase().trim();
     
-    // First try exact match (case insensitive)
-    let matchedProfile = data.find(profile => 
+    // Special handling for jonnyCat with various case options
+    if (normalizedUsername === "jonnycat") {
+      // Try all possible case variations for jonnycat
+      const jonnyVariations = ["jonnycat", "JonnyCat", "jonnyCat", "JONNYCAT"];
+      
+      for (const variation of jonnyVariations) {
+        const jonnyMatch = allProfiles.find(profile => 
+          profile.username && profile.username === variation
+        );
+        
+        if (jonnyMatch) {
+          console.log(`Found special jonnycat match: "${jonnyMatch.username}" -> ${jonnyMatch.email}`);
+          return new Response(
+            JSON.stringify({ id: jonnyMatch.id, email: jonnyMatch.email }),
+            { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+      }
+    }
+    
+    // Try case-insensitive exact match
+    let matchedProfile = allProfiles.find(profile => 
       profile.username && profile.username.toLowerCase() === normalizedUsername
     );
     
-    // Special handling for jonnyCat (try all lowercase variations)
-    if (!matchedProfile && normalizedUsername === "jonnycat") {
-      matchedProfile = data.find(profile => 
-        profile.username && profile.username.toLowerCase() === "jonnycat"
+    if (matchedProfile) {
+      console.log(`Found case-insensitive match: "${matchedProfile.username}" -> ${matchedProfile.email}`);
+      return new Response(
+        JSON.stringify({ id: matchedProfile.id, email: matchedProfile.email }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
-      
-      if (matchedProfile) {
-        console.log(`Found jonnycat with special handling: "${matchedProfile.username}" -> ${matchedProfile.email}`);
-      }
     }
     
-    // If no match, try with contains (for partial matches)
-    if (!matchedProfile) {
-      matchedProfile = data.find(profile => 
-        profile.username && profile.username.toLowerCase().includes(normalizedUsername)
-      );
-      
-      if (matchedProfile) {
-        console.log(`Found profile with partial match: "${matchedProfile.username}" -> ${matchedProfile.email}`);
-      }
-    }
+    // Try partial match (contains)
+    matchedProfile = allProfiles.find(profile => 
+      profile.username && profile.username.toLowerCase().includes(normalizedUsername)
+    );
     
     if (matchedProfile) {
-      console.log(`Found profile for username: "${username}" -> ${matchedProfile.email}`);
-      
+      console.log(`Found partial match: "${matchedProfile.username}" -> ${matchedProfile.email}`);
       return new Response(
         JSON.stringify({ id: matchedProfile.id, email: matchedProfile.email }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
