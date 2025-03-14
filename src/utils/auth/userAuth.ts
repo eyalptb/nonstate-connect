@@ -59,56 +59,21 @@ export const handleSignInWithUsername = async (username: string, password: strin
       return handleSignInWithEmail(username, password);
     }
     
-    // First try with the actual email we created in the database
-    // This is for users we created manually with SQL
-    const knownEmails = [
-      `${username}@example.com`,
-    ];
+    // Try with a standardized email format for username login
+    const userEmail = `${username.trim().toLowerCase()}@collabcoin.app`;
+    console.log(`Trying username login with format: ${userEmail}`);
     
-    console.log('Trying direct email formats:', knownEmails);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: userEmail,
+      password,
+    });
     
-    for (const email of knownEmails) {
-      console.log(`Attempting login with known format: ${email}`);
-      
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      
-      if (!error) {
-        console.log('Login successful with format:', email);
-        return { error: null };
-      }
-      
-      console.log(`Login failed with format ${email}:`, error);
-    }
-
-    // Fall back to the previous formats if the known formats don't work
-    const formats = [
-      `${username.trim().toLowerCase()}@username.local`,
-      `${username.trim()}@username.local`,
-      `user_${username.trim().toLowerCase()}@username.local`
-    ];
-    
-    console.log('Trying username login with formats:', formats);
-    
-    for (const emailFormat of formats) {
-      console.log(`Attempting login with format: ${emailFormat}`);
-      
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: emailFormat,
-        password,
-      });
-      
-      if (!error) {
-        console.log('Login successful with format:', emailFormat);
-        return { error: null };
-      }
-      
-      console.log(`Login failed with format ${emailFormat}:`, error);
+    if (!error) {
+      console.log('Login successful with format:', userEmail);
+      return { error: null };
     }
     
-    console.error('All username login formats failed');
+    console.log(`Login failed with format ${userEmail}:`, error);
     return { 
       error: new Error('Invalid username or password. Please check your credentials and try again.') 
     };
