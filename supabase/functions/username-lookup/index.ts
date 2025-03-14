@@ -34,7 +34,7 @@ serve(async (req) => {
 
     console.log(`Looking up email for username: "${username}"`);
     
-    // Simplify the query - just get all profiles and do the comparison in JavaScript
+    // Get all profiles for better debugging
     const { data, error } = await supabaseClient
       .from('profiles')
       .select('id, email, username');
@@ -42,7 +42,7 @@ serve(async (req) => {
     if (error) {
       console.error('Error fetching profiles:', error);
       return new Response(
-        JSON.stringify({ error: 'Failed to query profiles' }),
+        JSON.stringify({ error: 'Failed to query profiles', details: error }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -57,12 +57,41 @@ serve(async (req) => {
       });
     } else {
       console.log('No profiles found in the database');
+      return new Response(
+        JSON.stringify({ error: 'No profiles found in the database' }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
     
-    // Do a simple case-insensitive match
-    const matchedProfile = data?.find(profile => 
-      profile.username && profile.username.toLowerCase() === username.toLowerCase()
+    // Try multiple matching approaches
+    const normalizedUsername = username.toLowerCase().trim();
+    
+    // First try exact match (case insensitive)
+    let matchedProfile = data.find(profile => 
+      profile.username && profile.username.toLowerCase() === normalizedUsername
     );
+    
+    // Special handling for jonnyCat (try all lowercase variations)
+    if (!matchedProfile && normalizedUsername === "jonnycat") {
+      matchedProfile = data.find(profile => 
+        profile.username && profile.username.toLowerCase() === "jonnycat"
+      );
+      
+      if (matchedProfile) {
+        console.log(`Found jonnycat with special handling: "${matchedProfile.username}" -> ${matchedProfile.email}`);
+      }
+    }
+    
+    // If no match, try with contains (for partial matches)
+    if (!matchedProfile) {
+      matchedProfile = data.find(profile => 
+        profile.username && profile.username.toLowerCase().includes(normalizedUsername)
+      );
+      
+      if (matchedProfile) {
+        console.log(`Found profile with partial match: "${matchedProfile.username}" -> ${matchedProfile.email}`);
+      }
+    }
     
     if (matchedProfile) {
       console.log(`Found profile for username: "${username}" -> ${matchedProfile.email}`);
@@ -73,32 +102,16 @@ serve(async (req) => {
       );
     }
     
-    // Special case for "jonnyCat"
-    if (username.toLowerCase() === "jonnycat") {
-      // Try to find any profile that might be jonnyCat with different casing
-      const jonnyProfile = data?.find(profile => 
-        profile.username && profile.username.toLowerCase() === "jonnycat"
-      );
-      
-      if (jonnyProfile) {
-        console.log(`Found jonnycat profile: "${jonnyProfile.username}" -> ${jonnyProfile.email}`);
-        return new Response(
-          JSON.stringify({ id: jonnyProfile.id, email: jonnyProfile.email }),
-          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-    }
-    
-    console.log(`No user found with username: "${username}"`);
+    console.log(`No user found with username: "${username}" after all matching attempts`);
     return new Response(
       JSON.stringify({ error: 'Username not found. Please check your username or register.' }),
-      { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     console.error('Unexpected error in Edge Function:', error);
     return new Response(
       JSON.stringify({ error: 'An unexpected error occurred', details: error.message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });

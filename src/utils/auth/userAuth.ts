@@ -65,7 +65,13 @@ export const handleSignInWithUsername = async (username: string, password: strin
       return { error: new Error(`Username lookup failed: ${error.message}`) };
     }
     
-    if (!data || !data.email) {
+    if (!data || data.error) {
+      const errorMessage = data?.error || 'Username not found. Please check your username or register.';
+      console.error('Username lookup failed:', errorMessage);
+      return { error: new Error(errorMessage) };
+    }
+    
+    if (!data.email) {
       console.error('No email found for username:', username);
       return {
         error: new Error('Username not found. Please check your username or register.')

@@ -55,16 +55,7 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
       
       // Check for specific error messages
       if (error.message) {
-        if (error.message.includes("Username not found")) {
-          errorMessage = "Username not found. Please check your username or sign up.";
-        } else if (error.message.includes("incorrect")) {
-          errorMessage = "Incorrect password. Please try again.";
-        } else if (error.message.includes("Edge Function")) {
-          errorMessage = "Login service is temporarily unavailable. Please try again later.";
-        } else {
-          // Use the actual error message
-          errorMessage = error.message;
-        }
+        errorMessage = error.message;
       }
       
       toast.error("Authentication failed", {
