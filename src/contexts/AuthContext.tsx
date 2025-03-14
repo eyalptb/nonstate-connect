@@ -13,6 +13,9 @@ import {
   handleSignOut
 } from '@/utils/authUtils';
 
+// Re-export useAuth from hooks to maintain backward compatibility
+export { useAuth } from '@/hooks/useAuth';
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
