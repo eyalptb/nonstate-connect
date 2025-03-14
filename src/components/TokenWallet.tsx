@@ -1,14 +1,17 @@
 
 import React, { useState } from 'react';
 import { useTokens } from '@/hooks/useTokens';
+import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
-import { Coins } from 'lucide-react';
+import { Coins, LogIn } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export const TokenWallet = () => {
+  const { user } = useAuth();
   const { balance, transactions, loading, refreshBalance, refreshTransactions } = useTokens();
   const [activeTab, setActiveTab] = useState('balance');
 
@@ -16,6 +19,36 @@ export const TokenWallet = () => {
     refreshBalance();
     refreshTransactions();
   };
+
+  // If not authenticated, show a sign-in prompt
+  if (!user) {
+    return (
+      <Card className="w-full shadow-sm">
+        <CardHeader>
+          <CardTitle className="text-xl">CollabCoin Wallet</CardTitle>
+          <CardDescription>Your tokenized incentives</CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center py-8">
+          <Coins className="h-12 w-12 text-yellow-500 mb-4" />
+          <h3 className="text-lg font-medium mb-2">Sign in to view your wallet</h3>
+          <p className="text-muted-foreground mb-6 text-center">
+            Create an account or sign in to access your CollabCoins and transaction history.
+          </p>
+          <div className="flex gap-4">
+            <Button asChild>
+              <Link to="/sign-in">
+                <LogIn className="mr-2 h-4 w-4" />
+                Sign In
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/sign-up">Sign Up</Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full shadow-sm">
