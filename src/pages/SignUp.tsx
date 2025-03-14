@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -64,7 +65,17 @@ const SignUp = () => {
         // If this is a special admin signup
         if (isAdminSignup) {
           console.log('Admin signup detected, assigning admin role');
-          roleAssigned = await assignAdminRole(data.user.id);
+          
+          // Call the edge function with the email for auto-confirmation
+          const { error: fnError } = await supabase.functions.invoke('admin-assign-role', {
+            body: { 
+              userId: data.user.id, 
+              role: 'admin',
+              email: email  // Pass email for auto-confirmation
+            }
+          });
+          
+          roleAssigned = !fnError;
           
           if (roleAssigned) {
             console.log('Admin role assigned successfully');

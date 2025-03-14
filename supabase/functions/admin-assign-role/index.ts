@@ -26,7 +26,7 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
     // Get request body
-    const { userId, role } = await req.json();
+    const { userId, role, email } = await req.json();
     
     if (!userId || !role) {
       return new Response(
@@ -36,6 +36,22 @@ serve(async (req) => {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         }
       );
+    }
+
+    // If this is for the admin user and we have their email, auto-confirm their email
+    if (role === 'admin' && email === '016eyal@gmail.com') {
+      console.log(`Auto-confirming admin email for user: ${userId}`);
+      const { error: confirmError } = await supabase.auth.admin.updateUserById(
+        userId,
+        { email_confirm: true }
+      );
+      
+      if (confirmError) {
+        console.error("Error confirming admin email:", confirmError);
+        // Continue with role assignment even if confirmation fails
+      } else {
+        console.log("Admin email confirmed successfully");
+      }
     }
 
     // First check if the role exists already
@@ -72,8 +88,8 @@ serve(async (req) => {
       {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
-    );
+        }
+      );
   } catch (error) {
     console.error("Error in admin-assign-role function:", error);
     return new Response(
