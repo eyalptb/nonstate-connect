@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -45,6 +44,10 @@ const mainNav: MainNavItem[] = [
   {
     title: "Integration Hub",
     href: "/integration-hub",
+  },
+  {
+    title: "Governance",
+    href: "/governance",
   },
 ];
 

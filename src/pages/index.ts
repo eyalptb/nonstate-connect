@@ -1,27 +1,12 @@
 
-// Export all pages for easier imports
-import Index from "./Index";
-import Dashboard from "./Dashboard";
-import Impact from "./Impact";
-import Funding from "./Funding";
-import Messaging from "./Messaging";
-import SignIn from "./SignIn";
-import SignUp from "./SignUp";
-import ResetPassword from "./ResetPassword";
-import UpdatePassword from "./UpdatePassword";
-import NotFound from "./NotFound";
-import IntegrationHub from "./IntegrationHub";
-
-export {
-  Index,
-  Dashboard,
-  Impact,
-  Funding,
-  Messaging,
-  SignIn,
-  SignUp,
-  ResetPassword,
-  UpdatePassword,
-  NotFound,
-  IntegrationHub,
-};
+export { default as Dashboard } from "./Dashboard";
+export { default as Funding } from "./Funding";
+export { default as Impact } from "./Impact";
+export { default as Index } from "./Index";
+export { default as IntegrationHub } from "./IntegrationHub";
+export { default as Messaging } from "./Messaging";
+export { default as NotFound } from "./NotFound";
+export { default as ResetPassword } from "./ResetPassword";
+export { default as SignIn } from "./SignIn";
+export { default as SignUp } from "./SignUp";
+export { default as UpdatePassword } from "./UpdatePassword";

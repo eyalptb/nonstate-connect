@@ -20,6 +20,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { Navbar } from "./components/Navbar";
 import Footer from "./components/Footer";
+import Governance from "./pages/Governance";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ function App() {
                 <Route path="/funding" element={<Funding />} />
                 <Route path="/messaging" element={<Messaging />} />
                 <Route path="/integration-hub" element={<IntegrationHub />} />
+                <Route path="/governance" element={<Governance />} />
                 <Route path="/sign-in" element={<SignIn />} />
                 <Route path="/sign-up" element={<SignUp />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
