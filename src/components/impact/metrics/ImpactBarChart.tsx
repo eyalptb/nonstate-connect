@@ -31,20 +31,20 @@ const valueFormatter = (value: number) => {
 
 const ImpactBarChart = () => {
   return (
-    <Card className="shadow-md mb-8 border overflow-hidden bg-background">
+    <Card className="shadow-md mb-16 border bg-background">
       <CardHeader className="pb-2">
         <CardTitle className="text-xl">Verified Impact Metrics</CardTitle>
         <CardDescription>
           All metrics are verified via blockchain and external validation
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="h-[200px] w-full">
+      <CardContent className="pb-8">
+        <div className="h-[280px] w-full">
           <ChartContainer config={chartConfig}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart 
                 data={impactData} 
-                margin={{ top: 5, right: 20, left: 20, bottom: 20 }}
+                margin={{ top: 5, right: 20, left: 20, bottom: 35 }}
                 barSize={30}
                 barGap={4}
               >
@@ -63,11 +63,11 @@ const ImpactBarChart = () => {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.4} />
                 <XAxis 
                   dataKey="category" 
-                  angle={-20} 
+                  angle={-25} 
                   textAnchor="end" 
-                  height={40} 
-                  tick={{ fontSize: 9 }}
-                  tickMargin={5}
+                  height={55} 
+                  tick={{ fontSize: 10 }}
+                  tickMargin={10}
                 />
                 <YAxis 
                   tick={{ fontSize: 10 }}
@@ -80,7 +80,7 @@ const ImpactBarChart = () => {
                 />
                 <Legend 
                   verticalAlign="top"
-                  height={20}
+                  height={25}
                   formatter={(value) => <span className="text-xs font-medium">{value}</span>}
                 />
                 <Bar 
