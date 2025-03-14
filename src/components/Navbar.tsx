@@ -1,24 +1,35 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { 
-  Network, 
-  Globe, 
-  Shield, 
-  Key,
+import {
+  Network,
   Menu,
-  X
+  X,
+  User,
+  LogOut,
 } from "lucide-react";
-import { useAuth, useUser, UserButton, SignInButton, SignUpButton } from "@clerk/clerk-react";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isLoaded, isSignedIn } = useAuth();
-  const { user } = useUser();
+  const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
   
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   return (
     <header className="fixed w-full top-0 z-50 bg-background/80 backdrop-blur-md border-b">
@@ -40,24 +51,50 @@ const Navbar = () => {
             About
           </a>
           
-          {isLoaded && (
-            <>
-              {isSignedIn ? (
-                <div className="flex items-center gap-4">
-                  <Button onClick={() => navigate('/dashboard')}>Dashboard</Button>
-                  <UserButton afterSignOutUrl="/" />
-                </div>
-              ) : (
-                <div className="flex items-center gap-4">
-                  <SignInButton mode="modal">
-                    <Button variant="outline">Sign In</Button>
-                  </SignInButton>
-                  <SignUpButton mode="modal">
-                    <Button>Join Network</Button>
-                  </SignUpButton>
-                </div>
-              )}
-            </>
+          {user ? (
+            <div className="flex items-center gap-4">
+              <Button onClick={() => navigate('/dashboard')}>Dashboard</Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    {profile?.avatar_url ? (
+                      <img
+                        src={profile.avatar_url}
+                        alt={profile.first_name || 'User'}
+                        className="h-10 w-10 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-base font-medium text-primary">
+                        {(profile?.first_name?.[0] || user.email?.[0] || 'U').toUpperCase()}
+                      </div>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>
+                    {profile?.first_name ? `${profile.first_name} ${profile.last_name || ''}` : user.email}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          ) : (
+            <div className="flex items-center gap-4">
+              <Button variant="outline" onClick={() => navigate('/sign-in')}>
+                Sign In
+              </Button>
+              <Button onClick={() => navigate('/sign-up')}>
+                Join Network
+              </Button>
+            </div>
           )}
         </nav>
 
@@ -97,33 +134,46 @@ const Navbar = () => {
               About
             </a>
             
-            {isLoaded && (
+            {user ? (
               <>
-                {isSignedIn ? (
-                  <>
-                    <Button 
-                      className="w-full"
-                      onClick={() => {
-                        navigate('/dashboard');
-                        toggleMenu();
-                      }}
-                    >
-                      Dashboard
-                    </Button>
-                    <div className="py-2 flex justify-center">
-                      <UserButton afterSignOutUrl="/" />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <SignInButton mode="modal">
-                      <Button variant="outline" className="w-full">Sign In</Button>
-                    </SignInButton>
-                    <SignUpButton mode="modal">
-                      <Button className="w-full">Join Network</Button>
-                    </SignUpButton>
-                  </>
-                )}
+                <Button 
+                  className="w-full"
+                  onClick={() => {
+                    navigate('/dashboard');
+                    toggleMenu();
+                  }}
+                >
+                  Dashboard
+                </Button>
+                <Button 
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleSignOut}
+                >
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => {
+                    navigate('/sign-in');
+                    toggleMenu();
+                  }}
+                >
+                  Sign In
+                </Button>
+                <Button 
+                  className="w-full"
+                  onClick={() => {
+                    navigate('/sign-up');
+                    toggleMenu();
+                  }}
+                >
+                  Join Network
+                </Button>
               </>
             )}
           </nav>

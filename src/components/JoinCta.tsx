@@ -2,10 +2,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Network, Shield, Globe } from "lucide-react";
-import { useAuth, SignUpButton, SignInButton } from "@clerk/clerk-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const JoinCta = () => {
-  const { isSignedIn } = useAuth();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <section id="join" className="py-20 relative overflow-hidden">
@@ -55,22 +57,18 @@ const JoinCta = () => {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {isSignedIn ? (
-                <Button size="lg" className="font-semibold" onClick={() => window.location.href = '/dashboard'}>
+              {user ? (
+                <Button size="lg" className="font-semibold" onClick={() => navigate('/dashboard')}>
                   Go to Dashboard
                 </Button>
               ) : (
                 <>
-                  <SignUpButton mode="modal">
-                    <Button size="lg" className="font-semibold">
-                      Create An Account
-                    </Button>
-                  </SignUpButton>
-                  <SignInButton mode="modal">
-                    <Button size="lg" variant="outline" className="font-semibold">
-                      Sign In
-                    </Button>
-                  </SignInButton>
+                  <Button size="lg" className="font-semibold" onClick={() => navigate('/sign-up')}>
+                    Create An Account
+                  </Button>
+                  <Button size="lg" variant="outline" className="font-semibold" onClick={() => navigate('/sign-in')}>
+                    Sign In
+                  </Button>
                 </>
               )}
             </div>

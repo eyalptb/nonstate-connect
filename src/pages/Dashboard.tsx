@@ -1,22 +1,30 @@
 
-import { useUser } from "@clerk/clerk-react";
+import { useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const Dashboard = () => {
-  const { user, isLoaded } = useUser();
+  const { user, profile, loading, signOut } = useAuth();
   const navigate = useNavigate();
 
-  if (!isLoaded) {
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/sign-in");
+    }
+  }, [loading, user, navigate]);
+
+  if (loading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
   if (!user) {
-    navigate("/sign-in");
-    return null;
+    return null; // Will be redirected by the useEffect
   }
+
+  const firstName = profile?.first_name || user.email?.split('@')[0] || 'User';
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -25,20 +33,20 @@ const Dashboard = () => {
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-4 mb-8">
             <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-              {user.imageUrl ? (
+              {profile?.avatar_url ? (
                 <img 
-                  src={user.imageUrl} 
-                  alt={user.firstName || 'User'} 
+                  src={profile.avatar_url} 
+                  alt={firstName} 
                   className="h-14 w-14 rounded-full object-cover"
                 />
               ) : (
                 <div className="h-14 w-14 rounded-full bg-primary/20 flex items-center justify-center text-xl font-medium text-primary">
-                  {user.firstName?.[0] || user.username?.[0] || '?'}
+                  {firstName[0].toUpperCase()}
                 </div>
               )}
             </div>
             <div>
-              <h1 className="text-2xl font-bold">Welcome, {user.firstName || user.username || 'User'}</h1>
+              <h1 className="text-2xl font-bold">Welcome, {firstName}</h1>
               <p className="text-muted-foreground">Your secure collaboration dashboard</p>
             </div>
           </div>
