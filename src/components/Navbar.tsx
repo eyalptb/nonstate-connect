@@ -21,7 +21,7 @@ interface NavbarProps {
   mainNav?: MainNavItem[];
 }
 
-const mainNav = [
+const mainNav: MainNavItem[] = [
   {
     title: "Home",
     href: "/",
