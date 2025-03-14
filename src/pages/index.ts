@@ -12,3 +12,4 @@ export { default as SignUp } from "./SignUp";
 export { default as UpdatePassword } from "./UpdatePassword";
 export { default as Governance } from "./Governance";
 export { default as ProposalDetail } from "./ProposalDetail";
+export { default as Features } from "./Features";

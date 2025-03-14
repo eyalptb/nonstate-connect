@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -24,6 +25,10 @@ const mainNav: MainNavItem[] = [
   {
     title: "Home",
     href: "/",
+  },
+  {
+    title: "Features",
+    href: "/features",
   },
   {
     title: "Impact",
