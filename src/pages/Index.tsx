@@ -6,15 +6,14 @@ import Projects from "@/components/Projects";
 import JoinCta from "@/components/JoinCta";
 import Footer from "@/components/Footer";
 import TokenWallet from "@/components/TokenWallet";
-import { Card } from "@/components/ui/card";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-grow">
+      <div className="flex-grow">
         <Hero />
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 py-12 mt-16">
           <h2 className="text-3xl font-bold text-center mb-8">Your CollabCoin Wallet</h2>
           <div className="max-w-2xl mx-auto">
             <TokenWallet />
@@ -23,7 +22,7 @@ const Index = () => {
         <Features />
         <Projects />
         <JoinCta />
-      </main>
+      </div>
       <Footer />
     </div>
   );
