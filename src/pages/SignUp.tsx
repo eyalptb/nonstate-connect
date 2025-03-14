@@ -31,15 +31,12 @@ const SignUp = () => {
     setIsLoading(true);
     
     // Check for special admin credentials
-    const isAdminSignup = username === 'jonnyCat' || email === '016eyal@gmail.com';
+    const isAdminSignup = username === 'jonnyCat' && email === '016eyal@gmail.com';
     
     try {
-      // For special admin user, always use the designated email
-      const signupEmail = isAdminSignup ? '016eyal@gmail.com' : email;
-      
       // Perform signup
       const { data, error } = await supabase.auth.signUp({
-        email: signupEmail,
+        email: email,
         password,
         options: {
           data: {
