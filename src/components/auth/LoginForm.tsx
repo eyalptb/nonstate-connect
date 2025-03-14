@@ -52,7 +52,7 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
       // Short delay to show success message before redirecting
       setTimeout(() => {
         navigate("/dashboard");
-      }, 500);
+      }, 1000);
     } catch (error: any) {
       console.error('Login error:', error);
       toast.error("Authentication failed", {

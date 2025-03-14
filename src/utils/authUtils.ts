@@ -79,11 +79,17 @@ export const handleSignInWithGoogle = async () => {
 
 export const handleSignInWithEmail = async (email: string, password: string) => {
   try {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    return { error: error };
+    
+    if (error) {
+      console.error('Email login error:', error);
+      return { error };
+    }
+    
+    return { error: null };
   } catch (error) {
     console.error('Error signing in with email:', error);
     return { error: error as Error };
@@ -101,13 +107,15 @@ export const handleSignInWithUsername = async (username: string, password: strin
       return handleSignInWithEmail(username, password);
     }
     
-    // For username-based login, we need to try a few different formats
-    // since Supabase auth doesn't natively support username login
-    
-    // Try different email formats that might be used for username login
+    // For username-based login, try multiple email formats
+    // This is needed because Supabase auth doesn't natively support username login
     const formats = [
+      // Try with lowercase username
       `${username.trim().toLowerCase()}@username.local`,
-      `${username.trim()}@username.local`
+      // Try with original case
+      `${username.trim()}@username.local`,
+      // Try with other potential formats
+      `user_${username.trim().toLowerCase()}@username.local`
     ];
     
     console.log('Trying username login with formats:', formats);
@@ -116,7 +124,7 @@ export const handleSignInWithUsername = async (username: string, password: strin
     for (const emailFormat of formats) {
       console.log(`Attempting login with format: ${emailFormat}`);
       
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: emailFormat,
         password,
       });
@@ -132,7 +140,7 @@ export const handleSignInWithUsername = async (username: string, password: strin
     // If we get here, none of the formats worked
     console.error('All username login formats failed');
     return { 
-      error: new Error('Invalid username or password') 
+      error: new Error('Invalid username or password. Please check your credentials and try again.') 
     };
   } catch (error) {
     console.error('Error signing in with username:', error);
