@@ -107,14 +107,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       
       if (error) {
-        toast(`Google sign-in error: ${error.message}`);
         console.error('Error signing in with Google:', error);
+        return { error: error };
       }
       
-      return { error: error };
+      return { error: null };
     } catch (error) {
       console.error('Error signing in with Google:', error);
-      toast(`Google sign-in error: ${error instanceof Error ? error.message : 'Unknown error'}`);
       return { error: error as Error };
     }
   };
