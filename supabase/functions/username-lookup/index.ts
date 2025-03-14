@@ -45,8 +45,26 @@ serve(async (req) => {
     // Special handling for jonnyCat test user - case insensitive check
     if (username.toLowerCase() === 'jonnycat') {
       console.log('Debug mode: Found test user jonnyCat');
+      // Get actual user ID from auth.users table for the test email
+      const { data: userIdData, error: userIdError } = await supabaseClient.auth.admin.getUserByEmail('016eyal@gmail.com');
+      
+      if (userIdError) {
+        console.error('Failed to get user ID for test user:', userIdError);
+        return new Response(
+          JSON.stringify({ 
+            id: 'test-user-id', 
+            email: '016eyal@gmail.com',
+            message: 'Using test user email, actual ID lookup failed'
+          }),
+          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
       return new Response(
-        JSON.stringify({ id: '00000000-0000-0000-0000-000000000000', email: '016eyal@gmail.com' }),
+        JSON.stringify({ 
+          id: userIdData?.user?.id || 'test-user-id', 
+          email: '016eyal@gmail.com' 
+        }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
