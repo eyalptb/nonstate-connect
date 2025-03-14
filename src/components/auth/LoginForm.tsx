@@ -9,9 +9,10 @@ import { Loader } from "lucide-react";
 
 interface LoginFormProps {
   onSignIn: (usernameOrEmail: string, password: string) => Promise<{ error: Error | null }>;
+  isParentLoading?: boolean;
 }
 
-export const LoginForm = ({ onSignIn }: LoginFormProps) => {
+export const LoginForm = ({ onSignIn, isParentLoading = false }: LoginFormProps) => {
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -67,6 +68,7 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
           placeholder="Enter your username or email"
           value={usernameOrEmail}
           onChange={(e) => setUsernameOrEmail(e.target.value)}
+          disabled={isLoading || isParentLoading}
           required
         />
       </div>
@@ -85,11 +87,12 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          disabled={isLoading || isParentLoading}
           required
         />
       </div>
-      <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? (
+      <Button type="submit" className="w-full" disabled={isLoading || isParentLoading}>
+        {(isLoading || isParentLoading) ? (
           <Loader className="mr-2 h-4 w-4 animate-spin" />
         ) : null}
         Sign In
