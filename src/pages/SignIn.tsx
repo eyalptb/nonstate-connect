@@ -34,12 +34,15 @@ const SignIn = () => {
 
     try {
       // Trim and normalize the input to remove any spaces and lowercase it
-      const cleanedInput = usernameOrEmail.trim().toLowerCase();
+      const cleanedInput = usernameOrEmail.trim();
       console.log('Attempting login with:', cleanedInput);
       
       // Check if the input is an email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const isEmail = emailRegex.test(cleanedInput);
+      
+      // Display what we're using for login
+      console.log(`Using ${isEmail ? 'email' : 'username'} login method`);
       
       let error;
       if (isEmail) {
@@ -52,8 +55,14 @@ const SignIn = () => {
         error = result.error;
       }
 
-      if (error) throw error;
+      if (error) {
+        console.error('Login error details:', error);
+        throw error;
+      }
 
+      toast.success("Login successful", {
+        description: "Welcome back to CollabCoin!"
+      });
       navigate("/dashboard");
     } catch (error: any) {
       console.error('Login error:', error);

@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -160,7 +159,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signInWithUsername = async (username: string, password: string) => {
     try {
-      // First, we need to check if the input is actually an email
+      // Check if the input is actually an email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const isEmail = emailRegex.test(username);
       
@@ -169,19 +168,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return signInWithEmail(username, password);
       }
       
-      // If it's not an email, we assume it's a username
-      // IMPORTANT: Use a standard format for username-based logins
-      // The format must be consistent for it to work
+      // For username-based login:
+      // 1. Prepare the username: clean, trim and lowercase
       const cleanUsername = username.trim().toLowerCase();
       console.log('Attempting to sign in with username:', cleanUsername);
       
+      // 2. Try to sign in with the username in email format
       const { error } = await supabase.auth.signInWithPassword({
         email: `${cleanUsername}@username.local`,
         password,
       });
       
+      // Debug in case of error
       if (error) {
         console.error('Authentication error:', error);
+        
+        // You may want to try alternative formats if the first attempt fails
+        // This could help if users were created with different email formats
+        if (error.message === 'Invalid login credentials') {
+          console.log('Trying alternative username format...');
+          
+          // Try without lowercasing
+          const { error: altError } = await supabase.auth.signInWithPassword({
+            email: `${username.trim()}@username.local`,
+            password,
+          });
+          
+          if (!altError) {
+            return { error: null };
+          }
+        }
       }
       
       return { error: error };
