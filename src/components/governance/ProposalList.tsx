@@ -1,10 +1,11 @@
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { useTokens } from "@/hooks/useTokens";
 import { ProposalCard } from "./ProposalCard";
 import { ProposalListProps, mockProposals } from "./types";
+import { ProposalSearchFilter } from "./ProposalSearchFilter";
 
 export function ProposalList({ status }: ProposalListProps) {
   const { toast } = useToast();
@@ -13,7 +14,31 @@ export function ProposalList({ status }: ProposalListProps) {
   const [votingFor, setVotingFor] = useState(true);
   const [votingAmount, setVotingAmount] = useState(1);
   
+  // Search and filter states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  
   const proposals = status === "active" ? mockProposals.active : mockProposals.completed;
+  
+  // Extract unique categories from all proposals
+  const categories = useMemo(() => {
+    const allProposals = [...mockProposals.active, ...mockProposals.completed];
+    const uniqueCategories = new Set(allProposals.map(p => p.category));
+    return Array.from(uniqueCategories);
+  }, []);
+  
+  // Filter proposals based on search query and category
+  const filteredProposals = useMemo(() => {
+    return proposals.filter(proposal => {
+      const matchesSearch = searchQuery === "" || 
+        proposal.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        proposal.description.toLowerCase().includes(searchQuery.toLowerCase());
+        
+      const matchesCategory = categoryFilter === "" || proposal.category === categoryFilter;
+      
+      return matchesSearch && matchesCategory;
+    });
+  }, [proposals, searchQuery, categoryFilter]);
 
   const handleVote = async (proposalId: string, voteFor: boolean) => {
     if (balance <= 0) {
@@ -54,26 +79,38 @@ export function ProposalList({ status }: ProposalListProps) {
     }
   };
 
-  if (proposals.length === 0) {
-    return (
-      <Card>
-        <CardContent className="py-10 text-center">
-          <p className="text-muted-foreground">No {status} proposals found</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
-    <div className="space-y-4">
-      {proposals.map((proposal) => (
-        <ProposalCard
-          key={proposal.id}
-          proposal={proposal}
-          onVote={proposal.status === "active" ? handleVote : submitVote}
-          balance={balance}
-        />
-      ))}
+    <div>
+      <ProposalSearchFilter 
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        categoryFilter={categoryFilter}
+        setCategoryFilter={setCategoryFilter}
+        categories={categories}
+      />
+      
+      {filteredProposals.length === 0 ? (
+        <Card>
+          <CardContent className="py-10 text-center">
+            <p className="text-muted-foreground">
+              {searchQuery || categoryFilter 
+                ? "No matching proposals found. Try adjusting your search or filters." 
+                : `No ${status} proposals found`}
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          {filteredProposals.map((proposal) => (
+            <ProposalCard
+              key={proposal.id}
+              proposal={proposal}
+              onVote={proposal.status === "active" ? handleVote : submitVote}
+              balance={balance}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
