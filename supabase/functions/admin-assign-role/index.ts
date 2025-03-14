@@ -26,32 +26,59 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
     // Get request body
-    const { userId, role, email } = await req.json();
+    const { userId, role, email, autoConfirm } = await req.json();
     
+    // Special case for auto-confirming emails (especially for admin user)
+    if (autoConfirm && email) {
+      console.log(`Request to auto-confirm email: ${email}`);
+      
+      // Get the user by email
+      const { data: userData, error: findError } = await supabase
+        .from('auth.users')
+        .select('id, email')
+        .eq('email', email)
+        .maybeSingle();
+      
+      if (findError) {
+        console.log(`Error finding user with email ${email}:`, findError);
+      } else if (userData) {
+        console.log(`Found user with email ${email}, id: ${userData.id}`);
+        
+        // Try to confirm the email
+        const { error: confirmError } = await supabase.auth.admin.updateUserById(
+          userData.id,
+          { email_confirm: true }
+        );
+        
+        if (confirmError) {
+          console.error("Error confirming email:", confirmError);
+        } else {
+          console.log(`Successfully confirmed email for ${email}`);
+          
+          // If no role provided but this is the admin email, assume admin role
+          if (!role && email === '016eyal@gmail.com') {
+            role = 'admin';
+            userId = userData.id;
+            console.log(`Auto-assigning admin role to confirmed admin email user`);
+          }
+        }
+      } else {
+        console.log(`No user found with email ${email}`);
+      }
+    }
+
+    // Continue with role assignment if we have the necessary data
     if (!userId || !role) {
       return new Response(
-        JSON.stringify({ error: "User ID and role are required" }),
+        JSON.stringify({ 
+          error: "User ID and role are required for role assignment",
+          action: "email_confirmation_attempted"
+        }),
         {
           status: 400,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         }
       );
-    }
-
-    // If this is for the admin user and we have their email, auto-confirm their email
-    if (role === 'admin' && email === '016eyal@gmail.com') {
-      console.log(`Auto-confirming admin email for user: ${userId}`);
-      const { error: confirmError } = await supabase.auth.admin.updateUserById(
-        userId,
-        { email_confirm: true }
-      );
-      
-      if (confirmError) {
-        console.error("Error confirming admin email:", confirmError);
-        // Continue with role assignment even if confirmation fails
-      } else {
-        console.log("Admin email confirmed successfully");
-      }
     }
 
     // First check if the role exists already

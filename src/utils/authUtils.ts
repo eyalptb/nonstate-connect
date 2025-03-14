@@ -88,33 +88,20 @@ export const handleSignInWithEmail = async (email: string, password: string) => 
       passwordLength: password?.length
     });
     
+    // Special case for admin email
     if (email === '016eyal@gmail.com') {
-      console.log('Admin email detected, attempting special handling');
+      console.log('Admin email detected');
       
-      // First try to confirm the email for the admin user if needed
+      // Try to auto-confirm the admin email through the edge function
       try {
-        // Try to get the user by email to get the user ID
-        const { data: userData, error: userError } = await supabase.auth.admin
-          .listUsers({
-            filters: {
-              email: email
-            }
-          });
-          
-        if (!userError && userData?.users.length > 0) {
-          const adminUserId = userData.users[0].id;
-          
-          // Try to auto-confirm the admin email through the edge function
-          await supabase.functions.invoke('admin-assign-role', {
-            body: { 
-              userId: adminUserId, 
-              role: 'admin',
-              email: email
-            }
-          });
-          
-          console.log('Admin email confirmation attempted');
-        }
+        await supabase.functions.invoke('admin-assign-role', {
+          body: { 
+            email: email,
+            autoConfirm: true
+          }
+        });
+        
+        console.log('Admin email confirmation requested');
       } catch (confirmError) {
         console.log('Error in admin email confirmation attempt:', confirmError);
         // Continue with login attempt even if confirmation fails
@@ -148,6 +135,21 @@ export const handleSignInWithUsername = async (username: string, password: strin
       
       const adminEmail = '016eyal@gmail.com';
       console.log('Using admin email:', adminEmail);
+      
+      // Try to auto-confirm the admin email through the edge function
+      try {
+        await supabase.functions.invoke('admin-assign-role', {
+          body: { 
+            email: adminEmail,
+            autoConfirm: true
+          }
+        });
+        
+        console.log('Admin email confirmation requested');
+      } catch (confirmError) {
+        console.log('Error in admin email confirmation attempt:', confirmError);
+        // Continue with login attempt even if confirmation fails
+      }
       
       try {
         const result = await handleSignInWithEmail(adminEmail, password);
