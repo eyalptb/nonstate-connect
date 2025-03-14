@@ -1,4 +1,3 @@
-
 import React, { createContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,8 +12,6 @@ import {
   handleSignOut
 } from '@/utils/auth';
 
-// Create the context with an undefined default value
-// The actual value will be provided by the AuthProvider
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -25,7 +22,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Initialize authentication state
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -36,7 +32,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setLoading(false);
     });
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session);
@@ -115,7 +110,5 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-// Export the context and the hook
 export { AuthContext };
-// Export the hook directly from this file to avoid circular dependencies
 export { useAuth } from '@/hooks/useAuth';
