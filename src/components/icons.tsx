@@ -3,7 +3,7 @@ import { LucideProps, Rocket, Menu, X } from "lucide-react";
 
 export type IconProps = LucideProps;
 
-// Custom parachute icon SVG path
+// Custom parachute icon with 5 hands holding it
 const Parachute = (props: LucideProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -17,12 +17,22 @@ const Parachute = (props: LucideProps) => (
     strokeLinejoin="round"
     {...props}
   >
-    <path d="M12 2c-3.47 0-6.34 2.53-7.5 6C2.02 12 12 22 12 22s9.98-10 7.5-14c-1.16-3.47-4.03-6-7.5-6z" />
-    <path d="M8 10l3 3" />
-    <path d="M16 10l-3 3" />
-    <path d="M12 2v5" />
-    <path d="M5 8h3" />
-    <path d="M16 8h3" />
+    {/* Round parachute canopy */}
+    <path d="M12 4c-5 0-9 2-9 6s4 8 9 8 9-4 9-8-4-6-9-6z" />
+    
+    {/* Strings connecting hands to parachute */}
+    <path d="M7 10l-2 7" />
+    <path d="M9.5 10l-1 7" />
+    <path d="M12 10v7" />
+    <path d="M14.5 10l1 7" />
+    <path d="M17 10l2 7" />
+    
+    {/* Five hands holding the parachute (simplified) */}
+    <path d="M5 17c0.5 0.5 1.5 0.5 2 0" /> {/* Hand 1 */}
+    <path d="M8.5 17c0.5 0.5 1 0.5 1.5 0" /> {/* Hand 2 */}
+    <path d="M11.5 17c0.5 0.5 1 0.5 1.5 0" /> {/* Hand 3 */}
+    <path d="M14.5 17c0.5 0.5 1 0.5 1.5 0" /> {/* Hand 4 */}
+    <path d="M17 17c0.5 0.5 1.5 0.5 2 0" /> {/* Hand 5 */}
   </svg>
 );
 
