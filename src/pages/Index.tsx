@@ -5,6 +5,8 @@ import Features from "@/components/Features";
 import Projects from "@/components/Projects";
 import JoinCta from "@/components/JoinCta";
 import Footer from "@/components/Footer";
+import TokenWallet from "@/components/TokenWallet";
+import { Card } from "@/components/ui/card";
 
 const Index = () => {
   return (
@@ -12,6 +14,12 @@ const Index = () => {
       <Navbar />
       <main className="flex-grow">
         <Hero />
+        <div className="container mx-auto px-4 py-12">
+          <h2 className="text-3xl font-bold text-center mb-8">Your CollabCoin Wallet</h2>
+          <div className="max-w-2xl mx-auto">
+            <TokenWallet />
+          </div>
+        </div>
         <Features />
         <Projects />
         <JoinCta />
