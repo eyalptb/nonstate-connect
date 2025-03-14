@@ -13,8 +13,8 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Loader } from "lucide-react";
 
 const SignIn = () => {
-  const { signInWithEmail, signInWithGoogle } = useAuth();
-  const [email, setEmail] = useState("");
+  const { signInWithEmail, signInWithGoogle, signInWithUsername } = useAuth();
+  const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -25,7 +25,20 @@ const SignIn = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await signInWithEmail(email, password);
+      // Check if the input is an email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const isEmail = emailRegex.test(usernameOrEmail);
+      
+      let error;
+      if (isEmail) {
+        // If it's an email, use email login
+        const result = await signInWithEmail(usernameOrEmail, password);
+        error = result.error;
+      } else {
+        // If it's not an email, use username login
+        const result = await signInWithUsername(usernameOrEmail, password);
+        error = result.error;
+      }
 
       if (error) throw error;
 
@@ -114,13 +127,13 @@ const SignIn = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="usernameOrEmail">Username or Email</Label>
                     <Input
-                      id="email"
-                      type="email"
-                      placeholder="name@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      id="usernameOrEmail"
+                      type="text"
+                      placeholder="Enter your username or email"
+                      value={usernameOrEmail}
+                      onChange={(e) => setUsernameOrEmail(e.target.value)}
                       required
                     />
                   </div>

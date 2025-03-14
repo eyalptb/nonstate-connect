@@ -25,6 +25,7 @@ type AuthContextType = {
   signOut: () => Promise<void>;
   signInWithGoogle: () => Promise<{ error: Error | null }>;
   signInWithEmail: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signInWithUsername: (username: string, password: string) => Promise<{ error: Error | null }>;
   refreshProfile: () => Promise<void>;
 };
 
@@ -157,6 +158,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const signInWithUsername = async (username: string, password: string) => {
+    try {
+      // First, we need to check if the input is actually an email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const isEmail = emailRegex.test(username);
+      
+      if (isEmail) {
+        // If it's an email, use the email login method
+        return signInWithEmail(username, password);
+      }
+      
+      // If it's not an email, we assume it's a username
+      const { error } = await supabase.auth.signInWithPassword({
+        email: `${username}@username.local`, // We use a placeholder email format
+        password,
+      });
+      return { error: error };
+    } catch (error) {
+      console.error('Error signing in with username:', error);
+      return { error: error as Error };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -168,6 +192,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         signOut,
         signInWithGoogle,
         signInWithEmail,
+        signInWithUsername,
         refreshProfile,
       }}
     >
