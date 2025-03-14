@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { ProfileType } from '@/types/auth';
 
@@ -247,6 +246,24 @@ export const assignUserRole = async (userId: string): Promise<boolean> => {
     return true;
   } catch (error) {
     console.error('Error in assignUserRole:', error);
+    return false;
+  }
+};
+
+export const deleteUser = async (userId: string): Promise<boolean> => {
+  try {
+    const { error } = await supabase.functions.invoke('admin-assign-role', {
+      body: { userId, action: 'deleteUser' }
+    });
+
+    if (error) {
+      console.error('Error deleting user:', error);
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Error in deleteUser:', error);
     return false;
   }
 };

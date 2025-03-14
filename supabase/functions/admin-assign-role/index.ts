@@ -26,7 +26,29 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
     // Get request body
-    const { userId, role, email, autoConfirm } = await req.json();
+    const { userId, role, email, autoConfirm, action } = await req.json();
+    
+    // Handle delete user action
+    if (action === "deleteUser" && userId) {
+      console.log(`Request to delete user with ID: ${userId}`);
+      
+      const { error } = await supabase.auth.admin.deleteUser(userId);
+      
+      if (error) {
+        console.error("Error deleting user:", error);
+        throw new Error(`Failed to delete user: ${error.message}`);
+      }
+      
+      console.log(`Successfully deleted user with ID: ${userId}`);
+      
+      return new Response(
+        JSON.stringify({ success: true, message: "User deleted successfully" }),
+        {
+          status: 200,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
     
     // Special case for auto-confirming emails (especially for admin user)
     if (autoConfirm && email) {
