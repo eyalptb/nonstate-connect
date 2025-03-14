@@ -91,6 +91,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const signOut = async () => {
     await supabase.auth.signOut();
     setProfile(null);
+    toast.success("Successfully logged out");
   };
 
   const signInWithGoogle = async () => {
@@ -99,10 +100,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/dashboard`,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
         },
       });
       
