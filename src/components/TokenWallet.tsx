@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
-import { Coin } from 'lucide-react';
+import { Coins } from 'lucide-react';
 
 export const TokenWallet = () => {
   const { balance, transactions, loading, refreshBalance, refreshTransactions } = useTokens();
@@ -39,7 +39,7 @@ export const TokenWallet = () => {
           <TabsContent value="balance" className="pt-4">
             <div className="flex flex-col items-center justify-center py-8">
               <div className="flex items-center mb-2">
-                <Coin className="mr-2 h-6 w-6 text-yellow-500" />
+                <Coins className="mr-2 h-6 w-6 text-yellow-500" />
                 <span className="text-3xl font-bold">{balance}</span>
               </div>
               <p className="text-muted-foreground text-sm">CollabCoins</p>

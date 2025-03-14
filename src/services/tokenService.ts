@@ -44,7 +44,7 @@ export const getTokenTransactions = async (userId: string): Promise<TokenTransac
     
     if (error) throw error;
     
-    return data || [];
+    return (data as TokenTransaction[]) || [];
   } catch (error) {
     console.error('Error fetching token transactions:', error);
     return [];

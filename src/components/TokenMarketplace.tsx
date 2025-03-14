@@ -48,7 +48,7 @@ const marketplaceItems = [
 ];
 
 const TokenMarketplace = () => {
-  const { balance, useTokens } = useTokens();
+  const { balance, useTokens: spendTokens } = useTokens();
   const { toast } = useToast();
   const [selectedItem, setSelectedItem] = useState<typeof marketplaceItems[0] | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -70,7 +70,7 @@ const TokenMarketplace = () => {
     setIsPurchasing(true);
     
     try {
-      const success = await useTokens(
+      const success = await spendTokens(
         selectedItem.tokens,
         `Purchased ${selectedItem.title}`
       );
