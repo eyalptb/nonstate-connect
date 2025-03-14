@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -33,37 +32,36 @@ const SignIn = () => {
     setIsLoading(true);
 
     try {
-      // Trim and normalize the input to remove any spaces and lowercase it
-      const cleanedInput = usernameOrEmail.trim();
-      console.log('Attempting login with:', cleanedInput);
+      console.log('Attempting login with:', usernameOrEmail);
       
       // Check if the input is an email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const isEmail = emailRegex.test(cleanedInput);
+      const isEmail = emailRegex.test(usernameOrEmail);
       
       // Display what we're using for login
       console.log(`Using ${isEmail ? 'email' : 'username'} login method`);
       
-      let error;
+      let result;
       if (isEmail) {
         // If it's an email, use email login
-        const result = await signInWithEmail(cleanedInput, password);
-        error = result.error;
+        result = await signInWithEmail(usernameOrEmail, password);
       } else {
         // If it's not an email, use username login
-        const result = await signInWithUsername(cleanedInput, password);
-        error = result.error;
+        result = await signInWithUsername(usernameOrEmail, password);
       }
 
-      if (error) {
-        console.error('Login error details:', error);
-        throw error;
+      if (result.error) {
+        throw result.error;
       }
 
       toast.success("Login successful", {
         description: "Welcome back to CollabCoin!"
       });
-      navigate("/dashboard");
+      
+      // Short delay to show success message before redirecting
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 500);
     } catch (error: any) {
       console.error('Login error:', error);
       toast.error("Authentication failed", {
