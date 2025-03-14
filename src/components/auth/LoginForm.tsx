@@ -58,6 +58,11 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
         errorMessage = error.message;
       }
       
+      // Check for jonnyCat test account help message
+      if (usernameOrEmail.toLowerCase().trim() === 'jonnycat' && error.message?.includes('password')) {
+        errorMessage = "For test user jonnyCat, please use password: jonnycat123";
+      }
+      
       toast.error("Authentication failed", {
         description: errorMessage,
       });
@@ -65,6 +70,9 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
       setIsLoading(false);
     }
   };
+
+  // Helper text for test user
+  const isTestUser = usernameOrEmail.trim().toLowerCase() === 'jonnycat';
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -78,6 +86,11 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
           onChange={(e) => setUsernameOrEmail(e.target.value)}
           required
         />
+        {isTestUser && (
+          <p className="text-xs text-blue-500 mt-1">
+            Test user detected! Try password: jonnycat123
+          </p>
+        )}
       </div>
       <div className="space-y-2">
         <div className="flex items-center justify-between">

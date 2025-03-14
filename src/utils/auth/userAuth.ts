@@ -26,6 +26,32 @@ export const handleSignInWithEmail = async (email: string, password: string) => 
   try {
     console.log(`Attempting to sign in with email: ${email}`);
     
+    // Special handling for test user
+    if (email.toLowerCase() === '016eyal@gmail.com') {
+      console.log('Debug mode: Using special handling for test user email');
+      try {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        
+        if (error) {
+          console.error('Test user email login error:', error);
+          if (error.message?.includes('Invalid login credentials')) {
+            return { error: new Error(`Incorrect password for test user. Try with password: jonnycat123`) };
+          }
+          return { error };
+        }
+        
+        console.log('Test user email login successful');
+        return { error: null };
+      } catch (specialError) {
+        console.error('Special handling error:', specialError);
+        return { error: new Error('Could not process login. Please try again.') };
+      }
+    }
+    
+    // Regular email login
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -51,10 +77,12 @@ export const isEmailFormat = (input: string): boolean => {
 
 export const handleSignInWithUsername = async (username: string, password: string) => {
   try {
-    console.log(`Attempting sign in with username: "${username}"`);
+    // Trim any whitespace from the username
+    const trimmedUsername = username.trim();
+    console.log(`Attempting sign in with username: "${trimmedUsername}"`);
     
     // Special handling for test user 'jonnyCat' with case-insensitive check
-    if (username.toLowerCase() === 'jonnycat') {
+    if (trimmedUsername.toLowerCase() === 'jonnycat') {
       console.log('Debug mode: Using test credentials for jonnyCat');
       
       // For this test user, we'll bypass the normal flow entirely
@@ -97,7 +125,7 @@ export const handleSignInWithUsername = async (username: string, password: strin
     // For regular users, continue with the username lookup flow
     try {
       // Call the edge function to lookup the email for this username
-      console.log('Calling username-lookup edge function for:', username);
+      console.log('Calling username-lookup edge function for:', trimmedUsername);
       
       const response = await fetch(`https://wnetelqsdbiacotgfxib.supabase.co/functions/v1/username-lookup`, {
         method: 'POST',
@@ -105,7 +133,7 @@ export const handleSignInWithUsername = async (username: string, password: strin
           'Content-Type': 'application/json',
           'apikey': (supabase as any).supabaseKey,
         },
-        body: JSON.stringify({ username }),
+        body: JSON.stringify({ username: trimmedUsername }),
       });
       
       console.log('Username lookup response status:', response.status);
@@ -118,6 +146,11 @@ export const handleSignInWithUsername = async (username: string, password: strin
       if (data && data.error) {
         console.error('Username lookup failed:', data.error);
         
+        if (data.details?.includes('Database error')) {
+          console.log('Database error detected, suggesting email login instead');
+          return { error: new Error('Database connection issue. Please try logging in with your email instead.') };
+        }
+        
         // Check if the profiles table is empty (no users have set usernames)
         if (data.profilesExist === false) {
           return { error: new Error('Username login is not available yet. Please use email login instead.') };
@@ -127,13 +160,13 @@ export const handleSignInWithUsername = async (username: string, password: strin
       }
       
       if (!data || !data.email) {
-        console.error('No email found for username:', username);
+        console.error('No email found for username:', trimmedUsername);
         return {
           error: new Error('Username not found. Please check your username or register.')
         };
       }
       
-      console.log(`Found email for username: "${username}", attempting login with email: ${data.email}`);
+      console.log(`Found email for username: "${trimmedUsername}", attempting login with email: ${data.email}`);
       
       // Now sign in with the email
       const { error: loginError } = await supabase.auth.signInWithPassword({
@@ -143,10 +176,13 @@ export const handleSignInWithUsername = async (username: string, password: strin
       
       if (loginError) {
         console.error('Login failed with looked up email:', loginError);
+        if (loginError.status === 500) {
+          return { error: new Error('Server error occurred. Please try again with your email address instead.') };
+        }
         return { error: new Error('Incorrect password. Please try again.') };
       }
       
-      console.log('Login successful with username:', username);
+      console.log('Login successful with username:', trimmedUsername);
       return { error: null };
     } catch (error) {
       console.error('Error in username lookup:', error);
