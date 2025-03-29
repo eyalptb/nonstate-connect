@@ -9,8 +9,6 @@ import {
   Messaging,
   SignIn,
   SignUp,
-  ResetPassword,
-  UpdatePassword,
   NotFound,
   IntegrationHub,
   ProposalDetail,
@@ -48,8 +46,6 @@ function App() {
                 <Route path="/features" element={<Features />} />
                 <Route path="/sign-in" element={<SignIn />} />
                 <Route path="/sign-up" element={<SignUp />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/update-password" element={<UpdatePassword />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="*" element={<NotFound />} />
