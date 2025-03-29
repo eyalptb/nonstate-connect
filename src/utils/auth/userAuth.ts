@@ -1,6 +1,4 @@
-
-// This file now contains only placeholder authentication functions
-// Real implementation will be added when authentication is reimplemented
+// This file now contains only placeholder functions since authentication has been removed
 
 /**
  * Placeholder function that would normally handle Google sign-in

@@ -7,7 +7,6 @@ import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { ModeToggle } from "@/components/mode-toggle";
-import { Button } from "@/components/ui/button";
 
 interface MainNavItem {
   title: string;
@@ -91,12 +90,6 @@ export function Navbar({ mainNav: propMainNav }: NavbarProps) {
             ) : null}
           </nav>
           <ModeToggle />
-          {/* Sign In button is still present but will just show the SignIn component */}
-          <Button asChild variant="default" size="sm">
-            <Link to="/sign-in">
-              Sign In
-            </Link>
-          </Button>
         </div>
         <div className="md:hidden">
           <button onClick={toggleMenu} className="text-gray-500 hover:text-gray-700 focus:outline-none">
@@ -128,9 +121,6 @@ export function Navbar({ mainNav: propMainNav }: NavbarProps) {
             ) : null}
             <div className="flex justify-between items-center mt-2">
               <ModeToggle />
-              <Button asChild variant="default" size="sm">
-                <Link to="/sign-in">Sign In</Link>
-              </Button>
             </div>
           </nav>
         </div>

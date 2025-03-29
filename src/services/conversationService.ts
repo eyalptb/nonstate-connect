@@ -1,147 +1,122 @@
 
-import { supabase } from '@/integrations/supabase/client';
-import { Conversation, Participant } from '@/types/messaging';
-import { getKeys } from '@/utils/encryption';
+import { supabase } from "@/integrations/supabase/client";
+import { Conversation, ConversationWithParticipants } from "@/types/messaging";
 
-// Fetch all conversations for a user
-export const fetchUserConversations = async (userId: string): Promise<Conversation[]> => {
-  if (!userId) return [];
-  
+export const fetchConversations = async (
+  userId: string
+): Promise<ConversationWithParticipants[]> => {
   try {
-    // Get conversations the user participates in
-    const { data: participantData, error: participantError } = await supabase
-      .from('conversation_participants')
-      .select('conversation_id')
-      .eq('user_id', userId);
-    
-    if (participantError) throw participantError;
-    
-    if (!participantData || participantData.length === 0) {
+    const { data, error } = await supabase
+      .from("conversation_participants")
+      .select(`
+        *,
+        conversation:conversations (*)
+      `)
+      .eq("user_id", userId);
+
+    if (error) {
+      console.error("Error fetching conversations:", error);
       return [];
     }
-    
-    const conversationIds = participantData.map(p => p.conversation_id);
-    
-    // Get the conversation details
-    const { data: conversationsData, error: conversationsError } = await supabase
-      .from('conversations')
-      .select('*')
-      .in('id', conversationIds)
-      .order('updated_at', { ascending: false });
-    
-    if (conversationsError) throw conversationsError;
-    
-    // For each conversation, get the participants
-    const enhancedConversations = await Promise.all(
-      conversationsData.map(async (conversation) => {
-        // Get participants for this conversation
-        const { data: participants } = await supabase
-          .from('conversation_participants')
-          .select(`
-            id,
-            user_id,
-            public_key
-          `)
-          .eq('conversation_id', conversation.id);
-          
-        // Separately fetch profile information for each participant
-        const enhancedParticipants = await Promise.all(
-          (participants || []).map(async (participant) => {
-            const { data: userProfile } = await supabase
-              .from('profiles')
-              .select('first_name, last_name, avatar_url')
-              .eq('id', participant.user_id)
-              .single();
-              
-            return {
-              id: participant.id,
-              user_id: participant.user_id,
-              public_key: participant.public_key,
-              first_name: userProfile?.first_name || null,
-              last_name: userProfile?.last_name || null,
-              avatar_url: userProfile?.avatar_url || null,
-            };
-          })
-        );
-        
-        return {
-          ...conversation,
-          participants: enhancedParticipants
-        };
-      })
-    );
-    
-    return enhancedConversations;
+
+    // Map to the expected format
+    const conversations: ConversationWithParticipants[] = data.map((item: any) => {
+      return {
+        ...item.conversation,
+        participants: [{ 
+          id: userId, 
+          first_name: 'User',
+          last_name: '',
+          avatar_url: null 
+        }], // Simplified for now
+      };
+    });
+
+    return conversations;
   } catch (error) {
-    console.error('Error fetching conversations:', error);
+    console.error("Error in fetchConversations:", error);
     return [];
   }
 };
 
-// Create a new conversation with participants
-export const createNewConversation = async (
-  userId: string, 
-  participantIds: string[]
-): Promise<string | null> => {
-  if (!userId) return null;
-  
+export const createConversation = async (
+  userId: string,
+  participantIds: string[],
+  name?: string
+): Promise<Conversation | null> => {
   try {
-    // Make sure the current user is included
+    // Include the creator in participants if not already included
     if (!participantIds.includes(userId)) {
       participantIds.push(userId);
     }
-    
+
     // Create the conversation
-    const { data: conversation, error } = await supabase
-      .from('conversations')
-      .insert({})
+    const { data: conversationData, error: conversationError } = await supabase
+      .from("conversations")
+      .insert([
+        {
+          name: name || null,
+          created_by: userId,
+        },
+      ])
       .select()
       .single();
-    
-    if (error) throw error;
-    
-    // Get the current user's public key
-    const { publicKey } = getKeys();
-    
-    // Add all participants
-    await Promise.all(
-      participantIds.map(async (participantId) => {
-        // Only add the public key for the current user
-        const publicKeyToAdd = participantId === userId ? publicKey : null;
-        
-        return supabase
-          .from('conversation_participants')
-          .insert({
-            conversation_id: conversation.id,
-            user_id: participantId,
-            public_key: publicKeyToAdd
-          });
-      })
-    );
-    
-    return conversation.id;
+
+    if (conversationError) {
+      console.error("Error creating conversation:", conversationError);
+      return null;
+    }
+
+    const conversationId = conversationData.id;
+
+    // Add participants to the conversation
+    const participantPromises = participantIds.map(async (participantId) => {
+      // Generate a unique key pair for each participant (simplified for now)
+      const publicKey = "temp-public-key-" + Math.random().toString(36).substring(7);
+
+      return supabase.from("conversation_participants").insert([
+        {
+          conversation_id: conversationId,
+          user_id: participantId,
+          public_key: publicKey,
+        },
+      ]);
+    });
+
+    await Promise.all(participantPromises);
+
+    return conversationData;
   } catch (error) {
-    console.error('Error creating conversation:', error);
+    console.error("Error in createConversation:", error);
     return null;
   }
 };
 
-// Fetch messages for a specific conversation
-export const fetchConversationMessages = async (conversationId: string, userId: string) => {
-  if (!conversationId || !userId) return [];
-  
+export const getConversationParticipants = async (
+  conversationId: string
+): Promise<any[]> => {
   try {
     const { data, error } = await supabase
-      .from('messages')
-      .select('*')
-      .eq('conversation_id', conversationId)
-      .order('created_at', { ascending: true });
-    
-    if (error) throw error;
-    
-    return data || [];
+      .from("conversation_participants")
+      .select(`
+        user_id
+      `)
+      .eq("conversation_id", conversationId);
+
+    if (error) {
+      console.error("Error fetching conversation participants:", error);
+      return [];
+    }
+
+    // Simplified - just return user IDs for now
+    return data.map(participant => ({
+      id: participant.user_id,
+      first_name: 'User',
+      last_name: '',
+      avatar_url: null
+    }));
   } catch (error) {
-    console.error('Error fetching messages:', error);
+    console.error("Error in getConversationParticipants:", error);
     return [];
   }
 };

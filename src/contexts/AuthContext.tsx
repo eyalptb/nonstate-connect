@@ -1,10 +1,10 @@
 
-import React, { createContext, useState } from 'react';
+import React, { createContext } from 'react';
 
-// Simplified context with dummy auth functionality
+// Simplified context with no authentication functionality
 type AuthContextType = {
   loading: boolean;
-  user: { id: string } | null; // Updated to allow null
+  user: null;
   isAdmin: boolean;
   signOut: () => void;
 };
@@ -13,7 +13,7 @@ export const AuthContext = createContext<AuthContextType>({
   loading: false,
   user: null,
   isAdmin: false,
-  signOut: () => console.log('Sign out function called - does nothing currently')
+  signOut: () => {}
 });
 
 export const useAuth = (): AuthContextType => {
@@ -25,18 +25,11 @@ export const useAuth = (): AuthContextType => {
 };
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [loading] = useState(false);
-
-  // Dummy sign out function
-  const signOut = () => {
-    console.log('Sign out function called - does nothing currently');
-  };
-
   const value = {
-    loading,
-    user: { id: 'dummy-user-id' }, // Dummy user with id
+    loading: false,
+    user: null,
     isAdmin: false,
-    signOut
+    signOut: () => {}
   };
 
   return (

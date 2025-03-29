@@ -7,8 +7,6 @@ import {
   Impact,
   Funding,
   Messaging,
-  SignIn,
-  SignUp,
   NotFound,
   IntegrationHub,
   ProposalDetail,
@@ -44,8 +42,6 @@ function App() {
                 <Route path="/governance" element={<Governance />} />
                 <Route path="/governance/proposal/:id" element={<ProposalDetail />} />
                 <Route path="/features" element={<Features />} />
-                <Route path="/sign-in" element={<SignIn />} />
-                <Route path="/sign-up" element={<SignUp />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="*" element={<NotFound />} />
