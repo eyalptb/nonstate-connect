@@ -19,6 +19,7 @@ const Dashboard = () => {
 
   const handleSignOut = async () => {
     await signOut();
+    console.log("Sign out clicked"); // Debug log
     // The navigation to home page is handled in the AuthContext's signOut function
   };
 
@@ -38,7 +39,11 @@ const Dashboard = () => {
                 <p className="text-muted-foreground">Your secure collaboration dashboard</p>
               </div>
             </div>
-            <Button onClick={handleSignOut} variant="outline" className="flex items-center gap-2">
+            <Button 
+              onClick={handleSignOut} 
+              variant="outline" 
+              className="flex items-center gap-2"
+            >
               <LogOut className="h-4 w-4" />
               Sign Out
             </Button>
