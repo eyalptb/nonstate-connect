@@ -33,10 +33,10 @@ serve(async (req) => {
       );
     }
 
-    // Normalize username: trim whitespace and convert to lowercase for consistent comparison
-    const normalizedUsername = username.trim().toLowerCase();
+    // Normalize username: trim whitespace 
+    const normalizedUsername = username.trim();
     
-    console.log(`Looking up email for normalized username: "${normalizedUsername}"`);
+    console.log(`Looking up user with normalized username: "${normalizedUsername}"`);
     
     // Create Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
@@ -46,14 +46,13 @@ serve(async (req) => {
     const supabaseClient = createClient(supabaseUrl, supabaseKey);
     
     try {
-      // Check for the username with case-insensitive match using ilike
-      console.log(`Checking for username with case-insensitive match: "${normalizedUsername}"`);
+      // Try exact match first (but case insensitive)
+      console.log(`Attempting case-insensitive match for: "${normalizedUsername}"`);
       
-      // First attempt with direct match on lowercase username
       const { data: profileData, error: profileError } = await supabaseClient
         .from('profiles')
         .select('id, username')
-        .ilike('username', username.trim())
+        .ilike('username', normalizedUsername)
         .maybeSingle();
       
       console.log('Profile query response:', { profileData, profileError });
@@ -66,24 +65,22 @@ serve(async (req) => {
         );
       }
       
-      // If no match, try a more flexible search
       if (!profileData) {
-        console.log(`No exact match found, trying with more flexible search`);
+        console.log('No exact match found, trying with more flexible search');
+        // Try a broader search if exact match fails
         const { data: flexibleMatchData, error: flexibleMatchError } = await supabaseClient
           .from('profiles')
           .select('id, username')
-          .ilike('username', `%${normalizedUsername}%`)
-          .order('username', { ascending: true })
-          .limit(5);
+          .ilike('username', normalizedUsername)
+          .limit(1);
           
         console.log('Flexible search results:', { flexibleMatchData, flexibleMatchError });
         
         if (flexibleMatchError) {
           console.error('Error in flexible search:', flexibleMatchError);
         } else if (flexibleMatchData && flexibleMatchData.length > 0) {
-          console.log('Found potential matches:', flexibleMatchData.map(p => p.username).join(', '));
-        } else {
-          console.log('No potential matches found');
+          profileData = flexibleMatchData[0];
+          console.log('Found potential match:', profileData.username);
         }
       }
       
@@ -109,7 +106,7 @@ serve(async (req) => {
         );
       }
       
-      // Log all profiles for debugging purposes
+      // If no match is found, log all usernames for debugging
       const { data: allProfiles, error: allProfilesError } = await supabaseClient
         .from('profiles')
         .select('id, username')
@@ -122,12 +119,12 @@ serve(async (req) => {
       // Log the first few profiles for debugging
       if (allProfiles && allProfiles.length > 0) {
         console.log(`Found ${allProfiles.length} profiles total`);
-        console.log('Sample profiles:');
+        console.log('Available usernames:');
         allProfiles.forEach(p => console.log(`- ${p.id}: ${p.username || 'no username'}`));
         
         // Log if there's any profile that might match with different case sensitivity
         const potentialMatches = allProfiles.filter(p => 
-          p.username && p.username.toLowerCase() === normalizedUsername
+          p.username && p.username.toLowerCase() === normalizedUsername.toLowerCase()
         );
         
         if (potentialMatches.length > 0) {

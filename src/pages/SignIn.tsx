@@ -70,34 +70,43 @@ const SignIn = () => {
     setIsLoading(true);
     
     try {
-      let email = identifier;
+      console.log(`Starting sign-in process with identifier: ${identifier}`);
       
-      // If identifier is not an email, lookup the email by username
-      if (!isEmailFormat(identifier)) {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('username', identifier)
-          .maybeSingle();
-          
-        if (error || !data) {
-          throw new Error('Invalid username or password');
+      let signInResult;
+      
+      // Check if identifier is an email or username
+      if (isEmailFormat(identifier)) {
+        console.log('Identifier is an email address, signing in with email');
+        signInResult = await supabase.auth.signInWithPassword({
+          email: identifier,
+          password,
+        });
+      } else {
+        console.log('Identifier is not an email address, treating as username');
+        // Use the username-lookup edge function directly
+        const { data: lookupData, error: lookupError } = await supabase.functions.invoke('username-lookup', {
+          body: { username: identifier }
+        });
+        
+        console.log('Username lookup result:', lookupData, lookupError);
+        
+        if (lookupError || (lookupData && lookupData.error)) {
+          throw new Error(lookupError?.message || lookupData?.error || 'Failed to find username');
         }
         
-        // Get user's email using their ID
-        const { data: userData, error: userError } = await supabase.auth.admin.getUserById(data.id);
-        
-        if (userError || !userData?.user?.email) {
-          throw new Error('User not found');
+        if (!lookupData || !lookupData.email) {
+          throw new Error('Username not found');
         }
         
-        email = userData.user.email;
+        console.log(`Found email ${lookupData.email} for username ${identifier}, attempting sign in`);
+        
+        signInResult = await supabase.auth.signInWithPassword({
+          email: lookupData.email,
+          password,
+        });
       }
       
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { error } = signInResult;
       
       if (error) {
         if (error.message.includes('Email not confirmed')) {
@@ -114,6 +123,7 @@ const SignIn = () => {
       
       navigate('/dashboard');
     } catch (error: any) {
+      console.error('Sign in error:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to sign in",
