@@ -9,6 +9,7 @@ type AuthContextType = {
   profile: ProfileType | null;
   loading: boolean;
   isAdmin: boolean;
+  signOut: () => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,13 +29,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // We'll rebuild this component later with proper auth
+  // Add the signOut method (simplified mock for now)
+  const signOut = async (): Promise<void> => {
+    // For now, just clear the user state
+    setUser(null);
+    setProfile(null);
+    console.log("User signed out");
+    return Promise.resolve();
+  };
 
   const value = {
     user,
     profile,
     loading,
     isAdmin,
+    signOut,
   };
 
   return (
