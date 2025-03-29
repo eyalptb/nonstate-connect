@@ -38,15 +38,15 @@ serve(async (req) => {
     // Trim the username to handle spaces
     const trimmedUsername = username.trim();
     
-    // Special handling for jonnyCat test user - case insensitive check
-    if (trimmedUsername.toLowerCase() === 'jonnycat') {
-      console.log('Debug mode: Found test user jonnyCat');
+    // Special handling for superCat test user - case insensitive check
+    if (trimmedUsername.toLowerCase() === 'supercat') {
+      console.log('Debug mode: Found test user superCat');
       
       // For this test user, we'll return the email directly without querying the database
       return new Response(
         JSON.stringify({ 
           id: 'test-user-id', 
-          email: '016eyal@gmail.com' 
+          email: 'supercat@test.com' 
         }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );

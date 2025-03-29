@@ -52,32 +52,28 @@ export const isEmailFormat = (input: string): boolean => {
 
 /**
  * Signs in with username and password by looking up the email first
+ * Uses the username-lookup edge function to avoid RLS recursion
  */
 export const handleSignInWithUsername = async (username: string, password: string) => {
   try {
-    // First, get the user ID from the username
-    const { data: profileData, error: profileError } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('username', username)
-      .maybeSingle();
-      
-    if (profileError || !profileData) {
-      return { error: new Error('Invalid username or password') };
+    // Use the username-lookup edge function instead of direct query
+    const { data: lookupData, error: lookupError } = await supabase.functions.invoke('username-lookup', {
+      body: { username }
+    });
+    
+    if (lookupError || !lookupData || lookupData.error) {
+      console.error('Username lookup error:', lookupError || lookupData?.error);
+      return { error: new Error(lookupData?.error || 'Invalid username or password') };
     }
     
-    // Then get the user's email using their ID
-    // This requires admin privileges, so it's better to use a serverless function
-    // in a real-world scenario
-    const { data: userData, error: userError } = await supabase.auth.admin.getUserById(profileData.id);
-    
-    if (userError || !userData?.user?.email) {
+    if (!lookupData.email) {
       return { error: new Error('User not found') };
     }
     
-    // Finally, sign in with the email and password
-    return await handleSignInWithEmail(userData.user.email, password);
+    // Sign in with the email and password
+    return await handleSignInWithEmail(lookupData.email, password);
   } catch (error) {
+    console.error('Sign in with username error:', error);
     return { error };
   }
 };
