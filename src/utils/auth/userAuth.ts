@@ -56,22 +56,48 @@ export const isEmailFormat = (input: string): boolean => {
  */
 export const handleSignInWithUsername = async (username: string, password: string) => {
   try {
-    // Use the username-lookup edge function instead of direct query
+    console.log(`Attempting to sign in with username: "${username}"`);
+    
+    // Normalize the username by trimming whitespace
+    const normalizedUsername = username.trim();
+    console.log(`Normalized username: "${normalizedUsername}"`);
+    
+    // Use the username-lookup edge function
+    console.log(`Calling username-lookup edge function with normalized username`);
     const { data: lookupData, error: lookupError } = await supabase.functions.invoke('username-lookup', {
-      body: { username }
+      body: { username: normalizedUsername }
     });
     
-    if (lookupError || !lookupData || lookupData.error) {
-      console.error('Username lookup error:', lookupError || lookupData?.error);
+    console.log('Edge function response:', lookupData, lookupError);
+    
+    if (lookupError) {
+      console.error('Username lookup error from edge function:', lookupError);
+      return { error: new Error(`Username lookup failed: ${lookupError.message}`) };
+    }
+    
+    if (!lookupData || lookupData.error) {
+      console.error('Username not found or other error:', lookupData?.error);
       return { error: new Error(lookupData?.error || 'Invalid username or password') };
     }
     
     if (!lookupData.email) {
+      console.error('No email returned for username');
       return { error: new Error('User not found') };
     }
     
+    console.log(`Username lookup successful, found email: ${lookupData.email}`);
+    
     // Sign in with the email and password
-    return await handleSignInWithEmail(lookupData.email, password);
+    console.log('Attempting sign in with email and password');
+    const signInResult = await handleSignInWithEmail(lookupData.email, password);
+    
+    if (signInResult.error) {
+      console.error('Sign in with email failed:', signInResult.error);
+      return { error: new Error('Invalid username or password') };
+    }
+    
+    console.log('Sign in successful');
+    return signInResult;
   } catch (error) {
     console.error('Sign in with username error:', error);
     return { error };
@@ -83,14 +109,19 @@ export const handleSignInWithUsername = async (username: string, password: strin
  */
 export const handleSignUp = async (email: string, password: string, username: string) => {
   try {
+    // Normalize the username by trimming whitespace
+    const normalizedUsername = username.trim();
+    console.log(`Signing up with normalized username: "${normalizedUsername}"`);
+    
     // Check if username is available
     const { data: existingUser, error: usernameError } = await supabase
       .from('profiles')
       .select('id')
-      .eq('username', username)
+      .ilike('username', normalizedUsername)
       .maybeSingle();
       
     if (existingUser) {
+      console.error(`Username "${normalizedUsername}" is already taken`);
       return { error: new Error('Username is already taken') };
     }
     
@@ -99,13 +130,14 @@ export const handleSignUp = async (email: string, password: string, username: st
       email,
       password,
       options: {
-        data: { username },
+        data: { username: normalizedUsername },
         emailRedirectTo: `${window.location.origin}/auth/callback`
       }
     });
     
     return { data, error };
   } catch (error) {
+    console.error('Sign up error:', error);
     return { error };
   }
 };
@@ -134,10 +166,13 @@ export const handleSignOut = async () => {
  */
 export const checkUsernameAvailability = async (username: string): Promise<boolean> => {
   try {
+    // Normalize the username by trimming whitespace
+    const normalizedUsername = username.trim();
+    
     const { data, error } = await supabase
       .from('profiles')
       .select('id')
-      .eq('username', username)
+      .ilike('username', normalizedUsername)
       .maybeSingle();
       
     if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found

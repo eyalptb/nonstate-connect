@@ -33,10 +33,10 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Looking up email for username: "${username}"`);
+    // Trim whitespace and convert to lowercase for consistent comparison
+    const normalizedUsername = username.trim();
     
-    // Trim the username to handle spaces
-    const trimmedUsername = username.trim();
+    console.log(`Looking up email for username: "${normalizedUsername}"`);
     
     // Create Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
@@ -46,57 +46,72 @@ serve(async (req) => {
     const supabaseClient = createClient(supabaseUrl, supabaseKey);
     
     try {
-      // Check if there are any profiles at all
-      const { data: allProfiles, error: allProfilesError } = await supabaseClient
-        .from('profiles')
-        .select('id, email, username')
-        .limit(10);
-      
-      if (allProfilesError) {
-        console.error('Error fetching profiles:', allProfilesError);
-        return new Response(
-          JSON.stringify({ error: 'Failed to query profiles', details: allProfilesError }),
-          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-      
-      // Log the first few profiles for debugging
-      console.log(`Found ${allProfiles?.length || 0} profiles total`);
-      if (allProfiles && allProfiles.length > 0) {
-        console.log('Sample profiles:');
-        allProfiles.slice(0, 5).forEach(p => console.log(`- ${p.id}: ${p.email} (${p.username || 'no username'})`));
-      } else {
-        console.log('No profiles found in database');
-      }
-      
-      // Try case-insensitive match
+      // First check if the normalized username exists (case insensitive)
+      console.log(`Checking for username with case-insensitive match: "${normalizedUsername}"`);
       const { data: profileData, error: profileError } = await supabaseClient
         .from('profiles')
-        .select('id, email, username')
-        .ilike('username', trimmedUsername);
+        .select('id, username')
+        .ilike('username', normalizedUsername);
       
       if (profileError) {
-        console.error('Error fetching profiles:', profileError);
+        console.error('Error fetching profiles by username:', profileError);
         return new Response(
           JSON.stringify({ error: 'Failed to query profiles', details: profileError }),
           { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
       
-      console.log(`Retrieved ${profileData?.length || 0} profiles matching username "${trimmedUsername}"`);
+      console.log(`Found ${profileData?.length || 0} profiles matching username "${normalizedUsername}" with case-insensitive match`);
       
-      // If match found, return it
       if (profileData && profileData.length > 0) {
+        // Found matching profiles, log them for debugging
+        profileData.forEach((profile, i) => {
+          console.log(`Match ${i + 1}: id=${profile.id}, username=${profile.username}`);
+        });
+        
+        // Use the first match
         const matchedProfile = profileData[0];
-        console.log(`Found profile for username: "${trimmedUsername}" -> ${matchedProfile.email}`);
+        console.log(`Using first match: id=${matchedProfile.id}, username=${matchedProfile.username}`);
+        
+        // Get the email for this user ID from auth.users table via the profiles table
+        const { data: userData, error: userError } = await supabaseClient.auth.admin.getUserById(matchedProfile.id);
+        
+        if (userError || !userData?.user?.email) {
+          console.error('Error fetching user email:', userError || 'No email found');
+          return new Response(
+            JSON.stringify({ error: 'Failed to fetch user email', details: userError }),
+            { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+        
+        console.log(`Found email for username "${matchedProfile.username}": ${userData.user.email}`);
         
         return new Response(
-          JSON.stringify({ id: matchedProfile.id, email: matchedProfile.email }),
+          JSON.stringify({ id: matchedProfile.id, email: userData.user.email }),
           { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
       
-      console.log(`No user found with username: "${trimmedUsername}"`);
+      // If no match found, check if there are any profiles at all
+      const { data: allProfiles, error: allProfilesError } = await supabaseClient
+        .from('profiles')
+        .select('id, username')
+        .limit(10);
+      
+      if (allProfilesError) {
+        console.error('Error fetching all profiles:', allProfilesError);
+      }
+      
+      // Log the first few profiles for debugging
+      console.log(`Found ${allProfiles?.length || 0} profiles total`);
+      if (allProfiles && allProfiles.length > 0) {
+        console.log('Sample profiles:');
+        allProfiles.slice(0, 5).forEach(p => console.log(`- ${p.id}: ${p.username || 'no username'}`));
+      } else {
+        console.log('No profiles found in database');
+      }
+      
+      console.log(`No user found with username: "${normalizedUsername}"`);
       return new Response(
         JSON.stringify({ 
           error: 'Username not found. Please check your username or register.',
