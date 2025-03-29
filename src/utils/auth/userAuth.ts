@@ -103,7 +103,8 @@ export const handleSignUp = async (email: string, password: string, username: st
       email,
       password,
       options: {
-        data: { username }
+        data: { username },
+        emailRedirectTo: `${window.location.origin}/auth/callback`
       }
     });
     
@@ -111,6 +112,17 @@ export const handleSignUp = async (email: string, password: string, username: st
   } catch (error) {
     return { error };
   }
+};
+
+/**
+ * Request a password reset email
+ */
+export const requestPasswordReset = async (email: string) => {
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/auth/callback`
+  });
+  
+  return { data, error };
 };
 
 /**

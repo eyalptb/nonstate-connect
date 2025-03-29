@@ -4,17 +4,53 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Container } from '@/components/ui/container';
 import { Card, CardContent } from '@/components/ui/card';
-import { Loader } from 'lucide-react';
+import { Loader, AlertCircle } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
 const AuthCallback = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [error, setError] = useState<string | null>(null);
+  const [verifying, setVerifying] = useState(true);
 
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
+        // Check if there's a token in the URL for email confirmation
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const type = hashParams.get('type');
+        
+        // Handle email confirmation specifically
+        if (type === 'email_confirmation' || type === 'recovery') {
+          // Let Supabase handle the token automatically
+          const { data, error: verifyError } = await supabase.auth.getSession();
+          
+          if (verifyError) {
+            console.error('Error verifying email:', verifyError);
+            toast({
+              title: type === 'recovery' ? "Password reset failed" : "Email verification failed",
+              description: "The link may have expired or is invalid. Please try again.",
+              variant: "destructive",
+            });
+            
+            setTimeout(() => navigate('/sign-in'), 2000);
+            return;
+          }
+          
+          if (data.session) {
+            toast({
+              title: type === 'recovery' ? "Password reset successful" : "Email verified successfully",
+              description: type === 'recovery' ? "You can now sign in with your new password" : "Your email has been verified",
+            });
+            
+            // For password recovery, send to sign in
+            if (type === 'recovery') {
+              setTimeout(() => navigate('/sign-in'), 1000);
+              return;
+            }
+          }
+        }
+        
         // Get the current session
         const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
         
@@ -87,7 +123,7 @@ const AuthCallback = () => {
         
         setTimeout(() => navigate('/dashboard'), 1000);
       } catch (err) {
-        console.error('Error during OAuth callback:', err);
+        console.error('Error during authentication callback:', err);
         setError('Authentication failed');
         
         toast({
@@ -97,6 +133,8 @@ const AuthCallback = () => {
         });
         
         setTimeout(() => navigate('/sign-in'), 2000);
+      } finally {
+        setVerifying(false);
       }
     };
 
@@ -108,7 +146,10 @@ const AuthCallback = () => {
       <Card className="w-full max-w-md">
         <CardContent className="flex flex-col items-center justify-center p-6">
           {error ? (
-            <p className="text-destructive">{error}</p>
+            <>
+              <AlertCircle className="h-8 w-8 text-destructive mb-4" />
+              <p className="text-destructive">{error}</p>
+            </>
           ) : (
             <>
               <Loader className="animate-spin h-8 w-8 mb-4" />
