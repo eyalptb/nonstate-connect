@@ -113,7 +113,7 @@ export const handleSignUp = async (email: string, password: string, username: st
     const normalizedUsername = username.trim();
     console.log(`Signing up with normalized username: "${normalizedUsername}"`);
     
-    // Check if username is available
+    // Check if username is available (case-insensitive)
     const { data: existingUser, error: usernameError } = await supabase
       .from('profiles')
       .select('id')
