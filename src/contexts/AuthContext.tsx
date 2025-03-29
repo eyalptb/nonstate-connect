@@ -1,10 +1,17 @@
 
 import React, { createContext } from 'react';
 
-// Simplified context with no authentication functionality
+// Add a proper user type with id for TypeScript
+type User = {
+  id: string;
+  name?: string;
+  email?: string;
+};
+
+// Updated context with non-null user id
 type AuthContextType = {
   loading: boolean;
-  user: null;
+  user: User | null;
   isAdmin: boolean;
   signOut: () => void;
 };
@@ -25,6 +32,9 @@ export const useAuth = (): AuthContextType => {
 };
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  // Mock user with id for development
+  const dummyUser = { id: "dummy-user-id" };
+  
   const value = {
     loading: false,
     user: null,

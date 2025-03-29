@@ -28,7 +28,8 @@ const ConversationsList = () => {
 
   // Get the other participant in a conversation (for display purposes)
   const getOtherParticipant = (conversation: Conversation) => {
-    return conversation.participants.find(p => p.user_id !== user?.id);
+    const userId = user?.id || '';
+    return conversation.participants.find(p => p.user_id !== userId);
   };
 
   return (

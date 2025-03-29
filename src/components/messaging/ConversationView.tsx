@@ -21,7 +21,8 @@ const ConversationView = () => {
   const navigate = useNavigate();
 
   const conversation = conversations.find(c => c.id === conversationId);
-  const otherParticipant = participants.find(p => p.user_id !== user?.id);
+  const userId = user?.id || 'guest';
+  const otherParticipant = participants.find(p => p.user_id !== userId);
   
   // Scroll to bottom when new messages arrive
   useEffect(() => {
@@ -109,7 +110,7 @@ const ConversationView = () => {
           </div>
         ) : (
           messages.map((message) => {
-            const isSentByMe = message.sender_id === user?.id;
+            const isSentByMe = message.sender_id === userId;
             return (
               <div
                 key={message.id}

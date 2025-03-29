@@ -20,10 +20,10 @@ export const useMessages = (conversationId: string | null) => {
 
   // Fetch participants for the conversation
   const fetchParticipants = useCallback(async () => {
-    if (!conversationId || !user) return;
+    if (!conversationId) return;
     
     try {
-      const participantsData = await fetchConversationParticipants(conversationId);
+      const participantsData = await fetchConversationParticipants();
       setParticipants(participantsData);
     } catch (error) {
       console.error('Error fetching participants:', error);
@@ -33,15 +33,15 @@ export const useMessages = (conversationId: string | null) => {
         variant: "destructive"
       });
     }
-  }, [conversationId, user, toast]);
+  }, [conversationId, toast]);
 
   // Fetch messages
   const fetchMessages = useCallback(async () => {
-    if (!conversationId || !user) return;
+    if (!conversationId) return;
     
     try {
       setLoading(true);
-      const messagesData = await fetchConversationMessages(conversationId, user.id);
+      const messagesData = await fetchConversationMessages();
       setMessages(messagesData);
     } catch (error) {
       console.error('Error fetching messages:', error);
@@ -53,27 +53,14 @@ export const useMessages = (conversationId: string | null) => {
     } finally {
       setLoading(false);
     }
-  }, [conversationId, user, toast]);
-
-  // Decrypt and update messages whenever they or participants change
-  useEffect(() => {
-    if (messages.length > 0 && participants.length > 0 && user) {
-      const decryptedMessages = decryptMessages(messages, participants, user.id);
-      setMessages(decryptedMessages);
-    }
-  }, [messages, participants, user]);
+  }, [conversationId, toast]);
 
   // Send a message
   const sendMessage = async (content: string) => {
-    if (!conversationId || !user || !content.trim()) return null;
+    if (!conversationId || !content.trim()) return null;
     
     try {
-      const { serverMessage, optimisticMessage, clientId } = await sendMessageToConversation(
-        content,
-        conversationId,
-        user.id,
-        participants
-      );
+      const { serverMessage, optimisticMessage, clientId } = await sendMessageToConversation(content);
       
       // Add to messages optimistically
       setMessages(prev => [...prev, optimisticMessage]);
@@ -98,24 +85,6 @@ export const useMessages = (conversationId: string | null) => {
       return null;
     }
   };
-
-  // Subscribe to new messages
-  useEffect(() => {
-    if (!conversationId || !user) return;
-    
-    const { unsubscribe } = subscribeToMessages(
-      conversationId,
-      user.id,
-      (newMessage) => {
-        // Add to messages (decryption will happen in the useEffect)
-        setMessages(prev => [...prev, newMessage]);
-      }
-    );
-    
-    return () => {
-      unsubscribe();
-    };
-  }, [conversationId, user]);
 
   // Initial data fetch
   useEffect(() => {

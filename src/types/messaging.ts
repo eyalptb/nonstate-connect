@@ -28,3 +28,14 @@ export type Message = {
   blockchain_verification_hash: string | null;
   decrypted_content?: string; // This is added after decryption
 };
+
+export type MessageWithSender = Message & {
+  sender: {
+    id: string;
+    first_name: string | null;
+    last_name: string | null;
+    avatar_url: string | null;
+  };
+};
+
+export type ConversationWithParticipants = Conversation;

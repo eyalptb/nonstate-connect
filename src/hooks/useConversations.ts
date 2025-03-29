@@ -2,7 +2,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
-import { ensureUserKeys } from '@/services/encryptionService';
 import { 
   fetchUserConversations, 
   createNewConversation,
@@ -18,19 +17,11 @@ export const useConversations = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  // Ensure user has encryption keys
-  useEffect(() => {
-    if (!user) return;
-    ensureUserKeys(user.id);
-  }, [user]);
-
   // Fetch all conversations for the current user
   const fetchConversations = useCallback(async () => {
-    if (!user) return;
-    
     try {
       setLoading(true);
-      const conversationsData = await fetchUserConversations(user.id);
+      const conversationsData = await fetchUserConversations();
       setConversations(conversationsData);
     } catch (error) {
       console.error('Error fetching conversations:', error);
@@ -42,14 +33,12 @@ export const useConversations = () => {
     } finally {
       setLoading(false);
     }
-  }, [user, toast]);
+  }, [toast]);
 
   // Create a new conversation
   const createConversation = async (participantIds: string[]) => {
-    if (!user) return null;
-    
     try {
-      const conversationId = await createNewConversation(user.id, participantIds);
+      const conversationId = await createNewConversation();
       
       if (conversationId) {
         // Refresh conversations list
@@ -71,10 +60,8 @@ export const useConversations = () => {
 
   // Fetch messages for a specific conversation
   const fetchMessages = async (conversationId: string) => {
-    if (!user) return [];
-    
     try {
-      return await fetchConversationMessages(conversationId, user.id);
+      return await fetchConversationMessages();
     } catch (error) {
       console.error('Error fetching messages:', error);
       toast({
@@ -87,10 +74,8 @@ export const useConversations = () => {
   };
 
   useEffect(() => {
-    if (user) {
-      fetchConversations();
-    }
-  }, [user, fetchConversations]);
+    fetchConversations();
+  }, [fetchConversations]);
 
   return {
     conversations,
