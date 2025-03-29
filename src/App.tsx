@@ -21,6 +21,9 @@ import { Navbar } from "./components/Navbar";
 import Footer from "./components/Footer";
 import Governance from "./pages/Governance";
 import Admin from "./pages/Admin";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import AuthCallback from "./pages/AuthCallback";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +47,9 @@ function App() {
                 <Route path="/features" element={<Features />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/sign-in" element={<SignIn />} />
+                <Route path="/sign-up" element={<SignUp />} />
+                <Route path="/auth/callback" element={<AuthCallback />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Footer />
