@@ -21,15 +21,12 @@ const ResetPassword = () => {
       
       // Simulate success for demo purposes
       setIsSubmitted(true);
-      toast({
-        title: "Check your email",
-        description: "We've sent you a password reset link",
+      toast.success("Check your email", {
+        description: "We've sent you a password reset link"
       });
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Reset password failed",
-        description: error.message || "An unexpected error occurred",
+      toast.error("Reset password failed", {
+        description: error.message || "An unexpected error occurred"
       });
     } finally {
       setIsLoading(false);
