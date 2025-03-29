@@ -1,6 +1,5 @@
 
 import React, { createContext, useState } from 'react';
-import { ProfileType } from '@/types/auth';
 
 // Simplified context with dummy auth functionality
 type AuthContextType = {
@@ -21,7 +20,7 @@ export const useAuth = (): AuthContextType => {
 };
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   // Dummy sign out function
   const signOut = () => {
