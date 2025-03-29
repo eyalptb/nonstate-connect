@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -31,19 +32,54 @@ const AuthCallback = () => {
           }
         }
         
-        // Check if the user has a username set (important for OAuth users)
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('username')
-          .eq('id', sessionData.session?.user.id || '')
-          .maybeSingle();
+        const userId = sessionData.session?.user.id;
         
-        if (profileError && profileError.code !== 'PGRST116') {
-          console.error('Error fetching profile:', profileError);
+        if (userId) {
+          // Check if the user has a username set (important for OAuth users)
+          const { data: profile, error: profileError } = await supabase
+            .from('profiles')
+            .select('username, role')
+            .eq('id', userId)
+            .maybeSingle();
+          
+          if (profileError && profileError.code !== 'PGRST116') {
+            console.error('Error fetching profile:', profileError);
+          }
+          
+          // Check if this is the first user in the system, if so make them admin
+          const { count, error: countError } = await supabase
+            .from('profiles')
+            .select('*', { count: 'exact', head: true });
+          
+          if (!countError && count === 1 && profile?.role !== 'admin') {
+            // This is the first user - make them an admin
+            const { error: updateError } = await supabase
+              .from('profiles')
+              .update({ role: 'admin' })
+              .eq('id', userId);
+              
+            if (updateError) {
+              console.error('Error setting admin role:', updateError);
+            } else {
+              console.log('First user assigned admin role');
+              toast({
+                title: "Admin role assigned",
+                description: "You have been assigned the admin role as the first user.",
+              });
+            }
+          }
+          
+          // If the user doesn't have a username (typically OAuth users), redirect to set one
+          if (!profile?.username) {
+            toast({
+              title: "Authentication successful",
+              description: "Please set your username to continue",
+            });
+            setTimeout(() => navigate('/set-username'), 1000);
+            return;
+          }
         }
         
-        // If the user doesn't have a username, redirect to a page to set one
-        // Otherwise, redirect to the dashboard
         toast({
           title: "Authentication successful",
           description: "You have been signed in",
