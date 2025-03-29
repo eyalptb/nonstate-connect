@@ -49,7 +49,9 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
         
         // Force redirect to profile page immediately
         console.log("Redirecting to profile for test user...");
-        navigate("/profile");
+        setTimeout(() => {
+          navigate("/profile");
+        }, 500);
         
         setIsLoading(false);
         return;
@@ -66,9 +68,11 @@ export const LoginForm = ({ onSignIn }: LoginFormProps) => {
         description: "Welcome to CollabCoin!"
       });
       
-      // Force immediate redirect to profile page
-      console.log("Redirecting to profile after successful login...");
-      navigate("/profile");
+      // Force immediate redirect to profile page with a slight delay to ensure state updates
+      console.log("Login successful, redirecting to profile after 500ms...");
+      setTimeout(() => {
+        navigate("/profile");
+      }, 500);
       
     } catch (error: any) {
       console.error('Login error:', error);

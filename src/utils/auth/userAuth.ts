@@ -3,10 +3,11 @@ import { supabase } from '@/integrations/supabase/client';
 
 export const handleSignInWithGoogle = async () => {
   try {
+    console.log('Initiating Google sign-in process');
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/dashboard`,
+        redirectTo: `${window.location.origin}/profile`,
       },
     });
     
@@ -30,7 +31,7 @@ export const handleSignInWithEmail = async (email: string, password: string) => 
     if (email.toLowerCase() === '016eyal@gmail.com') {
       console.log('Debug mode: Using special handling for test user email');
       try {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
@@ -43,7 +44,7 @@ export const handleSignInWithEmail = async (email: string, password: string) => 
           return { error };
         }
         
-        console.log('Test user email login successful');
+        console.log('Test user email login successful:', data.user?.email);
         return { error: null };
       } catch (specialError) {
         console.error('Special handling error:', specialError);
@@ -52,6 +53,7 @@ export const handleSignInWithEmail = async (email: string, password: string) => 
     }
     
     // Regular email login
+    console.log('Proceeding with regular email login');
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -62,7 +64,7 @@ export const handleSignInWithEmail = async (email: string, password: string) => 
       return { error };
     }
     
-    console.log('Login successful:', data.user?.email);
+    console.log('Login successful with email:', data.user?.email);
     return { error: null };
   } catch (error) {
     console.error('Error signing in with email:', error);
@@ -85,14 +87,13 @@ export const handleSignInWithUsername = async (username: string, password: strin
     if (trimmedUsername.toLowerCase() === 'jonnycat') {
       console.log('Debug mode: Using test credentials for jonnyCat');
       
-      // For this test user, we'll bypass the normal flow entirely
       const testEmail = '016eyal@gmail.com';
       
       try {
         // Direct login attempt with the known email
         console.log(`Attempting direct login for test user with email: ${testEmail}`);
         
-        const { error: loginError } = await supabase.auth.signInWithPassword({
+        const { data, error: loginError } = await supabase.auth.signInWithPassword({
           email: testEmail,
           password,
         });
@@ -114,7 +115,7 @@ export const handleSignInWithUsername = async (username: string, password: strin
           return { error: new Error(`Login failed: ${loginError.message || 'Unknown error'}`) };
         }
         
-        console.log('Login successful for test user jonnyCat');
+        console.log('Login successful for test user jonnyCat:', data.user?.email);
         return { error: null };
       } catch (innerError) {
         console.error('Unexpected error in jonnyCat login handler:', innerError);
@@ -169,7 +170,7 @@ export const handleSignInWithUsername = async (username: string, password: strin
       console.log(`Found email for username: "${trimmedUsername}", attempting login with email: ${data.email}`);
       
       // Now sign in with the email
-      const { error: loginError } = await supabase.auth.signInWithPassword({
+      const { data: userData, error: loginError } = await supabase.auth.signInWithPassword({
         email: data.email,
         password,
       });
@@ -182,7 +183,7 @@ export const handleSignInWithUsername = async (username: string, password: strin
         return { error: new Error('Incorrect password. Please try again.') };
       }
       
-      console.log('Login successful with username:', trimmedUsername);
+      console.log('Login successful with username:', trimmedUsername, 'email:', userData?.user?.email);
       return { error: null };
     } catch (error) {
       console.error('Error in username lookup:', error);
@@ -195,5 +196,6 @@ export const handleSignInWithUsername = async (username: string, password: strin
 };
 
 export const handleSignOut = async () => {
+  console.log('Signing out user');
   return await supabase.auth.signOut();
 };
