@@ -4,9 +4,17 @@ import { useNavigate } from "react-router-dom";
 import TokenWallet from "@/components/TokenWallet";
 import ProjectContribution from "@/components/ProjectContribution";
 import TokenMarketplace from "@/components/TokenMarketplace";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  
+  // Get the display name (username, email, or fallback to "Guest")
+  const displayName = user?.username || user?.email?.split('@')[0] || "Guest";
+  
+  // Get the first letter for the avatar
+  const firstLetter = displayName.charAt(0).toUpperCase();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -15,11 +23,11 @@ const Dashboard = () => {
           <div className="flex items-center gap-4 mb-8">
             <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
               <div className="h-14 w-14 rounded-full bg-primary/20 flex items-center justify-center text-xl font-medium text-primary">
-                G
+                {firstLetter}
               </div>
             </div>
             <div>
-              <h1 className="text-2xl font-bold">Welcome, Guest</h1>
+              <h1 className="text-2xl font-bold">Welcome, {displayName}</h1>
               <p className="text-muted-foreground">Your secure collaboration dashboard</p>
             </div>
           </div>
