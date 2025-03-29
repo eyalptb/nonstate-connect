@@ -1,27 +1,19 @@
-
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import TokenWallet from "@/components/TokenWallet";
 import ProjectContribution from "@/components/ProjectContribution";
 import TokenMarketplace from "@/components/TokenMarketplace";
 import { useAuth } from "@/contexts/AuthContext";
-import { LogOut } from "lucide-react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   
   // Get the display name (username, email, or fallback to "Guest")
   const displayName = user?.username || user?.email?.split('@')[0] || "Guest";
   
   // Get the first letter for the avatar
   const firstLetter = displayName.charAt(0).toUpperCase();
-
-  const handleSignOut = async () => {
-    await signOut();
-    console.log("Sign out clicked"); // Debug log
-    // The navigation to home page is handled in the AuthContext's signOut function
-  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -39,14 +31,6 @@ const Dashboard = () => {
                 <p className="text-muted-foreground">Your secure collaboration dashboard</p>
               </div>
             </div>
-            <Button 
-              onClick={handleSignOut} 
-              variant="outline" 
-              className="flex items-center gap-2"
-            >
-              <LogOut className="h-4 w-4" />
-              Sign Out
-            </Button>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">

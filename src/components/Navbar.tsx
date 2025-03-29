@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -79,7 +78,6 @@ export function Navbar({ mainNav: propMainNav }: NavbarProps) {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // Get user initials for avatar
   const getUserInitials = () => {
     if (!user) return "U";
     
@@ -96,6 +94,11 @@ export function Navbar({ mainNav: propMainNav }: NavbarProps) {
     }
     
     return "U";
+  };
+
+  const handleSignOut = async () => {
+    console.log("Sign out clicked");
+    await signOut();
   };
 
   return (
@@ -128,6 +131,70 @@ export function Navbar({ mainNav: propMainNav }: NavbarProps) {
           <div className="flex items-center gap-4">
             <ModeToggle />
             {user ? (
+              <div className="flex items-center gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">{user.username || user.email}</p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {user.email}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem asChild>
+                        <Link to="/profile">
+                          <User className="mr-2 h-4 w-4" />
+                          <span>Profile</span>
+                        </Link>
+                      </DropdownMenuItem>
+                      {isAdmin && (
+                        <DropdownMenuItem asChild>
+                          <Link to="/admin">
+                            <Shield className="mr-2 h-4 w-4" />
+                            <span>Admin</span>
+                          </Link>
+                        </DropdownMenuItem>
+                      )}
+                      <DropdownMenuItem asChild>
+                        <Link to="/settings">
+                          <Settings className="mr-2 h-4 w-4" />
+                          <span>Settings</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => signOut()}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button onClick={handleSignOut} variant="default" size="sm" className="flex items-center gap-2">
+                  <LogOut className="h-4 w-4" />
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <Button asChild variant="default" size="sm">
+                <Link to="/sign-in">Sign In</Link>
+              </Button>
+            )}
+          </div>
+        </div>
+        <div className="md:hidden flex items-center gap-4">
+          <ModeToggle />
+          {user ? (
+            <div className="flex items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
@@ -175,63 +242,11 @@ export function Navbar({ mainNav: propMainNav }: NavbarProps) {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            ) : (
-              <Button asChild variant="default" size="sm">
-                <Link to="/sign-in">Sign In</Link>
+              <Button onClick={handleSignOut} variant="default" size="sm" className="flex items-center gap-2">
+                <LogOut className="h-4 w-4" />
+                Sign Out
               </Button>
-            )}
-          </div>
-        </div>
-        <div className="md:hidden flex items-center gap-4">
-          <ModeToggle />
-          {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback>{getUserInitials()}</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{user.username || user.email}</p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      {user.email}
-                    </p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem asChild>
-                    <Link to="/profile">
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  {isAdmin && (
-                    <DropdownMenuItem asChild>
-                      <Link to="/admin">
-                        <Shield className="mr-2 h-4 w-4" />
-                        <span>Admin</span>
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem asChild>
-                    <Link to="/settings">
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>Settings</span>
-                    </Link>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => signOut()}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            </div>
           ) : (
             <Button asChild variant="default" size="sm">
               <Link to="/sign-in">Sign In</Link>
