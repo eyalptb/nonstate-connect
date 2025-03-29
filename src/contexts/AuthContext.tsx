@@ -4,12 +4,17 @@ import React, { createContext, useState } from 'react';
 // Simplified context with dummy auth functionality
 type AuthContextType = {
   loading: boolean;
-  user: { id: string }; // Dummy user with id
+  user: { id: string } | null; // Updated to allow null
   isAdmin: boolean;
   signOut: () => void;
 };
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType>({
+  loading: false,
+  user: null,
+  isAdmin: false,
+  signOut: () => console.log('Sign out function called - does nothing currently')
+});
 
 export const useAuth = (): AuthContextType => {
   const context = React.useContext(AuthContext);
