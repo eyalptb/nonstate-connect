@@ -38,21 +38,6 @@ serve(async (req) => {
     // Trim the username to handle spaces
     const trimmedUsername = username.trim();
     
-    // Special handling for superCat test user - case insensitive check
-    if (trimmedUsername.toLowerCase() === 'supercat') {
-      console.log('Debug mode: Found test user superCat');
-      
-      // For this test user, we'll return the email directly without querying the database
-      return new Response(
-        JSON.stringify({ 
-          id: 'test-user-id', 
-          email: 'supercat@test.com' 
-        }),
-        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-    
-    // For non-test users, continue with regular database lookup
     // Create Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
     const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY') ?? '';

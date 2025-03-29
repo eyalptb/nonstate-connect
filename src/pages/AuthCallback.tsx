@@ -74,35 +74,12 @@ const AuthCallback = () => {
           // Check if the user has a username set (important for OAuth users)
           const { data: profile, error: profileError } = await supabase
             .from('profiles')
-            .select('username, role')
+            .select('username')
             .eq('id', userId)
             .maybeSingle();
           
           if (profileError && profileError.code !== 'PGRST116') {
             console.error('Error fetching profile:', profileError);
-          }
-          
-          // Check if this is the first user in the system, if so make them admin
-          const { count, error: countError } = await supabase
-            .from('profiles')
-            .select('*', { count: 'exact', head: true });
-          
-          if (!countError && count === 1 && profile?.role !== 'admin') {
-            // This is the first user - make them an admin
-            const { error: updateError } = await supabase
-              .from('profiles')
-              .update({ role: 'admin' })
-              .eq('id', userId);
-              
-            if (updateError) {
-              console.error('Error setting admin role:', updateError);
-            } else {
-              console.log('First user assigned admin role');
-              toast({
-                title: "Admin role assigned",
-                description: "You have been assigned the admin role as the first user.",
-              });
-            }
           }
           
           // If the user doesn't have a username (typically OAuth users), redirect to set one
