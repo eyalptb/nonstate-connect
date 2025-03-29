@@ -17,14 +17,15 @@ const SignIn = () => {
       <div className="w-full max-w-md space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl text-center">Authentication Disabled</CardTitle>
+            <CardTitle className="text-2xl text-center">Authentication Removed</CardTitle>
             <CardDescription className="text-center">
-              The login functionality is currently being rebuilt
+              Authentication has been completely removed
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center">
             <p className="mb-4 text-center text-muted-foreground">
-              Authentication has been temporarily disabled. Please check back later.
+              The authentication system has been temporarily removed as requested.
+              It will be rebuilt according to new requirements.
             </p>
             <Button onClick={handleRedirectHome}>
               Return to Home

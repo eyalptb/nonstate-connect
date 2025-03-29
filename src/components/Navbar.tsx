@@ -91,6 +91,7 @@ export function Navbar({ mainNav: propMainNav }: NavbarProps) {
             ) : null}
           </nav>
           <ModeToggle />
+          {/* Sign In button is still present but will just show the SignIn component */}
           <Button asChild variant="default" size="sm">
             <Link to="/sign-in">
               Sign In

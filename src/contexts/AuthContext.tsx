@@ -2,12 +2,12 @@
 import React, { createContext, useState } from 'react';
 import { ProfileType } from '@/types/auth';
 
-// Expanded context with dummy auth functionality
+// Simplified context with dummy auth functionality
 type AuthContextType = {
   loading: boolean;
-  user: null; // Always null for now
-  isAdmin: boolean; // Always false for now
-  signOut: () => void; // Dummy function
+  user: { id: string }; // Dummy user with id
+  isAdmin: boolean;
+  signOut: () => void;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -30,8 +30,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const value = {
     loading,
-    user: null, // Always null for now
-    isAdmin: false, // Always false for now
+    user: { id: 'dummy-user-id' }, // Dummy user with id
+    isAdmin: false,
     signOut
   };
 

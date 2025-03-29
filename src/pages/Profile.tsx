@@ -16,11 +16,11 @@ const Profile = () => {
       
       <Card>
         <CardHeader>
-          <CardTitle>Authentication Required</CardTitle>
-          <CardDescription>Login functionality is being rebuilt</CardDescription>
+          <CardTitle>Authentication Removed</CardTitle>
+          <CardDescription>Authentication has been completely removed</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="mb-4">The authentication system is currently being rebuilt. Please check back later.</p>
+          <p className="mb-4">The authentication system has been temporarily removed as requested.</p>
           <Button onClick={handleNavigateHome}>Return to Home</Button>
         </CardContent>
       </Card>
