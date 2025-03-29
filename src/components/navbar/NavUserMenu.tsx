@@ -1,0 +1,109 @@
+
+import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { 
+  Avatar, 
+  AvatarFallback 
+} from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { LogOut, User, Settings, Shield } from "lucide-react";
+
+export function NavUserMenu() {
+  const { user, isAdmin, signOut } = useAuth();
+  
+  const getUserInitials = () => {
+    if (!user) return "U";
+    
+    if (user.username) {
+      return user.username.substring(0, 1).toUpperCase();
+    }
+    
+    if (user.name) {
+      return user.name.substring(0, 1).toUpperCase();
+    }
+    
+    if (user.email) {
+      return user.email.substring(0, 1).toUpperCase();
+    }
+    
+    return "U";
+  };
+
+  const handleSignOut = async () => {
+    console.log("Sign out clicked");
+    await signOut();
+  };
+
+  if (!user) {
+    return (
+      <Button asChild variant="default" size="sm">
+        <Link to="/sign-in">Sign In</Link>
+      </Button>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+            <Avatar className="h-8 w-8">
+              <AvatarFallback>{getUserInitials()}</AvatarFallback>
+            </Avatar>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56" align="end" forceMount>
+          <DropdownMenuLabel className="font-normal">
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm font-medium leading-none">{user.username || user.email}</p>
+              <p className="text-xs leading-none text-muted-foreground">
+                {user.email}
+              </p>
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem asChild>
+              <Link to="/profile">
+                <User className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+              </Link>
+            </DropdownMenuItem>
+            {isAdmin && (
+              <DropdownMenuItem asChild>
+                <Link to="/admin">
+                  <Shield className="mr-2 h-4 w-4" />
+                  <span>Admin</span>
+                </Link>
+              </DropdownMenuItem>
+            )}
+            <DropdownMenuItem asChild>
+              <Link to="/settings">
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Settings</span>
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={handleSignOut}>
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Log out</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <Button onClick={handleSignOut} variant="default" size="sm" className="flex items-center gap-2">
+        <LogOut className="h-4 w-4" />
+        Sign Out
+      </Button>
+    </div>
+  );
+}
