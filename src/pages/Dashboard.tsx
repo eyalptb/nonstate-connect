@@ -1,6 +1,4 @@
 
-import { useEffect } from "react";
-import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import TokenWallet from "@/components/TokenWallet";
@@ -8,24 +6,7 @@ import ProjectContribution from "@/components/ProjectContribution";
 import TokenMarketplace from "@/components/TokenMarketplace";
 
 const Dashboard = () => {
-  const { user, profile, loading, signOut } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate("/sign-in");
-    }
-  }, [loading, user, navigate]);
-
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
-
-  if (!user) {
-    return null; // Will be redirected by the useEffect
-  }
-
-  const firstName = profile?.first_name || user.email?.split('@')[0] || 'User';
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -33,20 +14,12 @@ const Dashboard = () => {
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-4 mb-8">
             <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-              {profile?.avatar_url ? (
-                <img 
-                  src={profile.avatar_url} 
-                  alt={firstName} 
-                  className="h-14 w-14 rounded-full object-cover"
-                />
-              ) : (
-                <div className="h-14 w-14 rounded-full bg-primary/20 flex items-center justify-center text-xl font-medium text-primary">
-                  {firstName[0].toUpperCase()}
-                </div>
-              )}
+              <div className="h-14 w-14 rounded-full bg-primary/20 flex items-center justify-center text-xl font-medium text-primary">
+                G
+              </div>
             </div>
             <div>
-              <h1 className="text-2xl font-bold">Welcome, {firstName}</h1>
+              <h1 className="text-2xl font-bold">Welcome, Guest</h1>
               <p className="text-muted-foreground">Your secure collaboration dashboard</p>
             </div>
           </div>
