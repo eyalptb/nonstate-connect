@@ -1,5 +1,6 @@
 
-import { Platform } from '@capacitor/core';
+// Using device detection instead of Capacitor Platform API
+import i18next from 'i18next';
 
 export interface PlatformTranslation {
   android: string | null;
@@ -9,7 +10,8 @@ export interface PlatformTranslation {
 
 export async function getPlatformTranslation(key: string, language: string = 'en'): Promise<string | null> {
   try {
-    const platform = await Platform.getName();
+    // Use simple platform detection instead of Capacitor
+    const platform = detectPlatform();
     
     // Default to web translations
     let translation = null;
@@ -29,8 +31,7 @@ export async function getPlatformTranslation(key: string, language: string = 'en
     // Fall back to web translations if platform-specific not found
     if (!translation) {
       // Get from i18next
-      const i18next = await import('i18next');
-      translation = i18next.default.t(key);
+      translation = i18next.t(key);
     }
     
     return translation;
@@ -40,21 +41,34 @@ export async function getPlatformTranslation(key: string, language: string = 'en
   }
 }
 
+// Simple platform detection function that doesn't rely on Capacitor
+function detectPlatform(): 'android' | 'ios' | 'web' {
+  const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera || '';
+  
+  // Check for iOS
+  if (/iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream) {
+    return 'ios';
+  }
+  
+  // Check for Android
+  if (/android/i.test(userAgent)) {
+    return 'android';
+  }
+  
+  // Default to web
+  return 'web';
+}
+
 // Helper function to determine if we're running on a mobile platform
 export async function isMobilePlatform(): Promise<boolean> {
-  try {
-    const platform = await Platform.getName();
-    return platform === 'android' || platform === 'ios';
-  } catch {
-    return false;
-  }
+  const platform = detectPlatform();
+  return platform === 'android' || platform === 'ios';
 }
 
 // Helper to get the current device language
 export async function getDeviceLanguage(): Promise<string> {
   try {
-    // This is a simplified implementation
-    // In a real app, you would use Capacitor's Device API
+    // Use browser's navigator language
     return navigator.language.split('-')[0] || 'en';
   } catch {
     return 'en';
