@@ -1,0 +1,45 @@
+
+/* App Common */
+"app_name" = "ParaCollab";
+"welcome" = "Welcome to ParaCollab";
+"loading" = "Loading...";
+"error" = "An error occurred";
+"not_found" = "Page not found";
+"back" = "Back";
+"save" = "Save";
+"cancel" = "Cancel";
+"delete" = "Delete";
+"edit" = "Edit";
+"create" = "Create";
+"submit" = "Submit";
+"confirm" = "Confirm";
+
+/* Auth */
+"sign_in" = "Sign In";
+"sign_up" = "Sign Up";
+"sign_out" = "Sign Out";
+"forgot_password" = "Forgot Password?";
+"reset_password" = "Reset Password";
+"username" = "Username";
+"email" = "Email";
+"password" = "Password";
+"confirm_password" = "Confirm Password";
+
+/* Navigation */
+"home" = "Home";
+"features" = "Features";
+"impact" = "Impact";
+"funding" = "Funding";
+"dashboard" = "Dashboard";
+"messaging" = "Messaging";
+"integration_hub" = "Integration Hub";
+"governance" = "Governance";
+"profile" = "Profile";
+"admin" = "Admin";
+"settings" = "Settings";
+
+/* Wallet */
+"wallet_title" = "CollabCoin Wallet";
+"wallet_description" = "Your tokenized incentives";
+"collab_coins" = "CollabCoins";
+"wallet_earn" = "Earn through collaboration and spend on premium features";

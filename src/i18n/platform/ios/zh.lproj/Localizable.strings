@@ -1,0 +1,45 @@
+
+/* App Common */
+"app_name" = "ParaCollab";
+"welcome" = "欢迎来到 ParaCollab";
+"loading" = "加载中...";
+"error" = "发生错误";
+"not_found" = "页面未找到";
+"back" = "返回";
+"save" = "保存";
+"cancel" = "取消";
+"delete" = "删除";
+"edit" = "编辑";
+"create" = "创建";
+"submit" = "提交";
+"confirm" = "确认";
+
+/* Auth */
+"sign_in" = "登录";
+"sign_up" = "注册";
+"sign_out" = "退出";
+"forgot_password" = "忘记密码？";
+"reset_password" = "重置密码";
+"username" = "用户名";
+"email" = "电子邮件";
+"password" = "密码";
+"confirm_password" = "确认密码";
+
+/* Navigation */
+"home" = "首页";
+"features" = "功能";
+"impact" = "影响力";
+"funding" = "资金";
+"dashboard" = "仪表盘";
+"messaging" = "消息";
+"integration_hub" = "集成中心";
+"governance" = "治理";
+"profile" = "个人资料";
+"admin" = "管理";
+"settings" = "设置";
+
+/* Wallet */
+"wallet_title" = "CollabCoin 钱包";
+"wallet_description" = "您的代币激励";
+"collab_coins" = "CollabCoin 币";
+"wallet_earn" = "通过协作赚取并用于高级功能";

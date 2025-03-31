@@ -1,0 +1,47 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ParaCollab</string>
+    <string name="welcome">欢迎来到 ParaCollab</string>
+    <string name="loading">加载中...</string>
+    <string name="error">发生错误</string>
+    <string name="not_found">页面未找到</string>
+    <string name="back">返回</string>
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+    <string name="delete">删除</string>
+    <string name="edit">编辑</string>
+    <string name="create">创建</string>
+    <string name="submit">提交</string>
+    <string name="confirm">确认</string>
+    
+    <!-- Auth strings -->
+    <string name="sign_in">登录</string>
+    <string name="sign_up">注册</string>
+    <string name="sign_out">退出</string>
+    <string name="forgot_password">忘记密码？</string>
+    <string name="reset_password">重置密码</string>
+    <string name="username">用户名</string>
+    <string name="email">电子邮件</string>
+    <string name="password">密码</string>
+    <string name="confirm_password">确认密码</string>
+    
+    <!-- Navigation -->
+    <string name="home">首页</string>
+    <string name="features">功能</string>
+    <string name="impact">影响力</string>
+    <string name="funding">资金</string>
+    <string name="dashboard">仪表盘</string>
+    <string name="messaging">消息</string>
+    <string name="integration_hub">集成中心</string>
+    <string name="governance">治理</string>
+    <string name="profile">个人资料</string>
+    <string name="admin">管理</string>
+    <string name="settings">设置</string>
+    
+    <!-- Wallet -->
+    <string name="wallet_title">CollabCoin 钱包</string>
+    <string name="wallet_description">您的代币激励</string>
+    <string name="collab_coins">CollabCoin 币</string>
+    <string name="wallet_earn">通过协作赚取并用于高级功能</string>
+</resources>

@@ -1,0 +1,22 @@
+
+{
+  "appName": "ParaCollab",
+  "welcome": "欢迎来到 ParaCollab",
+  "loading": "加载中...",
+  "error": "发生错误",
+  "notFound": "页面未找到",
+  "back": "返回",
+  "save": "保存",
+  "cancel": "取消",
+  "delete": "删除",
+  "edit": "编辑",
+  "create": "创建",
+  "submit": "提交",
+  "confirm": "确认",
+  "wallet": {
+    "title": "CollabCoin 钱包",
+    "description": "您的代币激励",
+    "coins": "CollabCoin 币",
+    "earn": "通过协作赚取并用于高级功能"
+  }
+}

@@ -3,35 +3,35 @@ import { MainNavItem } from "./NavLinks";
 
 export const defaultMainNav: MainNavItem[] = [
   {
-    title: "Home",
+    translationKey: "home",
     href: "/",
   },
   {
-    title: "Features",
+    translationKey: "features",
     href: "/features",
   },
   {
-    title: "Impact",
+    translationKey: "impact",
     href: "/impact",
   },
   {
-    title: "Funding",
+    translationKey: "funding",
     href: "/funding",
   },
   {
-    title: "Dashboard",
+    translationKey: "dashboard",
     href: "/dashboard",
   },
   {
-    title: "Messaging",
+    translationKey: "messaging",
     href: "/messaging",
   },
   {
-    title: "Integration Hub",
+    translationKey: "integrationHub",
     href: "/integration-hub",
   },
   {
-    title: "Governance",
+    translationKey: "governance",
     href: "/governance",
   },
 ];

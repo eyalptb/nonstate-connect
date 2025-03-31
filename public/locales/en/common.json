@@ -1,0 +1,22 @@
+
+{
+  "appName": "ParaCollab",
+  "welcome": "Welcome to ParaCollab",
+  "loading": "Loading...",
+  "error": "An error occurred",
+  "notFound": "Page not found",
+  "back": "Back",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "create": "Create",
+  "submit": "Submit",
+  "confirm": "Confirm",
+  "wallet": {
+    "title": "CollabCoin Wallet",
+    "description": "Your tokenized incentives",
+    "coins": "CollabCoins",
+    "earn": "Earn through collaboration and spend on premium features"
+  }
+}

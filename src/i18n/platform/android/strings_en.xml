@@ -1,0 +1,47 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ParaCollab</string>
+    <string name="welcome">Welcome to ParaCollab</string>
+    <string name="loading">Loading...</string>
+    <string name="error">An error occurred</string>
+    <string name="not_found">Page not found</string>
+    <string name="back">Back</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="create">Create</string>
+    <string name="submit">Submit</string>
+    <string name="confirm">Confirm</string>
+    
+    <!-- Auth strings -->
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    
+    <!-- Navigation -->
+    <string name="home">Home</string>
+    <string name="features">Features</string>
+    <string name="impact">Impact</string>
+    <string name="funding">Funding</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="messaging">Messaging</string>
+    <string name="integration_hub">Integration Hub</string>
+    <string name="governance">Governance</string>
+    <string name="profile">Profile</string>
+    <string name="admin">Admin</string>
+    <string name="settings">Settings</string>
+    
+    <!-- Wallet -->
+    <string name="wallet_title">CollabCoin Wallet</string>
+    <string name="wallet_description">Your tokenized incentives</string>
+    <string name="collab_coins">CollabCoins</string>
+    <string name="wallet_earn">Earn through collaboration and spend on premium features</string>
+</resources>

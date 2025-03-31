@@ -2,9 +2,10 @@
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 export interface MainNavItem {
-  title: string;
+  translationKey: string;
   href: string;
   disabled?: boolean;
 }
@@ -16,6 +17,7 @@ interface NavLinksProps {
 
 export function NavLinks({ items, isMobile = false }: NavLinksProps) {
   const location = useLocation();
+  const { t } = useTranslation("navigation");
 
   if (!items?.length) {
     return null;
@@ -35,7 +37,7 @@ export function NavLinks({ items, isMobile = false }: NavLinksProps) {
             location.pathname === item.href && "text-primary font-semibold"
           )}
         >
-          {item.title}
+          {t(item.translationKey)}
         </Link>
       ))}
     </nav>

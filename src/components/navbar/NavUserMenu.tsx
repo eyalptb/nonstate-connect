@@ -1,6 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 import { 
   Avatar, 
   AvatarFallback 
@@ -19,6 +20,7 @@ import { LogOut, User, Settings, Shield } from "lucide-react";
 
 export function NavUserMenu() {
   const { user, isAdmin, signOut } = useAuth();
+  const { t } = useTranslation(["auth", "navigation"]);
   
   const getUserInitials = () => {
     if (!user) return "U";
@@ -46,7 +48,7 @@ export function NavUserMenu() {
   if (!user) {
     return (
       <Button asChild variant="default" size="sm">
-        <Link to="/sign-in">Sign In</Link>
+        <Link to="/sign-in">{t("signIn", { ns: "auth" })}</Link>
       </Button>
     );
   }
@@ -75,34 +77,34 @@ export function NavUserMenu() {
             <DropdownMenuItem asChild>
               <Link to="/profile">
                 <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
+                <span>{t("profile", { ns: "navigation" })}</span>
               </Link>
             </DropdownMenuItem>
             {isAdmin && (
               <DropdownMenuItem asChild>
                 <Link to="/admin">
                   <Shield className="mr-2 h-4 w-4" />
-                  <span>Admin</span>
+                  <span>{t("admin", { ns: "navigation" })}</span>
                 </Link>
               </DropdownMenuItem>
             )}
             <DropdownMenuItem asChild>
               <Link to="/settings">
                 <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
+                <span>{t("settings", { ns: "navigation" })}</span>
               </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={handleSignOut}>
             <LogOut className="mr-2 h-4 w-4" />
-            <span>Log out</span>
+            <span>{t("signOut", { ns: "auth" })}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       <Button onClick={handleSignOut} variant="default" size="sm" className="flex items-center gap-2">
         <LogOut className="h-4 w-4" />
-        Sign Out
+        {t("signOut", { ns: "auth" })}
       </Button>
     </div>
   );
