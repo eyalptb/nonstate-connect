@@ -12,6 +12,8 @@ import {
   ProposalDetail,
   Features,
   Profile,
+  Projects,
+  ProjectDetail
 } from "./pages";
 import { AuthProvider } from "./contexts/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -50,6 +52,8 @@ function App() {
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/projects" element={<Projects />} />
+                <Route path="/projects/:projectId" element={<ProjectDetail />} />
                 <Route path="/sign-in" element={<SignIn />} />
                 <Route path="/sign-up" element={<SignUp />} />
                 <Route path="/auth/callback" element={<AuthCallback />} />

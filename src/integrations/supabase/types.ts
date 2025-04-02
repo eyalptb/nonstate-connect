@@ -9,6 +9,47 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      contribution_zones: {
+        Row: {
+          assigned_user_id: string | null
+          created_at: string
+          expected_outputs: string | null
+          id: string
+          inputs: Json | null
+          project_id: string
+          task_description: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_user_id?: string | null
+          created_at?: string
+          expected_outputs?: string | null
+          id?: string
+          inputs?: Json | null
+          project_id: string
+          task_description: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_user_id?: string | null
+          created_at?: string
+          expected_outputs?: string | null
+          id?: string
+          inputs?: Json | null
+          project_id?: string
+          task_description?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contribution_zones_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       conversation_participants: {
         Row: {
           conversation_id: string
@@ -109,6 +150,38 @@ export type Database = {
           },
         ]
       }
+      outputs: {
+        Row: {
+          file_url: string | null
+          id: string
+          submitted_at: string
+          submitted_by: string
+          zone_id: string
+        }
+        Insert: {
+          file_url?: string | null
+          id?: string
+          submitted_at?: string
+          submitted_by: string
+          zone_id: string
+        }
+        Update: {
+          file_url?: string | null
+          id?: string
+          submitted_at?: string
+          submitted_by?: string
+          zone_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "outputs_zone_id_fkey"
+            columns: ["zone_id"]
+            isOneToOne: false
+            referencedRelation: "contribution_zones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -130,6 +203,33 @@ export type Database = {
           role?: string | null
           updated_at?: string | null
           username?: string | null
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          owner_id?: string
+          updated_at?: string
         }
         Relationships: []
       }
