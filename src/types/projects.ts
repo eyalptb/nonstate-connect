@@ -26,3 +26,26 @@ export type Output = {
   submitted_by: string;
   submitted_at: string;
 };
+
+// Adding database type definitions for Supabase
+export type Database = {
+  public: {
+    Tables: {
+      projects: {
+        Row: Project;
+        Insert: Omit<Project, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<Project, 'id' | 'created_at' | 'updated_at'>>;
+      };
+      contribution_zones: {
+        Row: ContributionZone;
+        Insert: Omit<ContributionZone, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<ContributionZone, 'id' | 'created_at' | 'updated_at'>>;
+      };
+      outputs: {
+        Row: Output;
+        Insert: Omit<Output, 'id' | 'submitted_at'>;
+        Update: Partial<Omit<Output, 'id' | 'submitted_at'>>;
+      };
+    };
+  };
+};

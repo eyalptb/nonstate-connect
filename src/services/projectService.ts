@@ -14,7 +14,7 @@ export const fetchUserProjects = async (): Promise<Project[]> => {
     throw error;
   }
   
-  return data || [];
+  return data as Project[] || [];
 };
 
 export const fetchProjectById = async (projectId: string): Promise<Project | null> => {
@@ -29,15 +29,23 @@ export const fetchProjectById = async (projectId: string): Promise<Project | nul
     throw error;
   }
   
-  return data;
+  return data as Project;
 };
 
 export const createProject = async (
   projectData: Pick<Project, "name" | "description">
 ): Promise<Project> => {
+  // Get the current user's ID
+  const { data: sessionData } = await supabase.auth.getSession();
+  const userId = sessionData.session?.user.id;
+  
+  if (!userId) {
+    throw new Error("User not authenticated");
+  }
+
   const { data, error } = await supabase
     .from("projects")
-    .insert([projectData])
+    .insert([{ ...projectData, owner_id: userId }])
     .select()
     .single();
     
@@ -46,7 +54,7 @@ export const createProject = async (
     throw error;
   }
   
-  return data;
+  return data as Project;
 };
 
 export const updateProject = async (
@@ -65,7 +73,7 @@ export const updateProject = async (
     throw error;
   }
   
-  return data;
+  return data as Project;
 };
 
 // Contribution Zone functions
@@ -81,7 +89,7 @@ export const fetchProjectZones = async (projectId: string): Promise<Contribution
     throw error;
   }
   
-  return data || [];
+  return data as ContributionZone[] || [];
 };
 
 export const createContributionZone = async (
@@ -98,7 +106,7 @@ export const createContributionZone = async (
     throw error;
   }
   
-  return data;
+  return data as ContributionZone;
 };
 
 // Output functions
@@ -114,15 +122,23 @@ export const fetchZoneOutputs = async (zoneId: string): Promise<Output[]> => {
     throw error;
   }
   
-  return data || [];
+  return data as Output[] || [];
 };
 
 export const submitOutput = async (
   outputData: Pick<Output, "zone_id" | "file_url">
 ): Promise<Output> => {
+  // Get the current user's ID
+  const session = await supabase.auth.getSession();
+  const userId = session?.data?.session?.user?.id;
+  
+  if (!userId) {
+    throw new Error("User not authenticated");
+  }
+  
   const { data, error } = await supabase
     .from("outputs")
-    .insert([outputData])
+    .insert([{ ...outputData, submitted_by: userId }])
     .select()
     .single();
     
@@ -131,5 +147,5 @@ export const submitOutput = async (
     throw error;
   }
   
-  return data;
+  return data as Output;
 };
