@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import TokenWallet from "@/components/TokenWallet";
 import ProjectContribution from "@/components/ProjectContribution";
 import TokenMarketplace from "@/components/TokenMarketplace";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/auth";
 
 const Dashboard = () => {
   const navigate = useNavigate();

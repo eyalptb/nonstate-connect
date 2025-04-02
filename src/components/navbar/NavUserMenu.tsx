@@ -1,6 +1,5 @@
-
 import { Link } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/auth";
 import { useTranslation } from "react-i18next";
 import { 
   Avatar, 
