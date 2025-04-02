@@ -1,371 +1,45 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { GoogleIcon, AppleIcon } from "@/components/auth/AuthIcons";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
-import { Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { isEmailFormat } from "@/utils/auth/userAuth";
+import { SignInForm } from "@/components/auth/SignInForm";
+import { SignUpForm } from "@/components/auth/SignUpForm";
+import { SocialSignIn } from "@/components/auth/SocialSignIn";
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
-  
-  // Form states
-  const [isLoading, setIsLoading] = useState(false);
-  const [identifier, setIdentifier] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [signUpPassword, setSignUpPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  
-  // Username availability check
-  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
-  const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean | null>(null);
-  
-  const handleUsernameChange = async (value: string) => {
-    setUsername(value);
-    
-    if (value.length < 3) {
-      setIsUsernameAvailable(null);
-      return;
-    }
-    
-    setIsCheckingUsername(true);
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('username', value)
-        .maybeSingle();
-        
-      setIsUsernameAvailable(!data);
-    } catch (error) {
-      console.error("Error checking username:", error);
-    } finally {
-      setIsCheckingUsername(false);
-    }
-  };
-
-  // Handle sign in with email/username and password
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!identifier || !password) {
-      toast({
-        title: "Error",
-        description: "Please enter your email/username and password",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    setIsLoading(true);
-    
-    try {
-      console.log(`Starting sign-in process with identifier: ${identifier}`);
-      
-      let signInResult;
-      
-      // Check if identifier is an email or username
-      if (isEmailFormat(identifier)) {
-        console.log('Identifier is an email address, signing in with email');
-        signInResult = await supabase.auth.signInWithPassword({
-          email: identifier,
-          password,
-        });
-      } else {
-        console.log('Identifier is not an email address, treating as username');
-        // Use the username-lookup edge function directly
-        const { data: lookupData, error: lookupError } = await supabase.functions.invoke('username-lookup', {
-          body: { username: identifier }
-        });
-        
-        console.log('Username lookup result:', lookupData, lookupError);
-        
-        if (lookupError || (lookupData && lookupData.error)) {
-          throw new Error(lookupError?.message || lookupData?.error || 'Failed to find username');
-        }
-        
-        if (!lookupData || !lookupData.email) {
-          throw new Error('Username not found');
-        }
-        
-        console.log(`Found email ${lookupData.email} for username ${identifier}, attempting sign in`);
-        
-        signInResult = await supabase.auth.signInWithPassword({
-          email: lookupData.email,
-          password,
-        });
-      }
-      
-      const { error } = signInResult;
-      
-      if (error) {
-        if (error.message.includes('Email not confirmed')) {
-          throw new Error('Please verify your email address before signing in');
-        } else {
-          throw new Error('Invalid login credentials');
-        }
-      }
-      
-      toast({
-        title: "Success",
-        description: "You have been signed in",
-      });
-      
-      navigate('/dashboard');
-    } catch (error: any) {
-      console.error('Sign in error:', error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to sign in",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Handle sign up with email, username, and password
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!email || !username || !signUpPassword) {
-      toast({
-        title: "Error",
-        description: "Please fill out all fields",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (signUpPassword !== confirmPassword) {
-      toast({
-        title: "Error",
-        description: "Passwords do not match",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (!isEmailFormat(email)) {
-      toast({
-        title: "Error",
-        description: "Please enter a valid email address",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (username.length < 3) {
-      toast({
-        title: "Error",
-        description: "Username must be at least 3 characters",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (signUpPassword.length < 8) {
-      toast({
-        title: "Error",
-        description: "Password must be at least 8 characters",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    // Check username availability one more time
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('username', username)
-      .maybeSingle();
-      
-    if (data) {
-      toast({
-        title: "Error",
-        description: "Username is already taken",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    setIsLoading(true);
-    
-    try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password: signUpPassword,
-        options: {
-          data: { username }
-        }
-      });
-      
-      if (error) throw error;
-      
-      toast({
-        title: "Success",
-        description: "Please check your email to verify your account",
-      });
-      
-      // Reset form
-      setEmail("");
-      setUsername("");
-      setSignUpPassword("");
-      setConfirmPassword("");
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to sign up",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Handle social logins
-  const handleSocialLogin = async (provider: 'google' | 'apple') => {
-    setIsLoading(true);
-    
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`
-        }
-      });
-      
-      if (error) throw error;
-    } catch (error: any) {
-      console.error(`${provider} login error:`, error);
-      toast({
-        title: "Error",
-        description: `Failed to sign in with ${provider.charAt(0).toUpperCase() + provider.slice(1)}`,
-        variant: "destructive",
-      });
-      setIsLoading(false);
-    }
-  };
+  const [activeTab, setActiveTab] = useState("signin");
 
   return (
     <Container className="flex items-center justify-center min-h-screen py-10">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
+          <CardTitle className="text-2xl font-bold">
+            {activeTab === "signin" ? "Welcome Back" : "Create Account"}
+          </CardTitle>
           <CardDescription>
-            Sign in to your account or create a new one
+            {activeTab === "signin" 
+              ? "Sign in to your account or create a new one" 
+              : "Enter your information to create an account"}
           </CardDescription>
         </CardHeader>
+        
         <CardContent>
-          <Tabs defaultValue="signin" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
-              <form onSubmit={handleSignIn} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="identifier">Email or Username</Label>
-                  <Input 
-                    id="identifier" 
-                    placeholder="name@example.com or username" 
-                    value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
-                    disabled={isLoading}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="password">Password</Label>
-                  </div>
-                  <Input 
-                    id="password" 
-                    type="password" 
-                    placeholder="••••••••" 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    disabled={isLoading}
-                  />
-                </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                  Sign In
-                </Button>
-              </form>
+              <SignInForm />
             </TabsContent>
             
             <TabsContent value="signup">
-              <form onSubmit={handleSignUp} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input 
-                    id="email" 
-                    type="email" 
-                    placeholder="name@example.com" 
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={isLoading}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="username">
-                    Username
-                    {isCheckingUsername && <span className="ml-2 text-xs text-muted-foreground">(checking...)</span>}
-                    {isUsernameAvailable === true && <span className="ml-2 text-xs text-green-500">Available</span>}
-                    {isUsernameAvailable === false && <span className="ml-2 text-xs text-red-500">Already taken</span>}
-                  </Label>
-                  <Input 
-                    id="username" 
-                    placeholder="yourname" 
-                    value={username}
-                    onChange={(e) => handleUsernameChange(e.target.value)}
-                    disabled={isLoading}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signUpPassword">Password</Label>
-                  <Input 
-                    id="signUpPassword" 
-                    type="password" 
-                    placeholder="••••••••" 
-                    value={signUpPassword}
-                    onChange={(e) => setSignUpPassword(e.target.value)}
-                    disabled={isLoading}
-                  />
-                  {signUpPassword && signUpPassword.length < 8 && (
-                    <p className="text-xs text-red-500">Password must be at least 8 characters</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <Input 
-                    id="confirmPassword" 
-                    type="password" 
-                    placeholder="••••••••" 
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    disabled={isLoading}
-                  />
-                  {confirmPassword && signUpPassword !== confirmPassword && (
-                    <p className="text-xs text-red-500">Passwords do not match</p>
-                  )}
-                </div>
-                <Button type="submit" className="w-full" disabled={isLoading || isUsernameAvailable === false}>
-                  {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                  Create Account
-                </Button>
-              </form>
+              <SignUpForm />
             </TabsContent>
           </Tabs>
           
@@ -378,33 +52,14 @@ const SignIn = () => {
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
-            <Button 
-              variant="outline" 
-              onClick={() => handleSocialLogin('google')}
-              disabled={isLoading}
-              className="flex items-center justify-center"
-            >
-              <GoogleIcon className="h-5 w-5 mr-2" />
-              Google
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={() => handleSocialLogin('apple')}
-              disabled={isLoading}
-              className="flex items-center justify-center"
-            >
-              <AppleIcon className="h-5 w-5 mr-2" />
-              Apple
-            </Button>
-          </div>
+          <SocialSignIn />
         </CardContent>
+        
         <CardFooter>
           <Button 
             variant="ghost" 
             className="w-full text-sm text-muted-foreground"
             onClick={() => navigate('/')}
-            disabled={isLoading}
           >
             Back to Home
           </Button>
