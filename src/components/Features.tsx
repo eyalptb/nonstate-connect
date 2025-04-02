@@ -1,37 +1,37 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, Globe, Network, Lock, Key, Code, Database, Cloud } from "lucide-react";
+import { Shield, Lock, Brain, Fingerprint, Layers, Sparkles, FileCode, Database } from "lucide-react";
 
 const features = [
   {
     icon: <Lock className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-    title: "End-to-End Encryption",
-    description: "All communications and shared documents are encrypted to ensure privacy and security."
+    title: "End-to-End Privacy",
+    description: "Complete encryption ensures your sensitive data remains private throughout the collaboration process."
   },
   {
-    icon: <Network className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-    title: "Decentralized Architecture",
-    description: "Built on Ethereum blockchain to eliminate central points of failure and censorship."
+    icon: <Brain className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
+    title: "AI Collaboration Agents",
+    description: "AI assistants that enhance your team's work without access to sensitive content."
   },
   {
-    icon: <Cloud className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-    title: "IPFS Storage",
-    description: "Distributed file storage ensures documents remain accessible and tamper-proof."
+    icon: <Layers className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
+    title: "Contribution Zones",
+    description: "Compartmentalized project spaces that keep sensitive data separate while enabling seamless collaboration."
   },
   {
-    icon: <Key className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-    title: "Self-Sovereign Identity",
-    description: "Users maintain control of their identity and credentials without centralized authorities."
+    icon: <Fingerprint className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
+    title: "Privacy Dashboard",
+    description: "Complete transparency and control over your data and who can access it."
   },
   {
-    icon: <Database className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-    title: "Transparent Governance",
-    description: "Democratic decision-making with transparent voting and resource allocation."
+    icon: <Sparkles className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
+    title: "Impact Simulator",
+    description: "Predict the outcomes of your projects, from environmental impact to social change."
   },
   {
-    icon: <Globe className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-    title: "Global Collaboration",
-    description: "Connect with partners across borders to work on shared initiatives and goals."
+    icon: <FileCode className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
+    title: "Evolving Blueprints",
+    description: "Scale and adapt successful project templates while maintaining security and privacy."
   }
 ];
 
@@ -40,9 +40,9 @@ const Features = () => {
     <section id="features" className="py-20 bg-muted/50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Secure Infrastructure for Global Change</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Privacy-First Infrastructure for Innovation</h2>
           <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-            Our platform combines blockchain technology with intuitive collaboration tools to empower nonstate actors.
+            Our platform combines secure encryption technology with AI-powered collaboration tools to empower change-makers without compromising privacy.
           </p>
         </div>
         

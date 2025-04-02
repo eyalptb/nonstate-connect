@@ -15,8 +15,14 @@
   "confirm": "确认",
   "wallet": {
     "title": "CollabCoin 钱包",
-    "description": "您的代币激励",
+    "description": "您的隐私保障激励",
     "coins": "CollabCoin 币",
-    "earn": "通过协作赚取并用于高级功能"
+    "earn": "通过安全协作赚取并用于高级功能"
+  },
+  "privacy": {
+    "title": "隐私优先",
+    "description": "您的数据始终归您所有",
+    "encrypted": "端到端加密",
+    "control": "完全控制"
   }
 }

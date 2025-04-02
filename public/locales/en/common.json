@@ -15,8 +15,14 @@
   "confirm": "Confirm",
   "wallet": {
     "title": "CollabCoin Wallet",
-    "description": "Your tokenized incentives",
+    "description": "Your privacy-secured incentives",
     "coins": "CollabCoins",
-    "earn": "Earn through collaboration and spend on premium features"
+    "earn": "Earn through secure collaboration and spend on premium features"
+  },
+  "privacy": {
+    "title": "Privacy First",
+    "description": "Your data remains yours",
+    "encrypted": "End-to-End Encrypted",
+    "control": "Complete Control"
   }
 }

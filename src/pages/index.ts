@@ -11,3 +11,4 @@ export { default as ProposalDetail } from "./ProposalDetail";
 export { default as Features } from "./Features";
 export { default as Admin } from "./Admin";
 export { default as Profile } from "./Profile";
+export { default as Privacy } from "./Privacy";

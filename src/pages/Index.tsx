@@ -6,14 +6,20 @@ import Projects from "@/components/Projects";
 import JoinCta from "@/components/JoinCta";
 import Footer from "@/components/Footer";
 import TokenWallet from "@/components/TokenWallet";
+import { useTranslation } from "react-i18next";
 
 const Index = () => {
+  const { t } = useTranslation("common");
+  
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-grow">
         <Hero />
         <div className="container mx-auto px-4 py-12 mt-20">
-          <h2 className="text-3xl font-bold text-center mb-8">Your CollabCoin Wallet</h2>
+          <h2 className="text-3xl font-bold text-center mb-8">{t("wallet.title")}</h2>
+          <p className="text-center text-foreground/70 mb-8 max-w-lg mx-auto">
+            Securely earn and spend CollabCoins while maintaining your privacy. All transactions are encrypted and anonymized.
+          </p>
           <div className="max-w-2xl mx-auto">
             <TokenWallet />
           </div>

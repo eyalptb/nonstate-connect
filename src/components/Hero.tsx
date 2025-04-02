@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Shield, Globe, Network } from "lucide-react";
+import { Shield, Brain, Lock } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -14,23 +14,23 @@ const Hero = () => {
           <div className="flex-1 text-center lg:text-left">
             <div className="inline-flex items-center px-3 py-1 mb-6 rounded-full bg-primary/10 text-primary text-sm font-medium">
               <Shield className="w-4 h-4 mr-2" />
-              Secure, Decentralized Collaboration
+              Privacy-First AI Collaboration
             </div>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              Empowering <span className="text-primary">Nonstate Actors</span> to Solve Global Challenges
+              Secure <span className="text-primary">AI-Enhanced</span> Collaboration for Change-Makers
             </h1>
             
             <p className="text-lg text-foreground/80 mb-8 max-w-2xl mx-auto lg:mx-0">
-              A blockchain-based platform where NGOs, activists, and communities collaborate securely on global issues like climate action and anti-corruption.
+              ParaCollab empowers scientists, eco-warriors, and educators to collaborate on impactful projects while keeping their data private and secure.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button size="lg" className="font-semibold">
-                Join the Network
+                Start Collaborating
               </Button>
               <Button size="lg" variant="outline" className="font-semibold">
-                Explore Projects
+                Explore Features
               </Button>
             </div>
             
@@ -44,7 +44,7 @@ const Hero = () => {
                 ))}
               </div>
               <p className="text-sm text-foreground/70">
-                <span className="font-semibold">1,200+</span> organizations already collaborating
+                <span className="font-semibold">500+</span> teams protecting their data while innovating
               </p>
             </div>
           </div>
@@ -54,11 +54,11 @@ const Hero = () => {
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[320px] md:h-[320px] hexagon bg-gradient-to-br from-primary to-secondary opacity-20 animate-pulse-slow"></div>
               
               <div className="absolute top-1/4 left-1/4 w-16 h-16 hexagon bg-primary/80 backdrop-blur-sm flex items-center justify-center animate-float">
-                <Globe className="w-6 h-6 text-white" />
+                <Lock className="w-6 h-6 text-white" />
               </div>
               
               <div className="absolute top-1/3 right-1/4 w-20 h-20 hexagon bg-secondary/80 backdrop-blur-sm flex items-center justify-center animate-float" style={{ animationDelay: "1s" }}>
-                <Network className="w-8 h-8 text-white" />
+                <Brain className="w-8 h-8 text-white" />
               </div>
               
               <div className="absolute bottom-1/4 left-1/3 w-24 h-24 hexagon bg-accent/80 backdrop-blur-sm flex items-center justify-center animate-float" style={{ animationDelay: "2s" }}>

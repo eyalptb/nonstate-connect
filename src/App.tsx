@@ -25,6 +25,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import AuthCallback from "./pages/AuthCallback";
 import SetUsername from "@/components/auth/SetUsername";
+import Privacy from "./pages/Privacy";
 
 const queryClient = new QueryClient();
 
@@ -42,10 +43,11 @@ function App() {
                 <Route path="/impact" element={<Impact />} />
                 <Route path="/funding" element={<Funding />} />
                 <Route path="/messaging" element={<Messaging />} />
-                <Route path="/integration-hub" element={<IntegrationHub />} />
+                <Route path="/collaboration-hub" element={<IntegrationHub />} />
                 <Route path="/governance" element={<Governance />} />
                 <Route path="/governance/proposal/:id" element={<ProposalDetail />} />
                 <Route path="/features" element={<Features />} />
+                <Route path="/privacy" element={<Privacy />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/sign-in" element={<SignIn />} />

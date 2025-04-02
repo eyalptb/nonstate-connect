@@ -11,12 +11,12 @@ export const defaultMainNav: MainNavItem[] = [
     href: "/features",
   },
   {
-    translationKey: "impact",
-    href: "/impact",
+    translationKey: "privacy",
+    href: "/privacy",
   },
   {
-    translationKey: "funding",
-    href: "/funding",
+    translationKey: "impact",
+    href: "/impact",
   },
   {
     translationKey: "dashboard",
@@ -27,8 +27,8 @@ export const defaultMainNav: MainNavItem[] = [
     href: "/messaging",
   },
   {
-    translationKey: "integrationHub",
-    href: "/integration-hub",
+    translationKey: "collaborationHub",
+    href: "/collaboration-hub",
   },
   {
     translationKey: "governance",
