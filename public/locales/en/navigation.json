@@ -11,5 +11,9 @@
   "governance": "Governance",
   "profile": "Profile",
   "admin": "Admin",
-  "settings": "Settings"
+  "settings": "Settings",
+  "useCases": "Use Cases",
+  "learn": "Learn",
+  "pricing": "Pricing",
+  "contactSales": "Contact Sales"
 }

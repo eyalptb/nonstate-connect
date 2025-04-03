@@ -13,9 +13,10 @@ export interface MainNavItem {
 interface NavLinksProps {
   items: MainNavItem[];
   isMobile?: boolean;
+  onClick?: () => void;
 }
 
-export function NavLinks({ items, isMobile = false }: NavLinksProps) {
+export function NavLinks({ items, isMobile = false, onClick }: NavLinksProps) {
   const location = useLocation();
   const { t } = useTranslation("navigation");
 
@@ -25,7 +26,7 @@ export function NavLinks({ items, isMobile = false }: NavLinksProps) {
 
   return (
     <nav className={cn(
-      isMobile ? "flex flex-col gap-4 text-sm font-medium" : "flex items-center space-x-6 text-sm font-medium"
+      isMobile ? "flex flex-col gap-4 text-lg font-medium" : "flex items-center space-x-6 text-sm font-medium"
     )}>
       {items.map((item, i) => (
         <Link
@@ -36,6 +37,7 @@ export function NavLinks({ items, isMobile = false }: NavLinksProps) {
             item.disabled && "pointer-events-none opacity-50",
             location.pathname === item.href && "text-primary font-semibold"
           )}
+          onClick={onClick}
         >
           {t(item.translationKey)}
         </Link>

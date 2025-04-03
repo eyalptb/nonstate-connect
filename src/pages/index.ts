@@ -14,3 +14,7 @@ export { default as Profile } from "./Profile";
 export { default as Privacy } from "./Privacy";
 export { default as Projects } from "./Projects";
 export { default as ProjectDetail } from "./ProjectDetail";
+export { default as UseCases } from "./UseCases";
+export { default as Learn } from "./Learn";
+export { default as Pricing } from "./Pricing";
+export { default as ContactSales } from "./ContactSales";

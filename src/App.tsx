@@ -31,6 +31,10 @@ import AuthCallback from "./pages/AuthCallback";
 import SetUsername from "@/components/auth/SetUsername";
 import Privacy from "./pages/Privacy";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import UseCases from "./pages/UseCases";
+import Learn from "./pages/Learn";
+import Pricing from "./pages/Pricing";
+import ContactSales from "./pages/ContactSales";
 
 const queryClient = new QueryClient();
 
@@ -43,42 +47,65 @@ function App() {
             <div className="min-h-screen bg-background">
               <Navbar />
               <Routes>
+                {/* Public Routes */}
                 <Route path="/" element={<Index />} />
+                <Route path="/features" element={<Features />} />
+                <Route path="/use-cases" element={<UseCases />} />
+                <Route path="/learn" element={<Learn />} />
+                <Route path="/pricing" element={<Pricing />} />
+                <Route path="/contact-sales" element={<ContactSales />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/projects" element={<Projects />} />
+                <Route path="/projects/:projectId" element={<ProjectDetail />} />
+                <Route path="/impact" element={<Impact />} />
+                
+                {/* Authentication Routes */}
+                <Route path="/sign-in" element={<SignIn />} />
+                <Route path="/sign-up" element={<SignUp />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/auth/callback" element={<AuthCallback />} />
+                
+                {/* Protected Routes */}
                 <Route path="/dashboard" element={
                   <ProtectedRoute>
                     <Dashboard />
                   </ProtectedRoute>
                 } />
-                <Route path="/impact" element={<Impact />} />
-                <Route path="/funding" element={<Funding />} />
                 <Route path="/messaging" element={
                   <ProtectedRoute>
                     <Messaging />
                   </ProtectedRoute>
                 } />
-                <Route path="/collaboration-hub" element={<IntegrationHub />} />
-                <Route path="/governance" element={<Governance />} />
+                <Route path="/governance" element={
+                  <ProtectedRoute>
+                    <Governance />
+                  </ProtectedRoute>
+                } />
                 <Route path="/governance/proposal/:id" element={<ProposalDetail />} />
-                <Route path="/features" element={<Features />} />
-                <Route path="/privacy" element={<Privacy />} />
                 <Route path="/admin" element={
                   <ProtectedRoute requiredRoles={["admin"]}>
                     <Admin />
                   </ProtectedRoute>
                 } />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/projects" element={<Projects />} />
-                <Route path="/projects/:projectId" element={<ProjectDetail />} />
-                <Route path="/sign-in" element={<SignIn />} />
-                <Route path="/sign-up" element={<SignUp />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/auth/callback" element={<AuthCallback />} />
+                <Route path="/profile" element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } />
+                <Route path="/settings" element={
+                  <ProtectedRoute>
+                    <Settings />
+                  </ProtectedRoute>
+                } />
                 <Route path="/set-username" element={
                   <ProtectedRoute>
                     <SetUsername />
                   </ProtectedRoute>
                 } />
+                <Route path="/collaboration-hub" element={<IntegrationHub />} />
+                <Route path="/funding" element={<Funding />} />
+                
+                {/* 404 Route */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Footer />

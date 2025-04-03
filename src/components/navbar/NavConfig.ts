@@ -1,7 +1,8 @@
 
 import { MainNavItem } from "./NavLinks";
 
-export const defaultMainNav: MainNavItem[] = [
+// Navigation items shown to logged out users
+export const loggedOutMainNav: MainNavItem[] = [
   {
     translationKey: "home",
     href: "/",
@@ -11,17 +12,25 @@ export const defaultMainNav: MainNavItem[] = [
     href: "/features",
   },
   {
-    translationKey: "projects",
-    href: "/projects",
+    translationKey: "useCases",
+    href: "/use-cases",
   },
   {
-    translationKey: "privacy",
-    href: "/privacy",
+    translationKey: "learn",
+    href: "/learn",
   },
   {
-    translationKey: "impact",
-    href: "/impact",
+    translationKey: "pricing",
+    href: "/pricing",
   },
+  {
+    translationKey: "contactSales",
+    href: "/contact-sales",
+  },
+];
+
+// Navigation items shown to logged in users
+export const loggedInMainNav: MainNavItem[] = [
   {
     translationKey: "dashboard",
     href: "/dashboard",
@@ -35,3 +44,6 @@ export const defaultMainNav: MainNavItem[] = [
     href: "/governance",
   },
 ];
+
+// For backward compatibility
+export const defaultMainNav = loggedOutMainNav;

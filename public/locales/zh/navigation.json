@@ -11,5 +11,9 @@
   "governance": "治理",
   "profile": "个人资料",
   "admin": "管理",
-  "settings": "设置"
+  "settings": "设置",
+  "useCases": "使用案例",
+  "learn": "学习",
+  "pricing": "定价",
+  "contactSales": "联系销售"
 }
