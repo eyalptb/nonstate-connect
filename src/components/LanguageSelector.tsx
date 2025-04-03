@@ -18,7 +18,7 @@ interface LanguageSelectorProps {
 }
 
 export function LanguageSelector({ variant = "default" }: LanguageSelectorProps) {
-  const { i18n, t } = useTranslation();
+  const { i18n, t } = useTranslation("common");
 
   const languages = [
     { code: "en", name: "English" },
@@ -67,13 +67,15 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
       const loadedNamespaces = i18n.reportNamespaces.getUsedNamespaces();
       console.log(`[LanguageSelector] Used namespaces:`, loadedNamespaces);
       
-      // Verify common translations for wallet
+      // Verify common translations for wallet - TYPE SAFE WAY
       const hasWalletTranslations = 
-        i18n.store?.data?.[langCode]?.common?.wallet !== undefined;
+        i18n.store?.data?.[langCode]?.common && 
+        typeof i18n.store?.data?.[langCode]?.common === 'object' &&
+        'wallet' in i18n.store?.data?.[langCode]?.common;
       
       console.log(`[LanguageSelector] Has wallet translations for ${langCode}: ${hasWalletTranslations}`);
       console.log(`[LanguageSelector] Wallet translations:`, 
-        i18n.store?.data?.[langCode]?.common?.wallet);
+        hasWalletTranslations ? i18n.store?.data?.[langCode]?.common?.wallet : 'Not available');
 
       // Show success toast
       toast.success(`Language changed to ${languages.find(l => l.code === langCode)?.name || langCode}`);

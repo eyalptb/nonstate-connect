@@ -24,16 +24,22 @@ const renderApp = () => {
     resourcesAvailable: Object.keys(i18n.store?.data || {})
   });
   
-  // Check if specific namespaces and languages are loaded
+  // Check if specific namespaces and languages are loaded in a type-safe way
   const hasRussianCommon = !!i18n.store?.data?.ru?.common;
   const hasEnglishCommon = !!i18n.store?.data?.en?.common;
+  
+  // Get wallet keys in a type-safe way
+  const russianWallet = hasRussianCommon && 
+                        typeof i18n.store?.data?.ru?.common === 'object' && 
+                        'wallet' in i18n.store?.data?.ru?.common ? 
+                        i18n.store?.data?.ru?.common?.wallet : undefined;
   
   console.log('[main] Resource availability check:', {
     hasRussianCommon,
     hasEnglishCommon,
     russianCommonKeys: hasRussianCommon ? Object.keys(i18n.store?.data?.ru?.common || {}) : [],
     englishCommonKeys: hasEnglishCommon ? Object.keys(i18n.store?.data?.en?.common || {})  : [],
-    russianWallet: hasRussianCommon ? i18n.store?.data?.ru?.common?.wallet : undefined
+    russianWallet
   });
   
   document.documentElement.lang = i18n.language; // Set HTML lang attribute

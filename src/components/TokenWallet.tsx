@@ -12,7 +12,7 @@ export const TokenWallet = () => {
   // Force component to re-render on language change
   const currentLanguage = useForceLanguageUpdate();
   
-  // Debug translation keys directly
+  // Debug translation keys safely
   const walletTitle = t('wallet.title');
   const walletDescription = t('wallet.description');
   
@@ -26,13 +26,32 @@ export const TokenWallet = () => {
       - current i18n language: ${i18n.language}
       - resources available:`, i18n.store?.data);
     
-    // Check if the specific translations exist in the store
+    // Check if the specific translations exist in the store in a type-safe way
     if (i18n.store?.data) {
-      const hasRussianWallet = i18n.store.data?.ru?.common?.wallet;
-      const hasEnglishWallet = i18n.store.data?.en?.common?.wallet;
+      const hasRussianWallet = i18n.store.data.ru && 
+                              i18n.store.data.ru.common && 
+                              typeof i18n.store.data.ru.common === 'object' && 
+                              'wallet' in i18n.store.data.ru.common;
+      
+      const hasEnglishWallet = i18n.store.data.en && 
+                              i18n.store.data.en.common && 
+                              typeof i18n.store.data.en.common === 'object' && 
+                              'wallet' in i18n.store.data.en.common;
+      
       console.log(`[TokenWallet] Translation availability check: 
         - Russian wallet translations: ${hasRussianWallet ? 'YES' : 'NO'}
         - English wallet translations: ${hasEnglishWallet ? 'YES' : 'NO'}`);
+      
+      // Check the specific wallet translations
+      if (hasRussianWallet) {
+        console.log('[TokenWallet] Russian wallet translations:', 
+          i18n.store.data.ru.common.wallet);
+      }
+      
+      if (hasEnglishWallet) {
+        console.log('[TokenWallet] English wallet translations:', 
+          i18n.store.data.en.common.wallet);
+      }
     }
     
     return () => {
