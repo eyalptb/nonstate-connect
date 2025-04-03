@@ -1,5 +1,5 @@
 
-import { getSupabaseClient } from './supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 /**
  * Simple API client for Supabase interactions
@@ -12,9 +12,21 @@ type ApiResponse = {
   error: Error | null;
 };
 
-// List of valid table names as an array
-const VALID_TABLES = ['projects', 'conversations', 'contribution_zones', 'conversation_participants', 
-  'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'];
+// Define valid table names as a type
+type ValidTable = 'projects' | 'conversations' | 'contribution_zones' | 
+  'conversation_participants' | 'messages' | 'outputs' | 'profiles' | 
+  'token_transactions' | 'user_tokens';
+
+// List of valid table names as an array for runtime validation
+const VALID_TABLES: ValidTable[] = [
+  'projects', 'conversations', 'contribution_zones', 'conversation_participants', 
+  'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'
+];
+
+// Type guard to validate table names
+function isValidTable(tableName: string): tableName is ValidTable {
+  return VALID_TABLES.includes(tableName as ValidTable);
+}
 
 export const api = {
   // GET method
@@ -22,7 +34,6 @@ export const api = {
     try {
       // Special case for auth session
       if (path === 'auth/session') {
-        const supabase = getSupabaseClient();
         const { data, error } = await supabase.auth.getSession();
         return { data, error: null };
       }
@@ -33,11 +44,9 @@ export const api = {
       const id = parts[1];
       
       // Validate table name
-      if (!VALID_TABLES.includes(tableName)) {
+      if (!isValidTable(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
-      
-      const supabase = getSupabaseClient();
       
       // Handle get by ID
       if (id && !id.includes('?')) {
@@ -89,11 +98,10 @@ export const api = {
     try {
       const tableName = path;
       
-      if (!VALID_TABLES.includes(tableName)) {
+      if (!isValidTable(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const supabase = getSupabaseClient();
       const { data: result, error } = await supabase
         .from(tableName)
         .insert(data)
@@ -114,11 +122,10 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!VALID_TABLES.includes(tableName)) {
+      if (!isValidTable(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const supabase = getSupabaseClient();
       const { data: result, error } = await supabase
         .from(tableName)
         .update(data)
@@ -140,11 +147,10 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!VALID_TABLES.includes(tableName)) {
+      if (!isValidTable(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const supabase = getSupabaseClient();
       const { data: result, error } = await supabase
         .from(tableName)
         .delete()
