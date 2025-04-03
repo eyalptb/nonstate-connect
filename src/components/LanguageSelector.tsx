@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { languages } from '@/i18n';
 import { 
@@ -20,20 +20,31 @@ interface LanguageSelectorProps {
 export function LanguageSelector({ variant = 'default', className }: LanguageSelectorProps) {
   const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [currentLangCode, setCurrentLangCode] = useState(getNormalizedLanguageCode(i18n.language));
+
+  // Update current language code when i18n.language changes
+  useEffect(() => {
+    setCurrentLangCode(getNormalizedLanguageCode(i18n.language));
+  }, [i18n.language]);
+
+  // Get normalized language code from potentially complex code (e.g., en-US -> en)
+  function getNormalizedLanguageCode(code: string): string {
+    const simpleCode = code?.split('-')[0] || 'en';
+    return Object.keys(languages).includes(simpleCode) ? simpleCode : 'en';
+  }
 
   const changeLanguage = (language: string) => {
-    i18n.changeLanguage(language);
-    setIsOpen(false);
+    console.log(`Changing language to: ${language}`);
+    i18n.changeLanguage(language).then(() => {
+      console.log(`Language changed to: ${i18n.language}`);
+      setCurrentLangCode(getNormalizedLanguageCode(language));
+      setIsOpen(false);
+    }).catch(error => {
+      console.error('Failed to change language:', error);
+    });
   };
-
-  // Get current language or default to English
-  const currentLanguageCode = i18n.language || 'en';
-  // Make sure we use a supported language code
-  const normalizedLanguageCode = Object.keys(languages).includes(currentLanguageCode) 
-    ? currentLanguageCode 
-    : currentLanguageCode.split('-')[0];  // Handle cases like zh-CN -> zh
   
-  const currentLang = languages[normalizedLanguageCode as keyof typeof languages] || languages.en;
+  const currentLang = languages[currentLangCode as keyof typeof languages] || languages.en;
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -58,7 +69,7 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
             onClick={() => changeLanguage(code)}
             className={cn(
               "cursor-pointer",
-              normalizedLanguageCode === code && "font-bold bg-primary/10"
+              currentLangCode === code && "font-bold bg-primary/10"
             )}
           >
             {language.nativeName} ({language.name})

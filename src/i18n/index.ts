@@ -48,6 +48,10 @@ i18n
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
+    },
+
+    react: {
+      useSuspense: false, // Disable suspense to avoid issues during language switching
     }
   });
 

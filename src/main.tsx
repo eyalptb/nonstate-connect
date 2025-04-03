@@ -2,6 +2,7 @@
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
+import i18next from 'i18next';
 import './i18n' // Import i18n configuration before rendering the app
 
 // Make sure we have a DOM element to render to
@@ -11,11 +12,9 @@ if (!rootElement) {
   document.body.innerHTML = '<div id="root"></div>';
 }
 
-// Wait for i18next to initialize before rendering
-import i18next from 'i18next';
-
 // Use a more robust approach for the app rendering
 const renderApp = () => {
+  console.log('Rendering app with language:', i18next.language);
   createRoot(document.getElementById("root")!).render(
     <App />
   );
@@ -23,9 +22,21 @@ const renderApp = () => {
 
 // Initialize the app once i18next is ready or after 1 second (fallback)
 if (i18next.isInitialized) {
+  console.log('i18next already initialized');
   renderApp();
 } else {
-  i18next.on('initialized', renderApp);
+  console.log('Waiting for i18next to initialize...');
+  i18next.on('initialized', () => {
+    console.log('i18next initialized event fired');
+    renderApp();
+  });
+  
   // Fallback if initialization takes too long
-  setTimeout(renderApp, 1000);
+  setTimeout(() => {
+    console.log('Fallback timeout triggered for rendering');
+    if (!i18next.isInitialized) {
+      console.warn('i18next initialization timed out, rendering anyway');
+    }
+    renderApp();
+  }, 1000);
 }
