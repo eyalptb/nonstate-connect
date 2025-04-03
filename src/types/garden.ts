@@ -1,3 +1,4 @@
+
 export interface Project {
   id: string;
   name: string;
@@ -18,3 +19,12 @@ export interface GardenProject {
   tags?: string[];
   impact_goal?: string;
 }
+
+// Add GardenTaskType for use in templates
+export type GardenTaskType = 
+  | 'planning'
+  | 'design'
+  | 'implementation'
+  | 'maintenance'
+  | 'documentation'
+  | 'evaluation';

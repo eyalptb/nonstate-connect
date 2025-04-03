@@ -53,9 +53,9 @@
   },
   "wallet": {
     "title": "CollabCoin Wallet",
-    "description": "Your privacy-protected incentives",
+    "description": "Your tokenized incentives",
     "coins": "CollabCoins",
-    "earn": "Earn through secure collaboration and spend on premium features"
+    "earn": "Earn through collaboration and spend on premium features"
   },
   "features": {
     "heading": "Privacy-Focused Infrastructure for Innovation",
@@ -84,5 +84,22 @@
       "title": "Evolving Blueprints",
       "description": "Scale and adapt successful project templates while maintaining security and privacy."
     }
+  },
+  "dashboard": {
+    "welcomeBack": "Welcome back!",
+    "welcomeMessage": "Welcome back to your secure collaboration dashboard!",
+    "secureCollaboration": "Your secure collaboration hub",
+    "yourProjects": "Your Projects",
+    "noProjects": "You haven't joined any projects yet. Browse available projects or create a new one.",
+    "browseProjects": "Browse Projects",
+    "networkActivity": "Network Activity",
+    "seeLatestActivities": "See the latest activities from your network.",
+    "viewActivity": "View Activity",
+    "createProject": "Create Project"
+  },
+  "greetings": {
+    "morning": "Good Morning",
+    "afternoon": "Good Afternoon",
+    "evening": "Good Evening"
   }
 }

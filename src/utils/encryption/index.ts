@@ -1,5 +1,6 @@
 
-// Re-export all encryption utilities to maintain the same API
+// Export all encryption utility functions
+export * from './clientSideEncryption';
 export * from './keyManagement';
 export * from './messageEncryption';
 export * from './localStorageEncryption';

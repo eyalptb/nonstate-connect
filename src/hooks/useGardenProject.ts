@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { fetchProjectById, fetchProjectZones, fetchZoneOutputs } from '@/services/projectService2';
-import { GardenProject } from '@/types/garden';
+import { GardenProject, Project } from '@/types/garden';
 
 export const useGardenProject = (projectId: string | undefined) => {
   const navigate = useNavigate();
@@ -21,13 +21,13 @@ export const useGardenProject = (projectId: string | undefined) => {
     setLoading(true);
     try {
       // Load project, zones, and outputs
-      const projectData = await fetchProjectById(projectId);
+      const projectData = await fetchProjectById(projectId) as Project;
       if (projectData) {
         // Convert Project to GardenProject
         const gardenProjectData: GardenProject = {
           ...projectData,
-          tags: [],
-          impact_goal: ''
+          tags: projectData.tags || [],
+          impact_goal: projectData.impact_goal || ''
         };
         
         setProject(gardenProjectData);
