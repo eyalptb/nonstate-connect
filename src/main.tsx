@@ -5,6 +5,7 @@ import './index.css'
 import i18n from './i18n'
 import { TranslationProvider } from './contexts/translation/TranslationContext'
 import { NotificationProvider } from './contexts/notification/NotificationContext'
+import { Toaster } from 'sonner'
 
 // Get the root element
 const rootElement = document.getElementById("root");
@@ -22,6 +23,7 @@ const renderApp = () => {
     <TranslationProvider>
       <NotificationProvider>
         <App />
+        <Toaster />
       </NotificationProvider>
     </TranslationProvider>
   );
