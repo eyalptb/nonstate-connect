@@ -9,7 +9,7 @@ import { Project, ContributionZone, Output } from '@/types/projects';
 
 // Project-related functions
 export const fetchUserProjects = async (): Promise<Project[]> => {
-  const response = await api.get<Project[]>('projects');
+  const response = await api.get('projects');
   
   if (response.error) {
     console.error('Error fetching projects:', response.error);
@@ -20,7 +20,7 @@ export const fetchUserProjects = async (): Promise<Project[]> => {
 };
 
 export const fetchProjectById = async (projectId: string): Promise<Project | null> => {
-  const response = await api.get<Project>(`projects/${projectId}`);
+  const response = await api.get(`projects/${projectId}`);
   
   if (response.error) {
     console.error(`Error fetching project ${projectId}:`, response.error);
@@ -44,7 +44,7 @@ export const createProject = async (
     throw new Error('User not authenticated');
   }
 
-  const response = await api.post<Project>('projects', { 
+  const response = await api.post('projects', { 
     ...projectData, 
     owner_id: userId 
   });
@@ -61,7 +61,7 @@ export const updateProject = async (
   projectId: string,
   updates: Partial<Pick<Project, "name" | "description">>
 ): Promise<Project> => {
-  const response = await api.put<Project>(`projects/${projectId}`, updates);
+  const response = await api.put(`projects/${projectId}`, updates);
   
   if (response.error) {
     console.error(`Error updating project ${projectId}:`, response.error);
@@ -74,7 +74,7 @@ export const updateProject = async (
 // Contribution Zone functions
 export const fetchProjectZones = async (projectId: string): Promise<ContributionZone[]> => {
   // Custom endpoint for filtering by project_id
-  const response = await api.get<ContributionZone[]>(`contribution_zones?project_id=${projectId}`);
+  const response = await api.get(`contribution_zones?project_id=${projectId}`);
   
   if (response.error) {
     console.error(`Error fetching zones for project ${projectId}:`, response.error);
@@ -87,7 +87,7 @@ export const fetchProjectZones = async (projectId: string): Promise<Contribution
 export const createContributionZone = async (
   zoneData: Pick<ContributionZone, "project_id" | "task_description" | "inputs" | "expected_outputs" | "assigned_user_id">
 ): Promise<ContributionZone> => {
-  const response = await api.post<ContributionZone>('contribution_zones', zoneData);
+  const response = await api.post('contribution_zones', zoneData);
   
   if (response.error) {
     console.error('Error creating contribution zone:', response.error);
@@ -100,7 +100,7 @@ export const createContributionZone = async (
 // Output functions
 export const fetchZoneOutputs = async (zoneId: string): Promise<Output[]> => {
   // Custom endpoint for filtering by zone_id
-  const response = await api.get<Output[]>(`outputs?zone_id=${zoneId}`);
+  const response = await api.get(`outputs?zone_id=${zoneId}`);
   
   if (response.error) {
     console.error(`Error fetching outputs for zone ${zoneId}:`, response.error);
@@ -124,7 +124,7 @@ export const submitOutput = async (
     throw new Error('User not authenticated');
   }
   
-  const response = await api.post<Output>('outputs', {
+  const response = await api.post('outputs', {
     ...outputData,
     submitted_by: userId
   });

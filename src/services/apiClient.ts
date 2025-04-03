@@ -35,10 +35,10 @@ export const api = {
 
       // Handle path with ID
       const parts = path.split('/');
-      const tableName = parts[0];
+      const tableName = parts[0] as TableName;
       const id = parts[1];
       
-      if (!validTableNames.includes(tableName as TableName)) {
+      if (!validTableNames.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -76,7 +76,7 @@ export const api = {
         
         // Apply filters manually if needed
         if (Object.keys(queryParams).length > 0) {
-          result = result.filter((item) => {
+          result = result.filter((item: any) => {
             return Object.entries(queryParams).every(([key, value]) => {
               return item[key] === value;
             });
@@ -94,9 +94,9 @@ export const api = {
   // POST method for creating data
   post: async (path: string, data: any) => {
     try {
-      const tableName = path;
+      const tableName = path as TableName;
       
-      if (!validTableNames.includes(tableName as TableName)) {
+      if (!validTableNames.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -119,10 +119,10 @@ export const api = {
   put: async (path: string, data: any) => {
     try {
       const parts = path.split('/');
-      const tableName = parts[0];
+      const tableName = parts[0] as TableName;
       const id = parts[1];
       
-      if (!validTableNames.includes(tableName as TableName)) {
+      if (!validTableNames.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -146,10 +146,10 @@ export const api = {
   delete: async (path: string) => {
     try {
       const parts = path.split('/');
-      const tableName = parts[0];
+      const tableName = parts[0] as TableName;
       const id = parts[1];
       
-      if (!validTableNames.includes(tableName as TableName)) {
+      if (!validTableNames.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
