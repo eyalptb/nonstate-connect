@@ -52,6 +52,9 @@ i18n
     // React options
     react: {
       useSuspense: false, // Do not use suspense - simplifies usage
+      bindI18n: 'languageChanged loaded', // Events that trigger a re-render
+      bindI18nStore: 'added removed', // Store events that trigger a re-render
+      transEmptyNodeValue: '', // What to return for empty nodes
     }
   }, (err, t) => {
     if (err) {
@@ -67,7 +70,11 @@ i18n.on('initialized', (options) => {
 });
 
 i18n.on('loaded', (loaded) => {
-  logI18n('loaded', { resources: Object.keys(loaded) });
+  logI18n('loaded', { 
+    resources: Object.keys(loaded),
+    currentLanguage: i18n.language,
+    resourceStore: i18n.store?.data || {}
+  });
 });
 
 i18n.on('failedLoading', (lng, ns, msg) => {
@@ -79,7 +86,12 @@ i18n.on('missingKey', (lng, ns, key, res) => {
 });
 
 i18n.on('languageChanged', (lng) => {
-  logI18n('language-changed', { lng, languages: i18n.languages, resources: i18n.store.data });
+  logI18n('language-changed', { 
+    lng, 
+    languages: i18n.languages, 
+    resources: i18n.store?.data || {},
+    namespaces: i18n.reportNamespaces?.getUsedNamespaces() || []
+  });
   // Update HTML lang attribute
   document.documentElement.lang = lng;
 });
@@ -88,8 +100,12 @@ i18n.on('languageChanged', (lng) => {
 export const reloadTranslations = async (language: string) => {
   logI18n('manual-reload-requested', { language });
   try {
-    await i18n.reloadResources(language);
-    logI18n('manual-reload-completed', { language });
+    await i18n.reloadResources(language, ['common', 'navigation', 'auth']);
+    logI18n('manual-reload-completed', { 
+      language,
+      hasData: !!i18n.store?.data?.[language],
+      namespaces: Object.keys(i18n.store?.data?.[language] || {})
+    });
     return true;
   } catch (error) {
     logI18n('manual-reload-failed', { language, error });

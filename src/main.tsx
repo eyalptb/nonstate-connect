@@ -20,7 +20,20 @@ const renderApp = () => {
     isInitialized: i18n.isInitialized, 
     language: i18n.language,
     availableLanguages: i18n.languages,
-    loadedNamespaces: i18n.reportNamespaces?.getUsedNamespaces() || []
+    loadedNamespaces: i18n.reportNamespaces?.getUsedNamespaces() || [],
+    resourcesAvailable: Object.keys(i18n.store?.data || {})
+  });
+  
+  // Check if specific namespaces and languages are loaded
+  const hasRussianCommon = !!i18n.store?.data?.ru?.common;
+  const hasEnglishCommon = !!i18n.store?.data?.en?.common;
+  
+  console.log('[main] Resource availability check:', {
+    hasRussianCommon,
+    hasEnglishCommon,
+    russianCommonKeys: hasRussianCommon ? Object.keys(i18n.store?.data?.ru?.common || {}) : [],
+    englishCommonKeys: hasEnglishCommon ? Object.keys(i18n.store?.data?.en?.common || {})  : [],
+    russianWallet: hasRussianCommon ? i18n.store?.data?.ru?.common?.wallet : undefined
   });
   
   document.documentElement.lang = i18n.language; // Set HTML lang attribute
@@ -48,8 +61,8 @@ if (i18n.isInitialized) {
   });
   
   // Also check for loaded event as backup
-  i18n.on('loaded', () => {
-    console.log('[main] i18n resources loaded event fired');
+  i18n.on('loaded', (data) => {
+    console.log('[main] i18n resources loaded event fired', data);
     // Don't render here, just log
   });
 }

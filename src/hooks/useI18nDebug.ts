@@ -26,6 +26,18 @@ export function useI18nDebug() {
         loadedNamespaces: i18n.reportNamespaces?.getUsedNamespaces() || [],
         resourceStore: i18n.store?.data || {}
       };
+      
+      // Check for specific language resources
+      const hasRussianCommon = !!i18n.store?.data?.ru?.common;
+      const hasEnglishCommon = !!i18n.store?.data?.en?.common;
+      
+      console.log('[useI18nDebug] Resource availability:', {
+        hasRussianCommon,
+        hasEnglishCommon,
+        russianKeys: hasRussianCommon ? Object.keys(i18n.store?.data?.ru?.common || {}) : [],
+        englishKeys: hasEnglishCommon ? Object.keys(i18n.store?.data?.en?.common || {}) : []
+      });
+      
       setDebugInfo(newInfo);
       console.log('[useI18nDebug] Updated debug info:', newInfo);
     };

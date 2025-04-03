@@ -12,17 +12,35 @@ export const TokenWallet = () => {
   // Force component to re-render on language change
   const currentLanguage = useForceLanguageUpdate();
   
+  // Debug translation keys directly
+  const walletTitle = t('wallet.title');
+  const walletDescription = t('wallet.description');
+  
   // Track renders
   useEffect(() => {
     setRenderCount(prev => prev + 1);
     console.log(`[TokenWallet] Component rendered (count: ${renderCount + 1}), language: ${currentLanguage}`);
-    console.log(`[TokenWallet] Translation test: title="${t('wallet.title')}", description="${t('wallet.description')}"`);
+    console.log(`[TokenWallet] Translation keys loaded: 
+      - wallet.title → "${walletTitle}" 
+      - wallet.description → "${walletDescription}"
+      - current i18n language: ${i18n.language}
+      - resources available:`, i18n.store?.data);
+    
+    // Check if the specific translations exist in the store
+    if (i18n.store?.data) {
+      const hasRussianWallet = i18n.store.data?.ru?.common?.wallet;
+      const hasEnglishWallet = i18n.store.data?.en?.common?.wallet;
+      console.log(`[TokenWallet] Translation availability check: 
+        - Russian wallet translations: ${hasRussianWallet ? 'YES' : 'NO'}
+        - English wallet translations: ${hasEnglishWallet ? 'YES' : 'NO'}`);
+    }
     
     return () => {
       console.log(`[TokenWallet] Component will unmount, language was: ${currentLanguage}`);
     };
-  }, [t, currentLanguage, renderCount, i18n.language]);
+  }, [t, currentLanguage, renderCount, i18n.language, walletTitle, walletDescription, i18n.store?.data]);
   
+  // Debug rendering with forced key changes
   return (
     <Card className="w-full shadow-sm" key={`wallet-${currentLanguage}-${renderCount}`}>
       <CardHeader>

@@ -42,10 +42,14 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
       // Show toast to indicate change
       toast.info(`Changing language to ${languages.find(l => l.code === langCode)?.name || langCode}...`);
       
+      // Check if resources are already loaded
+      console.log(`[LanguageSelector] Current resources:`, i18n.store?.data);
+      
       // Change the language
       await i18n.changeLanguage(langCode);
       console.log(`[LanguageSelector] Language change call completed to: ${langCode}`);
       console.log(`[LanguageSelector] New language after change: ${i18n.language}`);
+      console.log(`[LanguageSelector] Resources after change:`, i18n.store?.data);
       
       // Store the selected language in localStorage
       localStorage.setItem("i18nextLng", langCode);
@@ -54,15 +58,25 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
       // Update HTML lang attribute
       document.documentElement.lang = langCode;
       
-      // Manually reload translations if needed
+      // Manually reload translations
       const reloadSuccess = await reloadTranslations(langCode);
       console.log(`[LanguageSelector] Manual reload ${reloadSuccess ? 'succeeded' : 'failed'}`);
+      console.log(`[LanguageSelector] Resources after reload:`, i18n.store?.data);
       
+      // Check specific namespaces now
+      const loadedNamespaces = i18n.reportNamespaces.getUsedNamespaces();
+      console.log(`[LanguageSelector] Used namespaces:`, loadedNamespaces);
+      
+      // Verify common translations for wallet
+      const hasWalletTranslations = 
+        i18n.store?.data?.[langCode]?.common?.wallet !== undefined;
+      
+      console.log(`[LanguageSelector] Has wallet translations for ${langCode}: ${hasWalletTranslations}`);
+      console.log(`[LanguageSelector] Wallet translations:`, 
+        i18n.store?.data?.[langCode]?.common?.wallet);
+
       // Show success toast
       toast.success(`Language changed to ${languages.find(l => l.code === langCode)?.name || langCode}`);
-      
-      // For debugging, check what namespaces are available
-      console.log(`[LanguageSelector] Used namespaces:`, i18n.reportNamespaces.getUsedNamespaces());
 
     } catch (error) {
       console.error(`[LanguageSelector] Error changing language to ${langCode}:`, error);

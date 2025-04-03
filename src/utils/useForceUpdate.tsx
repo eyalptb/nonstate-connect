@@ -16,6 +16,7 @@ export function useForceLanguageUpdate() {
     // Function to update our local state when language changes
     const handleLanguageChange = (lng: string) => {
       console.log(`[useForceLanguageUpdate] Language changed to: ${lng}`);
+      console.log(`[useForceLanguageUpdate] Current resources:`, i18n.store?.data);
       setCurrentLanguage(lng);
     };
     
