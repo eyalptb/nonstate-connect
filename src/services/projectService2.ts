@@ -35,7 +35,10 @@ export const createProject = async (
 ): Promise<Project> => {
   // Get the current user's ID from the session to set as owner
   const { data: sessionData } = await api.get('auth/session');
-  const userId = sessionData?.user?.id;
+  
+  // Safe check for user ID
+  const userId = sessionData && typeof sessionData === 'object' ? 
+    (sessionData as any).user?.id : null;
   
   if (!userId) {
     throw new Error('User not authenticated');
@@ -112,7 +115,10 @@ export const submitOutput = async (
 ): Promise<Output> => {
   // Get the current user's ID
   const { data: sessionData } = await api.get('auth/session');
-  const userId = sessionData?.user?.id;
+  
+  // Safe check for user ID
+  const userId = sessionData && typeof sessionData === 'object' ? 
+    (sessionData as any).user?.id : null;
   
   if (!userId) {
     throw new Error('User not authenticated');

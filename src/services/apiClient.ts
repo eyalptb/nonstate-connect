@@ -1,16 +1,17 @@
 
 import { getSupabaseClient } from './supabase';
+import { type PostgrestQueryBuilder } from '@supabase/supabase-js';
 
 // Define allowed table names to avoid type errors
 type TableName = 'projects' | 'conversations' | 'contribution_zones' | 
   'conversation_participants' | 'messages' | 'outputs' | 'profiles' | 
-  'token_transactions' | 'user_tokens';
+  'token_transactions' | 'user_tokens' | 'auth/session';
 
 export const supabaseRequest = async <T>(
   tableName: TableName,
   method: 'SELECT' | 'INSERT' | 'UPDATE' | 'DELETE',
   data?: any,
-  filters?: any
+  filters?: Record<string, any>
 ): Promise<T> => {
   try {
     const supabase = getSupabaseClient();
@@ -19,7 +20,14 @@ export const supabaseRequest = async <T>(
       throw new Error('Supabase client not initialized');
     }
     
-    let query;
+    // Special case for auth/session
+    if (tableName === 'auth/session') {
+      const { data: sessionData, error } = await supabase.auth.getSession();
+      if (error) throw error;
+      return sessionData as unknown as T;
+    }
+    
+    let query: PostgrestQueryBuilder<any, any, any, unknown>;
     
     switch (method) {
       case 'SELECT':
@@ -62,15 +70,22 @@ export const supabaseRequest = async <T>(
 
 // API client wrapper to match what projectService2 expects
 export const api = {
-  get: async <T>(path: string, params?: any): Promise<{ data: T | null; error: Error | null }> => {
+  get: async <T>(path: string, params?: Record<string, any>): Promise<{ data: T | null; error: Error | null }> => {
     try {
+      // Handle special cases like auth/session
+      if (path === 'auth/session') {
+        const { data: session } = await getSupabaseClient().auth.getSession();
+        return { data: session as unknown as T, error: null };
+      }
+
+      // Handle path with ID
       const parts = path.split('/');
       const tableName = parts[0] as TableName;
       const id = parts[1];
       
       let result;
       
-      if (id) {
+      if (id && !id.includes('?')) {
         // Fetching a specific item by ID
         const { data, error } = await getSupabaseClient()
           .from(tableName)
@@ -81,8 +96,18 @@ export const api = {
         if (error) throw error;
         result = data;
       } else {
+        // Extract query params if in path format
+        let queryParams = params || {};
+        if (id && id.includes('?')) {
+          const queryPart = id.split('?')[1];
+          const searchParams = new URLSearchParams(queryPart);
+          searchParams.forEach((value, key) => {
+            queryParams[key] = value;
+          });
+        }
+        
         // Fetching a list, potentially with filters from params
-        result = await supabaseRequest<T>(tableName, 'SELECT', undefined, params);
+        result = await supabaseRequest<T>(tableName, 'SELECT', undefined, queryParams);
       }
       
       return { data: result as T, error: null };
