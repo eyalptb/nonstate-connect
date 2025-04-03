@@ -1,6 +1,5 @@
 
 import { getSupabaseClient } from './supabase';
-import { SupabaseClient } from '@supabase/supabase-js';
 
 // Define allowed table names to avoid type errors
 type TableName = 'projects' | 'conversations' | 'contribution_zones' | 
@@ -72,6 +71,15 @@ const getAuthSession = async () => {
   return data;
 };
 
+// Helper function to check if a string is a valid table name
+function isValidTableName(name: string): name is TableName {
+  const validTableNames: string[] = [
+    'projects', 'conversations', 'contribution_zones', 'conversation_participants', 
+    'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'
+  ];
+  return validTableNames.includes(name);
+}
+
 // API client wrapper to match what projectService2 expects
 export const api = {
   get: async <T>(path: string, params?: Record<string, any>): Promise<{ data: T | null; error: Error | null }> => {
@@ -92,11 +100,12 @@ export const api = {
       }
       
       let result;
+      const supabase = getSupabaseClient();
       
       if (id && !id.includes('?')) {
         // Fetching a specific item by ID
-        const { data, error } = await getSupabaseClient()
-          .from(tableName as TableName)
+        const { data, error } = await supabase
+          .from(tableName)
           .select('*')
           .eq('id', id)
           .single();
@@ -115,7 +124,7 @@ export const api = {
         }
         
         // Fetching a list, potentially with filters from params
-        result = await supabaseRequest<T>(tableName as TableName, 'SELECT', undefined, queryParams);
+        result = await supabaseRequest<T>(tableName, 'SELECT', undefined, queryParams);
       }
       
       return { data: result as T, error: null };
@@ -133,7 +142,7 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const result = await supabaseRequest<T>(tableName as TableName, 'INSERT', data);
+      const result = await supabaseRequest<T>(tableName, 'INSERT', data);
       return { data: result as T, error: null };
     } catch (error) {
       console.error('API post error:', error);
@@ -151,8 +160,9 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const { data: result, error } = await getSupabaseClient()
-        .from(tableName as TableName)
+      const supabase = getSupabaseClient();
+      const { data: result, error } = await supabase
+        .from(tableName)
         .update(data)
         .eq('id', id)
         .select()
@@ -177,8 +187,9 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const { data: result, error } = await getSupabaseClient()
-        .from(tableName as TableName)
+      const supabase = getSupabaseClient();
+      const { data: result, error } = await supabase
+        .from(tableName)
         .delete()
         .eq('id', id)
         .select()
@@ -193,12 +204,3 @@ export const api = {
     }
   }
 };
-
-// Helper function to check if a string is a valid table name
-function isValidTableName(name: string): name is TableName {
-  const validTableNames: string[] = [
-    'projects', 'conversations', 'contribution_zones', 'conversation_participants', 
-    'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'
-  ];
-  return validTableNames.includes(name);
-}
