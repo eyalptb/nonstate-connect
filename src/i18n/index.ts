@@ -64,8 +64,15 @@ i18n
     // For debugging missing translations
     missingKeyHandler: (lngs, ns, key) => {
       console.warn(`Missing translation: ${key} in namespace ${ns} for languages ${lngs}`);
-      if (!window.missingTranslations) window.missingTranslations = [];
-      window.missingTranslations.push({ lngs, ns, key });
+      // Use a type-safe approach for storing missing translations
+      const missingTranslations = window.localStorage.getItem('missingTranslations') || '[]';
+      try {
+        const parsed = JSON.parse(missingTranslations);
+        parsed.push({ lngs, ns, key });
+        window.localStorage.setItem('missingTranslations', JSON.stringify(parsed));
+      } catch (e) {
+        console.error('Error storing missing translation', e);
+      }
     }
   });
 
@@ -134,7 +141,13 @@ setTimeout(() => {
 }, 2000);
 
 // Add a global method to manually reload translations
-window.reloadTranslations = () => {
+// Use a safer approach with a namespace
+interface Window {
+  reloadTranslations?: () => void;
+}
+
+// Define the reload function without modifying the Window interface directly
+const reloadTranslations = () => {
   const currentLng = i18n.language;
   console.log('Manually reloading translations for', currentLng);
   i18n.reloadResources(currentLng).then(() => {
@@ -143,6 +156,9 @@ window.reloadTranslations = () => {
     toast.success('Translations reloaded');
   });
 };
+
+// Make the function available globally but in a safer way
+(window as any).reloadTranslations = reloadTranslations;
 
 // Add a custom handler for missing translations
 i18n.on('missingKey', (lngs, namespace, key) => {
