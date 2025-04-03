@@ -18,7 +18,7 @@ export type AuthContextType = {
   signUp: (data: { email: string; password: string; username?: string }) => Promise<{ error: Error | null }>;
   signInWithGoogle: () => Promise<void>;
   signInWithApple: () => Promise<void>;
-  signOut: () => Promise<void>;
+  signOut: () => Promise<{ error: Error | null }>;
   checkUsernameAvailability: (username: string) => Promise<boolean>;
 };
 
@@ -30,6 +30,6 @@ export const AuthContext = createContext<AuthContextType>({
   signUp: async () => ({ error: null }),
   signInWithGoogle: async () => {},
   signInWithApple: async () => {},
-  signOut: async () => {},
+  signOut: async () => ({ error: null }),
   checkUsernameAvailability: async () => false
 });

@@ -43,7 +43,12 @@ export function NavUserMenu() {
 
   const handleSignOut = async () => {
     try {
-      await signOut();
+      const { error } = await signOut();
+      if (error) {
+        console.error("Sign out error:", error);
+        toast.error(t("logoutError", { ns: "auth" }));
+        return;
+      }
       toast.success(t("logoutSuccess", { ns: "auth" }));
     } catch (error) {
       console.error("Sign out error:", error);
@@ -108,7 +113,6 @@ export function NavUserMenu() {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      {/* Remove the standalone sign out button - it's redundant and might be causing confusion */}
     </div>
   );
 }
