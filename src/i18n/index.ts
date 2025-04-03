@@ -20,7 +20,7 @@ export const languages = {
   he: { name: 'Hebrew', nativeName: 'עברית' },
 };
 
-// Initialize i18next with minimal configuration
+// Initialize i18next with robust configuration
 i18n
   .use(Backend)
   .use(LanguageDetector)
@@ -53,7 +53,7 @@ i18n
       lookupLocalStorage: 'i18nextLng',
     },
 
-    // Important settings for React - disable suspense to prevent rendering issues
+    // Critical settings for React - disable suspense to prevent rendering issues
     react: {
       useSuspense: false,
       bindI18n: 'languageChanged loaded',
@@ -76,21 +76,39 @@ i18n
     }
   });
 
-// Add debug logging for language changes
+// Add comprehensive debug logging for language changes
 i18n.on('languageChanged', (lng) => {
   console.log(`Language changed to: ${lng}`);
-  document.documentElement.lang = lng; // Update HTML lang attribute
-  document.documentElement.dir = ['ar', 'he'].includes(lng) ? 'rtl' : 'ltr'; // Handle RTL languages
   
-  // Display toast notification for language change
-  const langName = languages[lng as keyof typeof languages]?.name || lng;
-  toast.success(`Language changed to ${langName}`);
+  // Update HTML lang attribute and direction
+  document.documentElement.lang = lng; 
+  document.documentElement.dir = ['ar', 'he'].includes(lng) ? 'rtl' : 'ltr';
   
-  // Force update UI on language change - this triggers the useForceLanguageUpdate hook
-  setTimeout(() => {
-    console.log('Dispatching languageChanged event');
+  // Force reload translations to ensure they're available
+  i18n.reloadResources([lng]).then(() => {
+    console.log(`Translations reloaded for ${lng}`);
+    
+    // Display toast notification for language change
+    const langName = languages[lng as keyof typeof languages]?.name || lng;
+    toast.success(`Language changed to ${langName}`);
+    
+    // Force global UI update - broadcast event to all components
     window.dispatchEvent(new Event('languageChanged'));
-  }, 100);
+    
+    // Force a full page re-render by modifying URL slightly
+    const url = new URL(window.location.href);
+    url.searchParams.set('_lang', lng);
+    window.history.replaceState({}, '', url);
+    
+    // Reload the page if translation changes don't take effect
+    // This is a last resort fallback that ensures translations work
+    if (sessionStorage.getItem('__lang_changed') === lng) {
+      console.log('Multiple language change attempts detected, forcing reload');
+      window.location.reload();
+    } else {
+      sessionStorage.setItem('__lang_changed', lng);
+    }
+  });
 });
 
 // Function to check if translation files exist - improved version
@@ -139,12 +157,6 @@ export const checkTranslationAvailability = async () => {
 setTimeout(() => {
   checkTranslationAvailability();
 }, 2000);
-
-// Add a global method to manually reload translations
-// Use a safer approach with a namespace
-interface Window {
-  reloadTranslations?: () => void;
-}
 
 // Define the reload function without modifying the Window interface directly
 const reloadTranslations = () => {

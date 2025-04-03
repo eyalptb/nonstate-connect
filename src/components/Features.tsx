@@ -1,32 +1,18 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, Lock, Brain, Fingerprint, Layers, Sparkles, FileCode, Database } from "lucide-react";
+import { Shield, Lock, Brain, Fingerprint, Layers, Sparkles, FileCode } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useForceLanguageUpdate } from "@/utils/useForceUpdate";
 
 const Features = () => {
   const { t, i18n } = useTranslation("common");
-  // For re-rendering when language changes
-  const [, setTick] = useState(0);
-  
-  // Force component to re-render on language change
-  useForceLanguageUpdate();
+  // Get the current language from the hook to force re-render
+  const currentLang = useForceLanguageUpdate();
   
   // Extra effect to ensure re-render on language change
   useEffect(() => {
     console.log('Features component rendered with language:', i18n.language);
-    
-    const handleLanguageChange = () => {
-      console.log('Features detected language change event');
-      setTick(prev => prev + 1);
-    };
-    
-    window.addEventListener('languageChanged', handleLanguageChange);
-    
-    return () => {
-      window.removeEventListener('languageChanged', handleLanguageChange);
-    };
   }, [i18n.language]);
 
   const features = [
@@ -62,9 +48,9 @@ const Features = () => {
     }
   ];
 
-  // Add a key derived from language to force re-rendering when language changes
+  // Add a unique key for the section based on language
   return (
-    <section id="features" className="py-20 bg-muted/50" key={`features-${i18n.language}`}>
+    <section id="features" className="py-20 bg-muted/50" key={`features-${currentLang}`}>
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -77,7 +63,7 @@ const Features = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, index) => (
-            <Card key={`${index}-${i18n.language}`} className="border bg-card hover:shadow-md transition-shadow">
+            <Card key={`${index}-${currentLang}`} className="border bg-card hover:shadow-md transition-shadow">
               <CardHeader className="pb-2">
                 <div className="mb-2">{feature.icon}</div>
                 <CardTitle className="text-xl">{feature.title}</CardTitle>

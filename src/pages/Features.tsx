@@ -16,14 +16,20 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useForceLanguageUpdate } from "@/utils/useForceUpdate";
+import { useEffect } from "react";
 
 const Features = () => {
-  const { t } = useTranslation(["common", "navigation"]);
+  const { t, i18n } = useTranslation(["common", "navigation"]);
   
-  // Force component to re-render on language change
-  useForceLanguageUpdate();
+  // Use the hook to get current language and force re-render
+  const currentLang = useForceLanguageUpdate();
+  
+  // Log when component renders with language
+  useEffect(() => {
+    console.log("Features page rendered with language:", currentLang);
+  }, [currentLang]);
 
-  // Feature categories
+  // Feature categories - using translation keys
   const featureCategories = [
     {
       id: "security",
@@ -90,8 +96,9 @@ const Features = () => {
     }
   ];
 
+  // Add a key based on current language to force re-renders
   return (
-    <div className="py-8 md:py-12">
+    <div className="py-8 md:py-12" key={`features-page-${currentLang}`}>
       <Container>
         <PageHeader 
           title={t("features.pageTitle", "Platform Features")}
@@ -101,17 +108,17 @@ const Features = () => {
         <Tabs defaultValue="security" className="w-full mt-8">
           <TabsList className="w-full max-w-md mx-auto grid grid-cols-3 mb-8">
             {featureCategories.map((category) => (
-              <TabsTrigger key={category.id} value={category.id}>
+              <TabsTrigger key={`${category.id}-${currentLang}`} value={category.id}>
                 {category.name}
               </TabsTrigger>
             ))}
           </TabsList>
           
           {featureCategories.map((category) => (
-            <TabsContent key={category.id} value={category.id} className="space-y-6 animate-fade-in">
+            <TabsContent key={`${category.id}-content-${currentLang}`} value={category.id} className="space-y-6 animate-fade-in">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {category.features.map((feature, index) => (
-                  <Card key={index} className="border bg-card hover:shadow-md transition-shadow">
+                  <Card key={`${category.id}-${index}-${currentLang}`} className="border bg-card hover:shadow-md transition-shadow">
                     <CardHeader className="pb-2">
                       <div className="mb-2">{feature.icon}</div>
                       <CardTitle className="text-xl">{feature.title}</CardTitle>

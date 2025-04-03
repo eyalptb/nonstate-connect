@@ -10,17 +10,17 @@ const Messaging = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation(['messaging']);
   
-  // Force component to re-render on language change
-  useForceLanguageUpdate();
+  // Get current language and force re-render on language change
+  const currentLang = useForceLanguageUpdate();
   
   // Debug logging to verify translations are loading
   useEffect(() => {
-    console.log('Messaging page rendered with language:', i18n.language);
+    console.log('Messaging page rendered with language:', currentLang);
     console.log('Messaging title translation:', t('messagingTitle'));
-  }, [i18n.language, t]);
+  }, [currentLang, t]);
   
   return (
-    <div className="container mx-auto py-10 px-4" key={i18n.language}>
+    <div className="container mx-auto py-10 px-4" key={`messaging-${currentLang}`}>
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle>{t('messagingTitle')}</CardTitle>

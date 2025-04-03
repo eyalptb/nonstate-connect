@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { languages } from '@/i18n';
 import { 
@@ -31,39 +31,18 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
     return Object.keys(languages).includes(simpleCode) ? simpleCode : 'en';
   }
 
-  // Update current language code when i18n.language changes
+  // Update current language when i18n.language changes
   useEffect(() => {
     const normalized = getNormalizedLanguageCode(i18n.language);
     setCurrentLangCode(normalized);
     console.log(`Language code in selector updated to: ${normalized} (from ${i18n.language})`);
   }, [i18n.language]);
   
-  // Force re-render when language changes
-  useEffect(() => {
-    const handleLanguageChanged = (lng: string) => {
-      console.log(`Language changed event detected in selector: ${lng}`);
-      setCurrentLangCode(getNormalizedLanguageCode(lng));
-      setIsLoading(false);
-    };
-    
-    i18n.on('languageChanged', handleLanguageChanged);
-    
-    // Listen for the custom event we dispatch in i18n initialization
-    const handleCustomEvent = () => {
-      console.log('Language change custom event received in selector');
-      setIsLoading(false);
-    };
-    window.addEventListener('languageChanged', handleCustomEvent);
-    
-    return () => {
-      i18n.off('languageChanged', handleLanguageChanged);
-      window.removeEventListener('languageChanged', handleCustomEvent);
-    };
-  }, [i18n]);
-
-  const changeLanguage = async (language: string) => {
+  // Strong change language implementation
+  const changeLanguage = useCallback(async (language: string) => {
     try {
       console.log(`Attempting to change language to: ${language}`);
+      
       // Check if we're already using this language
       if (currentLangCode === language) {
         console.log('Already using this language, no change needed');
@@ -77,36 +56,36 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
       const targetLang = languages[language as keyof typeof languages];
       toast.loading(`Changing language to ${targetLang?.name || language}...`);
 
-      // Attempt to change the language
-      await i18n.changeLanguage(language);
-      
-      console.log(`Language successfully changed to: ${i18n.language}`);
-      setIsOpen(false);
-      
-      // Show a toast confirmation
-      const displayName = languages[language as keyof typeof languages]?.name || language;
-      toast.success(`Language changed to ${displayName}`);
-      
-      // Force page update in all components
+      // Set HTML lang attribute immediately
       document.documentElement.lang = language;
       document.documentElement.dir = ['ar', 'he'].includes(language) ? 'rtl' : 'ltr';
       
-      // Dispatch a global event that all components can listen for
-      window.dispatchEvent(new Event('languageChanged'));
-      
-      // Force a full re-render by modifying the URL slightly (without navigation)
+      // Add URL parameter as a persistent language indicator
       const url = new URL(window.location.href);
       url.searchParams.set('lang', language);
       window.history.replaceState({}, '', url);
       
-      // For additional assurance, reload current translations
-      Object.keys(i18n.options.ns as string[]).forEach(ns => {
-        i18n.reloadResources([language], [ns]);
-      });
+      // First load resources to ensure they're available
+      await i18n.reloadResources([language]);
       
-      // Wait a moment and trigger another global event
+      // Then change the language
+      await i18n.changeLanguage(language);
+      
+      console.log(`Language successfully changed to: ${i18n.language}`);
+      
+      // Store in localStorage for persistence
+      localStorage.setItem('i18nextLng', language);
+      
+      // Force full application re-render
       setTimeout(() => {
         window.dispatchEvent(new Event('languageChanged'));
+        
+        // Show confirmation toast
+        const displayName = languages[language as keyof typeof languages]?.name || language;
+        toast.success(`Language changed to ${displayName}`);
+        
+        setIsLoading(false);
+        setIsOpen(false);
       }, 100);
       
     } catch (error) {
@@ -114,8 +93,8 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
       toast.error(`Failed to change language. Please try again.`);
       setIsLoading(false);
     }
-  };
-  
+  }, [currentLangCode, i18n]);
+
   const currentLang = languages[currentLangCode as keyof typeof languages] || languages.en;
 
   return (

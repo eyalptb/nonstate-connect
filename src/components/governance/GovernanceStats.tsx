@@ -9,15 +9,15 @@ import { useForceLanguageUpdate } from "@/utils/useForceUpdate";
 
 export function GovernanceStats() {
   const { balance } = useTokens();
-  const { t, i18n } = useTranslation(["governance", "common"]);
+  const { t } = useTranslation(["governance", "common"]);
   
-  // Force component to re-render on language change
-  useForceLanguageUpdate();
+  // Get current language and force re-render
+  const currentLang = useForceLanguageUpdate();
   
   // Debug logging
   useEffect(() => {
-    console.log('GovernanceStats rendered with language:', i18n.language);
-  }, [i18n.language]);
+    console.log('GovernanceStats rendered with language:', currentLang);
+  }, [currentLang]);
   
   // In a real application, this data would come from your DAO contract
   const stats = [
@@ -53,9 +53,9 @@ export function GovernanceStats() {
 
   // Add unique key to force re-render when language changes
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4" key={i18n.language}>
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4" key={`stats-${currentLang}`}>
       {stats.map((stat, i) => (
-        <Card key={i}>
+        <Card key={`${i}-${currentLang}`}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               {stat.title}
