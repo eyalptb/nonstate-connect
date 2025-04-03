@@ -9,6 +9,7 @@ import { useTranslation } from "@/contexts/translation/TranslationContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNotifications } from "@/contexts/notification/NotificationContext";
 import { useEffect, useRef } from "react";
+import BackendStatus from "@/components/BackendStatus";
 
 // Mock activity data - would come from an API in a real application
 const mockActivities = [
@@ -90,6 +91,12 @@ const Dashboard = () => {
             </div>
           </div>
           
+          {/* Backend Status */}
+          <div className="mb-8">
+            <BackendStatus />
+          </div>
+          
+          {/* Project Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <Card>
               <CardHeader>
@@ -134,6 +141,7 @@ const Dashboard = () => {
             </Card>
           </div>
           
+          {/* Two Column Layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
             <div>
               <TokenWallet />
@@ -143,6 +151,7 @@ const Dashboard = () => {
             </div>
           </div>
           
+          {/* More Components */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
             <div>
               <ProjectContribution />
