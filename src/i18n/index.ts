@@ -4,6 +4,13 @@ import { initReactI18next } from 'react-i18next';
 import HttpBackend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
+// Define the window interface to include reloadTranslations property
+declare global {
+  interface Window {
+    reloadTranslations: (language: string) => Promise<boolean>;
+  }
+}
+
 // Initialize i18next with essential configurations
 i18n
   .use(HttpBackend) // Load translations via http (from public/locales/)

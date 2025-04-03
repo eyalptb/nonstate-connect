@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useProjects } from '@/hooks/useProjects';
@@ -23,12 +22,7 @@ const GardenProjects = () => {
   return (
     <Container className="py-8">
       <PageHeader
-        title={
-          <div className="flex items-center">
-            <Leaf className="mr-2 h-6 w-6 text-green-600" />
-            Green Garden Projects
-          </div>
-        }
+        title="Green Garden Projects"
         description="Plan and manage sustainable garden projects with secure collaboration"
       />
 
@@ -77,6 +71,7 @@ const GardenProjects = () => {
             )}
           </TabsContent>
 
+          
           <TabsContent value="my-gardens">
             <div className="text-center p-12 border border-dashed rounded-lg bg-muted/10">
               <Folder className="h-12 w-12 mx-auto text-muted-foreground" />
@@ -107,6 +102,7 @@ const GardenProjects = () => {
       </div>
 
       <div className="mt-16 px-4 py-8 border-2 border-dashed border-green-200 rounded-lg bg-green-50/50 dark:bg-green-950/10">
+        
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4 flex items-center justify-center">
             <Leaf className="mr-2 h-6 w-6 text-green-600" />

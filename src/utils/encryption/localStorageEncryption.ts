@@ -1,4 +1,3 @@
-
 // Simple local storage encryption utilities
 
 /**
@@ -55,4 +54,37 @@ export const getEncryptedLocal = (key: string, secretKey: string): any => {
  */
 export const isOffline = (): boolean => {
   return !navigator.onLine;
+};
+
+// Functions for offline sync operations
+export const storePendingSync = (operation: any): void => {
+  try {
+    const pendingOperations = getPendingSyncOperations();
+    pendingOperations.push(operation);
+    localStorage.setItem('pendingSyncOperations', JSON.stringify(pendingOperations));
+  } catch (error) {
+    console.error('Error storing pending sync operation:', error);
+  }
+};
+
+export const getPendingSyncOperations = (): any[] => {
+  try {
+    const operations = localStorage.getItem('pendingSyncOperations');
+    return operations ? JSON.parse(operations) : [];
+  } catch (error) {
+    console.error('Error getting pending sync operations:', error);
+    return [];
+  }
+};
+
+export const removePendingSyncOperation = (index: number): void => {
+  try {
+    const pendingOperations = getPendingSyncOperations();
+    if (index >= 0 && index < pendingOperations.length) {
+      pendingOperations.splice(index, 1);
+      localStorage.setItem('pendingSyncOperations', JSON.stringify(pendingOperations));
+    }
+  } catch (error) {
+    console.error('Error removing pending sync operation:', error);
+  }
 };

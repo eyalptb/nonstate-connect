@@ -14,6 +14,11 @@ export interface ApiResponse<T = any> {
   };
 }
 
+// Table names type for type safety
+type TableName = 'projects' | 'conversations' | 'contribution_zones' | 
+                'conversation_participants' | 'messages' | 'outputs' | 
+                'profiles' | 'token_transactions' | 'user_tokens';
+
 /**
  * Base API client that can work with both Supabase and a custom backend
  */
@@ -102,12 +107,15 @@ export class ApiClient {
     data?: any
   ): Promise<ApiResponse<T>> {
     try {
-      // Handle different endpoints with appropriate Supabase methods
-      // This is a simplified implementation - you'd expand based on your endpoints
-      const [resource, id] = endpoint.split('/');
+      // Parse endpoint to extract resource and id parts
+      const parts = endpoint.split('/');
+      const resource = parts[0] as TableName;
+      const id = parts.length > 1 ? parts[1] : undefined;
+      const queryParams = new URLSearchParams(parts.length > 2 ? parts[2] : '');
       
+      // Handle different endpoints with appropriate Supabase methods
       switch (method) {
-        case 'GET':
+        case 'GET': {
           if (id) {
             const { data: result, error } = await supabase
               .from(resource)
@@ -117,40 +125,47 @@ export class ApiClient {
               
             return error ? { error: { message: error.message } } : { data: result as unknown as T };
           } else {
-            const { data: result, error } = await supabase
-              .from(resource)
-              .select('*');
+            // Check if we need to apply any filters based on query params
+            let query = supabase.from(resource).select('*');
+            
+            // Apply filters if present in the endpoint (e.g. 'contribution_zones?project_id=123')
+            for (const [key, value] of Object.entries(Object.fromEntries(queryParams))) {
+              query = query.eq(key, value);
+            }
+            
+            const { data: result, error } = await query;
               
             return error ? { error: { message: error.message } } : { data: result as unknown as T };
           }
+        }
         
-        case 'POST':
+        case 'POST': {
           const { data: insertResult, error: insertError } = await supabase
             .from(resource)
             .insert(data)
-            .select()
-            .single();
+            .select();
             
           return insertError 
             ? { error: { message: insertError.message } } 
             : { data: insertResult as unknown as T };
+        }
           
         case 'PUT':
-        case 'PATCH':
+        case 'PATCH': {
           if (!id) return { error: { message: 'ID is required for update operations' } };
           
           const { data: updateResult, error: updateError } = await supabase
             .from(resource)
             .update(data)
             .eq('id', id)
-            .select()
-            .single();
+            .select();
             
           return updateError 
             ? { error: { message: updateError.message } } 
             : { data: updateResult as unknown as T };
+        }
             
-        case 'DELETE':
+        case 'DELETE': {
           if (!id) return { error: { message: 'ID is required for delete operations' } };
           
           const { error: deleteError } = await supabase
@@ -161,6 +176,7 @@ export class ApiClient {
           return deleteError 
             ? { error: { message: deleteError.message } } 
             : { data: { success: true } as unknown as T };
+        }
             
         default:
           return { error: { message: `Unsupported method: ${method}` } };
@@ -169,7 +185,7 @@ export class ApiClient {
       console.error('Supabase request error:', error);
       return {
         error: {
-          message: error instanceof Error ? error.message : 'An error occurred',
+          message: error instanceof Error ? error.message : 'An unexpected error occurred',
         },
       };
     }

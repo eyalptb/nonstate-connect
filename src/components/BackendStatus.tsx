@@ -64,7 +64,7 @@ const BackendStatus = () => {
           {isConnected === null ? (
             <Badge variant="outline">Checking...</Badge>
           ) : isConnected ? (
-            <Badge variant="success" className="bg-green-100 text-green-800">
+            <Badge variant="secondary" className="bg-green-100 text-green-800">
               <Check className="h-3 w-3 mr-1" /> Connected
             </Badge>
           ) : (
