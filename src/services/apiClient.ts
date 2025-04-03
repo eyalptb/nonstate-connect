@@ -1,19 +1,18 @@
 
 import { getSupabaseClient } from './supabase';
 
-// Define allowed table names as a string literal union type
+// Define the allowed table names as a string literal union type
+// This provides better type safety than using strings directly
 type TableName = 'projects' | 'conversations' | 'contribution_zones' | 
   'conversation_participants' | 'messages' | 'outputs' | 'profiles' | 
   'token_transactions' | 'user_tokens';
 
-// Separate type for special paths that aren't tables
-type SpecialPath = 'auth/session';
+// Type for HTTP methods used in our API
+type HttpMethod = 'SELECT' | 'INSERT' | 'UPDATE' | 'DELETE';
 
-/**
- * Simple function to check if a string is one of our valid table names
- */
+// Simple validation function to check if a string is a valid table name
 function isValidTableName(name: string): name is TableName {
-  const validTableNames: TableName[] = [
+  const validTableNames = [
     'projects', 'conversations', 'contribution_zones', 'conversation_participants', 
     'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'
   ];
@@ -21,11 +20,11 @@ function isValidTableName(name: string): name is TableName {
 }
 
 /**
- * Core supabase request function with simplified typing
+ * Core supabase request function with explicit typing
  */
 export const supabaseRequest = async <T>(
   tableName: TableName,
-  method: 'SELECT' | 'INSERT' | 'UPDATE' | 'DELETE',
+  method: HttpMethod,
   data?: any,
   filters?: Record<string, any>
 ): Promise<T> => {
@@ -35,7 +34,7 @@ export const supabaseRequest = async <T>(
     throw new Error('Supabase client not initialized');
   }
   
-  let query: any;
+  let query;
   
   switch (method) {
     case 'SELECT':
@@ -57,7 +56,7 @@ export const supabaseRequest = async <T>(
   // Apply filters if provided
   if (filters) {
     for (const key in filters) {
-      if (filters.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(filters, key)) {
         query = query.eq(key, filters[key]);
       }
     }
@@ -73,7 +72,7 @@ export const supabaseRequest = async <T>(
   return result as T;
 };
 
-// Helper function to get auth session with proper typing
+// Helper function to get auth session
 const getAuthSession = async () => {
   const supabase = getSupabaseClient();
   if (!supabase) {
@@ -85,10 +84,16 @@ const getAuthSession = async () => {
   return data;
 };
 
-// API client with simplified typing approach
+// API response type to maintain consistent return structure
+interface ApiResponse<T> {
+  data: T | null;
+  error: Error | null;
+}
+
+// API client with simplified type approach to avoid deep instantiation
 export const api = {
   // GET method for fetching data
-  get: async <T>(path: string, params?: Record<string, any>): Promise<{ data: T | null; error: Error | null }> => {
+  get: async <T>(path: string, params?: Record<string, any>): Promise<ApiResponse<T>> => {
     try {
       // Special case: auth session
       if (path === 'auth/session') {
@@ -114,7 +119,7 @@ export const api = {
           .from(tableName)
           .select('*')
           .eq('id', id)
-          .single();
+          .maybeSingle();
           
         if (error) throw error;
         result = data;
@@ -141,7 +146,7 @@ export const api = {
   },
   
   // POST method for creating data
-  post: async <T>(path: string, data: any): Promise<{ data: T | null; error: Error | null }> => {
+  post: async <T>(path: string, data: any): Promise<ApiResponse<T>> => {
     try {
       const tableName = path;
       
@@ -158,7 +163,7 @@ export const api = {
   },
   
   // PUT method for updating data
-  put: async <T>(path: string, data: any): Promise<{ data: T | null; error: Error | null }> => {
+  put: async <T>(path: string, data: any): Promise<ApiResponse<T>> => {
     try {
       const parts = path.split('/');
       const tableName = parts[0];
@@ -173,12 +178,11 @@ export const api = {
         .from(tableName)
         .update(data)
         .eq('id', id)
-        .select()
-        .single();
+        .select();
       
       if (error) throw error;
       
-      return { data: result as T, error: null };
+      return { data: result[0] as T, error: null };
     } catch (error) {
       console.error('API put error:', error);
       return { data: null, error: error as Error };
@@ -186,7 +190,7 @@ export const api = {
   },
   
   // DELETE method for removing data
-  delete: async <T>(path: string): Promise<{ data: T | null; error: Error | null }> => {
+  delete: async <T>(path: string): Promise<ApiResponse<T>> => {
     try {
       const parts = path.split('/');
       const tableName = parts[0];
@@ -201,12 +205,11 @@ export const api = {
         .from(tableName)
         .delete()
         .eq('id', id)
-        .select()
-        .single();
+        .select();
       
       if (error) throw error;
       
-      return { data: result as T, error: null };
+      return { data: result[0] as T, error: null };
     } catch (error) {
       console.error('API delete error:', error);
       return { data: null, error: error as Error };
