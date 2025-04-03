@@ -6,5 +6,26 @@
     "active": "सक्रिय प्रस्ताव",
     "completed": "पूर्ण किए गए",
     "create": "प्रस्ताव बनाएं"
+  },
+  "stats": {
+    "votingPower": "आपकी वोटिंग शक्ति",
+    "votingPowerDesc": "आपके टोकन बैलेंस के आधार पर",
+    "activeVoters": "सक्रिय मतदाता",
+    "activeVotersDesc": "इस महीने के अद्वितीय मतदाता",
+    "totalProposals": "कुल प्रस्ताव",
+    "totalProposalsDesc": "अब तक के सभी बनाए गए प्रस्ताव",
+    "participation": "औसत भागीदारी",
+    "participationDesc": "टोकन धारकों का वोट"
+  },
+  "vote": {
+    "title": "वोट {{vote}} प्रस्ताव",
+    "description": "आप वोट दे रहे हैं {{vote}}: {{title}}",
+    "for": "के लिए",
+    "against": "के खिलाफ",
+    "balance": "आपके पास वोटिंग के लिए {{balance}} CollabCoins उपलब्ध हैं। प्रत्येक सिक्का एक वोट का प्रतिनिधित्व करता है।",
+    "confirmButton": "वोट की पुष्टि करें"
+  },
+  "common": {
+    "cancel": "रद्द करें"
   }
 }

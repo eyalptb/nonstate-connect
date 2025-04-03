@@ -35,13 +35,13 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
   useEffect(() => {
     const normalized = getNormalizedLanguageCode(i18n.language);
     setCurrentLangCode(normalized);
-    console.log(`Language code in component updated to: ${normalized} (from ${i18n.language})`);
+    console.log(`Language code in selector updated to: ${normalized} (from ${i18n.language})`);
   }, [i18n.language]);
   
   // Force re-render when language changes
   useEffect(() => {
     const handleLanguageChanged = (lng: string) => {
-      console.log(`Language changed event detected: ${lng}`);
+      console.log(`Language changed event detected in selector: ${lng}`);
       setCurrentLangCode(getNormalizedLanguageCode(lng));
       setIsLoading(false);
     };
@@ -50,7 +50,7 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
     
     // Listen for the custom event we dispatch in i18n initialization
     const handleCustomEvent = () => {
-      console.log('Language change custom event received');
+      console.log('Language change custom event received in selector');
       setIsLoading(false);
     };
     window.addEventListener('languageChanged', handleCustomEvent);
@@ -91,7 +91,20 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
       document.documentElement.lang = language;
       document.documentElement.dir = ['ar', 'he'].includes(language) ? 'rtl' : 'ltr';
       
-      // Trigger a global event that all components can listen for
+      // Dispatch a global event that all components can listen for
+      window.dispatchEvent(new Event('languageChanged'));
+      
+      // Force a full re-render by modifying the URL slightly (without navigation)
+      const url = new URL(window.location.href);
+      url.searchParams.set('lang', language);
+      window.history.replaceState({}, '', url);
+      
+      // For additional assurance, reload current translations
+      Object.keys(i18n.options.ns as string[]).forEach(ns => {
+        i18n.reloadResources([language], [ns]);
+      });
+      
+      // Wait a moment and trigger another global event
       setTimeout(() => {
         window.dispatchEvent(new Event('languageChanged'));
       }, 100);

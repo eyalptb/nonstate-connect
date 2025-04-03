@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useTokens } from "@/hooks/useTokens";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -9,45 +9,51 @@ import { useForceLanguageUpdate } from "@/utils/useForceUpdate";
 
 export function GovernanceStats() {
   const { balance } = useTokens();
-  const { t } = useTranslation(["governance", "common"]);
+  const { t, i18n } = useTranslation(["governance", "common"]);
   
   // Force component to re-render on language change
   useForceLanguageUpdate();
   
+  // Debug logging
+  useEffect(() => {
+    console.log('GovernanceStats rendered with language:', i18n.language);
+  }, [i18n.language]);
+  
   // In a real application, this data would come from your DAO contract
   const stats = [
     {
-      title: t("stats.votingPower", "Your Voting Power"),
+      title: t("stats.votingPower"),
       value: balance,
-      description: t("stats.votingPowerDesc", "Based on your token balance"),
+      description: t("stats.votingPowerDesc"),
       icon: <Coins className="h-4 w-4" />,
       color: "bg-blue-100 text-blue-700",
     },
     {
-      title: t("stats.activeVoters", "Active Voters"),
+      title: t("stats.activeVoters"),
       value: "87",
-      description: t("stats.activeVotersDesc", "Unique voters this month"),
+      description: t("stats.activeVotersDesc"),
       icon: <Users className="h-4 w-4" />,
       color: "bg-green-100 text-green-700",
     },
     {
-      title: t("stats.totalProposals", "Total Proposals"),
+      title: t("stats.totalProposals"),
       value: "34",
-      description: t("stats.totalProposalsDesc", "All time proposals created"),
+      description: t("stats.totalProposalsDesc"),
       icon: <FileText className="h-4 w-4" />,
       color: "bg-purple-100 text-purple-700",
     },
     {
-      title: t("stats.participation", "Avg. Participation"),
+      title: t("stats.participation"),
       value: "62%",
-      description: t("stats.participationDesc", "Of token holders vote"),
+      description: t("stats.participationDesc"),
       icon: <Vote className="h-4 w-4" />,
       color: "bg-amber-100 text-amber-700",
     },
   ];
 
+  // Add unique key to force re-render when language changes
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4" key={i18n.language}>
       {stats.map((stat, i) => (
         <Card key={i}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

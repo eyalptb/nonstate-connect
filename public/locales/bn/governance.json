@@ -6,5 +6,26 @@
     "active": "সক্রিয় প্রস্তাব",
     "completed": "সম্পন্ন",
     "create": "প্রস্তাব তৈরি করুন"
+  },
+  "stats": {
+    "votingPower": "আপনার ভোটিং পাওয়ার",
+    "votingPowerDesc": "আপনার টোকেন ব্যালেন্সের উপর ভিত্তি করে",
+    "activeVoters": "সক্রিয় ভোটার",
+    "activeVotersDesc": "এই মাসে অনন্য ভোটার",
+    "totalProposals": "মোট প্রস্তাব",
+    "totalProposalsDesc": "সর্বকালের তৈরি প্রস্তাব",
+    "participation": "গড় অংশগ্রহণ",
+    "participationDesc": "টোকেন ধারকদের ভোট"
+  },
+  "vote": {
+    "title": "ভোট {{vote}} প্রস্তাব",
+    "description": "আপনি ভোট দিচ্ছেন {{vote}}: {{title}}",
+    "for": "পক্ষে",
+    "against": "বিপক্ষে",
+    "balance": "আপনার কাছে ভোটিং এর জন্য {{balance}} CollabCoins আছে। প্রতিটি কয়েন একটি ভোট প্রতিনিধিত্ব করে।",
+    "confirmButton": "ভোট নিশ্চিত করুন"
+  },
+  "common": {
+    "cancel": "বাতিল করুন"
   }
 }

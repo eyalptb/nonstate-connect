@@ -27,7 +27,7 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: 'en',
-    debug: process.env.NODE_ENV === 'development',
+    debug: true, // Enable debug for all environments to identify issues
     
     interpolation: {
       escapeValue: false, // not needed for React as it escapes by default
@@ -47,21 +47,25 @@ i18n
     
     // Language detection options
     detection: {
-      order: ['localStorage', 'navigator'],
+      order: ['querystring', 'localStorage', 'navigator'],
       caches: ['localStorage'],
+      lookupQuerystring: 'lang',
       lookupLocalStorage: 'i18nextLng',
     },
 
     // Important settings for React - disable suspense to prevent rendering issues
     react: {
       useSuspense: false,
+      bindI18n: 'languageChanged loaded',
+      bindI18nStore: 'added removed',
+      transEmptyNodeValue: '',
     },
     
     // For debugging missing translations
     missingKeyHandler: (lngs, ns, key) => {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn(`Missing translation: ${key} in namespace ${ns} for languages ${lngs}`);
-      }
+      console.warn(`Missing translation: ${key} in namespace ${ns} for languages ${lngs}`);
+      if (!window.missingTranslations) window.missingTranslations = [];
+      window.missingTranslations.push({ lngs, ns, key });
     }
   });
 
@@ -71,8 +75,15 @@ i18n.on('languageChanged', (lng) => {
   document.documentElement.lang = lng; // Update HTML lang attribute
   document.documentElement.dir = ['ar', 'he'].includes(lng) ? 'rtl' : 'ltr'; // Handle RTL languages
   
+  // Display toast notification for language change
+  const langName = languages[lng as keyof typeof languages]?.name || lng;
+  toast.success(`Language changed to ${langName}`);
+  
   // Force update UI on language change - this triggers the useForceLanguageUpdate hook
-  window.dispatchEvent(new Event('languageChanged'));
+  setTimeout(() => {
+    console.log('Dispatching languageChanged event');
+    window.dispatchEvent(new Event('languageChanged'));
+  }, 100);
 });
 
 // Function to check if translation files exist - improved version
@@ -81,34 +92,61 @@ export const checkTranslationAvailability = async () => {
   const namespaces = ['common', 'auth', 'navigation', 'messaging', 'governance'];
   const missingFiles = [];
   
+  console.log('Checking translation file availability...');
+  
   for (const lang of supportedLangs) {
     for (const ns of namespaces) {
       try {
-        const response = await fetch(`/locales/${lang}/${ns}.json`);
+        const url = `/locales/${lang}/${ns}.json`;
+        console.log(`Checking: ${url}`);
+        const response = await fetch(url);
         if (!response.ok) {
-          missingFiles.push(`/locales/${lang}/${ns}.json`);
+          missingFiles.push(url);
+          console.error(`Missing file: ${url}`);
+        } else {
+          console.log(`Found file: ${url}`);
         }
       } catch (err) {
         missingFiles.push(`/locales/${lang}/${ns}.json`);
+        console.error(`Error checking ${lang}/${ns}.json:`, err);
       }
     }
   }
   
   if (missingFiles.length > 0) {
     console.error('Missing translation files:', missingFiles);
-    if (process.env.NODE_ENV === 'development') {
-      toast.error(`Missing translation files: ${missingFiles.length} files`);
-    }
+    toast.error(`Missing translation files: ${missingFiles.length} files`);
   } else {
     console.log('All translation files available');
+    toast.success('All translation files are available');
   }
+  
+  // Return the check result
+  return {
+    success: missingFiles.length === 0,
+    missingFiles
+  };
 };
 
-// Call this function in development mode
-if (process.env.NODE_ENV === 'development') {
-  setTimeout(() => {
-    checkTranslationAvailability();
-  }, 2000);
-}
+// Call this function in all environments to identify issues
+setTimeout(() => {
+  checkTranslationAvailability();
+}, 2000);
+
+// Add a global method to manually reload translations
+window.reloadTranslations = () => {
+  const currentLng = i18n.language;
+  console.log('Manually reloading translations for', currentLng);
+  i18n.reloadResources(currentLng).then(() => {
+    console.log('Translations reloaded');
+    window.dispatchEvent(new Event('languageChanged'));
+    toast.success('Translations reloaded');
+  });
+};
+
+// Add a custom handler for missing translations
+i18n.on('missingKey', (lngs, namespace, key) => {
+  console.warn(`Missing translation: ${key} in ${namespace} for ${lngs}`);
+});
 
 export default i18n;
