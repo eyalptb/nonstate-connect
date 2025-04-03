@@ -14,7 +14,7 @@ interface MobileMenuProps {
 export function MobileMenu({ navItems }: MobileMenuProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user } = useAuth();
-  const { t } = useTranslation("auth");
+  const { t } = useTranslation(["common", "auth", "navigation"]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -36,6 +36,7 @@ export function MobileMenu({ navItems }: MobileMenuProps) {
             <div className="flex justify-between items-center mb-8">
               <Link to="/" className="flex items-center gap-2 font-semibold" onClick={() => setIsMenuOpen(false)}>
                 <Icons.logo className="h-6 w-6" />
+                {t("appName", { ns: "common" })}
               </Link>
               <button onClick={toggleMenu} className="text-gray-500 hover:text-gray-700">
                 <Icons.close className="h-6 w-6" />
@@ -49,7 +50,7 @@ export function MobileMenu({ navItems }: MobileMenuProps) {
             <div className="mt-auto pt-4">
               {!user && (
                 <Button asChild className="w-full" onClick={() => setIsMenuOpen(false)}>
-                  <Link to="/sign-in">{t("signIn")}</Link>
+                  <Link to="/sign-in">{t("signIn", { ns: "auth" })}</Link>
                 </Button>
               )}
             </div>

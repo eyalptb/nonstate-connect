@@ -26,7 +26,14 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
     setIsOpen(false);
   };
 
-  const currentLang = languages[i18n.language as keyof typeof languages] || languages.en;
+  // Get current language or default to English
+  const currentLanguageCode = i18n.language || 'en';
+  // Make sure we use a supported language code
+  const normalizedLanguageCode = Object.keys(languages).includes(currentLanguageCode) 
+    ? currentLanguageCode 
+    : currentLanguageCode.split('-')[0];  // Handle cases like zh-CN -> zh
+  
+  const currentLang = languages[normalizedLanguageCode as keyof typeof languages] || languages.en;
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
@@ -51,7 +58,7 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
             onClick={() => changeLanguage(code)}
             className={cn(
               "cursor-pointer",
-              i18n.language === code && "font-bold bg-primary/10"
+              normalizedLanguageCode === code && "font-bold bg-primary/10"
             )}
           >
             {language.nativeName} ({language.name})

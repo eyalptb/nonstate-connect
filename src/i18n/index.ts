@@ -7,7 +7,7 @@ import Backend from 'i18next-http-backend';
 // Define our supported languages and their native names
 export const languages = {
   en: { name: 'English', nativeName: 'English' },
-  zh: { name: 'Mandarin', nativeName: '普通话' },
+  zh: { name: 'Chinese', nativeName: '中文' },
   hi: { name: 'Hindi', nativeName: 'हिन्दी' },
   fr: { name: 'French', nativeName: 'Français' },
   ar: { name: 'Arabic', nativeName: 'العربية' },

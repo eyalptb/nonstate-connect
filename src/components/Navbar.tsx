@@ -1,6 +1,5 @@
 
 import { Link } from "react-router-dom";
-import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -15,7 +14,7 @@ import { Button } from "./ui/button";
 
 export function Navbar() {
   const { user } = useAuth();
-  const { t } = useTranslation(["common", "navigation"]);
+  const { t } = useTranslation(["common", "auth", "navigation"]);
   
   // Show different navigation items based on authentication state
   const navItems = user ? loggedInMainNav : loggedOutMainNav;
