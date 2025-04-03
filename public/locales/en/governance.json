@@ -1,31 +1,40 @@
 
 {
-  "title": "DAO Governance",
-  "description": "Participate in platform governance by creating and voting on proposals",
+  "title": "Governance Hub",
+  "description": "Participate in decentralized governance by voting on proposals and contributing to decision-making.",
+  
   "tabs": {
     "active": "Active Proposals",
     "completed": "Completed",
     "create": "Create Proposal"
   },
-  "stats": {
-    "votingPower": "Your Voting Power",
-    "votingPowerDesc": "Based on your token balance",
-    "activeVoters": "Active Voters",
-    "activeVotersDesc": "Unique voters this month",
-    "totalProposals": "Total Proposals",
-    "totalProposalsDesc": "All time proposals created",
-    "participation": "Avg. Participation",
-    "participationDesc": "Of token holders vote"
+  
+  "proposalDetails": {
+    "title": "Proposal Details",
+    "description": "View detailed information about this governance proposal"
   },
+  
   "vote": {
-    "title": "Vote {{vote}} Proposal",
-    "description": "You are voting {{vote}}: {{title}}",
-    "for": "For",
-    "against": "Against",
-    "balance": "You have {{balance}} CollabCoins available for voting. Each coin represents one vote.",
-    "confirmButton": "Confirm Vote"
+    "title": "{{vote}} Proposal",
+    "description": "You are about to vote {{vote}} \"{{title}}\"",
+    "for": "for",
+    "against": "against",
+    "balance": "You have {{balance}} voting tokens available",
+    "confirmButton": "Confirm Vote",
+    "invalidAmount": "Invalid Amount",
+    "pleaseEnterValidAmount": "Please enter a valid voting amount.",
+    "voteSubmitted": "Vote Submitted",
+    "voteSubmittedDescription": "Your vote {{vote}} \"{{title}}\" was submitted successfully.",
+    "voteFailed": "Vote Failed",
+    "voteFailedDescription": "There was a problem submitting your vote. Please try again.",
+    "submitting": "Submitting...",
+    "amountDescription": "Select the number of tokens to use for voting"
   },
-  "common": {
-    "cancel": "Cancel"
+  
+  "stats": {
+    "totalProposals": "Total Proposals",
+    "activeProposals": "Active Proposals",
+    "participationRate": "Participation Rate",
+    "tokenHolders": "Token Holders"
   }
 }

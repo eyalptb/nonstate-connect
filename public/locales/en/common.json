@@ -1,28 +1,50 @@
 
 {
-  "appName": "ParaCollab",
-  "welcome": "Welcome to ParaCollab",
-  "loading": "Loading...",
-  "error": "An error occurred",
-  "notFound": "Page not found",
-  "back": "Back",
-  "save": "Save",
   "cancel": "Cancel",
-  "delete": "Delete",
+  "save": "Save",
   "edit": "Edit",
-  "create": "Create",
+  "delete": "Delete",
+  "loading": "Loading...",
   "submit": "Submit",
-  "confirm": "Confirm",
-  "wallet": {
-    "title": "CollabCoin Wallet",
-    "description": "Your privacy-secured incentives",
-    "coins": "CollabCoins",
-    "earn": "Earn through secure collaboration and spend on premium features"
+  "back": "Back",
+  "next": "Next",
+  "you": "you",
+  
+  "greetings": {
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening"
   },
-  "privacy": {
-    "title": "Privacy First",
-    "description": "Your data remains yours",
-    "encrypted": "End-to-End Encrypted",
-    "control": "Complete Control"
+  
+  "dashboard": {
+    "welcomeBack": "Welcome back",
+    "welcomeMessage": "Welcome back to your secure collaboration dashboard!",
+    "secureCollaboration": "Your secure collaboration dashboard",
+    "yourProjects": "Your Projects",
+    "noProjects": "You haven't joined any projects yet.",
+    "browseProjects": "Browse Projects",
+    "networkActivity": "Network Activity",
+    "seeLatestActivities": "See the latest activities from your network.",
+    "viewActivity": "View Activity",
+    "createProject": "Create Project",
+    "startNewProject": "Start a new collaborative project.",
+    "newProject": "New Project",
+    "recentActivity": "Recent Activity",
+    "noRecentActivity": "No recent activity to display"
+  },
+  
+  "activity": {
+    "taskCompleted": "{{actor}} completed {{target}}",
+    "proposalVoted": "{{actor}} voted on {{target}}",
+    "projectJoined": "{{actor}} joined {{target}}",
+    "messageReceived": "New message from {{actor}}",
+    "impactVerified": "Impact verified for {{target}}"
+  },
+  
+  "errors": {
+    "general": "Something went wrong. Please try again.",
+    "network": "Network error. Please check your connection.",
+    "unauthorized": "You are not authorized to perform this action.",
+    "notFound": "The requested resource was not found."
   }
 }
