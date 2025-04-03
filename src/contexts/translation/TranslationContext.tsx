@@ -45,7 +45,7 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
     <TranslationContext.Provider value={{ 
       currentLanguage, 
       changeLanguage,
-      t: t,
+      t,
       i18n: i18nInstance
     }}>
       {children}
