@@ -1,16 +1,12 @@
 
 import { getSupabaseClient } from './supabase';
 
-// Define the allowed table names as a string literal union type
-// This provides better type safety than using strings directly
+// Define allowed table names explicitly to avoid type recursion issues
 type TableName = 'projects' | 'conversations' | 'contribution_zones' | 
   'conversation_participants' | 'messages' | 'outputs' | 'profiles' | 
   'token_transactions' | 'user_tokens';
 
-// Type for HTTP methods used in our API
-type HttpMethod = 'SELECT' | 'INSERT' | 'UPDATE' | 'DELETE';
-
-// Simple validation function to check if a string is a valid table name
+// Check if a string is a valid table name
 function isValidTableName(name: string): name is TableName {
   const validTableNames = [
     'projects', 'conversations', 'contribution_zones', 'conversation_participants', 
@@ -19,12 +15,10 @@ function isValidTableName(name: string): name is TableName {
   return validTableNames.includes(name as TableName);
 }
 
-/**
- * Core supabase request function with explicit typing
- */
+// Core supabase request function
 export const supabaseRequest = async <T>(
   tableName: TableName,
-  method: HttpMethod,
+  method: 'SELECT' | 'INSERT' | 'UPDATE' | 'DELETE',
   data?: any,
   filters?: Record<string, any>
 ): Promise<T> => {
@@ -72,7 +66,7 @@ export const supabaseRequest = async <T>(
   return result as T;
 };
 
-// Helper function to get auth session
+// Auth session helper
 const getAuthSession = async () => {
   const supabase = getSupabaseClient();
   if (!supabase) {
@@ -84,16 +78,10 @@ const getAuthSession = async () => {
   return data;
 };
 
-// API response type to maintain consistent return structure
-interface ApiResponse<T> {
-  data: T | null;
-  error: Error | null;
-}
-
-// API client with simplified type approach to avoid deep instantiation
+// API client
 export const api = {
   // GET method for fetching data
-  get: async <T>(path: string, params?: Record<string, any>): Promise<ApiResponse<T>> => {
+  get: async <T>(path: string, params?: Record<string, any>): Promise<{ data: T | null; error: Error | null }> => {
     try {
       // Special case: auth session
       if (path === 'auth/session') {
@@ -119,7 +107,7 @@ export const api = {
           .from(tableName)
           .select('*')
           .eq('id', id)
-          .maybeSingle();
+          .single();
           
         if (error) throw error;
         result = data;
@@ -146,7 +134,7 @@ export const api = {
   },
   
   // POST method for creating data
-  post: async <T>(path: string, data: any): Promise<ApiResponse<T>> => {
+  post: async <T>(path: string, data: any): Promise<{ data: T | null; error: Error | null }> => {
     try {
       const tableName = path;
       
@@ -163,7 +151,7 @@ export const api = {
   },
   
   // PUT method for updating data
-  put: async <T>(path: string, data: any): Promise<ApiResponse<T>> => {
+  put: async <T>(path: string, data: any): Promise<{ data: T | null; error: Error | null }> => {
     try {
       const parts = path.split('/');
       const tableName = parts[0];
@@ -190,7 +178,7 @@ export const api = {
   },
   
   // DELETE method for removing data
-  delete: async <T>(path: string): Promise<ApiResponse<T>> => {
+  delete: async <T>(path: string): Promise<{ data: T | null; error: Error | null }> => {
     try {
       const parts = path.split('/');
       const tableName = parts[0];
