@@ -1,21 +1,21 @@
 
 import { getSupabaseClient } from './supabase';
 
-// Define allowed table names explicitly to avoid type recursion issues
-type TableName = 'projects' | 'conversations' | 'contribution_zones' | 
-  'conversation_participants' | 'messages' | 'outputs' | 'profiles' | 
-  'token_transactions' | 'user_tokens';
+// Use string literals for table names to avoid complex type recursion
+const validTableNames = [
+  'projects', 'conversations', 'contribution_zones', 'conversation_participants', 
+  'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'
+] as const;
 
-// Check if a string is a valid table name
+// Simple string literal type
+type TableName = typeof validTableNames[number];
+
+// Simple validation function
 function isValidTableName(name: string): name is TableName {
-  const validTableNames = [
-    'projects', 'conversations', 'contribution_zones', 'conversation_participants', 
-    'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'
-  ];
   return validTableNames.includes(name as TableName);
 }
 
-// Core supabase request function
+// Core supabase request function with simplified typing
 export const supabaseRequest = async <T>(
   tableName: TableName,
   method: 'SELECT' | 'INSERT' | 'UPDATE' | 'DELETE',
@@ -66,7 +66,7 @@ export const supabaseRequest = async <T>(
   return result as T;
 };
 
-// Auth session helper
+// Helper function to get auth session
 const getAuthSession = async () => {
   const supabase = getSupabaseClient();
   if (!supabase) {
@@ -78,10 +78,10 @@ const getAuthSession = async () => {
   return data;
 };
 
-// API client
+// API client with further simplified types
 export const api = {
   // GET method for fetching data
-  get: async <T>(path: string, params?: Record<string, any>): Promise<{ data: T | null; error: Error | null }> => {
+  get: async <T>(path: string, params?: Record<string, any>) => {
     try {
       // Special case: auth session
       if (path === 'auth/session') {
@@ -107,7 +107,7 @@ export const api = {
           .from(tableName)
           .select('*')
           .eq('id', id)
-          .single();
+          .maybeSingle();
           
         if (error) throw error;
         result = data;
@@ -122,8 +122,22 @@ export const api = {
           });
         }
         
-        // Fetching a list with filters
-        result = await supabaseRequest<T>(tableName, 'SELECT', undefined, queryParams);
+        // Fetch list with filters
+        const { data, error } = await supabase
+          .from(tableName)
+          .select('*');
+          
+        if (error) throw error;
+        result = data;
+        
+        // Apply filters manually if needed
+        if (Object.keys(queryParams).length > 0) {
+          result = result.filter((item: any) => {
+            return Object.entries(queryParams).every(([key, value]) => {
+              return item[key] === value;
+            });
+          });
+        }
       }
       
       return { data: result as T, error: null };
@@ -134,7 +148,7 @@ export const api = {
   },
   
   // POST method for creating data
-  post: async <T>(path: string, data: any): Promise<{ data: T | null; error: Error | null }> => {
+  post: async <T>(path: string, data: any) => {
     try {
       const tableName = path;
       
@@ -142,8 +156,15 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const result = await supabaseRequest<T>(tableName, 'INSERT', data);
-      return { data: result as T, error: null };
+      const supabase = getSupabaseClient();
+      const { data: result, error } = await supabase
+        .from(tableName)
+        .insert(data)
+        .select();
+      
+      if (error) throw error;
+      
+      return { data: result[0] as T, error: null };
     } catch (error) {
       console.error('API post error:', error);
       return { data: null, error: error as Error };
@@ -151,7 +172,7 @@ export const api = {
   },
   
   // PUT method for updating data
-  put: async <T>(path: string, data: any): Promise<{ data: T | null; error: Error | null }> => {
+  put: async <T>(path: string, data: any) => {
     try {
       const parts = path.split('/');
       const tableName = parts[0];
@@ -178,7 +199,7 @@ export const api = {
   },
   
   // DELETE method for removing data
-  delete: async <T>(path: string): Promise<{ data: T | null; error: Error | null }> => {
+  delete: async <T>(path: string) => {
     try {
       const parts = path.split('/');
       const tableName = parts[0];
