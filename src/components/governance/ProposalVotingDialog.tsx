@@ -21,12 +21,12 @@ export function ProposalVotingDialog({
   balance, 
   children 
 }: ProposalVotingDialogProps) {
-  const { t } = useTranslation("governance");
+  const { t } = useTranslation(["governance", "common"]);
   const [votingAmount, setVotingAmount] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   
-  // Force component to re-render on language change
-  useForceLanguageUpdate();
+  // Get current language to force re-render
+  const currentLanguage = useForceLanguageUpdate();
 
   const handleClick = () => {
     onVote(proposal.id, voteFor);
@@ -34,8 +34,6 @@ export function ProposalVotingDialog({
   };
 
   const handleConfirm = () => {
-    // We're reusing the parent component's submitVote function
-    // which is passed via onVote (but we're not using the voteFor param here)
     onVote(proposal.id, voteFor);
     setIsOpen(false);
   };
@@ -45,16 +43,25 @@ export function ProposalVotingDialog({
       <DialogTrigger asChild onClick={handleClick}>
         {children}
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent key={`dialog-${currentLanguage}`}>
         <DialogHeader>
-          <DialogTitle>{t("vote.title", {vote: voteFor ? t("vote.for") : t("vote.against")})}</DialogTitle>
+          <DialogTitle>
+            {t("vote.title", {
+              vote: voteFor ? t("vote.for") : t("vote.against"),
+              defaultValue: voteFor ? "Vote For Proposal" : "Vote Against Proposal"
+            })}
+          </DialogTitle>
           <DialogDescription>
-            {t("vote.description", {vote: voteFor ? t("vote.for") : t("vote.against"), title: proposal.title})}
+            {t("vote.description", {
+              vote: voteFor ? t("vote.for") : t("vote.against"),
+              title: proposal.title,
+              defaultValue: `You are about to vote ${voteFor ? "for" : "against"} "${proposal.title}"`
+            })}
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
           <p className="text-sm mb-4">
-            {t("vote.balance", {balance})}
+            {t("vote.balance", {balance, defaultValue: `You have ${balance} voting tokens available`})}
           </p>
           <div className="flex items-center gap-2">
             <input
@@ -73,13 +80,13 @@ export function ProposalVotingDialog({
             variant="outline" 
             onClick={() => setIsOpen(false)}
           >
-            {t("common.cancel", "Cancel")}
+            {t("common.cancel", {ns: "common", defaultValue: "Cancel"})}
           </Button>
           <Button 
             onClick={handleConfirm}
             variant={voteFor ? "default" : "destructive"}
           >
-            {t("vote.confirmButton", "Confirm Vote")}
+            {t("vote.confirmButton", {defaultValue: "Confirm Vote"})}
           </Button>
         </DialogFooter>
       </DialogContent>

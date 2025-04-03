@@ -3,47 +3,33 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 /**
- * Hook that forces a component to re-render when the language changes
- * This implementation uses multiple strategies to ensure components update
+ * A hook that ensures components re-render when language changes
+ * Returns the current language code which can be used as a dependency or key
  */
 export function useForceLanguageUpdate() {
   const { i18n } = useTranslation();
-  const [, setTick] = useState(0);
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
   
   useEffect(() => {
-    // Force initial render with correct language
-    setTick(tick => tick + 1);
-    
-    const handleLanguageChanged = () => {
-      console.log('Language change detected in hook, forcing re-render');
-      setTick(tick => tick + 1);
+    // Function to update our local state when language changes
+    const handleLanguageChange = (lng: string) => {
+      console.log(`Language changed to: ${lng}`);
+      setCurrentLanguage(lng);
     };
     
-    // Listen to all possible language change events
-    i18n.on('languageChanged', handleLanguageChanged);
-    window.addEventListener('languageChanged', handleLanguageChanged);
+    // Set initial language and listen for changes
+    setCurrentLanguage(i18n.language);
     
-    // Create an interval to check for language changes as a fallback
-    const intervalId = setInterval(() => {
-      const htmlLang = document.documentElement.lang;
-      const i18nLang = i18n.language;
-      
-      if (htmlLang !== i18nLang) {
-        console.log('Language mismatch detected, syncing...');
-        document.documentElement.lang = i18nLang;
-        handleLanguageChanged();
-      }
-    }, 300);
+    // Add event listener for language changes
+    i18n.on('languageChanged', handleLanguageChange);
     
     return () => {
-      i18n.off('languageChanged', handleLanguageChanged);
-      window.removeEventListener('languageChanged', handleLanguageChanged);
-      clearInterval(intervalId);
+      // Clean up event listener
+      i18n.off('languageChanged', handleLanguageChange);
     };
   }, [i18n]);
   
-  // Return the current language as a dependency to force re-renders
-  return i18n.language;
+  return currentLanguage; // Return current language code for keys/dependencies
 }
 
 export default useForceLanguageUpdate;

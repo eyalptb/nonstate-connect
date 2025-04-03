@@ -1,138 +1,97 @@
 
-import { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import { languages } from '@/i18n';
-import { 
+import React from "react";
+import { CheckIcon, ChevronDownIcon, GlobeIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import { Globe } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useTranslation } from "react-i18next";
+import { reloadTranslations } from "@/i18n";
 
 interface LanguageSelectorProps {
-  variant?: 'default' | 'minimal';
-  className?: string;
+  variant?: "default" | "minimal";
 }
 
-export function LanguageSelector({ variant = 'default', className }: LanguageSelectorProps) {
+export function LanguageSelector({ variant = "default" }: LanguageSelectorProps) {
   const { i18n, t } = useTranslation();
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentLangCode, setCurrentLangCode] = useState(getNormalizedLanguageCode(i18n.language));
-  const [isLoading, setIsLoading] = useState(false);
-  
-  // Helper function to normalize language codes
-  function getNormalizedLanguageCode(code: string): string {
-    if (!code) return 'en';
-    const simpleCode = code.split('-')[0];
-    return Object.keys(languages).includes(simpleCode) ? simpleCode : 'en';
-  }
 
-  // Update current language when i18n.language changes
-  useEffect(() => {
-    const normalized = getNormalizedLanguageCode(i18n.language);
-    setCurrentLangCode(normalized);
-    console.log(`Language code in selector updated to: ${normalized} (from ${i18n.language})`);
-  }, [i18n.language]);
-  
-  // Strong change language implementation
-  const changeLanguage = useCallback(async (language: string) => {
+  const languages = [
+    { code: "en", name: "English" },
+    { code: "fr", name: "Français" },
+    { code: "de", name: "Deutsch" },
+    { code: "pt", name: "Português" },
+    { code: "ar", name: "العربية" },
+    { code: "hi", name: "हिन्दी" },
+    { code: "zh", name: "中文" },
+    { code: "ja", name: "日本語" },
+    { code: "ru", name: "Русский" },
+    { code: "he", name: "עברית" },
+  ];
+
+  const handleLanguageChange = async (langCode: string) => {
+    console.log(`Changing language to: ${langCode}`);
+    
     try {
-      console.log(`Attempting to change language to: ${language}`);
+      // Change the language
+      await i18n.changeLanguage(langCode);
       
-      // Check if we're already using this language
-      if (currentLangCode === language) {
-        console.log('Already using this language, no change needed');
-        setIsOpen(false);
-        return;
-      }
-
-      setIsLoading(true);
+      // Store the selected language in localStorage
+      localStorage.setItem("i18nextLng", langCode);
       
-      // Show toast notification that we're changing language
-      const targetLang = languages[language as keyof typeof languages];
-      toast.loading(`Changing language to ${targetLang?.name || language}...`);
-
-      // Set HTML lang attribute immediately
-      document.documentElement.lang = language;
-      document.documentElement.dir = ['ar', 'he'].includes(language) ? 'rtl' : 'ltr';
+      // Update HTML lang attribute
+      document.documentElement.lang = langCode;
       
-      // Add URL parameter as a persistent language indicator
-      const url = new URL(window.location.href);
-      url.searchParams.set('lang', language);
-      window.history.replaceState({}, '', url);
+      console.log(`Language changed successfully to: ${langCode}`);
       
-      // First load resources to ensure they're available
-      await i18n.reloadResources([language]);
+      // Manually reload translations if needed
+      await reloadTranslations(langCode);
       
-      // Then change the language
-      await i18n.changeLanguage(language);
-      
-      console.log(`Language successfully changed to: ${i18n.language}`);
-      
-      // Store in localStorage for persistence
-      localStorage.setItem('i18nextLng', language);
-      
-      // Force full application re-render
-      setTimeout(() => {
-        window.dispatchEvent(new Event('languageChanged'));
-        
-        // Show confirmation toast
-        const displayName = languages[language as keyof typeof languages]?.name || language;
-        toast.success(`Language changed to ${displayName}`);
-        
-        setIsLoading(false);
-        setIsOpen(false);
-      }, 100);
-      
+      // Force a page refresh if having persistent issues
+      // window.location.reload();
     } catch (error) {
-      console.error('Failed to change language:', error);
-      toast.error(`Failed to change language. Please try again.`);
-      setIsLoading(false);
+      console.error(`Error changing language to ${langCode}:`, error);
     }
-  }, [currentLangCode, i18n]);
-
-  const currentLang = languages[currentLangCode as keyof typeof languages] || languages.en;
+  };
 
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          className={cn("flex items-center gap-2", className)}
-          aria-label={`Change language. Current: ${currentLang.name}`}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-          ) : (
-            <Globe className="h-4 w-4" />
-          )}
-          {variant === 'default' && (
-            <span className="hidden sm:inline-block">
-              {currentLang.nativeName}
-            </span>
-          )}
-        </Button>
+        {variant === "minimal" ? (
+          <Button size="icon" variant="ghost" className="h-8 w-8">
+            <GlobeIcon className="h-4 w-4" />
+          </Button>
+        ) : (
+          <Button variant="ghost" className="flex items-center gap-2 px-3">
+            <GlobeIcon className="h-4 w-4" />
+            <span>{languages.find(lang => lang.code === i18n.language)?.name || "Language"}</span>
+            <ChevronDownIcon className="h-4 w-4" />
+          </Button>
+        )}
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        {Object.entries(languages).map(([code, language]) => (
-          <DropdownMenuItem
-            key={code}
-            onClick={() => changeLanguage(code)}
-            className={cn(
-              "cursor-pointer",
-              currentLangCode === code && "font-bold bg-primary/10"
-            )}
-            disabled={isLoading}
+      <DropdownMenuContent align="end" className="w-48">
+        {languages.map((lang) => (
+          <DropdownMenuItem 
+            key={lang.code}
+            className="flex items-center justify-between"
+            onClick={() => handleLanguageChange(lang.code)}
           >
-            {language.nativeName} ({language.name})
+            <span>{lang.name}</span>
+            {i18n.language === lang.code && (
+              <CheckIcon className="h-4 w-4" />
+            )}
           </DropdownMenuItem>
         ))}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem 
+          className="text-xs text-muted-foreground"
+          onClick={() => console.log("Missing translations in:", i18n.languages)}
+        >
+          {i18n.language ? t("language") : "Language"}: {i18n.language}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

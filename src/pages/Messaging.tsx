@@ -4,23 +4,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForceLanguageUpdate } from '@/utils/useForceUpdate';
-import { useEffect } from 'react';
 
 const Messaging = () => {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation(['messaging']);
+  const { t } = useTranslation(['messaging']);
   
-  // Get current language and force re-render on language change
-  const currentLang = useForceLanguageUpdate();
-  
-  // Debug logging to verify translations are loading
-  useEffect(() => {
-    console.log('Messaging page rendered with language:', currentLang);
-    console.log('Messaging title translation:', t('messagingTitle'));
-  }, [currentLang, t]);
+  // This will force re-render when language changes
+  const currentLanguage = useForceLanguageUpdate();
   
   return (
-    <div className="container mx-auto py-10 px-4" key={`messaging-${currentLang}`}>
+    <div className="container mx-auto py-10 px-4" key={`messaging-${currentLanguage}`}>
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle>{t('messagingTitle')}</CardTitle>

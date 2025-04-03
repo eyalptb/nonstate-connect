@@ -1,47 +1,48 @@
+
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import i18n from './i18n'
 
-// Make sure we have a DOM element to render to
+// Get the root element
 const rootElement = document.getElementById("root");
 if (!rootElement) {
-  console.error("Failed to find the root element");
-  document.body.innerHTML = '<div id="root"></div>';
+  throw new Error("Failed to find the root element");
 }
 
 // Create root once
-const root = createRoot(document.getElementById("root")!);
+const root = createRoot(rootElement);
 
 // Function to render the app
 const renderApp = () => {
   console.log('Rendering app with language:', i18n.language);
+  document.documentElement.lang = i18n.language; // Set HTML lang attribute
   root.render(<App />);
 };
 
-// Wait for i18next to initialize before rendering
-const initializeApp = () => {
-  // Set a timeout in case i18next initialization takes too long
+// Initialize i18n and then render
+if (i18n.isInitialized) {
+  console.log('i18n already initialized');
+  renderApp();
+} else {
+  console.log('Waiting for i18n to initialize');
+  
+  // Set a timeout in case initialization takes too long
   const timeoutId = setTimeout(() => {
-    console.warn('i18next initialization timed out after 2 seconds, rendering anyway');
+    console.warn('i18n initialization timed out, rendering anyway');
     renderApp();
   }, 2000);
-
-  // If already initialized, render immediately
-  if (i18n.isInitialized) {
-    console.log('i18next already initialized, rendering immediately');
-    clearTimeout(timeoutId);
-    renderApp();
-    return;
-  }
-
-  // Otherwise wait for the initialized event
+  
+  // Listen for initialization
   i18n.on('initialized', () => {
-    console.log('i18next initialized event fired');
+    console.log('i18n initialized event fired');
     clearTimeout(timeoutId);
     renderApp();
   });
-};
+}
 
-// Start initialization process
-initializeApp();
+// Set up language change listener to update HTML lang attribute
+i18n.on('languageChanged', (lng) => {
+  console.log('Language changed to:', lng);
+  document.documentElement.lang = lng;
+});

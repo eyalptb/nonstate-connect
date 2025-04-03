@@ -7,12 +7,15 @@ import JoinCta from "@/components/JoinCta";
 import Footer from "@/components/Footer";
 import TokenWallet from "@/components/TokenWallet";
 import { useTranslation } from "react-i18next";
+import { useForceLanguageUpdate } from "@/utils/useForceUpdate";
 
 const Index = () => {
   const { t } = useTranslation("common");
+  // Get current language to force re-render
+  const currentLanguage = useForceLanguageUpdate();
   
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen" key={`index-${currentLanguage}`}>
       <main className="flex-grow">
         <Hero />
         <div className="container mx-auto px-4 py-12 mt-20">
