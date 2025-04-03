@@ -1,7 +1,7 @@
 
 import { getSupabaseClient } from './supabase';
 
-// Use string literals for table names to avoid complex type recursion
+// Define table names as simple string literals
 const validTableNames = [
   'projects', 'conversations', 'contribution_zones', 'conversation_participants', 
   'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'
@@ -9,11 +9,6 @@ const validTableNames = [
 
 // Simple string literal type
 type TableName = typeof validTableNames[number];
-
-// Simple validation function
-function isValidTableName(name: string): name is TableName {
-  return validTableNames.includes(name as TableName);
-}
 
 // Helper function to get auth session
 const getAuthSession = async () => {
@@ -27,15 +22,15 @@ const getAuthSession = async () => {
   return data;
 };
 
-// API client with further simplified types
+// Simple API client with no complex type recursion
 export const api = {
   // GET method for fetching data
-  get: async <T>(path: string, params?: Record<string, any>) => {
+  get: async (path: string, params?: Record<string, any>) => {
     try {
       // Special case: auth session
       if (path === 'auth/session') {
         const session = await getAuthSession();
-        return { data: session as unknown as T, error: null };
+        return { data: session, error: null };
       }
 
       // Handle path with ID
@@ -43,7 +38,7 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!isValidTableName(tableName)) {
+      if (!validTableNames.includes(tableName as TableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -81,7 +76,7 @@ export const api = {
         
         // Apply filters manually if needed
         if (Object.keys(queryParams).length > 0) {
-          result = result.filter((item: any) => {
+          result = result.filter((item) => {
             return Object.entries(queryParams).every(([key, value]) => {
               return item[key] === value;
             });
@@ -89,7 +84,7 @@ export const api = {
         }
       }
       
-      return { data: result as T, error: null };
+      return { data: result, error: null };
     } catch (error) {
       console.error('API get error:', error);
       return { data: null, error: error as Error };
@@ -97,11 +92,11 @@ export const api = {
   },
   
   // POST method for creating data
-  post: async <T>(path: string, data: any) => {
+  post: async (path: string, data: any) => {
     try {
       const tableName = path;
       
-      if (!isValidTableName(tableName)) {
+      if (!validTableNames.includes(tableName as TableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -113,7 +108,7 @@ export const api = {
       
       if (error) throw error;
       
-      return { data: result[0] as T, error: null };
+      return { data: result[0], error: null };
     } catch (error) {
       console.error('API post error:', error);
       return { data: null, error: error as Error };
@@ -121,13 +116,13 @@ export const api = {
   },
   
   // PUT method for updating data
-  put: async <T>(path: string, data: any) => {
+  put: async (path: string, data: any) => {
     try {
       const parts = path.split('/');
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!isValidTableName(tableName)) {
+      if (!validTableNames.includes(tableName as TableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -140,7 +135,7 @@ export const api = {
       
       if (error) throw error;
       
-      return { data: result[0] as T, error: null };
+      return { data: result[0], error: null };
     } catch (error) {
       console.error('API put error:', error);
       return { data: null, error: error as Error };
@@ -148,13 +143,13 @@ export const api = {
   },
   
   // DELETE method for removing data
-  delete: async <T>(path: string) => {
+  delete: async (path: string) => {
     try {
       const parts = path.split('/');
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!isValidTableName(tableName)) {
+      if (!validTableNames.includes(tableName as TableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -167,7 +162,7 @@ export const api = {
       
       if (error) throw error;
       
-      return { data: result[0] as T, error: null };
+      return { data: result[0], error: null };
     } catch (error) {
       console.error('API delete error:', error);
       return { data: null, error: error as Error };
