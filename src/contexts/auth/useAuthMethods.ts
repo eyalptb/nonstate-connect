@@ -150,7 +150,6 @@ export const useAuthMethods = ({ setLoading, navigate }: AuthMethodsProps) => {
       
       if (error) {
         console.error('Sign out error:', error);
-        toast.error('Sign out failed');
         throw error;
       }
       

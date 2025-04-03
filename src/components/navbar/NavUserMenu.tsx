@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/auth";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/contexts/translation/TranslationContext";
 import { 
   Avatar, 
   AvatarFallback 
@@ -43,12 +43,7 @@ export function NavUserMenu() {
 
   const handleSignOut = async () => {
     try {
-      const { error } = await signOut();
-      if (error) {
-        console.error("Sign out error:", error);
-        toast.error(t("logoutError", { ns: "auth" }));
-        return;
-      }
+      await signOut();
       toast.success(t("logoutSuccess", { ns: "auth" }));
     } catch (error) {
       console.error("Sign out error:", error);
