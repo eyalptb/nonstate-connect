@@ -6,5 +6,26 @@
     "active": "Propostas Ativas",
     "completed": "Concluídas",
     "create": "Criar Proposta"
+  },
+  "stats": {
+    "votingPower": "Seu Poder de Voto",
+    "votingPowerDesc": "Baseado no seu saldo de tokens",
+    "activeVoters": "Votantes Ativos",
+    "activeVotersDesc": "Votantes únicos este mês",
+    "totalProposals": "Total de Propostas",
+    "totalProposalsDesc": "Propostas criadas (total)",
+    "participation": "Participação Média",
+    "participationDesc": "Dos portadores de tokens votam"
+  },
+  "vote": {
+    "title": "Votar {{vote}} Proposta",
+    "description": "Você está votando {{vote}}: {{title}}",
+    "for": "A Favor",
+    "against": "Contra",
+    "balance": "Você tem {{balance}} CollabCoins disponíveis para votação. Cada moeda representa um voto.",
+    "confirmButton": "Confirmar Voto"
+  },
+  "common": {
+    "cancel": "Cancelar"
   }
 }

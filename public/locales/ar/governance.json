@@ -6,5 +6,26 @@
     "active": "المقترحات النشطة",
     "completed": "المكتملة",
     "create": "إنشاء مقترح"
+  },
+  "stats": {
+    "votingPower": "قوة التصويت الخاصة بك",
+    "votingPowerDesc": "بناءً على رصيد الرمز المميز الخاص بك",
+    "activeVoters": "الناخبون النشطون",
+    "activeVotersDesc": "ناخبون فريدون هذا الشهر",
+    "totalProposals": "إجمالي المقترحات",
+    "totalProposalsDesc": "جميع المقترحات المنشأة",
+    "participation": "متوسط المشاركة",
+    "participationDesc": "من حاملي الرموز يصوتون"
+  },
+  "vote": {
+    "title": "التصويت {{vote}} المقترح",
+    "description": "أنت تصوت {{vote}}: {{title}}",
+    "for": "مع",
+    "against": "ضد",
+    "balance": "لديك {{balance}} عملات كولاب متاحة للتصويت. كل عملة تمثل صوتًا واحدًا.",
+    "confirmButton": "تأكيد التصويت"
+  },
+  "common": {
+    "cancel": "إلغاء"
   }
 }

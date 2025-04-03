@@ -15,9 +15,13 @@ import {
   Puzzle
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useForceLanguageUpdate } from "@/utils/useForceUpdate";
 
 const Features = () => {
   const { t } = useTranslation(["common", "navigation"]);
+  
+  // Force component to re-render on language change
+  useForceLanguageUpdate();
 
   // Feature categories
   const featureCategories = [

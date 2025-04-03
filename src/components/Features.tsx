@@ -2,9 +2,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, Lock, Brain, Fingerprint, Layers, Sparkles, FileCode, Database } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useForceLanguageUpdate } from "@/utils/useForceUpdate";
 
 const Features = () => {
   const { t } = useTranslation("common");
+  
+  // Force component to re-render on language change
+  useForceLanguageUpdate();
 
   const features = [
     {

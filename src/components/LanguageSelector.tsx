@@ -87,9 +87,11 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
       const displayName = languages[language as keyof typeof languages]?.name || language;
       toast.success(`Language changed to ${displayName}`);
       
-      // Force page update in some browsers
+      // Force page update in all components
       document.documentElement.lang = language;
       document.documentElement.dir = ['ar', 'he'].includes(language) ? 'rtl' : 'ltr';
+      
+      // Trigger a global event that all components can listen for
       setTimeout(() => {
         window.dispatchEvent(new Event('languageChanged'));
       }, 100);

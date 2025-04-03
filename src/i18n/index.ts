@@ -71,7 +71,7 @@ i18n.on('languageChanged', (lng) => {
   document.documentElement.lang = lng; // Update HTML lang attribute
   document.documentElement.dir = ['ar', 'he'].includes(lng) ? 'rtl' : 'ltr'; // Handle RTL languages
   
-  // Force update UI on language change
+  // Force update UI on language change - this triggers the useForceLanguageUpdate hook
   window.dispatchEvent(new Event('languageChanged'));
 });
 

@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ProposalType } from "./types";
+import { useTranslation } from "react-i18next";
+import { useForceLanguageUpdate } from "@/utils/useForceUpdate";
 
 interface ProposalVotingDialogProps {
   proposal: ProposalType;
@@ -19,8 +21,12 @@ export function ProposalVotingDialog({
   balance, 
   children 
 }: ProposalVotingDialogProps) {
+  const { t } = useTranslation("governance");
   const [votingAmount, setVotingAmount] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
+  
+  // Force component to re-render on language change
+  useForceLanguageUpdate();
 
   const handleClick = () => {
     onVote(proposal.id, voteFor);
@@ -41,14 +47,14 @@ export function ProposalVotingDialog({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Vote {voteFor ? "For" : "Against"} Proposal</DialogTitle>
+          <DialogTitle>{t("vote.title", {vote: voteFor ? t("vote.for") : t("vote.against")})}</DialogTitle>
           <DialogDescription>
-            You are voting {voteFor ? "for" : "against"}: {proposal.title}
+            {t("vote.description", {vote: voteFor ? t("vote.for") : t("vote.against"), title: proposal.title})}
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
           <p className="text-sm mb-4">
-            You have {balance} CollabCoins available for voting. Each coin represents one vote.
+            {t("vote.balance", {balance})}
           </p>
           <div className="flex items-center gap-2">
             <input
@@ -67,13 +73,13 @@ export function ProposalVotingDialog({
             variant="outline" 
             onClick={() => setIsOpen(false)}
           >
-            Cancel
+            {t("common.cancel", "Cancel")}
           </Button>
           <Button 
             onClick={handleConfirm}
             variant={voteFor ? "default" : "destructive"}
           >
-            Confirm Vote
+            {t("vote.confirmButton", "Confirm Vote")}
           </Button>
         </DialogFooter>
       </DialogContent>
