@@ -18,9 +18,9 @@
     "title": {
       "start": "Secure",
       "highlight": "AI-Enhanced",
-      "end": "Collaboration for Change-Makers"
+      "end": "Collaboration Platform for Changemakers"
     },
-    "description": "ParaCollab empowers scientists, eco-warriors, and educators to collaborate on impactful projects while keeping their data private and secure.",
+    "description": "ParaCollab empowers scientists, environmentalists, and educators to collaborate on impactful projects while keeping their data private and secure.",
     "primaryCta": "Start Collaborating",
     "secondaryCta": "Explore Features",
     "stats": {
@@ -47,7 +47,7 @@
     },
     "buttons": {
       "dashboard": "Go to Dashboard",
-      "createAccount": "Create An Account",
+      "createAccount": "Create Account",
       "signIn": "Sign In"
     }
   },
@@ -58,11 +58,11 @@
     "earn": "Earn through secure collaboration and spend on premium features"
   },
   "features": {
-    "heading": "Privacy-First Infrastructure for Innovation",
-    "subheading": "Our platform combines secure encryption technology with AI-powered collaboration tools to empower change-makers without compromising privacy.",
+    "heading": "Privacy-Focused Infrastructure for Innovation",
+    "subheading": "Our platform combines secure encryption technology with AI-powered collaboration tools to empower changemakers without compromising privacy.",
     "privacy": {
       "title": "End-to-End Privacy",
-      "description": "Full encryption ensures your sensitive data stays private throughout the collaboration process."
+      "description": "Complete encryption ensures your sensitive data remains private throughout the collaboration process."
     },
     "ai": {
       "title": "AI Collaboration Agents",
@@ -78,11 +78,11 @@
     },
     "simulator": {
       "title": "Impact Simulator",
-      "description": "Predict your project outcomes from environmental impact to social change."
+      "description": "Predict the outcomes of your projects, from environmental impact to social change."
     },
     "blueprints": {
-      "title": "Evolution Templates",
-      "description": "Scale and adapt successful project models while maintaining security and privacy."
+      "title": "Evolving Blueprints",
+      "description": "Scale and adapt successful project templates while maintaining security and privacy."
     }
   }
 }
