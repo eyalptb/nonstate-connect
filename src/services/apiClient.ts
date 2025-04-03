@@ -15,57 +15,6 @@ function isValidTableName(name: string): name is TableName {
   return validTableNames.includes(name as TableName);
 }
 
-// Core supabase request function with simplified typing
-export const supabaseRequest = async <T>(
-  tableName: TableName,
-  method: 'SELECT' | 'INSERT' | 'UPDATE' | 'DELETE',
-  data?: any,
-  filters?: Record<string, any>
-): Promise<T> => {
-  const supabase = getSupabaseClient();
-  
-  if (!supabase) {
-    throw new Error('Supabase client not initialized');
-  }
-  
-  let query;
-  
-  switch (method) {
-    case 'SELECT':
-      query = supabase.from(tableName).select('*');
-      break;
-    case 'INSERT':
-      query = supabase.from(tableName).insert(data);
-      break;
-    case 'UPDATE':
-      query = supabase.from(tableName).update(data);
-      break;
-    case 'DELETE':
-      query = supabase.from(tableName).delete();
-      break;
-    default:
-      throw new Error(`Unsupported method: ${method}`);
-  }
-  
-  // Apply filters if provided
-  if (filters) {
-    for (const key in filters) {
-      if (Object.prototype.hasOwnProperty.call(filters, key)) {
-        query = query.eq(key, filters[key]);
-      }
-    }
-  }
-  
-  const { data: result, error } = await query;
-  
-  if (error) {
-    console.error(`Error in ${method} operation:`, error);
-    throw error;
-  }
-  
-  return result as T;
-};
-
 // Helper function to get auth session
 const getAuthSession = async () => {
   const supabase = getSupabaseClient();
