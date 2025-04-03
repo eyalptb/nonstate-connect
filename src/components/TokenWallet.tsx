@@ -5,31 +5,31 @@ import { Coins } from 'lucide-react';
 import { useTranslation } from '@/contexts/translation/TranslationContext';
 
 export const TokenWallet = () => {
-  const { t, currentLanguage } = useTranslation();
+  const { t, currentLanguage } = useTranslation(['common']);
   
   return (
     <Card className="w-full shadow-sm" key={`wallet-${currentLanguage}`}>
       <CardHeader>
         <CardTitle className="text-xl">
-          {t('wallet.title')} ({currentLanguage})
+          {t('wallet.title', { ns: 'common' })}
         </CardTitle>
-        <CardDescription>{t('wallet.description')}</CardDescription>
+        <CardDescription>{t('wallet.description', { ns: 'common' })}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col items-center justify-center py-8">
         <Coins className="h-12 w-12 text-yellow-500 mb-4" />
-        <h3 className="text-lg font-medium mb-2">{t('wallet.title')}</h3>
+        <h3 className="text-lg font-medium mb-2">{t('wallet.title', { ns: 'common' })}</h3>
         <p className="text-muted-foreground mb-6 text-center">
-          {t('wallet.description')}
+          {t('wallet.description', { ns: 'common' })}
         </p>
         <div className="flex items-center mb-2">
           <Coins className="mr-2 h-6 w-6 text-yellow-500" />
           <span className="text-3xl font-bold">0</span>
         </div>
-        <p className="text-muted-foreground text-sm">{t('wallet.coins')}</p>
+        <p className="text-muted-foreground text-sm">{t('wallet.coins', { ns: 'common' })}</p>
       </CardContent>
       <CardFooter className="flex justify-between border-t pt-4">
         <p className="text-xs text-muted-foreground">
-          {t('wallet.earn')}
+          {t('wallet.earn', { ns: 'common' })}
         </p>
       </CardFooter>
     </Card>

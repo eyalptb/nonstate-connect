@@ -35,7 +35,6 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
   const handleLanguageChange = async (langCode: string) => {
     // Only show toast and change language if it's different from current
     if (langCode !== currentLanguage) {
-      // Show single toast to indicate change
       toast.promise(
         changeLanguage(langCode),
         {

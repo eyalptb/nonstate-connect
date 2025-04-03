@@ -37,7 +37,7 @@ i18n
     // Allow keys to be phrases having `:`, `.` inside
     keySeparator: false,
     
-    // Debug mode to see more logging
+    // Debug mode for development
     debug: false, // Set to false to reduce console noise
     
     // Namespaces to load on init
@@ -60,9 +60,12 @@ i18n
 i18n.on('languageChanged', (lng) => {
   document.documentElement.lang = lng;
   
-  // Reload resources for the current language
+  // Reload resources for the current language - don't log errors here
+  // to prevent double notifications in the console
   i18n.reloadResources([lng], ['common', 'navigation', 'messaging', 'auth'])
-    .catch(err => console.error(`Failed to reload resources for ${lng}:`, err));
+    .catch(() => {
+      // Silent catch to avoid duplicate error messages
+    });
 });
 
 // Add the reloadTranslations function for explicit control

@@ -12,12 +12,12 @@ type ApiResponse = {
   error: Error | null;
 };
 
-// Define valid table names as a type
+// Define valid table names as a union type
 type ValidTable = 'projects' | 'conversations' | 'contribution_zones' | 
   'conversation_participants' | 'messages' | 'outputs' | 'profiles' | 
   'token_transactions' | 'user_tokens';
 
-// List of valid table names as an array for runtime validation
+// List of valid table names for runtime validation
 const VALID_TABLES: ValidTable[] = [
   'projects', 'conversations', 'contribution_zones', 'conversation_participants', 
   'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'
@@ -75,9 +75,8 @@ export const api = {
           queryObj = params;
         }
         
-        // Using type assertion to fix type instantiation issue
-        const query = supabase.from(tableName);
-        let selectQuery = query.select('*');
+        // Create a typed query
+        let selectQuery = supabase.from(tableName).select('*');
         
         // Apply filters
         Object.entries(queryObj).forEach(([key, value]) => {
@@ -104,7 +103,6 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      // Using type assertion to fix type instantiation issue
       const { data: result, error } = await supabase
         .from(tableName)
         .insert(data)
@@ -129,7 +127,6 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      // Using type assertion to fix type instantiation issue
       const { data: result, error } = await supabase
         .from(tableName)
         .update(data)
@@ -155,7 +152,6 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      // Using type assertion to fix type instantiation issue
       const { data: result, error } = await supabase
         .from(tableName)
         .delete()

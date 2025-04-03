@@ -23,7 +23,6 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const handleLanguageChanged = (lng: string) => {
       setCurrentLanguage(lng);
       document.documentElement.lang = lng;
-      // Removed the console.log to avoid duplicate notifications
     };
 
     // Set initial language
@@ -45,9 +44,11 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
   // Function to change language
   const changeLanguage = async (lang: string) => {
     try {
-      // Removing this console log to avoid double notifications
-      await i18n.changeLanguage(lang);
-      localStorage.setItem("i18nextLng", lang);
+      // Only change language if it's different from current
+      if (lang !== currentLanguage) {
+        await i18n.changeLanguage(lang);
+        localStorage.setItem("i18nextLng", lang);
+      }
     } catch (error) {
       console.error('Error changing language:', error);
     }
