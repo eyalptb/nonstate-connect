@@ -1,0 +1,15 @@
+
+{
+  "messagingTitle": "Защищенные сообщения",
+  "messagingUnavailable": "Защищенный обмен сообщениями доступен только для авторизованных пользователей.",
+  "messagingDescription": "Войдите, чтобы отправлять и получать сообщения с шифрованием end-to-end.",
+  "selectConversation": "Выберите беседу",
+  "chooseConversation": "Выберите существующую беседу или начните новую",
+  "newMessage": "Новое сообщение",
+  "send": "Отправить",
+  "typeMessage": "Введите ваше сообщение...",
+  "createConversation": "Создать беседу",
+  "conversationWith": "Беседа с",
+  "noMessages": "Сообщений пока нет",
+  "startMessaging": "Начните обмен защищенными сообщениями"
+}

@@ -1,0 +1,15 @@
+
+{
+  "messagingTitle": "安全消息",
+  "messagingUnavailable": "安全消息仅适用于已登录用户。",
+  "messagingDescription": "登录以发送和接收端到端加密消息。",
+  "selectConversation": "选择对话",
+  "chooseConversation": "选择现有对话或开始新对话",
+  "newMessage": "新消息",
+  "send": "发送",
+  "typeMessage": "输入您的消息...",
+  "createConversation": "创建对话",
+  "conversationWith": "与以下人员的对话",
+  "noMessages": "暂无消息",
+  "startMessaging": "开始交换安全消息"
+}

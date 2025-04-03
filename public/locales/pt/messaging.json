@@ -1,7 +1,15 @@
 
 {
-  "messagingTitle": "Mensagens",
-  "messagingUnavailable": "Esta funcionalidade não está disponível no momento",
-  "messagingDescription": "A funcionalidade de mensagens não está disponível no momento.",
-  "returnToHome": "Voltar para o Início"
+  "messagingTitle": "Mensagens Seguras",
+  "messagingUnavailable": "Mensagens seguras estão disponíveis apenas para usuários autenticados.",
+  "messagingDescription": "Faça login para enviar e receber mensagens criptografadas de ponta a ponta.",
+  "selectConversation": "Selecione uma conversa",
+  "chooseConversation": "Escolha uma conversa existente ou inicie uma nova",
+  "newMessage": "Nova mensagem",
+  "send": "Enviar",
+  "typeMessage": "Digite sua mensagem...",
+  "createConversation": "Criar conversa",
+  "conversationWith": "Conversa com",
+  "noMessages": "Ainda não há mensagens",
+  "startMessaging": "Comece a trocar mensagens seguras"
 }

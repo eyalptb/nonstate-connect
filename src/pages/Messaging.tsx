@@ -7,11 +7,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import ConversationsList from '@/components/messaging/ConversationsList';
 import ConversationView from '@/components/messaging/ConversationView';
 import NewConversation from '@/components/messaging/NewConversation';
-import { generateKeyPair, storeKeys } from '@/utils/encryption';
 import { ensureUserKeys } from '@/services/encryptionService';
 
 const Messaging = () => {
-  const { t, currentLanguage } = useTranslation(['messaging']);
+  const { t, currentLanguage } = useTranslation(['messaging', 'common']);
   const { user, loading } = useAuth();
   const [keysInitialized, setKeysInitialized] = React.useState(false);
 
@@ -68,9 +67,9 @@ const Messaging = () => {
           <Route path="/" element={
             <div className="hidden md:flex items-center justify-center h-full text-center bg-muted/20 p-8">
               <div>
-                <h3 className="text-lg font-medium mb-2">Select a conversation</h3>
+                <h3 className="text-lg font-medium mb-2">{t('selectConversation', 'Select a conversation')}</h3>
                 <p className="text-muted-foreground">
-                  Choose an existing conversation or start a new one
+                  {t('chooseConversation', 'Choose an existing conversation or start a new one')}
                 </p>
               </div>
             </div>

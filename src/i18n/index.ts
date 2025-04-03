@@ -48,13 +48,13 @@ i18n.on('languageChanged', (lng) => {
   document.documentElement.lang = lng;
   
   // Reload resources for the current language
-  i18n.reloadResources([lng], ['common']);
+  i18n.reloadResources([lng], ['common', 'navigation', 'messaging', 'auth']);
 });
 
 // Add the reloadTranslations function for explicit control
 export const reloadTranslations = async (language: string) => {
   try {
-    await i18n.reloadResources(language, ['common', 'navigation', 'auth']);
+    await i18n.reloadResources(language, ['common', 'navigation', 'auth', 'messaging']);
     return true;
   } catch (error) {
     return false;

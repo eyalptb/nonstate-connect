@@ -1,0 +1,15 @@
+
+{
+  "messagingTitle": "הודעות מאובטחות",
+  "messagingUnavailable": "הודעות מאובטחות זמינות רק למשתמשים מחוברים.",
+  "messagingDescription": "התחבר כדי לשלוח ולקבל הודעות מוצפנות מקצה לקצה.",
+  "selectConversation": "בחר שיחה",
+  "chooseConversation": "בחר שיחה קיימת או התחל חדשה",
+  "newMessage": "הודעה חדשה",
+  "send": "שלח",
+  "typeMessage": "הקלד את ההודעה שלך...",
+  "createConversation": "צור שיחה",
+  "conversationWith": "שיחה עם",
+  "noMessages": "אין עדיין הודעות",
+  "startMessaging": "התחל להחליף הודעות מאובטחות"
+}

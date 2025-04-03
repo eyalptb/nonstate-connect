@@ -1,7 +1,15 @@
 
 {
-  "messagingTitle": "المراسلة",
-  "messagingUnavailable": "هذه الميزة غير متوفرة حاليا",
-  "messagingDescription": "وظيفة المراسلة غير متوفرة حاليا.",
-  "returnToHome": "العودة إلى الصفحة الرئيسية"
+  "messagingTitle": "المراسلة الآمنة",
+  "messagingUnavailable": "المراسلة الآمنة متاحة فقط للمستخدمين المسجلين.",
+  "messagingDescription": "سجل الدخول لإرسال واستقبال الرسائل المشفرة من طرف إلى طرف.",
+  "selectConversation": "اختر محادثة",
+  "chooseConversation": "اختر محادثة موجودة أو ابدأ محادثة جديدة",
+  "newMessage": "رسالة جديدة",
+  "send": "إرسال",
+  "typeMessage": "اكتب رسالتك...",
+  "createConversation": "إنشاء محادثة",
+  "conversationWith": "محادثة مع",
+  "noMessages": "لا توجد رسائل بعد",
+  "startMessaging": "ابدأ بتبادل الرسائل الآمنة"
 }

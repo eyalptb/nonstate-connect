@@ -1,0 +1,15 @@
+
+{
+  "messagingTitle": "Messagerie sécurisée",
+  "messagingUnavailable": "La messagerie sécurisée n'est disponible que pour les utilisateurs connectés.",
+  "messagingDescription": "Connectez-vous pour envoyer et recevoir des messages cryptés de bout en bout.",
+  "selectConversation": "Sélectionnez une conversation",
+  "chooseConversation": "Choisissez une conversation existante ou démarrez-en une nouvelle",
+  "newMessage": "Nouveau message",
+  "send": "Envoyer",
+  "typeMessage": "Tapez votre message...",
+  "createConversation": "Créer une conversation",
+  "conversationWith": "Conversation avec",
+  "noMessages": "Pas encore de messages",
+  "startMessaging": "Commencez à échanger des messages sécurisés"
+}

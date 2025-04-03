@@ -1,0 +1,15 @@
+
+{
+  "messagingTitle": "Sichere Nachrichten",
+  "messagingUnavailable": "Sichere Nachrichten sind nur für angemeldete Benutzer verfügbar.",
+  "messagingDescription": "Melden Sie sich an, um Ende-zu-Ende-verschlüsselte Nachrichten zu senden und zu empfangen.",
+  "selectConversation": "Wählen Sie ein Gespräch aus",
+  "chooseConversation": "Wählen Sie ein bestehendes Gespräch oder beginnen Sie ein neues",
+  "newMessage": "Neue Nachricht",
+  "send": "Senden",
+  "typeMessage": "Geben Sie Ihre Nachricht ein...",
+  "createConversation": "Gespräch erstellen",
+  "conversationWith": "Gespräch mit",
+  "noMessages": "Noch keine Nachrichten",
+  "startMessaging": "Beginnen Sie mit dem Austausch sicherer Nachrichten"
+}

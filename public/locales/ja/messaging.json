@@ -1,0 +1,15 @@
+
+{
+  "messagingTitle": "安全なメッセージ",
+  "messagingUnavailable": "安全なメッセージングは認証されたユーザーのみご利用いただけます。",
+  "messagingDescription": "ログインして、エンドツーエンドで暗号化されたメッセージを送受信しましょう。",
+  "selectConversation": "会話を選択",
+  "chooseConversation": "既存の会話を選択するか、新しい会話を開始します",
+  "newMessage": "新しいメッセージ",
+  "send": "送信",
+  "typeMessage": "メッセージを入力...",
+  "createConversation": "会話を作成",
+  "conversationWith": "との会話",
+  "noMessages": "まだメッセージはありません",
+  "startMessaging": "安全なメッセージのやり取りを始めましょう"
+}

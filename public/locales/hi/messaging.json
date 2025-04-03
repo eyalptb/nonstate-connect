@@ -1,7 +1,15 @@
 
 {
-  "messagingTitle": "मैसेजिंग",
-  "messagingUnavailable": "यह सुविधा वर्तमान में अनुपलब्ध है",
-  "messagingDescription": "मैसेजिंग फंक्शनैलिटी वर्तमान में अनुपलब्ध है।",
-  "returnToHome": "होम पर वापस जाएं"
+  "messagingTitle": "सुरक्षित मैसेजिंग",
+  "messagingUnavailable": "सुरक्षित मैसेजिंग केवल प्रामाणिक उपयोगकर्ताओं के लिए उपलब्ध है।",
+  "messagingDescription": "एंड-टू-एंड एन्क्रिप्टेड संदेश भेजने और प्राप्त करने के लिए लॉगिन करें।",
+  "selectConversation": "एक वार्तालाप चुनें",
+  "chooseConversation": "मौजूदा वार्तालाप चुनें या नया शुरू करें",
+  "newMessage": "नया संदेश",
+  "send": "भेजें",
+  "typeMessage": "अपना संदेश टाइप करें...",
+  "createConversation": "वार्तालाप बनाएं",
+  "conversationWith": "के साथ वार्तालाप",
+  "noMessages": "अभी तक कोई संदेश नहीं",
+  "startMessaging": "सुरक्षित संदेश भेजना शुरू करें"
 }
