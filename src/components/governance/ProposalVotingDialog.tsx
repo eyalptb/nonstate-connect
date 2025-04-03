@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ProposalType } from "./types";
-import { useTranslation } from "react-i18next";
-import { useForceLanguageUpdate } from "@/utils/useForceUpdate";
+import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 interface ProposalVotingDialogProps {
   proposal: ProposalType;
@@ -21,12 +20,9 @@ export function ProposalVotingDialog({
   balance, 
   children 
 }: ProposalVotingDialogProps) {
-  const { t } = useTranslation(["governance", "common"]);
+  const { t, currentLanguage } = useTranslation(["governance", "common"]);
   const [votingAmount, setVotingAmount] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
-  
-  // Get current language to force re-render
-  const currentLanguage = useForceLanguageUpdate();
 
   const handleClick = () => {
     onVote(proposal.id, voteFor);
