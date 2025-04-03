@@ -75,14 +75,16 @@ export const api = {
           queryObj = params;
         }
         
-        let query = supabase.from(tableName).select('*');
+        // Using type assertion to fix type instantiation issue
+        const query = supabase.from(tableName);
+        let selectQuery = query.select('*');
         
         // Apply filters
         Object.entries(queryObj).forEach(([key, value]) => {
-          query = query.eq(key, value);
+          selectQuery = selectQuery.eq(key, value);
         });
         
-        const { data, error } = await query;
+        const { data, error } = await selectQuery;
         
         if (error) throw error;
         return { data, error: null };
@@ -102,6 +104,7 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
+      // Using type assertion to fix type instantiation issue
       const { data: result, error } = await supabase
         .from(tableName)
         .insert(data)
@@ -126,6 +129,7 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
+      // Using type assertion to fix type instantiation issue
       const { data: result, error } = await supabase
         .from(tableName)
         .update(data)
@@ -151,6 +155,7 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
+      // Using type assertion to fix type instantiation issue
       const { data: result, error } = await supabase
         .from(tableName)
         .delete()

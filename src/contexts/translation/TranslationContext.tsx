@@ -23,7 +23,7 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
     const handleLanguageChanged = (lng: string) => {
       setCurrentLanguage(lng);
       document.documentElement.lang = lng;
-      console.log(`Language changed to: ${lng}`);
+      // Removed the console.log to avoid duplicate notifications
     };
 
     // Set initial language
@@ -35,7 +35,6 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
     // Initial load to ensure we have all base namespaces
     i18n.loadNamespaces(['common', 'navigation', 'auth', 'messaging'], (err) => {
       if (err) console.error('Failed to load namespaces:', err);
-      else console.log('Initial namespaces loaded successfully');
     });
     
     return () => {
@@ -46,10 +45,9 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
   // Function to change language
   const changeLanguage = async (lang: string) => {
     try {
-      console.log(`Changing language to: ${lang}`);
+      // Removing this console log to avoid double notifications
       await i18n.changeLanguage(lang);
       localStorage.setItem("i18nextLng", lang);
-      console.log(`Language changed and saved to localStorage: ${lang}`);
     } catch (error) {
       console.error('Error changing language:', error);
     }

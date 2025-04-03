@@ -38,7 +38,7 @@ i18n
     keySeparator: false,
     
     // Debug mode to see more logging
-    debug: true,
+    debug: false, // Set to false to reduce console noise
     
     // Namespaces to load on init
     ns: ['common', 'navigation', 'auth', 'messaging'],
@@ -59,20 +59,16 @@ i18n
 // Update HTML lang attribute when language changes
 i18n.on('languageChanged', (lng) => {
   document.documentElement.lang = lng;
-  console.log(`Language changed to ${lng}, reloading resources...`);
   
   // Reload resources for the current language
   i18n.reloadResources([lng], ['common', 'navigation', 'messaging', 'auth'])
-    .then(() => console.log(`Successfully reloaded resources for ${lng}`))
     .catch(err => console.error(`Failed to reload resources for ${lng}:`, err));
 });
 
 // Add the reloadTranslations function for explicit control
 export const reloadTranslations = async (language: string) => {
   try {
-    console.log(`Manually reloading translations for ${language}...`);
     await i18n.reloadResources(language, ['common', 'navigation', 'auth', 'messaging']);
-    console.log(`Successfully reloaded translations for ${language}`);
     return true;
   } catch (error) {
     console.error(`Failed to reload translations for ${language}:`, error);

@@ -9,19 +9,19 @@ import TokenWallet from "@/components/TokenWallet";
 import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 const Index = () => {
-  // Make sure we're using the common namespace
-  const { t, currentLanguage } = useTranslation(["common"]);
+  // Use multiple namespaces to ensure all text gets translated
+  const { t, currentLanguage } = useTranslation(["common", "navigation"]);
   
   return (
-    <div className="flex flex-col min-h-screen" key={`index-${currentLanguage}`}>
+    <div className="flex flex-col min-h-screen">
       <main className="flex-grow">
         <Hero />
         <div className="container mx-auto px-4 py-12 mt-20">
           <h2 className="text-3xl font-bold text-center mb-8">
-            CollabCoin Wallet
+            {t("walletTitle", "CollabCoin Wallet")}
           </h2>
           <p className="text-center text-foreground/70 mb-8 max-w-lg mx-auto">
-            Your tokenized incentives
+            {t("tokenIncentives", "Your tokenized incentives")}
           </p>
           <div className="max-w-2xl mx-auto">
             <TokenWallet />

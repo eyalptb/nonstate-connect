@@ -33,17 +33,17 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
   ];
 
   const handleLanguageChange = async (langCode: string) => {
-    // Show toast to indicate change
-    toast.info(`Changing language to ${languages.find(l => l.code === langCode)?.name || langCode}...`);
-    
-    try {
-      // Change the language
-      await changeLanguage(langCode);
-      
-      // Show success toast
-      toast.success(`Language changed to ${languages.find(l => l.code === langCode)?.name || langCode}`);
-    } catch (error) {
-      toast.error(`Failed to change language`);
+    // Only show toast and change language if it's different from current
+    if (langCode !== currentLanguage) {
+      // Show single toast to indicate change
+      toast.promise(
+        changeLanguage(langCode),
+        {
+          loading: `Changing language to ${languages.find(l => l.code === langCode)?.name || langCode}...`,
+          success: `Language changed to ${languages.find(l => l.code === langCode)?.name || langCode}`,
+          error: `Failed to change language`,
+        }
+      );
     }
   };
 
@@ -78,11 +78,8 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
         <DropdownMenuSeparator />
         <DropdownMenuItem 
           className="text-xs text-muted-foreground"
-          onClick={() => {
-            toast.info(`Current language: ${currentLanguage}`);
-          }}
         >
-          {currentLanguage ? t("language", "Language") : "Language"}: {currentLanguage}
+          {t("language", "Language")}: {currentLanguage}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
