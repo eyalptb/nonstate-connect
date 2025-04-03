@@ -19,7 +19,7 @@ export const languages = {
   he: { name: 'Hebrew', nativeName: 'עברית' },
 };
 
-// Initialize i18next
+// Initialize i18next with minimal synchronous configuration
 i18n
   .use(Backend)
   .use(LanguageDetector)
@@ -48,11 +48,21 @@ i18n
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
+      lookupLocalStorage: 'i18nextLng',
     },
 
     react: {
-      useSuspense: false, // Disable suspense to avoid issues during language switching
+      useSuspense: false,
+      bindI18n: 'languageChanged loaded',
+      bindI18nStore: 'added removed',
     }
   });
+
+// Add debug logging for language changes
+i18n.on('languageChanged', (lng) => {
+  console.log(`Language changed to: ${lng}`);
+  document.documentElement.lang = lng; // Update HTML lang attribute
+  document.documentElement.dir = ['ar', 'he'].includes(lng) ? 'rtl' : 'ltr'; // Handle RTL languages
+});
 
 export default i18n;

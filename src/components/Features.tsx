@@ -1,48 +1,53 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, Lock, Brain, Fingerprint, Layers, Sparkles, FileCode, Database } from "lucide-react";
-
-const features = [
-  {
-    icon: <Lock className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-    title: "End-to-End Privacy",
-    description: "Complete encryption ensures your sensitive data remains private throughout the collaboration process."
-  },
-  {
-    icon: <Brain className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-    title: "AI Collaboration Agents",
-    description: "AI assistants that enhance your team's work without access to sensitive content."
-  },
-  {
-    icon: <Layers className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-    title: "Contribution Zones",
-    description: "Compartmentalized project spaces that keep sensitive data separate while enabling seamless collaboration."
-  },
-  {
-    icon: <Fingerprint className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-    title: "Privacy Dashboard",
-    description: "Complete transparency and control over your data and who can access it."
-  },
-  {
-    icon: <Sparkles className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-    title: "Impact Simulator",
-    description: "Predict the outcomes of your projects, from environmental impact to social change."
-  },
-  {
-    icon: <FileCode className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-    title: "Evolving Blueprints",
-    description: "Scale and adapt successful project templates while maintaining security and privacy."
-  }
-];
+import { useTranslation } from "react-i18next";
 
 const Features = () => {
+  const { t } = useTranslation("common");
+
+  const features = [
+    {
+      icon: <Lock className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
+      title: t("features.privacy.title", "End-to-End Privacy"),
+      description: t("features.privacy.description", "Complete encryption ensures your sensitive data remains private throughout the collaboration process.")
+    },
+    {
+      icon: <Brain className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
+      title: t("features.ai.title", "AI Collaboration Agents"),
+      description: t("features.ai.description", "AI assistants that enhance your team's work without access to sensitive content.")
+    },
+    {
+      icon: <Layers className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
+      title: t("features.zones.title", "Contribution Zones"),
+      description: t("features.zones.description", "Compartmentalized project spaces that keep sensitive data separate while enabling seamless collaboration.")
+    },
+    {
+      icon: <Fingerprint className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
+      title: t("features.dashboard.title", "Privacy Dashboard"),
+      description: t("features.dashboard.description", "Complete transparency and control over your data and who can access it.")
+    },
+    {
+      icon: <Sparkles className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
+      title: t("features.simulator.title", "Impact Simulator"),
+      description: t("features.simulator.description", "Predict the outcomes of your projects, from environmental impact to social change.")
+    },
+    {
+      icon: <FileCode className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
+      title: t("features.blueprints.title", "Evolving Blueprints"),
+      description: t("features.blueprints.description", "Scale and adapt successful project templates while maintaining security and privacy.")
+    }
+  ];
+
   return (
     <section id="features" className="py-20 bg-muted/50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Privacy-First Infrastructure for Innovation</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            {t("features.heading", "Privacy-First Infrastructure for Innovation")}
+          </h2>
           <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-            Our platform combines secure encryption technology with AI-powered collaboration tools to empower change-makers without compromising privacy.
+            {t("features.subheading", "Our platform combines secure encryption technology with AI-powered collaboration tools to empower change-makers without compromising privacy.")}
           </p>
         </div>
         

@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 interface LanguageSelectorProps {
   variant?: 'default' | 'minimal';
@@ -18,30 +19,49 @@ interface LanguageSelectorProps {
 }
 
 export function LanguageSelector({ variant = 'default', className }: LanguageSelectorProps) {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [currentLangCode, setCurrentLangCode] = useState(getNormalizedLanguageCode(i18n.language));
-
-  // Update current language code when i18n.language changes
-  useEffect(() => {
-    setCurrentLangCode(getNormalizedLanguageCode(i18n.language));
-  }, [i18n.language]);
-
-  // Get normalized language code from potentially complex code (e.g., en-US -> en)
+  
+  // Helper function to normalize language codes
   function getNormalizedLanguageCode(code: string): string {
-    const simpleCode = code?.split('-')[0] || 'en';
+    if (!code) return 'en';
+    const simpleCode = code.split('-')[0];
     return Object.keys(languages).includes(simpleCode) ? simpleCode : 'en';
   }
 
-  const changeLanguage = (language: string) => {
-    console.log(`Changing language to: ${language}`);
-    i18n.changeLanguage(language).then(() => {
-      console.log(`Language changed to: ${i18n.language}`);
-      setCurrentLangCode(getNormalizedLanguageCode(language));
+  // Update current language code when i18n.language changes
+  useEffect(() => {
+    const normalized = getNormalizedLanguageCode(i18n.language);
+    setCurrentLangCode(normalized);
+    console.log(`Language code in component updated to: ${normalized} (from ${i18n.language})`);
+  }, [i18n.language]);
+  
+  // Force re-render when language changes
+  useEffect(() => {
+    const handleLanguageChanged = (lng: string) => {
+      console.log(`Language changed event detected: ${lng}`);
+      setCurrentLangCode(getNormalizedLanguageCode(lng));
+    };
+    
+    i18n.on('languageChanged', handleLanguageChanged);
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
+  }, [i18n]);
+
+  const changeLanguage = async (language: string) => {
+    try {
+      console.log(`Attempting to change language to: ${language}`);
+      await i18n.changeLanguage(language);
+      console.log(`Language successfully changed to: ${i18n.language}`);
       setIsOpen(false);
-    }).catch(error => {
+      // Show a toast confirmation
+      toast(`Language changed to ${languages[language as keyof typeof languages]?.name || language}`);
+    } catch (error) {
       console.error('Failed to change language:', error);
-    });
+      toast.error(`Failed to change language. Please try again.`);
+    }
   };
   
   const currentLang = languages[currentLangCode as keyof typeof languages] || languages.en;
@@ -53,6 +73,7 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
           variant="ghost" 
           size="sm" 
           className={cn("flex items-center gap-2", className)}
+          aria-label={`Change language. Current: ${currentLang.name}`}
         >
           <Globe className="h-4 w-4" />
           {variant === 'default' && (
