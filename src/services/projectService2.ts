@@ -4,7 +4,6 @@ import { Project, ContributionZone, Output } from '@/types/projects';
 
 /**
  * Enhanced project service that uses the API client
- * This will make it easier to switch from Supabase to your custom backend
  */
 
 // Project-related functions
@@ -74,7 +73,7 @@ export const updateProject = async (
 // Contribution Zone functions
 export const fetchProjectZones = async (projectId: string): Promise<ContributionZone[]> => {
   // Custom endpoint for filtering by project_id
-  const response = await api.get(`contribution_zones?project_id=${projectId}`);
+  const response = await api.get(`contribution_zones`, { project_id: projectId });
   
   if (response.error) {
     console.error(`Error fetching zones for project ${projectId}:`, response.error);
@@ -100,7 +99,7 @@ export const createContributionZone = async (
 // Output functions
 export const fetchZoneOutputs = async (zoneId: string): Promise<Output[]> => {
   // Custom endpoint for filtering by zone_id
-  const response = await api.get(`outputs?zone_id=${zoneId}`);
+  const response = await api.get(`outputs`, { zone_id: zoneId });
   
   if (response.error) {
     console.error(`Error fetching outputs for zone ${zoneId}:`, response.error);

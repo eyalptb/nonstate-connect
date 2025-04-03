@@ -1,35 +1,48 @@
 
 import { getSupabaseClient } from './supabase';
 
-// Define the valid table names as string constants
-const validTables = ['projects', 'conversations', 'contribution_zones', 'conversation_participants', 
-  'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'];
+// Define the valid table names as literal strings for type safety
+const VALID_TABLES = ['projects', 'conversations', 'contribution_zones', 'conversation_participants', 
+  'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'] as const;
 
-// Simplified API client without complex types
+// Type for valid table names
+type ValidTableName = typeof VALID_TABLES[number];
+
+// Simple API response type
+type ApiResponse<T = any> = {
+  data: T | null;
+  error: Error | null;
+};
+
+// Check if a string is a valid table name
+const isValidTable = (table: string): table is ValidTableName => {
+  return VALID_TABLES.includes(table as ValidTableName);
+};
+
 export const api = {
-  // Simplified GET method
-  get: async (path: string, params?: Record<string, any>) => {
+  // GET method
+  get: async (path: string, params?: Record<string, any>): Promise<ApiResponse> => {
     try {
-      // Special case: auth session
+      // Special case for auth session
       if (path === 'auth/session') {
         const supabase = getSupabaseClient();
         const { data, error } = await supabase.auth.getSession();
         return { data, error: null };
       }
 
-      // Parse path to get table name and ID
+      // Parse path
       const parts = path.split('/');
       const tableName = parts[0];
       const id = parts[1];
       
       // Validate table name
-      if (!validTables.includes(tableName)) {
+      if (!isValidTable(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
       const supabase = getSupabaseClient();
       
-      // Get by ID
+      // Handle get by ID
       if (id && !id.includes('?')) {
         const { data, error } = await supabase
           .from(tableName)
@@ -41,10 +54,11 @@ export const api = {
         return { data, error: null };
       } 
       
-      // Get with query params
+      // Handle get with query params
       else {
-        // Extract query params
         let queryObj: Record<string, any> = {};
+        
+        // Extract query from URL or use provided params
         if (id && id.includes('?')) {
           const queryPart = id.split('?')[1];
           const searchParams = new URLSearchParams(queryPart);
@@ -73,12 +87,12 @@ export const api = {
     }
   },
   
-  // Simplified POST method
-  post: async (path: string, data: any) => {
+  // POST method
+  post: async (path: string, data: any): Promise<ApiResponse> => {
     try {
       const tableName = path;
       
-      if (!validTables.includes(tableName)) {
+      if (!isValidTable(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -89,21 +103,21 @@ export const api = {
         .select();
       
       if (error) throw error;
-      return { data: result[0], error: null };
+      return { data: result?.[0] || null, error: null };
     } catch (error) {
       console.error('API post error:', error);
       return { data: null, error: error as Error };
     }
   },
   
-  // Simplified PUT method
-  put: async (path: string, data: any) => {
+  // PUT method
+  put: async (path: string, data: any): Promise<ApiResponse> => {
     try {
       const parts = path.split('/');
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!validTables.includes(tableName)) {
+      if (!isValidTable(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -115,21 +129,21 @@ export const api = {
         .select();
       
       if (error) throw error;
-      return { data: result[0], error: null };
+      return { data: result?.[0] || null, error: null };
     } catch (error) {
       console.error('API put error:', error);
       return { data: null, error: error as Error };
     }
   },
   
-  // Simplified DELETE method
-  delete: async (path: string) => {
+  // DELETE method
+  delete: async (path: string): Promise<ApiResponse> => {
     try {
       const parts = path.split('/');
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!validTables.includes(tableName)) {
+      if (!isValidTable(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -141,7 +155,7 @@ export const api = {
         .select();
       
       if (error) throw error;
-      return { data: result[0], error: null };
+      return { data: result?.[0] || null, error: null };
     } catch (error) {
       console.error('API delete error:', error);
       return { data: null, error: error as Error };
