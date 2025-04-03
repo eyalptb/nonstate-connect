@@ -1,20 +1,34 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Coins } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useForceLanguageUpdate } from '@/utils/useForceUpdate';
 
 export const TokenWallet = () => {
-  const { t } = useTranslation('common');
+  const { t, i18n } = useTranslation('common');
+  const [renderCount, setRenderCount] = useState(0);
   
   // Force component to re-render on language change
   const currentLanguage = useForceLanguageUpdate();
   
+  // Track renders
+  useEffect(() => {
+    setRenderCount(prev => prev + 1);
+    console.log(`[TokenWallet] Component rendered (count: ${renderCount + 1}), language: ${currentLanguage}`);
+    console.log(`[TokenWallet] Translation test: title="${t('wallet.title')}", description="${t('wallet.description')}"`);
+    
+    return () => {
+      console.log(`[TokenWallet] Component will unmount, language was: ${currentLanguage}`);
+    };
+  }, [t, currentLanguage, renderCount, i18n.language]);
+  
   return (
-    <Card className="w-full shadow-sm" key={`wallet-${currentLanguage}`}>
+    <Card className="w-full shadow-sm" key={`wallet-${currentLanguage}-${renderCount}`}>
       <CardHeader>
-        <CardTitle className="text-xl">{t('wallet.title')}</CardTitle>
+        <CardTitle className="text-xl">
+          {t('wallet.title')} ({currentLanguage})
+        </CardTitle>
         <CardDescription>{t('wallet.description')}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col items-center justify-center py-8">
@@ -28,6 +42,9 @@ export const TokenWallet = () => {
           <span className="text-3xl font-bold">0</span>
         </div>
         <p className="text-muted-foreground text-sm">{t('wallet.coins')}</p>
+        <div className="mt-4 text-xs text-muted-foreground">
+          Render count: {renderCount}, Language: {currentLanguage}
+        </div>
       </CardContent>
       <CardFooter className="flex justify-between border-t pt-4">
         <p className="text-xs text-muted-foreground">

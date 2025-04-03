@@ -15,34 +15,54 @@ const root = createRoot(rootElement);
 
 // Function to render the app
 const renderApp = () => {
-  console.log('Rendering app with language:', i18n.language);
+  console.log('[main] Rendering app with language:', i18n.language);
+  console.log('[main] i18n initialization status:', { 
+    isInitialized: i18n.isInitialized, 
+    language: i18n.language,
+    availableLanguages: i18n.languages,
+    loadedNamespaces: i18n.reportNamespaces?.getUsedNamespaces() || []
+  });
+  
   document.documentElement.lang = i18n.language; // Set HTML lang attribute
   root.render(<App />);
 };
 
 // Initialize i18n and then render
 if (i18n.isInitialized) {
-  console.log('i18n already initialized');
+  console.log('[main] i18n already initialized, rendering immediately');
   renderApp();
 } else {
-  console.log('Waiting for i18n to initialize');
+  console.log('[main] Waiting for i18n to initialize');
   
   // Set a timeout in case initialization takes too long
   const timeoutId = setTimeout(() => {
-    console.warn('i18n initialization timed out, rendering anyway');
+    console.warn('[main] i18n initialization timed out after 2000ms, rendering anyway');
     renderApp();
   }, 2000);
   
   // Listen for initialization
   i18n.on('initialized', () => {
-    console.log('i18n initialized event fired');
+    console.log('[main] i18n initialized event fired');
     clearTimeout(timeoutId);
     renderApp();
   });
+  
+  // Also check for loaded event as backup
+  i18n.on('loaded', () => {
+    console.log('[main] i18n resources loaded event fired');
+    // Don't render here, just log
+  });
 }
 
-// Set up language change listener to update HTML lang attribute
-i18n.on('languageChanged', (lng) => {
-  console.log('Language changed to:', lng);
-  document.documentElement.lang = lng;
-});
+// Check initialization status periodically for debugging
+const checkInitStatus = setInterval(() => {
+  if (i18n.isInitialized) {
+    console.log('[main] i18n is now initialized, clearing check interval');
+    clearInterval(checkInitStatus);
+  } else {
+    console.log('[main] i18n still not initialized...');
+  }
+}, 500);
+
+// Clear the interval after 5 seconds regardless
+setTimeout(() => clearInterval(checkInitStatus), 5000);

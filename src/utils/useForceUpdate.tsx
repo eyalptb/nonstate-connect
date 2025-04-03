@@ -11,9 +11,11 @@ export function useForceLanguageUpdate() {
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
   
   useEffect(() => {
+    console.log('[useForceLanguageUpdate] Initializing with language:', i18n.language);
+    
     // Function to update our local state when language changes
     const handleLanguageChange = (lng: string) => {
-      console.log(`Language changed to: ${lng}`);
+      console.log(`[useForceLanguageUpdate] Language changed to: ${lng}`);
       setCurrentLanguage(lng);
     };
     
@@ -23,8 +25,13 @@ export function useForceLanguageUpdate() {
     // Add event listener for language changes
     i18n.on('languageChanged', handleLanguageChange);
     
+    // Debug info about component using this hook
+    const componentStack = new Error().stack?.split('\n').slice(2, 4).join(' → ');
+    console.log(`[useForceLanguageUpdate] Component ${componentStack} is tracking language:`, i18n.language);
+    
     return () => {
       // Clean up event listener
+      console.log('[useForceLanguageUpdate] Cleaning up language change listener');
       i18n.off('languageChanged', handleLanguageChange);
     };
   }, [i18n]);
