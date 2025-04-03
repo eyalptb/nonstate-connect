@@ -24,5 +24,4 @@ export const apiConfig: ApiConfig = {
 export const useCustomBackend = false;
 
 // This will be your DigitalOcean API URL when ready
-export const DIGITALOCEAN_API_URL = process.env.VITE_API_URL || 'http://localhost:8000';
-
+export const DIGITALOCEAN_API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
