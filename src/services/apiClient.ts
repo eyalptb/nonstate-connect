@@ -50,6 +50,7 @@ export const api = {
       
       // Handle get by ID
       if (id && !id.includes('?')) {
+        // Use the validated tableName which TypeScript now knows is a ValidTable
         const { data, error } = await supabase
           .from(tableName)
           .select('*')
@@ -75,15 +76,15 @@ export const api = {
           queryObj = params;
         }
         
-        // Create a typed query
-        let selectQuery = supabase.from(tableName).select('*');
+        // Use the validated tableName
+        let query = supabase.from(tableName).select('*');
         
         // Apply filters
         Object.entries(queryObj).forEach(([key, value]) => {
-          selectQuery = selectQuery.eq(key, value);
+          query = query.eq(key, value);
         });
         
-        const { data, error } = await selectQuery;
+        const { data, error } = await query;
         
         if (error) throw error;
         return { data, error: null };
@@ -103,6 +104,7 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
+      // Use the validated tableName
       const { data: result, error } = await supabase
         .from(tableName)
         .insert(data)
@@ -127,6 +129,7 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
+      // Use the validated tableName
       const { data: result, error } = await supabase
         .from(tableName)
         .update(data)
@@ -152,6 +155,7 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
+      // Use the validated tableName
       const { data: result, error } = await supabase
         .from(tableName)
         .delete()
