@@ -73,9 +73,12 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
         typeof i18n.store?.data?.[langCode]?.common === 'object' &&
         'wallet' in i18n.store?.data?.[langCode]?.common;
       
+      // Get wallet translations in a type-safe way if they exist
+      const walletTranslations = hasWalletTranslations ? 
+        i18n.store?.data?.[langCode]?.common?.wallet : 'Not available';
+      
       console.log(`[LanguageSelector] Has wallet translations for ${langCode}: ${hasWalletTranslations}`);
-      console.log(`[LanguageSelector] Wallet translations:`, 
-        hasWalletTranslations ? i18n.store?.data?.[langCode]?.common?.wallet : 'Not available');
+      console.log(`[LanguageSelector] Wallet translations:`, walletTranslations);
 
       // Show success toast
       toast.success(`Language changed to ${languages.find(l => l.code === langCode)?.name || langCode}`);

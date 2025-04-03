@@ -17,7 +17,15 @@ export function useForceLanguageUpdate() {
     const handleLanguageChange = (lng: string) => {
       console.log(`[useForceLanguageUpdate] Language changed to: ${lng}`);
       console.log(`[useForceLanguageUpdate] Current resources:`, i18n.store?.data);
-      setCurrentLanguage(lng);
+      
+      // Force immediate re-render
+      setCurrentLanguage(prevLang => {
+        if (prevLang !== lng) {
+          console.log(`[useForceLanguageUpdate] Updating language state from ${prevLang} to ${lng}`);
+          return lng;
+        }
+        return prevLang;
+      });
     };
     
     // Set initial language

@@ -42,15 +42,15 @@ export const TokenWallet = () => {
         - Russian wallet translations: ${hasRussianWallet ? 'YES' : 'NO'}
         - English wallet translations: ${hasEnglishWallet ? 'YES' : 'NO'}`);
       
-      // Check the specific wallet translations
+      // Check the specific wallet translations with type safety
       if (hasRussianWallet) {
-        console.log('[TokenWallet] Russian wallet translations:', 
-          i18n.store.data.ru.common.wallet);
+        const russianWallet = i18n.store.data.ru.common.wallet;
+        console.log('[TokenWallet] Russian wallet translations:', russianWallet);
       }
       
       if (hasEnglishWallet) {
-        console.log('[TokenWallet] English wallet translations:', 
-          i18n.store.data.en.common.wallet);
+        const englishWallet = i18n.store.data.en.common.wallet;
+        console.log('[TokenWallet] English wallet translations:', englishWallet);
       }
     }
     

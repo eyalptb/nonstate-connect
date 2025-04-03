@@ -30,9 +30,9 @@ const renderApp = () => {
   
   // Get wallet keys in a type-safe way
   const russianWallet = hasRussianCommon && 
-                        typeof i18n.store?.data?.ru?.common === 'object' && 
-                        'wallet' in i18n.store?.data?.ru?.common ? 
-                        i18n.store?.data?.ru?.common?.wallet : undefined;
+                       typeof i18n.store?.data?.ru?.common === 'object' && 
+                       'wallet' in i18n.store?.data?.ru?.common ? 
+                       i18n.store?.data?.ru?.common?.wallet : undefined;
   
   console.log('[main] Resource availability check:', {
     hasRussianCommon,

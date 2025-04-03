@@ -92,6 +92,16 @@ i18n.on('languageChanged', (lng) => {
     resources: i18n.store?.data || {},
     namespaces: i18n.reportNamespaces?.getUsedNamespaces() || []
   });
+  
+  // Force reload translations for the current language to ensure they're fresh
+  i18n.reloadResources([lng], ['common']).then(() => {
+    logI18n('resources-reloaded-after-language-change', {
+      language: lng,
+      hasData: !!i18n.store?.data?.[lng],
+      namespaces: Object.keys(i18n.store?.data?.[lng] || {})
+    });
+  });
+  
   // Update HTML lang attribute
   document.documentElement.lang = lng;
 });
