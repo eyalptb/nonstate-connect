@@ -27,4 +27,7 @@ export type GardenTaskType =
   | 'implementation'
   | 'maintenance'
   | 'documentation'
-  | 'evaluation';
+  | 'evaluation'
+  | 'site_layout'
+  | 'plant_selection'
+  | 'resource_list';

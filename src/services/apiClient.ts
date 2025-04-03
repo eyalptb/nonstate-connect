@@ -1,3 +1,4 @@
+
 import { getSupabaseClient } from './supabase';
 
 // Define allowed table names to avoid type errors
@@ -56,5 +57,93 @@ export const supabaseRequest = async <T>(
   } catch (error) {
     console.error('Supabase request error:', error);
     throw error;
+  }
+};
+
+// API client wrapper to match what projectService2 expects
+export const api = {
+  get: async <T>(path: string, params?: any): Promise<{ data: T | null; error: Error | null }> => {
+    try {
+      const parts = path.split('/');
+      const tableName = parts[0] as TableName;
+      const id = parts[1];
+      
+      let result;
+      
+      if (id) {
+        // Fetching a specific item by ID
+        const { data, error } = await getSupabaseClient()
+          .from(tableName)
+          .select('*')
+          .eq('id', id)
+          .single();
+          
+        if (error) throw error;
+        result = data;
+      } else {
+        // Fetching a list, potentially with filters from params
+        result = await supabaseRequest<T>(tableName, 'SELECT', undefined, params);
+      }
+      
+      return { data: result as T, error: null };
+    } catch (error) {
+      console.error('API get error:', error);
+      return { data: null, error: error as Error };
+    }
+  },
+  
+  post: async <T>(path: string, data: any): Promise<{ data: T | null; error: Error | null }> => {
+    try {
+      const tableName = path as TableName;
+      const result = await supabaseRequest<T>(tableName, 'INSERT', data);
+      return { data: result as T, error: null };
+    } catch (error) {
+      console.error('API post error:', error);
+      return { data: null, error: error as Error };
+    }
+  },
+  
+  put: async <T>(path: string, data: any): Promise<{ data: T | null; error: Error | null }> => {
+    try {
+      const parts = path.split('/');
+      const tableName = parts[0] as TableName;
+      const id = parts[1];
+      
+      const { data: result, error } = await getSupabaseClient()
+        .from(tableName)
+        .update(data)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      
+      return { data: result as T, error: null };
+    } catch (error) {
+      console.error('API put error:', error);
+      return { data: null, error: error as Error };
+    }
+  },
+  
+  delete: async <T>(path: string): Promise<{ data: T | null; error: Error | null }> => {
+    try {
+      const parts = path.split('/');
+      const tableName = parts[0] as TableName;
+      const id = parts[1];
+      
+      const { data: result, error } = await getSupabaseClient()
+        .from(tableName)
+        .delete()
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      
+      return { data: result as T, error: null };
+    } catch (error) {
+      console.error('API delete error:', error);
+      return { data: null, error: error as Error };
+    }
   }
 };

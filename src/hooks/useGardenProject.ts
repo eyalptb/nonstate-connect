@@ -26,8 +26,8 @@ export const useGardenProject = (projectId: string | undefined) => {
         // Convert Project to GardenProject
         const gardenProjectData: GardenProject = {
           ...projectData,
-          tags: projectData.tags || [],
-          impact_goal: projectData.impact_goal || ''
+          tags: [], // Default empty array as tags don't exist in Project
+          impact_goal: '' // Default empty string as impact_goal doesn't exist in Project
         };
         
         setProject(gardenProjectData);

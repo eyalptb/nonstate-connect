@@ -1,33 +1,27 @@
 
-// Support for offline messaging operations
-
 /**
- * Queue messages for sending when back online
+ * Utility functions for offline support
  */
-export const queueMessageForSending = (message: any) => {
-  const queue = JSON.parse(localStorage.getItem('message_queue') || '[]');
-  queue.push(message);
-  localStorage.setItem('message_queue', JSON.stringify(queue));
+
+// Store a pending sync operation to be executed when online
+export const storePendingSync = (operation: any): void => {
+  // Implementation would store the operation in local storage
+  console.log('Storing pending sync operation:', operation);
+};
+
+// Get all pending sync operations that need to be executed
+export const getPendingSyncOperations = (): any[] => {
+  // Implementation would retrieve operations from local storage
+  console.log('Getting pending sync operations');
+  return [];
+};
+
+// Remove a pending sync operation after it has been successfully executed
+export const removePendingSyncOperation = (operationId: string): void => {
+  // Implementation would remove the operation from local storage
+  console.log('Removing pending sync operation:', operationId);
 };
 
 /**
- * Check for and send queued messages
+ * Additional offline support functions would go here
  */
-export const processPendingMessages = async (sendFn: (message: any) => Promise<any>) => {
-  const queue = JSON.parse(localStorage.getItem('message_queue') || '[]');
-  if (queue.length === 0) return;
-
-  const failedMessages = [];
-  
-  for (const message of queue) {
-    try {
-      await sendFn(message);
-    } catch (error) {
-      console.error('Failed to send queued message:', error);
-      failedMessages.push(message);
-    }
-  }
-
-  localStorage.setItem('message_queue', JSON.stringify(failedMessages));
-  return queue.length - failedMessages.length; // Return count of successfully sent messages
-};
