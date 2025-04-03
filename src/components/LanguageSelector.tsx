@@ -22,6 +22,7 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
   const { i18n, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [currentLangCode, setCurrentLangCode] = useState(getNormalizedLanguageCode(i18n.language));
+  const [isLoading, setIsLoading] = useState(false);
   
   // Helper function to normalize language codes
   function getNormalizedLanguageCode(code: string): string {
@@ -42,11 +43,21 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
     const handleLanguageChanged = (lng: string) => {
       console.log(`Language changed event detected: ${lng}`);
       setCurrentLangCode(getNormalizedLanguageCode(lng));
+      setIsLoading(false);
     };
     
     i18n.on('languageChanged', handleLanguageChanged);
+    
+    // Listen for the custom event we dispatch in i18n initialization
+    const handleCustomEvent = () => {
+      console.log('Language change custom event received');
+      setIsLoading(false);
+    };
+    window.addEventListener('languageChanged', handleCustomEvent);
+    
     return () => {
       i18n.off('languageChanged', handleLanguageChanged);
+      window.removeEventListener('languageChanged', handleCustomEvent);
     };
   }, [i18n]);
 
@@ -60,6 +71,12 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
         return;
       }
 
+      setIsLoading(true);
+      
+      // Show toast notification that we're changing language
+      const targetLang = languages[language as keyof typeof languages];
+      toast.loading(`Changing language to ${targetLang?.name || language}...`);
+
       // Attempt to change the language
       await i18n.changeLanguage(language);
       
@@ -68,9 +85,11 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
       
       // Show a toast confirmation
       const displayName = languages[language as keyof typeof languages]?.name || language;
-      toast(`Language changed to ${displayName}`);
+      toast.success(`Language changed to ${displayName}`);
       
       // Force page update in some browsers
+      document.documentElement.lang = language;
+      document.documentElement.dir = ['ar', 'he'].includes(language) ? 'rtl' : 'ltr';
       setTimeout(() => {
         window.dispatchEvent(new Event('languageChanged'));
       }, 100);
@@ -78,6 +97,7 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
     } catch (error) {
       console.error('Failed to change language:', error);
       toast.error(`Failed to change language. Please try again.`);
+      setIsLoading(false);
     }
   };
   
@@ -91,8 +111,13 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
           size="sm" 
           className={cn("flex items-center gap-2", className)}
           aria-label={`Change language. Current: ${currentLang.name}`}
+          disabled={isLoading}
         >
-          <Globe className="h-4 w-4" />
+          {isLoading ? (
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+          ) : (
+            <Globe className="h-4 w-4" />
+          )}
           {variant === 'default' && (
             <span className="hidden sm:inline-block">
               {currentLang.nativeName}
@@ -109,6 +134,7 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
               "cursor-pointer",
               currentLangCode === code && "font-bold bg-primary/10"
             )}
+            disabled={isLoading}
           >
             {language.nativeName} ({language.name})
           </DropdownMenuItem>

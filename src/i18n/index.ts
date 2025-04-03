@@ -70,27 +70,45 @@ i18n.on('languageChanged', (lng) => {
   console.log(`Language changed to: ${lng}`);
   document.documentElement.lang = lng; // Update HTML lang attribute
   document.documentElement.dir = ['ar', 'he'].includes(lng) ? 'rtl' : 'ltr'; // Handle RTL languages
+  
+  // Force update UI on language change
+  window.dispatchEvent(new Event('languageChanged'));
 });
 
-// Function to check if translation files exist
+// Function to check if translation files exist - improved version
 export const checkTranslationAvailability = async () => {
   const supportedLangs = Object.keys(languages);
   const namespaces = ['common', 'auth', 'navigation'];
+  const missingFiles = [];
   
   for (const lang of supportedLangs) {
     for (const ns of namespaces) {
       try {
-        await fetch(`/locales/${lang}/${ns}.json`);
+        const response = await fetch(`/locales/${lang}/${ns}.json`);
+        if (!response.ok) {
+          missingFiles.push(`/locales/${lang}/${ns}.json`);
+        }
       } catch (err) {
-        console.error(`Translation file missing: /locales/${lang}/${ns}.json`);
+        missingFiles.push(`/locales/${lang}/${ns}.json`);
       }
     }
+  }
+  
+  if (missingFiles.length > 0) {
+    console.error('Missing translation files:', missingFiles);
+    if (process.env.NODE_ENV === 'development') {
+      toast.error(`Missing translation files: ${missingFiles.length} files`);
+    }
+  } else {
+    console.log('All translation files available');
   }
 };
 
 // Call this function in development mode
 if (process.env.NODE_ENV === 'development') {
-  checkTranslationAvailability();
+  setTimeout(() => {
+    checkTranslationAvailability();
+  }, 2000);
 }
 
 export default i18n;

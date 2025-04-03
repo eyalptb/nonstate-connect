@@ -1,0 +1,56 @@
+
+{
+  "appName": "ParaCollab",
+  "welcome": "Bem-vindo ao ParaCollab",
+  "loading": "Carregando...",
+  "error": "Ocorreu um erro",
+  "notFound": "Página não encontrada",
+  "back": "Voltar",
+  "save": "Salvar",
+  "cancel": "Cancelar",
+  "delete": "Excluir",
+  "edit": "Editar",
+  "create": "Criar",
+  "submit": "Enviar",
+  "confirm": "Confirmar",
+  "wallet": {
+    "title": "Carteira CollabCoin",
+    "description": "Seus incentivos protegidos por privacidade",
+    "coins": "CollabCoins",
+    "earn": "Ganhe através de colaboração segura e gaste em recursos premium"
+  },
+  "privacy": {
+    "title": "Privacidade em Primeiro Lugar",
+    "description": "Seus dados permanecem seus",
+    "encrypted": "Criptografado de Ponta a Ponta",
+    "control": "Controle Completo"
+  },
+  "features": {
+    "heading": "Infraestrutura com Foco em Privacidade para Inovação",
+    "subheading": "Nossa plataforma combina tecnologia de criptografia segura com ferramentas de colaboração impulsionadas por IA para capacitar agentes de mudança sem comprometer a privacidade.",
+    "privacy": {
+      "title": "Privacidade de Ponta a Ponta",
+      "description": "A criptografia completa garante que seus dados sensíveis permaneçam privados durante todo o processo de colaboração."
+    },
+    "ai": {
+      "title": "Agentes de Colaboração com IA",
+      "description": "Assistentes de IA que aprimoram o trabalho da sua equipe sem acesso ao conteúdo sensível."
+    },
+    "zones": {
+      "title": "Zonas de Contribuição",
+      "description": "Espaços de projeto compartimentados que mantêm os dados sensíveis separados enquanto permitem uma colaboração perfeita."
+    },
+    "dashboard": {
+      "title": "Painel de Privacidade",
+      "description": "Transparência total e controle sobre seus dados e quem pode acessá-los."
+    },
+    "simulator": {
+      "title": "Simulador de Impacto",
+      "description": "Preveja os resultados dos seus projetos, do impacto ambiental à mudança social."
+    },
+    "blueprints": {
+      "title": "Modelos Evolutivos",
+      "description": "Escale e adapte modelos de projetos bem-sucedidos mantendo segurança e privacidade."
+    }
+  }
+}
