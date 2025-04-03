@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Shield, Brain, Lock } from "lucide-react";
 import { useTranslation } from "@/contexts/translation/TranslationContext";
@@ -73,7 +72,6 @@ const Hero = () => {
                 <Shield className="w-10 h-10 text-white" />
               </div>
               
-              {/* Connection lines */}
               <svg className="absolute inset-0 w-full h-full z-[-1]" viewBox="0 0 400 400">
                 <path 
                   d="M100,100 L200,150 L260,130 L180,240" 

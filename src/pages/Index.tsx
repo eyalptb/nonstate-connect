@@ -9,6 +9,7 @@ import TokenWallet from "@/components/TokenWallet";
 import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 const Index = () => {
+  // Make sure we're using the common namespace
   const { t, currentLanguage } = useTranslation(["common"]);
   
   return (
