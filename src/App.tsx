@@ -1,4 +1,3 @@
-
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import {
@@ -13,7 +12,11 @@ import {
   Features,
   Profile,
   Projects,
-  ProjectDetail
+  ProjectDetail,
+  GardenProjects,
+  GardenProjectCreation,
+  GardenProject,
+  GardenProjectSetup
 } from "./pages";
 import { AuthProvider } from "./contexts/auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -104,6 +107,12 @@ function App() {
                 } />
                 <Route path="/collaboration-hub" element={<IntegrationHub />} />
                 <Route path="/funding" element={<Funding />} />
+                
+                {/* Garden-specific routes */}
+                <Route path="/garden" element={<GardenProjects />} />
+                <Route path="/garden/create" element={<GardenProjectCreation />} />
+                <Route path="/garden/:projectId" element={<GardenProject />} />
+                <Route path="/projects/:projectId/setup" element={<GardenProjectSetup />} />
                 
                 {/* 404 Route */}
                 <Route path="*" element={<NotFound />} />

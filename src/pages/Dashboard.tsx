@@ -6,12 +6,12 @@ import TokenMarketplace from "@/components/TokenMarketplace";
 import { useAuth } from "@/contexts/auth";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 import { useTranslation } from "@/contexts/translation/TranslationContext";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useNotifications } from "@/contexts/notification/NotificationContext";
 import { useEffect, useRef } from "react";
 import BackendStatus from "@/components/BackendStatus";
+import { Leaf } from 'lucide-react';
 
-// Mock activity data - would come from an API in a real application
 const mockActivities = [
   {
     id: '1',
@@ -40,7 +40,6 @@ const Dashboard = () => {
   const { addNotification } = useNotifications();
   const welcomeShownRef = useRef(false);
   
-  // Demo welcome notification - only show once per component mount
   useEffect(() => {
     if (user && !welcomeShownRef.current) {
       welcomeShownRef.current = true;
@@ -55,13 +54,10 @@ const Dashboard = () => {
     }
   }, [user, addNotification, t]);
   
-  // Get the display name (username, email, or fallback to "Guest")
   const displayName = user?.username || user?.email?.split('@')[0] || "Guest";
   
-  // Get the first letter for the avatar
   const firstLetter = displayName.charAt(0).toUpperCase();
   
-  // Get time of day for personalized greeting
   const getTimeBasedGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return t('greetings.morning');
@@ -91,12 +87,10 @@ const Dashboard = () => {
             </div>
           </div>
           
-          {/* Backend Status */}
           <div className="mb-8">
             <BackendStatus />
           </div>
           
-          {/* Project Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <Card>
               <CardHeader>
@@ -128,20 +122,63 @@ const Dashboard = () => {
             
             <Card>
               <CardHeader>
-                <CardTitle>{t('dashboard.createProject')}</CardTitle>
+                <CardTitle className="flex items-center">
+                  <Leaf className="mr-2 h-5 w-5 text-green-600" />
+                  {t('dashboard.createProject')}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground mb-4">
-                  {t('dashboard.startNewProject')}
+                  Create a new sustainable garden project for community collaboration
                 </p>
-                <Button className="w-full">
-                  {t('dashboard.newProject')}
+                <Button className="w-full" onClick={() => navigate('/garden/create')}>
+                  New Garden Project
                 </Button>
               </CardContent>
             </Card>
           </div>
           
-          {/* Two Column Layout */}
+          <div className="mb-12">
+            <Card className="border-green-200 bg-green-50/50 dark:bg-green-950/10">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Leaf className="mr-2 h-5 w-5 text-green-600" />
+                  Green Haven Garden Projects
+                </CardTitle>
+                <CardDescription>
+                  Plan and manage sustainable community gardens
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between border p-4 rounded-md bg-white dark:bg-background">
+                    <div>
+                      <h3 className="font-medium">Community Garden Planning</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Collaborative planning for local food production
+                      </p>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={() => navigate('/garden')}>
+                      Browse Gardens
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center justify-between border p-4 rounded-md bg-white dark:bg-background">
+                    <div>
+                      <h3 className="font-medium">Start a New Garden</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Create your own sustainable garden project
+                      </p>
+                    </div>
+                    <Button size="sm" onClick={() => navigate('/garden/create')}>
+                      Create Garden
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
             <div>
               <TokenWallet />
@@ -151,7 +188,6 @@ const Dashboard = () => {
             </div>
           </div>
           
-          {/* More Components */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
             <div>
               <ProjectContribution />

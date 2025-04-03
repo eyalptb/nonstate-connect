@@ -1,4 +1,3 @@
-
 export { default as Dashboard } from "./Dashboard";
 export { default as Funding } from "./Funding";
 export { default as Impact } from "./Impact";
@@ -18,3 +17,9 @@ export { default as UseCases } from "./UseCases";
 export { default as Learn } from "./Learn";
 export { default as Pricing } from "./Pricing";
 export { default as ContactSales } from "./ContactSales";
+
+// Garden Project Components
+export { default as GardenProjects } from './GardenProjects';
+export { default as GardenProject } from './GardenProject';
+export { default as GardenProjectCreation } from '@/components/garden/GardenProjectCreation';
+export { default as GardenProjectSetup } from '@/components/garden/GardenProjectSetup';
