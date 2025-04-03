@@ -1,0 +1,56 @@
+
+{
+  "appName": "ParaCollab",
+  "welcome": "Willkommen bei ParaCollab",
+  "loading": "Laden...",
+  "error": "Ein Fehler ist aufgetreten",
+  "notFound": "Seite nicht gefunden",
+  "back": "Zurück",
+  "save": "Speichern",
+  "cancel": "Abbrechen",
+  "delete": "Löschen",
+  "edit": "Bearbeiten",
+  "create": "Erstellen",
+  "submit": "Absenden",
+  "confirm": "Bestätigen",
+  "wallet": {
+    "title": "CollabCoin Wallet",
+    "description": "Ihre datenschutzgesicherten Anreize",
+    "coins": "CollabCoins",
+    "earn": "Verdienen Sie durch sichere Zusammenarbeit und geben Sie für Premium-Funktionen aus"
+  },
+  "privacy": {
+    "title": "Datenschutz an erster Stelle",
+    "description": "Ihre Daten bleiben Ihre",
+    "encrypted": "Ende-zu-Ende verschlüsselt",
+    "control": "Vollständige Kontrolle"
+  },
+  "features": {
+    "heading": "Datenschutzorientierte Infrastruktur für Innovation",
+    "subheading": "Unsere Plattform kombiniert sichere Verschlüsselungstechnologie mit KI-gestützten Kollaborationswerkzeugen, um Innovatoren zu stärken, ohne die Privatsphäre zu gefährden.",
+    "privacy": {
+      "title": "Ende-zu-Ende-Datenschutz",
+      "description": "Vollständige Verschlüsselung stellt sicher, dass Ihre sensiblen Daten während des gesamten Zusammenarbeitsprozesses privat bleiben."
+    },
+    "ai": {
+      "title": "KI-Kollaborationsagenten",
+      "description": "KI-Assistenten, die die Arbeit Ihres Teams verbessern, ohne Zugriff auf sensible Inhalte zu haben."
+    },
+    "zones": {
+      "title": "Beitragszonen",
+      "description": "Abgegrenzte Projektbereiche, die sensible Daten getrennt halten und gleichzeitig eine nahtlose Zusammenarbeit ermöglichen."
+    },
+    "dashboard": {
+      "title": "Datenschutz-Dashboard",
+      "description": "Vollständige Transparenz und Kontrolle über Ihre Daten und wer darauf zugreifen kann."
+    },
+    "simulator": {
+      "title": "Wirkungssimulator",
+      "description": "Prognostizieren Sie die Ergebnisse Ihrer Projekte, von der Umweltwirkung bis zum sozialen Wandel."
+    },
+    "blueprints": {
+      "title": "Sich entwickelnde Blaupausen",
+      "description": "Skalieren und adaptieren Sie erfolgreiche Projektvorlagen unter Beibehaltung von Sicherheit und Datenschutz."
+    }
+  }
+}

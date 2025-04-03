@@ -1,0 +1,56 @@
+
+{
+  "appName": "ParaCollab",
+  "welcome": "Bienvenue sur ParaCollab",
+  "loading": "Chargement...",
+  "error": "Une erreur s'est produite",
+  "notFound": "Page non trouvée",
+  "back": "Retour",
+  "save": "Sauvegarder",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "edit": "Modifier",
+  "create": "Créer",
+  "submit": "Soumettre",
+  "confirm": "Confirmer",
+  "wallet": {
+    "title": "Portefeuille CollabCoin",
+    "description": "Vos incitations sécurisées par la confidentialité",
+    "coins": "CollabCoins",
+    "earn": "Gagnez par une collaboration sécurisée et dépensez pour des fonctionnalités premium"
+  },
+  "privacy": {
+    "title": "La confidentialité d'abord",
+    "description": "Vos données restent les vôtres",
+    "encrypted": "Chiffré de bout en bout",
+    "control": "Contrôle complet"
+  },
+  "features": {
+    "heading": "Infrastructure de confidentialité pour l'innovation",
+    "subheading": "Notre plateforme combine une technologie de chiffrement sécurisée avec des outils de collaboration alimentés par l'IA pour autonomiser les acteurs du changement sans compromettre la confidentialité.",
+    "privacy": {
+      "title": "Confidentialité de bout en bout",
+      "description": "Un chiffrement complet garantit que vos données sensibles restent privées tout au long du processus de collaboration."
+    },
+    "ai": {
+      "title": "Agents de collaboration IA",
+      "description": "Assistants IA qui améliorent le travail de votre équipe sans accès au contenu sensible."
+    },
+    "zones": {
+      "title": "Zones de contribution",
+      "description": "Espaces de projet compartimentés qui gardent les données sensibles séparées tout en permettant une collaboration transparente."
+    },
+    "dashboard": {
+      "title": "Tableau de bord de confidentialité",
+      "description": "Transparence totale et contrôle sur vos données et qui peut y accéder."
+    },
+    "simulator": {
+      "title": "Simulateur d'impact",
+      "description": "Prédisez les résultats de vos projets, de l'impact environnemental au changement social."
+    },
+    "blueprints": {
+      "title": "Plans évolutifs",
+      "description": "Adaptez des modèles de projets réussis tout en maintenant la sécurité et la confidentialité."
+    }
+  }
+}

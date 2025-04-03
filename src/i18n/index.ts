@@ -3,6 +3,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import Backend from 'i18next-http-backend';
+import { toast } from 'sonner';
 
 // Define our supported languages and their native names
 export const languages = {
@@ -19,7 +20,7 @@ export const languages = {
   he: { name: 'Hebrew', nativeName: 'עברית' },
 };
 
-// Initialize i18next with minimal synchronous configuration
+// Initialize i18next with minimal configuration
 i18n
   .use(Backend)
   .use(LanguageDetector)
@@ -32,7 +33,7 @@ i18n
       escapeValue: false, // not needed for React as it escapes by default
     },
     
-    // Load translations from public/locales folder
+    // Explicit paths for loading translations - ensure all files exist
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json',
     },
@@ -51,10 +52,16 @@ i18n
       lookupLocalStorage: 'i18nextLng',
     },
 
+    // Important settings for React - disable suspense to prevent rendering issues
     react: {
       useSuspense: false,
-      bindI18n: 'languageChanged loaded',
-      bindI18nStore: 'added removed',
+    },
+    
+    // For debugging missing translations
+    missingKeyHandler: (lngs, ns, key) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(`Missing translation: ${key} in namespace ${ns} for languages ${lngs}`);
+      }
     }
   });
 
@@ -64,5 +71,26 @@ i18n.on('languageChanged', (lng) => {
   document.documentElement.lang = lng; // Update HTML lang attribute
   document.documentElement.dir = ['ar', 'he'].includes(lng) ? 'rtl' : 'ltr'; // Handle RTL languages
 });
+
+// Function to check if translation files exist
+export const checkTranslationAvailability = async () => {
+  const supportedLangs = Object.keys(languages);
+  const namespaces = ['common', 'auth', 'navigation'];
+  
+  for (const lang of supportedLangs) {
+    for (const ns of namespaces) {
+      try {
+        await fetch(`/locales/${lang}/${ns}.json`);
+      } catch (err) {
+        console.error(`Translation file missing: /locales/${lang}/${ns}.json`);
+      }
+    }
+  }
+};
+
+// Call this function in development mode
+if (process.env.NODE_ENV === 'development') {
+  checkTranslationAvailability();
+}
 
 export default i18n;

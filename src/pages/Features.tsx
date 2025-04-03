@@ -14,81 +14,84 @@ import {
   Vote, 
   Puzzle
 } from "lucide-react";
-
-// Feature categories
-const featureCategories = [
-  {
-    id: "security",
-    name: "Security",
-    features: [
-      {
-        title: "End-to-End Encryption",
-        description: "All communications and shared documents are encrypted to ensure privacy and security for all participants.",
-        icon: <Lock className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
-      },
-      {
-        title: "Self-Sovereign Identity",
-        description: "Users maintain control of their identity and credentials without centralized authorities.",
-        icon: <Shield className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
-      }
-    ]
-  },
-  {
-    id: "collaboration",
-    name: "Collaboration",
-    features: [
-      {
-        title: "Global Collaboration",
-        description: "Connect with partners across borders to work on shared initiatives and cooperative games.",
-        icon: <Globe className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
-      },
-      {
-        title: "Community Building",
-        description: "Create and join communities with shared interests in parachute games and collaborative activities.",
-        icon: <Users className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
-      },
-      {
-        title: "Secure Messaging",
-        description: "Communicate with other members through our encrypted messaging system.",
-        icon: <MessageSquareText className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
-      }
-    ]
-  },
-  {
-    id: "infrastructure",
-    name: "Infrastructure",
-    features: [
-      {
-        title: "Decentralized Architecture",
-        description: "Built on blockchain technology to eliminate central points of failure and censorship.",
-        icon: <Network className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
-      },
-      {
-        title: "Token Economy",
-        description: "Digital tokens for reward, recognition and community participation in the ecosystem.",
-        icon: <Wallet className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
-      },
-      {
-        title: "Transparent Governance",
-        description: "Democratic decision-making with transparent voting and resource allocation.",
-        icon: <Vote className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
-      },
-      {
-        title: "Integration Hub",
-        description: "Connect with external tools and services to enhance your collaboration experience.",
-        icon: <Puzzle className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
-      }
-    ]
-  }
-];
+import { useTranslation } from "react-i18next";
 
 const Features = () => {
+  const { t } = useTranslation(["common", "navigation"]);
+
+  // Feature categories
+  const featureCategories = [
+    {
+      id: "security",
+      name: t("features.categories.security", "Security"),
+      features: [
+        {
+          title: t("features.security.encryption.title", "End-to-End Encryption"),
+          description: t("features.security.encryption.description", "All communications and shared documents are encrypted to ensure privacy and security for all participants."),
+          icon: <Lock className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
+        },
+        {
+          title: t("features.security.identity.title", "Self-Sovereign Identity"),
+          description: t("features.security.identity.description", "Users maintain control of their identity and credentials without centralized authorities."),
+          icon: <Shield className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
+        }
+      ]
+    },
+    {
+      id: "collaboration",
+      name: t("features.categories.collaboration", "Collaboration"),
+      features: [
+        {
+          title: t("features.collaboration.global.title", "Global Collaboration"),
+          description: t("features.collaboration.global.description", "Connect with partners across borders to work on shared initiatives and cooperative games."),
+          icon: <Globe className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
+        },
+        {
+          title: t("features.collaboration.community.title", "Community Building"),
+          description: t("features.collaboration.community.description", "Create and join communities with shared interests in parachute games and collaborative activities."),
+          icon: <Users className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
+        },
+        {
+          title: t("features.collaboration.messaging.title", "Secure Messaging"),
+          description: t("features.collaboration.messaging.description", "Communicate with other members through our encrypted messaging system."),
+          icon: <MessageSquareText className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
+        }
+      ]
+    },
+    {
+      id: "infrastructure",
+      name: t("features.categories.infrastructure", "Infrastructure"),
+      features: [
+        {
+          title: t("features.infrastructure.decentralized.title", "Decentralized Architecture"),
+          description: t("features.infrastructure.decentralized.description", "Built on blockchain technology to eliminate central points of failure and censorship."),
+          icon: <Network className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
+        },
+        {
+          title: t("features.infrastructure.token.title", "Token Economy"),
+          description: t("features.infrastructure.token.description", "Digital tokens for reward, recognition and community participation in the ecosystem."),
+          icon: <Wallet className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
+        },
+        {
+          title: t("features.infrastructure.governance.title", "Transparent Governance"),
+          description: t("features.infrastructure.governance.description", "Democratic decision-making with transparent voting and resource allocation."),
+          icon: <Vote className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
+        },
+        {
+          title: t("features.infrastructure.integration.title", "Integration Hub"),
+          description: t("features.infrastructure.integration.description", "Connect with external tools and services to enhance your collaboration experience."),
+          icon: <Puzzle className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
+        }
+      ]
+    }
+  ];
+
   return (
     <div className="py-8 md:py-12">
       <Container>
         <PageHeader 
-          title="Platform Features" 
-          description="Discover the tools and technologies that power the ParaCollab platform"
+          title={t("features.pageTitle", "Platform Features")}
+          description={t("features.pageDescription", "Discover the tools and technologies that power the ParaCollab platform")}
         />
         
         <Tabs defaultValue="security" className="w-full mt-8">
@@ -122,15 +125,12 @@ const Features = () => {
         </Tabs>
         
         <div className="mt-16 bg-muted/50 p-6 rounded-lg">
-          <h3 className="text-xl font-bold mb-4">Why Choose ParaCollab?</h3>
+          <h3 className="text-xl font-bold mb-4">{t("features.why.title", "Why Choose ParaCollab?")}</h3>
           <p className="text-foreground/70 mb-4">
-            ParaCollab is designed specifically for parachute game enthusiasts and communities who want to collaborate
-            on global challenges. Our platform combines the best of decentralized technology with intuitive design to create
-            a seamless experience for all users.
+            {t("features.why.description1", "ParaCollab is designed specifically for parachute game enthusiasts and communities who want to collaborate on global challenges. Our platform combines the best of decentralized technology with intuitive design to create a seamless experience for all users.")}
           </p>
           <p className="text-foreground/70">
-            With features spanning security, collaboration tools, and robust infrastructure, we provide everything you
-            need to connect, create, and contribute to meaningful projects around the world.
+            {t("features.why.description2", "With features spanning security, collaboration tools, and robust infrastructure, we provide everything you need to connect, create, and contribute to meaningful projects around the world.")}
           </p>
         </div>
       </Container>

@@ -53,11 +53,28 @@ export function LanguageSelector({ variant = 'default', className }: LanguageSel
   const changeLanguage = async (language: string) => {
     try {
       console.log(`Attempting to change language to: ${language}`);
+      // Check if we're already using this language
+      if (currentLangCode === language) {
+        console.log('Already using this language, no change needed');
+        setIsOpen(false);
+        return;
+      }
+
+      // Attempt to change the language
       await i18n.changeLanguage(language);
+      
       console.log(`Language successfully changed to: ${i18n.language}`);
       setIsOpen(false);
+      
       // Show a toast confirmation
-      toast(`Language changed to ${languages[language as keyof typeof languages]?.name || language}`);
+      const displayName = languages[language as keyof typeof languages]?.name || language;
+      toast(`Language changed to ${displayName}`);
+      
+      // Force page update in some browsers
+      setTimeout(() => {
+        window.dispatchEvent(new Event('languageChanged'));
+      }, 100);
+      
     } catch (error) {
       console.error('Failed to change language:', error);
       toast.error(`Failed to change language. Please try again.`);
