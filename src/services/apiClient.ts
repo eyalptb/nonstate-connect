@@ -1,52 +1,36 @@
 
 import { getSupabaseClient } from './supabase';
 
-// Define table names as simple string literals
-const validTableNames = [
-  'projects', 'conversations', 'contribution_zones', 'conversation_participants', 
-  'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'
-] as const;
+// Define the valid table names as string constants
+const validTables = ['projects', 'conversations', 'contribution_zones', 'conversation_participants', 
+  'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'];
 
-// Simple string literal type
-type TableName = typeof validTableNames[number];
-
-// Helper function to get auth session
-const getAuthSession = async () => {
-  const supabase = getSupabaseClient();
-  if (!supabase) {
-    throw new Error('Supabase client not initialized');
-  }
-  
-  const { data, error } = await supabase.auth.getSession();
-  if (error) throw error;
-  return data;
-};
-
-// Simple API client with no complex type recursion
+// Simplified API client without complex types
 export const api = {
-  // GET method for fetching data
+  // Simplified GET method
   get: async (path: string, params?: Record<string, any>) => {
     try {
       // Special case: auth session
       if (path === 'auth/session') {
-        const session = await getAuthSession();
-        return { data: session, error: null };
+        const supabase = getSupabaseClient();
+        const { data, error } = await supabase.auth.getSession();
+        return { data, error: null };
       }
 
-      // Handle path with ID
+      // Parse path to get table name and ID
       const parts = path.split('/');
-      const tableName = parts[0] as TableName;
+      const tableName = parts[0];
       const id = parts[1];
       
-      if (!validTableNames.includes(tableName)) {
+      // Validate table name
+      if (!validTables.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
       const supabase = getSupabaseClient();
-      let result;
       
+      // Get by ID
       if (id && !id.includes('?')) {
-        // Fetching a specific item by ID
         const { data, error } = await supabase
           .from(tableName)
           .select('*')
@@ -54,49 +38,47 @@ export const api = {
           .maybeSingle();
           
         if (error) throw error;
-        result = data;
-      } else {
-        // Extract query params if in path format
-        let queryParams = params || {};
+        return { data, error: null };
+      } 
+      
+      // Get with query params
+      else {
+        // Extract query params
+        let queryObj: Record<string, any> = {};
         if (id && id.includes('?')) {
           const queryPart = id.split('?')[1];
           const searchParams = new URLSearchParams(queryPart);
           searchParams.forEach((value, key) => {
-            queryParams[key] = value;
+            queryObj[key] = value;
           });
+        } else if (params) {
+          queryObj = params;
         }
         
-        // Fetch list with filters
-        const { data, error } = await supabase
-          .from(tableName)
-          .select('*');
-          
+        let query = supabase.from(tableName).select('*');
+        
+        // Apply filters
+        Object.entries(queryObj).forEach(([key, value]) => {
+          query = query.eq(key, value);
+        });
+        
+        const { data, error } = await query;
+        
         if (error) throw error;
-        result = data;
-        
-        // Apply filters manually if needed
-        if (Object.keys(queryParams).length > 0) {
-          result = result.filter((item: any) => {
-            return Object.entries(queryParams).every(([key, value]) => {
-              return item[key] === value;
-            });
-          });
-        }
+        return { data, error: null };
       }
-      
-      return { data: result, error: null };
     } catch (error) {
       console.error('API get error:', error);
       return { data: null, error: error as Error };
     }
   },
   
-  // POST method for creating data
+  // Simplified POST method
   post: async (path: string, data: any) => {
     try {
-      const tableName = path as TableName;
+      const tableName = path;
       
-      if (!validTableNames.includes(tableName)) {
+      if (!validTables.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -107,7 +89,6 @@ export const api = {
         .select();
       
       if (error) throw error;
-      
       return { data: result[0], error: null };
     } catch (error) {
       console.error('API post error:', error);
@@ -115,14 +96,14 @@ export const api = {
     }
   },
   
-  // PUT method for updating data
+  // Simplified PUT method
   put: async (path: string, data: any) => {
     try {
       const parts = path.split('/');
-      const tableName = parts[0] as TableName;
+      const tableName = parts[0];
       const id = parts[1];
       
-      if (!validTableNames.includes(tableName)) {
+      if (!validTables.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -134,7 +115,6 @@ export const api = {
         .select();
       
       if (error) throw error;
-      
       return { data: result[0], error: null };
     } catch (error) {
       console.error('API put error:', error);
@@ -142,14 +122,14 @@ export const api = {
     }
   },
   
-  // DELETE method for removing data
+  // Simplified DELETE method
   delete: async (path: string) => {
     try {
       const parts = path.split('/');
-      const tableName = parts[0] as TableName;
+      const tableName = parts[0];
       const id = parts[1];
       
-      if (!validTableNames.includes(tableName)) {
+      if (!validTables.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -161,7 +141,6 @@ export const api = {
         .select();
       
       if (error) throw error;
-      
       return { data: result[0], error: null };
     } catch (error) {
       console.error('API delete error:', error);
