@@ -3,35 +3,17 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useProjects } from '@/hooks/useProjects';
 import { Container } from '@/components/ui/container';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { 
-  ArrowLeft, 
-  PlusCircle, 
-  Users, 
-  FileText, 
-  Settings, 
-  ChevronRight,
-  User
-} from 'lucide-react';
+import { PlusCircle, Users, FileText } from 'lucide-react';
 import { ContributionZone } from '@/types/projects';
 import { fetchProjectZones, createContributionZone } from '@/services/projectService';
-
-const zoneSchema = z.object({
-  task_description: z.string().min(10, "Task description must be at least 10 characters"),
-  expected_outputs: z.string().min(5, "Expected outputs must be at least 5 characters")
-});
-
-type ZoneFormValues = z.infer<typeof zoneSchema>;
+import ProjectDetailHeader from '@/components/projects/ProjectDetailHeader';
+import ContributionZoneForm, { ZoneFormValues } from '@/components/projects/ContributionZoneForm';
+import ContributionZoneList from '@/components/projects/ContributionZoneList';
+import EmptyState from '@/components/projects/EmptyState';
 
 const ProjectDetail = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -42,14 +24,6 @@ const ProjectDetail = () => {
   const [zones, setZones] = useState<ContributionZone[]>([]);
   const [loading, setLoading] = useState(true);
   const [createZoneOpen, setCreateZoneOpen] = useState(false);
-
-  const zoneForm = useForm<ZoneFormValues>({
-    resolver: zodResolver(zoneSchema),
-    defaultValues: {
-      task_description: '',
-      expected_outputs: ''
-    }
-  });
 
   useEffect(() => {
     if (!projectId) return;
@@ -94,7 +68,6 @@ const ProjectDetail = () => {
 
       setZones(prev => [...prev, newZone]);
       setCreateZoneOpen(false);
-      zoneForm.reset();
       toast({
         title: "Success",
         description: "New contribution zone created"
@@ -127,24 +100,11 @@ const ProjectDetail = () => {
 
   return (
     <Container className="py-8">
-      <Button 
-        variant="outline" 
-        className="mb-6" 
-        onClick={() => navigate('/projects')}
-      >
-        <ArrowLeft className="mr-2 h-4 w-4" /> Back to Projects
-      </Button>
+      <ProjectDetailHeader 
+        projectName={project.name} 
+        projectDescription={project.description} 
+      />
       
-      <div className="flex justify-between items-start mb-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
-          <p className="text-muted-foreground mt-2">{project.description}</p>
-        </div>
-        <Button>
-          <Settings className="mr-2 h-4 w-4" /> Project Settings
-        </Button>
-      </div>
-
       <Tabs defaultValue="zones" className="space-y-6">
         <TabsList>
           <TabsTrigger value="zones">Contribution Zones</TabsTrigger>
@@ -171,117 +131,40 @@ const ProjectDetail = () => {
                   </DialogDescription>
                 </DialogHeader>
                 
-                <Form {...zoneForm}>
-                  <form onSubmit={zoneForm.handleSubmit(handleCreateZone)} className="space-y-6">
-                    <FormField
-                      control={zoneForm.control}
-                      name="task_description"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Task Description</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              placeholder="Describe what needs to be done in this contribution zone"
-                              className="min-h-20"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={zoneForm.control}
-                      name="expected_outputs"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Expected Outputs</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              placeholder="Describe what deliverables should result from this task"
-                              className="min-h-20"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <div className="flex justify-end">
-                      <Button type="submit">Create Zone</Button>
-                    </div>
-                  </form>
-                </Form>
+                <ContributionZoneForm onSubmit={handleCreateZone} />
               </DialogContent>
             </Dialog>
           </div>
           
-          {zones.length > 0 ? (
-            <div className="space-y-4">
-              {zones.map(zone => (
-                <Card key={zone.id} className="hover:border-primary/50 transition-all cursor-pointer">
-                  <CardHeader className="p-4">
-                    <CardTitle className="text-lg flex items-center justify-between">
-                      <div className="flex items-center">
-                        <FileText className="mr-2 h-5 w-5 text-primary" />
-                        <span className="line-clamp-1">{zone.task_description.substring(0, 60)}...</span>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0 pb-4 px-4">
-                    <div className="flex justify-between items-center text-sm text-muted-foreground">
-                      <div className="flex items-center">
-                        <User className="mr-1 h-4 w-4" />
-                        {zone.assigned_user_id ? "Assigned" : "Unassigned"}
-                      </div>
-                      <div>
-                        Created: {new Date(zone.created_at).toLocaleDateString()}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center p-12 border border-dashed rounded-lg bg-muted/10">
-              <FileText className="h-12 w-12 mx-auto text-muted-foreground" />
-              <h3 className="mt-4 text-lg font-medium">No contribution zones yet</h3>
-              <p className="mt-1 text-sm text-muted-foreground mb-4">
-                Create your first zone to start breaking down this project into secure tasks
-              </p>
-              <Button onClick={() => setCreateZoneOpen(true)}>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Create First Zone
-              </Button>
-            </div>
+          <ContributionZoneList zones={zones} />
+          
+          {zones.length === 0 && (
+            <EmptyState
+              icon={FileText}
+              title="No contribution zones yet"
+              description="Create your first zone to start breaking down this project into secure tasks"
+              buttonText="Create First Zone"
+              onButtonClick={() => setCreateZoneOpen(true)}
+            />
           )}
         </TabsContent>
         
         <TabsContent value="team">
-          <div className="text-center p-12 border border-dashed rounded-lg bg-muted/10">
-            <Users className="h-12 w-12 mx-auto text-muted-foreground" />
-            <h3 className="mt-4 text-lg font-medium">No team members yet</h3>
-            <p className="mt-1 text-sm text-muted-foreground mb-4">
-              Invite contributors to work on specific tasks in your project
-            </p>
-            <Button>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Invite Collaborators
-            </Button>
-          </div>
+          <EmptyState
+            icon={Users}
+            title="No team members yet"
+            description="Invite contributors to work on specific tasks in your project"
+            buttonText="Invite Collaborators"
+            onButtonClick={() => {}}
+          />
         </TabsContent>
         
         <TabsContent value="outputs">
-          <div className="text-center p-12 border border-dashed rounded-lg bg-muted/10">
-            <FileText className="h-12 w-12 mx-auto text-muted-foreground" />
-            <h3 className="mt-4 text-lg font-medium">No outputs yet</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Completed tasks will generate outputs here
-            </p>
-          </div>
+          <EmptyState
+            icon={FileText}
+            title="No outputs yet"
+            description="Completed tasks will generate outputs here"
+          />
         </TabsContent>
       </Tabs>
     </Container>
