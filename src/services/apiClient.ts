@@ -1,23 +1,20 @@
 
 import { getSupabaseClient } from './supabase';
 
-// Define the valid table names as literal strings for type safety
-const VALID_TABLES = ['projects', 'conversations', 'contribution_zones', 'conversation_participants', 
-  'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'] as const;
+/**
+ * Simple API client for Supabase interactions
+ * Avoids complex type recursion that causes TypeScript errors
+ */
 
-// Type for valid table names
-type ValidTableName = typeof VALID_TABLES[number];
-
-// Simple API response type
-type ApiResponse<T = any> = {
-  data: T | null;
+// Define response type without complex generics
+type ApiResponse = {
+  data: any;
   error: Error | null;
 };
 
-// Check if a string is a valid table name
-const isValidTable = (table: string): table is ValidTableName => {
-  return VALID_TABLES.includes(table as ValidTableName);
-};
+// List of valid table names as an array
+const VALID_TABLES = ['projects', 'conversations', 'contribution_zones', 'conversation_participants', 
+  'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'];
 
 export const api = {
   // GET method
@@ -36,7 +33,7 @@ export const api = {
       const id = parts[1];
       
       // Validate table name
-      if (!isValidTable(tableName)) {
+      if (!VALID_TABLES.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -92,7 +89,7 @@ export const api = {
     try {
       const tableName = path;
       
-      if (!isValidTable(tableName)) {
+      if (!VALID_TABLES.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -117,7 +114,7 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!isValidTable(tableName)) {
+      if (!VALID_TABLES.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -143,7 +140,7 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!isValidTable(tableName)) {
+      if (!VALID_TABLES.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       

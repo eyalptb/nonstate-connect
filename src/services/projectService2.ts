@@ -1,13 +1,8 @@
 
 import { api } from './apiClient';
-import { Project, ContributionZone, Output } from '@/types/projects';
-
-/**
- * Enhanced project service that uses the API client
- */
 
 // Project-related functions
-export const fetchUserProjects = async (): Promise<Project[]> => {
+export const fetchUserProjects = async () => {
   const response = await api.get('projects');
   
   if (response.error) {
@@ -18,7 +13,7 @@ export const fetchUserProjects = async (): Promise<Project[]> => {
   return response.data || [];
 };
 
-export const fetchProjectById = async (projectId: string): Promise<Project | null> => {
+export const fetchProjectById = async (projectId: string) => {
   const response = await api.get(`projects/${projectId}`);
   
   if (response.error) {
@@ -29,9 +24,7 @@ export const fetchProjectById = async (projectId: string): Promise<Project | nul
   return response.data || null;
 };
 
-export const createProject = async (
-  projectData: Pick<Project, "name" | "description">
-): Promise<Project> => {
+export const createProject = async (projectData: { name: string; description: string }) => {
   // Get the current user's ID from the session to set as owner
   const { data: sessionData } = await api.get('auth/session');
   
@@ -53,13 +46,10 @@ export const createProject = async (
     throw new Error(response.error.message);
   }
   
-  return response.data as Project;
+  return response.data;
 };
 
-export const updateProject = async (
-  projectId: string,
-  updates: Partial<Pick<Project, "name" | "description">>
-): Promise<Project> => {
+export const updateProject = async (projectId: string, updates: { name?: string; description?: string }) => {
   const response = await api.put(`projects/${projectId}`, updates);
   
   if (response.error) {
@@ -67,11 +57,11 @@ export const updateProject = async (
     throw new Error(response.error.message);
   }
   
-  return response.data as Project;
+  return response.data;
 };
 
 // Contribution Zone functions
-export const fetchProjectZones = async (projectId: string): Promise<ContributionZone[]> => {
+export const fetchProjectZones = async (projectId: string) => {
   // Custom endpoint for filtering by project_id
   const response = await api.get(`contribution_zones`, { project_id: projectId });
   
@@ -83,9 +73,13 @@ export const fetchProjectZones = async (projectId: string): Promise<Contribution
   return response.data || [];
 };
 
-export const createContributionZone = async (
-  zoneData: Pick<ContributionZone, "project_id" | "task_description" | "inputs" | "expected_outputs" | "assigned_user_id">
-): Promise<ContributionZone> => {
+export const createContributionZone = async (zoneData: {
+  project_id: string;
+  task_description: string;
+  inputs: any;
+  expected_outputs: any;
+  assigned_user_id?: string;
+}) => {
   const response = await api.post('contribution_zones', zoneData);
   
   if (response.error) {
@@ -93,11 +87,11 @@ export const createContributionZone = async (
     throw new Error(response.error.message);
   }
   
-  return response.data as ContributionZone;
+  return response.data;
 };
 
 // Output functions
-export const fetchZoneOutputs = async (zoneId: string): Promise<Output[]> => {
+export const fetchZoneOutputs = async (zoneId: string) => {
   // Custom endpoint for filtering by zone_id
   const response = await api.get(`outputs`, { zone_id: zoneId });
   
@@ -109,9 +103,7 @@ export const fetchZoneOutputs = async (zoneId: string): Promise<Output[]> => {
   return response.data || [];
 };
 
-export const submitOutput = async (
-  outputData: Pick<Output, "zone_id" | "file_url">
-): Promise<Output> => {
+export const submitOutput = async (outputData: { zone_id: string; file_url: string }) => {
   // Get the current user's ID
   const { data: sessionData } = await api.get('auth/session');
   
@@ -133,5 +125,5 @@ export const submitOutput = async (
     throw new Error(response.error.message);
   }
   
-  return response.data as Output;
+  return response.data;
 };
