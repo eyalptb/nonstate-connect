@@ -4,25 +4,24 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { 
   fetchUserConversations, 
-  createNewConversation,
-  fetchConversationMessages 
+  createNewConversation 
 } from '@/services/conversationService';
-import { Conversation, Message } from '@/types/messaging';
-
-export type { Conversation, Participant, Message } from '@/types/messaging';
+import { Conversation } from '@/types/messaging';
 
 export const useConversations = () => {
-  const { user } = useAuth();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
   const { toast } = useToast();
-
+  
   // Fetch all conversations for the current user
   const fetchConversations = useCallback(async () => {
     try {
+      if (!user) return;
+      
       setLoading(true);
-      const conversationsData = await fetchUserConversations();
-      setConversations(conversationsData);
+      const data = await fetchUserConversations();
+      setConversations(data);
     } catch (error) {
       console.error('Error fetching conversations:', error);
       toast({
@@ -33,20 +32,18 @@ export const useConversations = () => {
     } finally {
       setLoading(false);
     }
-  }, [toast]);
-
+  }, [user, toast]);
+  
   // Create a new conversation
-  const createConversation = async (participantIds: string[]) => {
+  const createConversation = async () => {
     try {
+      if (!user) throw new Error('User not authenticated');
+      
       const conversationId = await createNewConversation();
+      if (!conversationId) throw new Error('Failed to create conversation');
       
-      if (conversationId) {
-        // Refresh conversations list
-        await fetchConversations();
-        return conversationId;
-      }
-      
-      return null;
+      await fetchConversations(); // Refresh the list
+      return conversationId;
     } catch (error) {
       console.error('Error creating conversation:', error);
       toast({
@@ -57,31 +54,24 @@ export const useConversations = () => {
       return null;
     }
   };
-
-  // Fetch messages for a specific conversation
-  const fetchMessages = async (conversationId: string) => {
-    try {
-      return await fetchConversationMessages();
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load messages",
-        variant: "destructive"
-      });
-      return [];
-    }
-  };
-
+  
+  // Load conversations when the component mounts or user changes
   useEffect(() => {
-    fetchConversations();
-  }, [fetchConversations]);
-
+    if (user) {
+      fetchConversations();
+    } else {
+      setConversations([]);
+      setLoading(false);
+    }
+  }, [user, fetchConversations]);
+  
   return {
     conversations,
     loading,
-    fetchConversations,
     createConversation,
-    fetchMessages,
+    refreshConversations: fetchConversations
   };
 };
+
+// Export the types as well for convenience
+export type { Conversation };
