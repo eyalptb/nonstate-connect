@@ -13,16 +13,76 @@
   "create": "创建",
   "submit": "提交",
   "confirm": "确认",
+  "hero": {
+    "tagline": "隐私优先的人工智能协作",
+    "title": {
+      "start": "安全",
+      "highlight": "AI增强",
+      "end": "变革者的协作平台"
+    },
+    "description": "ParaCollab为科学家、环保卫士和教育工作者提供支持，让他们能够在保护数据隐私的同时开展影响力项目合作。",
+    "primaryCta": "开始协作",
+    "secondaryCta": "探索功能",
+    "stats": {
+      "count": "500",
+      "description": "个团队在创新的同时保护着他们的数据"
+    }
+  },
+  "joinCta": {
+    "heading": "加入网络",
+    "subheading": "与志同道合的组织和个人连接，共同致力于积极的全球变革。",
+    "benefits": {
+      "secure": {
+        "title": "安全协作",
+        "description": "在完全隐私和数据安全的环境中共同工作"
+      },
+      "blockchain": {
+        "title": "区块链验证",
+        "description": "所有贡献都经过验证并不可篡改地记录"
+      },
+      "impact": {
+        "title": "全球影响",
+        "description": "在全球范围内推动有意义的变革"
+      }
+    },
+    "buttons": {
+      "dashboard": "前往仪表盘",
+      "createAccount": "创建账户",
+      "signIn": "登录"
+    }
+  },
   "wallet": {
     "title": "CollabCoin 钱包",
     "description": "您的隐私保障激励",
     "coins": "CollabCoin 币",
     "earn": "通过安全协作赚取并用于高级功能"
   },
-  "privacy": {
-    "title": "隐私优先",
-    "description": "您的数据始终归您所有",
-    "encrypted": "端到端加密",
-    "control": "完全控制"
+  "features": {
+    "heading": "以隐私为先的创新基础设施",
+    "subheading": "我们的平台将安全加密技术与AI驱动的协作工具相结合，让变革者能够在不妥协隐私的情况下发挥力量。",
+    "privacy": {
+      "title": "端到端隐私",
+      "description": "全程加密确保您的敏感数据在整个协作过程中保持私密。"
+    },
+    "ai": {
+      "title": "AI协作助手",
+      "description": "在不接触敏感内容的情况下增强团队工作效率的AI助手。"
+    },
+    "zones": {
+      "title": "贡献专区",
+      "description": "分区管理的项目空间，在实现无缝协作的同时保持敏感数据隔离。"
+    },
+    "dashboard": {
+      "title": "隐私仪表板",
+      "description": "完全掌控您的数据及其访问权限。"
+    },
+    "simulator": {
+      "title": "影响力模拟器",
+      "description": "预测项目成果，从环境影响到社会变革。"
+    },
+    "blueprints": {
+      "title": "演进模板",
+      "description": "在保持安全和隐私的同时扩展和调整成功的项目模式。"
+    }
   }
 }

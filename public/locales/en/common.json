@@ -1,50 +1,88 @@
 
 {
-  "cancel": "Cancel",
-  "save": "Save",
-  "edit": "Edit",
-  "delete": "Delete",
+  "appName": "ParaCollab",
+  "welcome": "Welcome to ParaCollab",
   "loading": "Loading...",
-  "submit": "Submit",
+  "error": "An error occurred",
+  "notFound": "Page not found",
   "back": "Back",
-  "next": "Next",
-  "you": "you",
-  
-  "greetings": {
-    "morning": "Good morning",
-    "afternoon": "Good afternoon",
-    "evening": "Good evening"
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "create": "Create",
+  "submit": "Submit",
+  "confirm": "Confirm",
+  "hero": {
+    "tagline": "Privacy-First AI Collaboration",
+    "title": {
+      "start": "Secure",
+      "highlight": "AI-Enhanced",
+      "end": "Collaboration for Change-Makers"
+    },
+    "description": "ParaCollab empowers scientists, eco-warriors, and educators to collaborate on impactful projects while keeping their data private and secure.",
+    "primaryCta": "Start Collaborating",
+    "secondaryCta": "Explore Features",
+    "stats": {
+      "count": "500",
+      "description": "teams protecting their data while innovating"
+    }
   },
-  
-  "dashboard": {
-    "welcomeBack": "Welcome back",
-    "welcomeMessage": "Welcome back to your secure collaboration dashboard!",
-    "secureCollaboration": "Your secure collaboration dashboard",
-    "yourProjects": "Your Projects",
-    "noProjects": "You haven't joined any projects yet.",
-    "browseProjects": "Browse Projects",
-    "networkActivity": "Network Activity",
-    "seeLatestActivities": "See the latest activities from your network.",
-    "viewActivity": "View Activity",
-    "createProject": "Create Project",
-    "startNewProject": "Start a new collaborative project.",
-    "newProject": "New Project",
-    "recentActivity": "Recent Activity",
-    "noRecentActivity": "No recent activity to display"
+  "joinCta": {
+    "heading": "Join the Network",
+    "subheading": "Connect with like-minded organizations and individuals working toward positive global change.",
+    "benefits": {
+      "secure": {
+        "title": "Secure Collaboration",
+        "description": "Work together with complete privacy and data security"
+      },
+      "blockchain": {
+        "title": "Blockchain Verified",
+        "description": "All contributions are verified and immutably recorded"
+      },
+      "impact": {
+        "title": "Global Impact",
+        "description": "Drive meaningful change on a worldwide scale"
+      }
+    },
+    "buttons": {
+      "dashboard": "Go to Dashboard",
+      "createAccount": "Create An Account",
+      "signIn": "Sign In"
+    }
   },
-  
-  "activity": {
-    "taskCompleted": "{{actor}} completed {{target}}",
-    "proposalVoted": "{{actor}} voted on {{target}}",
-    "projectJoined": "{{actor}} joined {{target}}",
-    "messageReceived": "New message from {{actor}}",
-    "impactVerified": "Impact verified for {{target}}"
+  "wallet": {
+    "title": "CollabCoin Wallet",
+    "description": "Your privacy-protected incentives",
+    "coins": "CollabCoins",
+    "earn": "Earn through secure collaboration and spend on premium features"
   },
-  
-  "errors": {
-    "general": "Something went wrong. Please try again.",
-    "network": "Network error. Please check your connection.",
-    "unauthorized": "You are not authorized to perform this action.",
-    "notFound": "The requested resource was not found."
+  "features": {
+    "heading": "Privacy-First Infrastructure for Innovation",
+    "subheading": "Our platform combines secure encryption technology with AI-powered collaboration tools to empower change-makers without compromising privacy.",
+    "privacy": {
+      "title": "End-to-End Privacy",
+      "description": "Full encryption ensures your sensitive data stays private throughout the collaboration process."
+    },
+    "ai": {
+      "title": "AI Collaboration Agents",
+      "description": "AI assistants that enhance your team's work without access to sensitive content."
+    },
+    "zones": {
+      "title": "Contribution Zones",
+      "description": "Compartmentalized project spaces that keep sensitive data separate while enabling seamless collaboration."
+    },
+    "dashboard": {
+      "title": "Privacy Dashboard",
+      "description": "Complete transparency and control over your data and who can access it."
+    },
+    "simulator": {
+      "title": "Impact Simulator",
+      "description": "Predict your project outcomes from environmental impact to social change."
+    },
+    "blueprints": {
+      "title": "Evolution Templates",
+      "description": "Scale and adapt successful project models while maintaining security and privacy."
+    }
   }
 }
