@@ -8,7 +8,7 @@ import { NavUserMenu } from "./navbar/NavUserMenu";
 import { MobileMenu } from "./navbar/MobileMenu";
 import { loggedInMainNav, loggedOutMainNav } from "./navbar/NavConfig";
 import { LanguageSelector } from "./LanguageSelector";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/contexts/translation/TranslationContext";
 import { useAuth } from "@/contexts/auth";
 import { Button } from "./ui/button";
 

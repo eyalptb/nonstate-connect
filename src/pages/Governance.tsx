@@ -6,17 +6,13 @@ import { ProposalList } from "@/components/governance/ProposalList";
 import { CreateProposal } from "@/components/governance/CreateProposal";
 import { GovernanceStats } from "@/components/governance/GovernanceStats";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useTranslation } from "react-i18next";
-import { useForceLanguageUpdate } from "@/utils/useForceUpdate";
+import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 export function Governance() {
-  const { t } = useTranslation(["governance"]);
-  
-  // Force component to re-render on language change
-  useForceLanguageUpdate();
+  const { t, currentLanguage } = useTranslation(["governance"]);
   
   return (
-    <Container className="py-10">
+    <Container className="py-10" key={`governance-${currentLanguage}`}>
       <PageHeader 
         title={t("title")} 
         description={t("description")}

@@ -4,15 +4,11 @@ import { useTokens } from "@/hooks/useTokens";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Coins, Users, Vote, FileText } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import { useForceLanguageUpdate } from "@/utils/useForceUpdate";
+import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 export function GovernanceStats() {
   const { balance } = useTokens();
-  const { t } = useTranslation(["governance", "common"]);
-  
-  // Get current language to force re-render
-  const currentLanguage = useForceLanguageUpdate();
+  const { t, currentLanguage } = useTranslation(["governance", "common"]);
   
   // In a real application, this data would come from your DAO contract
   const stats = [
@@ -46,7 +42,6 @@ export function GovernanceStats() {
     },
   ];
 
-  // Add unique key based on language to force re-render when language changes
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4" key={`stats-${currentLanguage}`}>
       {stats.map((stat, i) => (

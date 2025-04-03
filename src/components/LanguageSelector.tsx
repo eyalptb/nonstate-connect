@@ -9,8 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useTranslation } from "react-i18next";
-import { reloadTranslations } from "@/i18n";
+import { useTranslation } from "@/contexts/translation/TranslationContext";
 import { toast } from "sonner";
 
 interface LanguageSelectorProps {
@@ -18,7 +17,7 @@ interface LanguageSelectorProps {
 }
 
 export function LanguageSelector({ variant = "default" }: LanguageSelectorProps) {
-  const { i18n, t } = useTranslation("common");
+  const { t, i18n, currentLanguage, changeLanguage } = useTranslation();
 
   const languages = [
     { code: "en", name: "English" },
@@ -34,68 +33,19 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
   ];
 
   const handleLanguageChange = async (langCode: string) => {
-    console.log(`[LanguageSelector] Changing language to: ${langCode}`);
-    console.log(`[LanguageSelector] Current language before change: ${i18n.language}`);
-    console.log(`[LanguageSelector] Available languages: ${i18n.languages}`);
+    // Show toast to indicate change
+    toast.info(`Changing language to ${languages.find(l => l.code === langCode)?.name || langCode}...`);
     
     try {
-      // Show toast to indicate change
-      toast.info(`Changing language to ${languages.find(l => l.code === langCode)?.name || langCode}...`);
-      
-      // Check if resources are already loaded
-      console.log(`[LanguageSelector] Current resources:`, i18n.store?.data);
-      
       // Change the language
-      await i18n.changeLanguage(langCode);
-      console.log(`[LanguageSelector] Language change call completed to: ${langCode}`);
-      console.log(`[LanguageSelector] New language after change: ${i18n.language}`);
-      console.log(`[LanguageSelector] Resources after change:`, i18n.store?.data);
+      await changeLanguage(langCode);
       
-      // Store the selected language in localStorage
-      localStorage.setItem("i18nextLng", langCode);
-      console.log(`[LanguageSelector] Saved language to localStorage: ${langCode}`);
-      
-      // Update HTML lang attribute
-      document.documentElement.lang = langCode;
-      
-      // Manually reload translations
-      const reloadSuccess = await reloadTranslations(langCode);
-      console.log(`[LanguageSelector] Manual reload ${reloadSuccess ? 'succeeded' : 'failed'}`);
-      console.log(`[LanguageSelector] Resources after reload:`, i18n.store?.data);
-      
-      // Check specific namespaces now
-      const loadedNamespaces = i18n.reportNamespaces.getUsedNamespaces();
-      console.log(`[LanguageSelector] Used namespaces:`, loadedNamespaces);
-      
-      // Verify common translations for wallet - TYPE SAFE WAY
-      const hasWalletTranslations = 
-        i18n.store?.data?.[langCode]?.common && 
-        typeof i18n.store?.data?.[langCode]?.common === 'object' &&
-        'wallet' in i18n.store?.data?.[langCode]?.common;
-      
-      // Get wallet translations in a type-safe way if they exist
-      const walletTranslations = hasWalletTranslations ? 
-        i18n.store?.data?.[langCode]?.common?.wallet : 'Not available';
-      
-      console.log(`[LanguageSelector] Has wallet translations for ${langCode}: ${hasWalletTranslations}`);
-      console.log(`[LanguageSelector] Wallet translations:`, walletTranslations);
-
       // Show success toast
       toast.success(`Language changed to ${languages.find(l => l.code === langCode)?.name || langCode}`);
-
     } catch (error) {
-      console.error(`[LanguageSelector] Error changing language to ${langCode}:`, error);
-      toast.error(`Failed to change language: ${error.message}`);
+      toast.error(`Failed to change language`);
     }
   };
-
-  // Log when this component renders
-  React.useEffect(() => {
-    console.log('[LanguageSelector] Component mounted/updated, current language:', i18n.language);
-    return () => {
-      console.log('[LanguageSelector] Component unmounting');
-    };
-  }, [i18n.language]);
 
   return (
     <DropdownMenu>
@@ -107,7 +57,7 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
         ) : (
           <Button variant="ghost" className="flex items-center gap-2 px-3">
             <GlobeIcon className="h-4 w-4" />
-            <span>{languages.find(lang => lang.code === i18n.language)?.name || "Language"}</span>
+            <span>{languages.find(lang => lang.code === currentLanguage)?.name || "Language"}</span>
             <ChevronDownIcon className="h-4 w-4" />
           </Button>
         )}
@@ -120,7 +70,7 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
             onClick={() => handleLanguageChange(lang.code)}
           >
             <span>{lang.name}</span>
-            {i18n.language === lang.code && (
+            {currentLanguage === lang.code && (
               <CheckIcon className="h-4 w-4" />
             )}
           </DropdownMenuItem>
@@ -129,16 +79,10 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
         <DropdownMenuItem 
           className="text-xs text-muted-foreground"
           onClick={() => {
-            console.log("[LanguageSelector] Debug info:", {
-              currentLanguage: i18n.language,
-              availableLanguages: i18n.languages,
-              store: i18n.store.data,
-              namespaces: i18n.reportNamespaces?.getUsedNamespaces() || []
-            });
-            toast.info(`Current language: ${i18n.language}`);
+            toast.info(`Current language: ${currentLanguage}`);
           }}
         >
-          {i18n.language ? t("language", "Language") : "Language"}: {i18n.language}
+          {currentLanguage ? t("language", "Language") : "Language"}: {currentLanguage}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

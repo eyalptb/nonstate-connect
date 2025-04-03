@@ -1,13 +1,10 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, Lock, Brain, Fingerprint, Layers, Sparkles, FileCode } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import { useForceLanguageUpdate } from "@/utils/useForceUpdate";
+import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 const Features = () => {
-  const { t } = useTranslation("common");
-  // Get current language to force re-render when language changes
-  const currentLanguage = useForceLanguageUpdate();
+  const { t, currentLanguage } = useTranslation();
 
   const features = [
     {
@@ -42,7 +39,6 @@ const Features = () => {
     }
   ];
 
-  // Add a unique key for the section based on language
   return (
     <section id="features" className="py-20 bg-muted/50" key={`features-${currentLanguage}`}>
       <div className="container mx-auto px-4">

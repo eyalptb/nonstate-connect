@@ -2,15 +2,11 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { useForceLanguageUpdate } from '@/utils/useForceUpdate';
+import { useTranslation } from '@/contexts/translation/TranslationContext';
 
 const Messaging = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation(['messaging']);
-  
-  // This will force re-render when language changes
-  const currentLanguage = useForceLanguageUpdate();
+  const { t, currentLanguage } = useTranslation(['messaging']);
   
   return (
     <div className="container mx-auto py-10 px-4" key={`messaging-${currentLanguage}`}>
