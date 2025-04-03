@@ -21,3 +21,38 @@ export const decryptFromStorage = (encryptedData: string): any => {
     return null;
   }
 };
+
+/**
+ * Store encrypted data in localStorage
+ */
+export const storeEncryptedLocal = (key: string, data: any, secretKey: string): boolean => {
+  try {
+    const encrypted = encryptForStorage(data);
+    localStorage.setItem(key, encrypted);
+    return true;
+  } catch (error) {
+    console.error('Failed to store encrypted data:', error);
+    return false;
+  }
+};
+
+/**
+ * Get and decrypt data from localStorage
+ */
+export const getEncryptedLocal = (key: string, secretKey: string): any => {
+  try {
+    const encrypted = localStorage.getItem(key);
+    if (!encrypted) return null;
+    return decryptFromStorage(encrypted);
+  } catch (error) {
+    console.error('Failed to get encrypted data:', error);
+    return null;
+  }
+};
+
+/**
+ * Check if the application is currently offline
+ */
+export const isOffline = (): boolean => {
+  return !navigator.onLine;
+};
