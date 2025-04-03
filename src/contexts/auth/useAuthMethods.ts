@@ -1,4 +1,3 @@
-
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -150,16 +149,18 @@ export const useAuthMethods = ({ setLoading, navigate }: AuthMethodsProps) => {
       const { error } = await supabase.auth.signOut();
       
       if (error) {
-        toast.error('Sign out failed');
         console.error('Sign out error:', error);
-        return;
+        toast.error('Sign out failed');
+        throw error;
       }
       
-      toast.success('Signed out successfully');
-      navigate('/');
+      // Don't navigate here - let the auth state change handler handle it
+      // The navigation will be handled by the onAuthStateChange in AuthProvider
+      
+      return { error: null };
     } catch (error) {
-      toast.error('An unexpected error occurred during sign out');
       console.error('Sign out error:', error);
+      return { error: error as Error };
     } finally {
       setLoading(false);
     }

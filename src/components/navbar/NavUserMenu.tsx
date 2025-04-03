@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/auth";
 import { useTranslation } from "react-i18next";
@@ -16,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { LogOut, User, Settings, Shield } from "lucide-react";
+import { toast } from "sonner";
 
 export function NavUserMenu() {
   const { user, isAdmin, signOut } = useAuth();
@@ -40,8 +42,13 @@ export function NavUserMenu() {
   };
 
   const handleSignOut = async () => {
-    console.log("Sign out clicked");
-    await signOut();
+    try {
+      await signOut();
+      toast.success(t("logoutSuccess", { ns: "auth" }));
+    } catch (error) {
+      console.error("Sign out error:", error);
+      toast.error(t("logoutError", { ns: "auth" }));
+    }
   };
 
   if (!user) {
@@ -101,10 +108,7 @@ export function NavUserMenu() {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <Button onClick={handleSignOut} variant="default" size="sm" className="flex items-center gap-2">
-        <LogOut className="h-4 w-4" />
-        {t("signOut", { ns: "auth" })}
-      </Button>
+      {/* Remove the standalone sign out button - it's redundant and might be causing confusion */}
     </div>
   );
 }
