@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import TokenWallet from "@/components/TokenWallet";
@@ -9,7 +8,7 @@ import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 import { useTranslation } from "@/contexts/translation/TranslationContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNotifications } from "@/contexts/notification/NotificationContext";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 // Mock activity data - would come from an API in a real application
 const mockActivities = [
@@ -38,10 +37,13 @@ const Dashboard = () => {
   const { user } = useAuth();
   const { t, currentLanguage } = useTranslation();
   const { addNotification } = useNotifications();
+  const welcomeShownRef = useRef(false);
   
-  // Demo welcome notification
+  // Demo welcome notification - only show once per component mount
   useEffect(() => {
-    if (user) {
+    if (user && !welcomeShownRef.current) {
+      welcomeShownRef.current = true;
+      
       addNotification({
         type: 'success',
         title: t('dashboard.welcomeBack'),
