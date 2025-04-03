@@ -43,6 +43,10 @@ export const loggedInMainNav: MainNavItem[] = [
     translationKey: "governance",
     href: "/governance",
   },
+  {
+    translationKey: "projects",
+    href: "/projects",
+  },
 ];
 
 // For backward compatibility
