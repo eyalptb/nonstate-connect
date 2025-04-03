@@ -18,26 +18,26 @@ const Hero = () => {
           <div className="flex-1 text-center lg:text-left">
             <div className="inline-flex items-center px-3 py-1 mb-6 rounded-full bg-primary/10 text-primary text-sm font-medium">
               <Shield className="w-4 h-4 mr-2" />
-              {t("hero.tagline")}
+              Privacy-First AI Collaboration
             </div>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              {t("hero.title.start")} <span className="text-primary">{t("hero.title.highlight")}</span> {t("hero.title.end")}
+              Secure <span className="text-primary">AI-Enhanced</span> Collaboration Platform for Changemakers
             </h1>
             
             <p className="text-lg text-foreground/80 mb-8 max-w-2xl mx-auto lg:mx-0">
-              {t("hero.description")}
+              ParaCollab empowers scientists, environmentalists, and educators to collaborate on impactful projects while keeping their data private and secure.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button size="lg" className="font-semibold" asChild>
                 <Link to="/sign-up">
-                  {t("hero.primaryCta")}
+                  Start Collaborating
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="font-semibold" asChild>
                 <Link to="/features">
-                  {t("hero.secondaryCta")}
+                  Explore Features
                 </Link>
               </Button>
             </div>
@@ -52,7 +52,7 @@ const Hero = () => {
                 ))}
               </div>
               <p className="text-sm text-foreground/70">
-                <span className="font-semibold">{t("hero.stats.count")}+</span> {t("hero.stats.description")}
+                <span className="font-semibold">500+</span> teams protecting their data while innovating
               </p>
             </div>
           </div>
