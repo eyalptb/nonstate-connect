@@ -9,10 +9,10 @@ export const TokenWallet = () => {
   const { t } = useTranslation('common');
   
   // Force component to re-render on language change
-  useForceLanguageUpdate();
+  const currentLanguage = useForceLanguageUpdate();
   
   return (
-    <Card className="w-full shadow-sm">
+    <Card className="w-full shadow-sm" key={`wallet-${currentLanguage}`}>
       <CardHeader>
         <CardTitle className="text-xl">{t('wallet.title')}</CardTitle>
         <CardDescription>{t('wallet.description')}</CardDescription>

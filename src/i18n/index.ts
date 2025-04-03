@@ -48,7 +48,7 @@ i18n
     }
   });
 
-// Add a helper function to manually trigger reloads when needed
+// Add a helper function to manually reload translations
 export const reloadTranslations = async (language: string) => {
   console.log(`Manually reloading translations for: ${language}`);
   try {
@@ -61,7 +61,15 @@ export const reloadTranslations = async (language: string) => {
   }
 };
 
-// Make function globally available for debugging
+// Make the reloadTranslations function available globally for debugging
+// Fix the TypeScript error by properly extending Window interface
+declare global {
+  interface Window {
+    reloadTranslations: typeof reloadTranslations;
+  }
+}
+
+// Add to window object only in browser environment
 if (typeof window !== 'undefined') {
   window.reloadTranslations = reloadTranslations;
 }

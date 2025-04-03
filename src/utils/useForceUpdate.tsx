@@ -17,7 +17,7 @@ export function useForceLanguageUpdate() {
       setCurrentLanguage(lng);
     };
     
-    // Set initial language and listen for changes
+    // Set initial language
     setCurrentLanguage(i18n.language);
     
     // Add event listener for language changes

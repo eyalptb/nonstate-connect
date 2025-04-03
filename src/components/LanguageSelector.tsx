@@ -49,9 +49,6 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
       
       // Manually reload translations if needed
       await reloadTranslations(langCode);
-      
-      // Force a page refresh if having persistent issues
-      // window.location.reload();
     } catch (error) {
       console.error(`Error changing language to ${langCode}:`, error);
     }
@@ -88,7 +85,7 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
         <DropdownMenuSeparator />
         <DropdownMenuItem 
           className="text-xs text-muted-foreground"
-          onClick={() => console.log("Missing translations in:", i18n.languages)}
+          onClick={() => console.log("Current language:", i18n.language)}
         >
           {i18n.language ? t("language") : "Language"}: {i18n.language}
         </DropdownMenuItem>
