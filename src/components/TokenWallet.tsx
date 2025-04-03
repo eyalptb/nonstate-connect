@@ -3,9 +3,13 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Coins } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useForceLanguageUpdate } from '@/utils/useForceUpdate';
 
 export const TokenWallet = () => {
   const { t } = useTranslation('common');
+  
+  // Force component to re-render on language change
+  useForceLanguageUpdate();
   
   return (
     <Card className="w-full shadow-sm">

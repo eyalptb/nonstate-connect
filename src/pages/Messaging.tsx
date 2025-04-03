@@ -2,24 +2,28 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Messaging = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation(['messaging']);
   
   return (
     <div className="container mx-auto py-10 px-4">
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle>Messaging</CardTitle>
+          <CardTitle>{t('messagingTitle')}</CardTitle>
           <CardDescription>
-            This feature is currently unavailable
+            {t('messagingUnavailable')}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center">
           <p className="mb-4 text-center text-muted-foreground">
-            The messaging functionality is currently unavailable.
+            {t('messagingDescription')}
           </p>
-          <Button onClick={() => navigate('/')}>Return to Home</Button>
+          <Button onClick={() => navigate('/')}>
+            {t('returnToHome')}
+          </Button>
         </CardContent>
       </Card>
     </div>

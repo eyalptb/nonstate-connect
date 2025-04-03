@@ -1,0 +1,10 @@
+
+{
+  "title": "Governança DAO",
+  "description": "Participe da governança da plataforma criando e votando em propostas",
+  "tabs": {
+    "active": "Propostas Ativas",
+    "completed": "Concluídas",
+    "create": "Criar Proposta"
+  }
+}

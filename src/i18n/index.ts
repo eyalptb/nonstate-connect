@@ -39,7 +39,7 @@ i18n
     },
     
     // Namespace for translations
-    ns: ['common', 'auth', 'navigation'],
+    ns: ['common', 'auth', 'navigation', 'messaging', 'governance'],
     defaultNS: 'common',
     
     // Supported languages
@@ -78,7 +78,7 @@ i18n.on('languageChanged', (lng) => {
 // Function to check if translation files exist - improved version
 export const checkTranslationAvailability = async () => {
   const supportedLangs = Object.keys(languages);
-  const namespaces = ['common', 'auth', 'navigation'];
+  const namespaces = ['common', 'auth', 'navigation', 'messaging', 'governance'];
   const missingFiles = [];
   
   for (const lang of supportedLangs) {

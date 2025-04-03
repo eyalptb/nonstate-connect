@@ -1,0 +1,10 @@
+
+{
+  "title": "DAO Governance",
+  "description": "Participate in platform governance by creating and voting on proposals",
+  "tabs": {
+    "active": "Active Proposals",
+    "completed": "Completed",
+    "create": "Create Proposal"
+  }
+}
