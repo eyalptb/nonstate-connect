@@ -12,14 +12,16 @@ type ApiResponse = {
   error: Error | null;
 };
 
-// Define valid table names as const array
-const VALID_TABLES = [
+// Define valid table names as string literals to avoid deep type instantiation
+type TableName = 'projects' | 'conversations' | 'contribution_zones' | 
+  'conversation_participants' | 'messages' | 'outputs' | 'profiles' | 
+  'token_transactions' | 'user_tokens';
+
+// Array of valid tables for runtime validation
+const VALID_TABLES: TableName[] = [
   'projects', 'conversations', 'contribution_zones', 'conversation_participants', 
   'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'
-] as const;
-
-// Define table name type from const array
-type TableName = typeof VALID_TABLES[number];
+];
 
 export const api = {
   // GET method
@@ -37,17 +39,17 @@ export const api = {
       const id = parts[1];
       
       // Validate table name
-      if (!VALID_TABLES.includes(tableName as any)) {
+      if (!VALID_TABLES.includes(tableName as TableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      // Cast tableName to the correct type after validation
-      const validatedTable = tableName as TableName;
+      // Use validated table name, now we know it's safe
+      const table = tableName as TableName;
       
       // Handle get by ID
       if (id && !id.includes('?')) {
         const { data, error } = await supabase
-          .from(validatedTable)
+          .from(table)
           .select('*')
           .eq('id', id)
           .maybeSingle();
@@ -71,11 +73,12 @@ export const api = {
           queryObj = params;
         }
         
-        let query = supabase.from(validatedTable).select('*');
+        // Use type assertion for the query to avoid deep type instantiation
+        const query = supabase.from(table).select('*');
         
         // Apply filters
         Object.entries(queryObj).forEach(([key, value]) => {
-          query = query.eq(key, value);
+          query.eq(key, value);
         });
         
         const { data, error } = await query;
@@ -94,14 +97,14 @@ export const api = {
     try {
       const tableName = path;
       
-      if (!VALID_TABLES.includes(tableName as any)) {
+      if (!VALID_TABLES.includes(tableName as TableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const validatedTable = tableName as TableName;
+      const table = tableName as TableName;
       
       const { data: result, error } = await supabase
-        .from(validatedTable)
+        .from(table)
         .insert(data)
         .select();
       
@@ -120,14 +123,14 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!VALID_TABLES.includes(tableName as any)) {
+      if (!VALID_TABLES.includes(tableName as TableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const validatedTable = tableName as TableName;
+      const table = tableName as TableName;
       
       const { data: result, error } = await supabase
-        .from(validatedTable)
+        .from(table)
         .update(data)
         .eq('id', id)
         .select();
@@ -147,14 +150,14 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!VALID_TABLES.includes(tableName as any)) {
+      if (!VALID_TABLES.includes(tableName as TableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const validatedTable = tableName as TableName;
+      const table = tableName as TableName;
       
       const { data: result, error } = await supabase
-        .from(validatedTable)
+        .from(table)
         .delete()
         .eq('id', id)
         .select();
