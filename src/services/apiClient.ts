@@ -12,16 +12,11 @@ type ApiResponse = {
   error: Error | null;
 };
 
-// Define valid table names as string literals to avoid deep type instantiation
-type TableName = 'projects' | 'conversations' | 'contribution_zones' | 
-  'conversation_participants' | 'messages' | 'outputs' | 'profiles' | 
-  'token_transactions' | 'user_tokens';
-
-// Array of valid tables for runtime validation
-const VALID_TABLES: TableName[] = [
+// Define valid table names as string literals
+const VALID_TABLES = [
   'projects', 'conversations', 'contribution_zones', 'conversation_participants', 
   'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'
-];
+] as const;
 
 export const api = {
   // GET method
@@ -39,23 +34,20 @@ export const api = {
       const id = parts[1];
       
       // Validate table name
-      if (!VALID_TABLES.includes(tableName as TableName)) {
+      if (!VALID_TABLES.includes(tableName as any)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      // Use validated table name, now we know it's safe
-      const table = tableName as TableName;
-      
       // Handle get by ID
       if (id && !id.includes('?')) {
-        const { data, error } = await supabase
-          .from(table)
+        // Use any type to avoid type recursion
+        const result = await supabase
+          .from(tableName)
           .select('*')
           .eq('id', id)
           .maybeSingle();
           
-        if (error) throw error;
-        return { data, error: null };
+        return { data: result.data, error: result.error };
       } 
       
       // Handle get with query params
@@ -73,18 +65,18 @@ export const api = {
           queryObj = params;
         }
         
-        // Use type assertion for the query to avoid deep type instantiation
-        const query = supabase.from(table).select('*');
+        // Start with base query
+        let queryBuilder = supabase.from(tableName).select('*');
         
         // Apply filters
         Object.entries(queryObj).forEach(([key, value]) => {
-          query.eq(key, value);
+          queryBuilder = queryBuilder.eq(key, value);
         });
         
-        const { data, error } = await query;
+        // Execute query without complex typing
+        const result = await queryBuilder;
         
-        if (error) throw error;
-        return { data, error: null };
+        return { data: result.data, error: result.error };
       }
     } catch (error) {
       console.error('API get error:', error);
@@ -97,19 +89,16 @@ export const api = {
     try {
       const tableName = path;
       
-      if (!VALID_TABLES.includes(tableName as TableName)) {
+      if (!VALID_TABLES.includes(tableName as any)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const table = tableName as TableName;
-      
-      const { data: result, error } = await supabase
-        .from(table)
+      const result = await supabase
+        .from(tableName)
         .insert(data)
         .select();
       
-      if (error) throw error;
-      return { data: result?.[0] || null, error: null };
+      return { data: result.data?.[0] || null, error: result.error };
     } catch (error) {
       console.error('API post error:', error);
       return { data: null, error: error as Error };
@@ -123,20 +112,17 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!VALID_TABLES.includes(tableName as TableName)) {
+      if (!VALID_TABLES.includes(tableName as any)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const table = tableName as TableName;
-      
-      const { data: result, error } = await supabase
-        .from(table)
+      const result = await supabase
+        .from(tableName)
         .update(data)
         .eq('id', id)
         .select();
       
-      if (error) throw error;
-      return { data: result?.[0] || null, error: null };
+      return { data: result.data?.[0] || null, error: result.error };
     } catch (error) {
       console.error('API put error:', error);
       return { data: null, error: error as Error };
@@ -150,20 +136,17 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!VALID_TABLES.includes(tableName as TableName)) {
+      if (!VALID_TABLES.includes(tableName as any)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const table = tableName as TableName;
-      
-      const { data: result, error } = await supabase
-        .from(table)
+      const result = await supabase
+        .from(tableName)
         .delete()
         .eq('id', id)
         .select();
       
-      if (error) throw error;
-      return { data: result?.[0] || null, error: null };
+      return { data: result.data?.[0] || null, error: result.error };
     } catch (error) {
       console.error('API delete error:', error);
       return { data: null, error: error as Error };
