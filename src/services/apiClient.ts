@@ -6,22 +6,20 @@ import { supabase } from '@/integrations/supabase/client';
  * Avoids complex type recursion that causes TypeScript errors
  */
 
-// Define response type without complex generics
+// Define response type
 type ApiResponse = {
   data: any | null;
   error: Error | null;
 };
 
-// Define tables as string literal type without using array
-type TableName = 'projects' | 'conversations' | 'contribution_zones' | 
-  'conversation_participants' | 'messages' | 'outputs' | 'profiles' | 
-  'token_transactions' | 'user_tokens';
-
-// List of valid table names as array for runtime validation
+// Define valid table names as const array
 const VALID_TABLES = [
   'projects', 'conversations', 'contribution_zones', 'conversation_participants', 
   'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'
-];
+] as const;
+
+// Define table name type from const array
+type TableName = typeof VALID_TABLES[number];
 
 export const api = {
   // GET method
@@ -39,14 +37,17 @@ export const api = {
       const id = parts[1];
       
       // Validate table name
-      if (!VALID_TABLES.includes(tableName)) {
+      if (!VALID_TABLES.includes(tableName as any)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
+      
+      // Cast tableName to the correct type after validation
+      const validatedTable = tableName as TableName;
       
       // Handle get by ID
       if (id && !id.includes('?')) {
         const { data, error } = await supabase
-          .from(tableName)
+          .from(validatedTable)
           .select('*')
           .eq('id', id)
           .maybeSingle();
@@ -70,7 +71,7 @@ export const api = {
           queryObj = params;
         }
         
-        let query = supabase.from(tableName).select('*');
+        let query = supabase.from(validatedTable).select('*');
         
         // Apply filters
         Object.entries(queryObj).forEach(([key, value]) => {
@@ -93,12 +94,14 @@ export const api = {
     try {
       const tableName = path;
       
-      if (!VALID_TABLES.includes(tableName)) {
+      if (!VALID_TABLES.includes(tableName as any)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
+      const validatedTable = tableName as TableName;
+      
       const { data: result, error } = await supabase
-        .from(tableName)
+        .from(validatedTable)
         .insert(data)
         .select();
       
@@ -117,12 +120,14 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!VALID_TABLES.includes(tableName)) {
+      if (!VALID_TABLES.includes(tableName as any)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
+      const validatedTable = tableName as TableName;
+      
       const { data: result, error } = await supabase
-        .from(tableName)
+        .from(validatedTable)
         .update(data)
         .eq('id', id)
         .select();
@@ -142,12 +147,14 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!VALID_TABLES.includes(tableName)) {
+      if (!VALID_TABLES.includes(tableName as any)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
+      const validatedTable = tableName as TableName;
+      
       const { data: result, error } = await supabase
-        .from(tableName)
+        .from(validatedTable)
         .delete()
         .eq('id', id)
         .select();
