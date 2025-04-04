@@ -18,14 +18,14 @@ type ValidTable = 'projects' | 'conversations' | 'contribution_zones' |
   'token_transactions' | 'user_tokens';
 
 // List of valid table names for runtime validation
-const VALID_TABLES: ValidTable[] = [
+const VALID_TABLES = [
   'projects', 'conversations', 'contribution_zones', 'conversation_participants', 
   'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'
-];
+] as const;
 
 // Type guard to validate table names
 function isValidTable(tableName: string): tableName is ValidTable {
-  return VALID_TABLES.includes(tableName as ValidTable);
+  return VALID_TABLES.includes(tableName as any);
 }
 
 export const api = {
@@ -50,7 +50,6 @@ export const api = {
       
       // Handle get by ID
       if (id && !id.includes('?')) {
-        // Use the validated tableName which TypeScript now knows is a ValidTable
         const { data, error } = await supabase
           .from(tableName)
           .select('*')
@@ -76,7 +75,6 @@ export const api = {
           queryObj = params;
         }
         
-        // Use the validated tableName
         let query = supabase.from(tableName).select('*');
         
         // Apply filters
@@ -104,7 +102,6 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      // Use the validated tableName
       const { data: result, error } = await supabase
         .from(tableName)
         .insert(data)
@@ -129,7 +126,6 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      // Use the validated tableName
       const { data: result, error } = await supabase
         .from(tableName)
         .update(data)
@@ -155,7 +151,6 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      // Use the validated tableName
       const { data: result, error } = await supabase
         .from(tableName)
         .delete()
