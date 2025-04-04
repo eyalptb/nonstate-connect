@@ -1,10 +1,27 @@
 
 import { supabase } from '@/integrations/supabase/client';
+import { Tables } from '@/integrations/supabase/types';
 
 /**
  * Simple API client for Supabase interactions
  * Avoids complex type recursion that causes TypeScript errors
  */
+
+// Define valid table names as string literals
+const VALID_TABLES = [
+  'projects', 
+  'conversations', 
+  'contribution_zones', 
+  'conversation_participants', 
+  'messages', 
+  'outputs', 
+  'profiles', 
+  'token_transactions', 
+  'user_tokens'
+] as const;
+
+// Define a type for valid table names
+type TableName = typeof VALID_TABLES[number];
 
 // Define response type
 type ApiResponse = {
@@ -12,11 +29,10 @@ type ApiResponse = {
   error: Error | null;
 };
 
-// Define valid table names as string literals
-const VALID_TABLES = [
-  'projects', 'conversations', 'contribution_zones', 'conversation_participants', 
-  'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'
-] as const;
+// Type guard to check if a string is a valid table name
+function isValidTable(table: string): table is TableName {
+  return (VALID_TABLES as readonly string[]).includes(table);
+}
 
 export const api = {
   // GET method
@@ -34,7 +50,7 @@ export const api = {
       const id = parts[1];
       
       // Validate table name
-      if (!VALID_TABLES.includes(tableName as any)) {
+      if (!isValidTable(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -89,7 +105,7 @@ export const api = {
     try {
       const tableName = path;
       
-      if (!VALID_TABLES.includes(tableName as any)) {
+      if (!isValidTable(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -112,7 +128,7 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!VALID_TABLES.includes(tableName as any)) {
+      if (!isValidTable(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -136,7 +152,7 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!VALID_TABLES.includes(tableName as any)) {
+      if (!isValidTable(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
