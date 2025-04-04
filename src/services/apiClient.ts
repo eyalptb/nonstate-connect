@@ -6,6 +6,11 @@ type ApiResponse<T = any> = {
   error: any | null;
 };
 
+// Define a specific type for auth session responses
+type AuthSessionResponse = {
+  session: any | null;
+};
+
 // List of valid tables for runtime validation
 const VALID_TABLES = [
   'projects', 
@@ -31,7 +36,8 @@ export const api = {
       // Special case for auth session
       if (path === 'auth/session') {
         const { data, error } = await supabase.auth.getSession();
-        return { data, error };
+        // Return the response as AuthSessionResponse type specifically for this endpoint
+        return { data: data as unknown as T, error };
       }
 
       // Parse path
