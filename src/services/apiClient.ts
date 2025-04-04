@@ -1,13 +1,12 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { Tables } from '@/integrations/supabase/types';
 
 /**
  * Simple API client for Supabase interactions
- * Avoids complex type recursion that causes TypeScript errors
+ * Uses any types to avoid TypeScript recursion errors
  */
 
-// Define valid table names as string literals
+// Define valid table names
 const VALID_TABLES = [
   'projects', 
   'conversations', 
@@ -18,21 +17,13 @@ const VALID_TABLES = [
   'profiles', 
   'token_transactions', 
   'user_tokens'
-] as const;
+];
 
-// Define a type for valid table names
-type TableName = typeof VALID_TABLES[number];
-
-// Define response type
+// Simple response type without complex type inference
 type ApiResponse = {
   data: any | null;
   error: Error | null;
 };
-
-// Type guard to check if a string is a valid table name
-function isValidTable(table: string): table is TableName {
-  return (VALID_TABLES as readonly string[]).includes(table);
-}
 
 export const api = {
   // GET method
@@ -41,7 +32,7 @@ export const api = {
       // Special case for auth session
       if (path === 'auth/session') {
         const { data, error } = await supabase.auth.getSession();
-        return { data, error: null };
+        return { data, error: error as Error };
       }
 
       // Parse path
@@ -50,20 +41,19 @@ export const api = {
       const id = parts[1];
       
       // Validate table name
-      if (!isValidTable(tableName)) {
+      if (!VALID_TABLES.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
       // Handle get by ID
       if (id && !id.includes('?')) {
-        // Use any type to avoid type recursion
         const result = await supabase
           .from(tableName)
           .select('*')
           .eq('id', id)
           .maybeSingle();
           
-        return { data: result.data, error: result.error };
+        return { data: result.data, error: result.error as Error };
       } 
       
       // Handle get with query params
@@ -82,17 +72,17 @@ export const api = {
         }
         
         // Start with base query
-        let queryBuilder = supabase.from(tableName).select('*');
+        let query = supabase.from(tableName).select('*');
         
         // Apply filters
         Object.entries(queryObj).forEach(([key, value]) => {
-          queryBuilder = queryBuilder.eq(key, value);
+          query = query.eq(key, value);
         });
         
-        // Execute query without complex typing
-        const result = await queryBuilder;
+        // Execute query
+        const result = await query;
         
-        return { data: result.data, error: result.error };
+        return { data: result.data, error: result.error as Error };
       }
     } catch (error) {
       console.error('API get error:', error);
@@ -105,7 +95,7 @@ export const api = {
     try {
       const tableName = path;
       
-      if (!isValidTable(tableName)) {
+      if (!VALID_TABLES.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -114,7 +104,7 @@ export const api = {
         .insert(data)
         .select();
       
-      return { data: result.data?.[0] || null, error: result.error };
+      return { data: result.data?.[0] || null, error: result.error as Error };
     } catch (error) {
       console.error('API post error:', error);
       return { data: null, error: error as Error };
@@ -128,7 +118,7 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!isValidTable(tableName)) {
+      if (!VALID_TABLES.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -138,7 +128,7 @@ export const api = {
         .eq('id', id)
         .select();
       
-      return { data: result.data?.[0] || null, error: result.error };
+      return { data: result.data?.[0] || null, error: result.error as Error };
     } catch (error) {
       console.error('API put error:', error);
       return { data: null, error: error as Error };
@@ -152,7 +142,7 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!isValidTable(tableName)) {
+      if (!VALID_TABLES.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -162,7 +152,7 @@ export const api = {
         .eq('id', id)
         .select();
       
-      return { data: result.data?.[0] || null, error: result.error };
+      return { data: result.data?.[0] || null, error: result.error as Error };
     } catch (error) {
       console.error('API delete error:', error);
       return { data: null, error: error as Error };
