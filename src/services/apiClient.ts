@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 /**
  * Simple API client for Supabase interactions
- * Uses any types to avoid TypeScript recursion errors
+ * Uses explicit type casting to avoid TypeScript recursion errors
  */
 
 // Define valid table names
@@ -17,9 +17,12 @@ const VALID_TABLES = [
   'profiles', 
   'token_transactions', 
   'user_tokens'
-];
+] as const;
 
-// Simple response type without complex type inference
+// Use a union type for table names
+type ValidTable = typeof VALID_TABLES[number];
+
+// Simple response type
 type ApiResponse = {
   data: any | null;
   error: Error | null;
@@ -41,17 +44,15 @@ export const api = {
       const id = parts[1];
       
       // Validate table name
-      if (!VALID_TABLES.includes(tableName)) {
+      if (!VALID_TABLES.includes(tableName as ValidTable)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
       // Handle get by ID
       if (id && !id.includes('?')) {
-        const result = await supabase
-          .from(tableName)
-          .select('*')
-          .eq('id', id)
-          .maybeSingle();
+        // Type assertion to handle the type checking
+        const query = supabase.from(tableName as ValidTable);
+        const result = await query.select('*').eq('id', id).maybeSingle();
           
         return { data: result.data, error: result.error as Error };
       } 
@@ -71,16 +72,17 @@ export const api = {
           queryObj = params;
         }
         
-        // Start with base query
-        let query = supabase.from(tableName).select('*');
+        // Start with base query with type assertion
+        const query = supabase.from(tableName as ValidTable);
         
-        // Apply filters
+        // Apply filters using a dynamic approach
+        let filteredQuery = query.select('*');
         Object.entries(queryObj).forEach(([key, value]) => {
-          query = query.eq(key, value);
+          filteredQuery = filteredQuery.eq(key, value);
         });
         
         // Execute query
-        const result = await query;
+        const result = await filteredQuery;
         
         return { data: result.data, error: result.error as Error };
       }
@@ -95,14 +97,13 @@ export const api = {
     try {
       const tableName = path;
       
-      if (!VALID_TABLES.includes(tableName)) {
+      if (!VALID_TABLES.includes(tableName as ValidTable)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const result = await supabase
-        .from(tableName)
-        .insert(data)
-        .select();
+      // Use type assertion to satisfy TypeScript
+      const query = supabase.from(tableName as ValidTable);
+      const result = await query.insert(data).select();
       
       return { data: result.data?.[0] || null, error: result.error as Error };
     } catch (error) {
@@ -118,15 +119,13 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!VALID_TABLES.includes(tableName)) {
+      if (!VALID_TABLES.includes(tableName as ValidTable)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const result = await supabase
-        .from(tableName)
-        .update(data)
-        .eq('id', id)
-        .select();
+      // Use type assertion to satisfy TypeScript
+      const query = supabase.from(tableName as ValidTable);
+      const result = await query.update(data).eq('id', id).select();
       
       return { data: result.data?.[0] || null, error: result.error as Error };
     } catch (error) {
@@ -142,15 +141,13 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!VALID_TABLES.includes(tableName)) {
+      if (!VALID_TABLES.includes(tableName as ValidTable)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const result = await supabase
-        .from(tableName)
-        .delete()
-        .eq('id', id)
-        .select();
+      // Use type assertion to satisfy TypeScript
+      const query = supabase.from(tableName as ValidTable);
+      const result = await query.delete().eq('id', id).select();
       
       return { data: result.data?.[0] || null, error: result.error as Error };
     } catch (error) {
