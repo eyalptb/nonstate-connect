@@ -1,14 +1,32 @@
 
 import { supabase } from '@/integrations/supabase/client';
 
-/**
- * Simplified API client that avoids TypeScript recursion errors
- * by using minimal typing and manual table validation
- */
+type ApiResponse<T = any> = {
+  data: T | null;
+  error: any | null;
+};
+
+// List of valid tables for runtime validation
+const VALID_TABLES = [
+  'projects', 
+  'conversations', 
+  'contribution_zones', 
+  'conversation_participants', 
+  'messages', 
+  'outputs', 
+  'profiles', 
+  'token_transactions', 
+  'user_tokens'
+] as const;
+
+// Simple validation function to check table names
+function isValidTable(tableName: string): boolean {
+  return VALID_TABLES.includes(tableName as any);
+}
 
 export const api = {
   // GET method
-  get: async (path: string, params?: Record<string, any>): Promise<{data: any, error: any}> => {
+  get: async <T = any>(path: string, params?: Record<string, any>): Promise<ApiResponse<T>> => {
     try {
       // Special case for auth session
       if (path === 'auth/session') {
@@ -19,25 +37,22 @@ export const api = {
       // Parse path
       const parts = path.split('/');
       const tableName = parts[0];
-      const id = parts[1];
+      const id = parts.length > 1 ? parts[1] : null;
       
-      // Perform a table name check without complex typing
+      // Validate table name
       if (!isValidTable(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
+      let query;
+      
       // Handle get by ID
       if (id && !id.includes('?')) {
-        // Use any typing to avoid recursion
-        const { data, error } = await supabase
-          .from(tableName)
+        query = await supabase.from(tableName as any)
           .select('*')
           .eq('id', id)
           .maybeSingle();
-          
-        return { data, error };
       } 
-      
       // Handle get with query params
       else {
         let queryObj: Record<string, any> = {};
@@ -53,20 +68,18 @@ export const api = {
           queryObj = params;
         }
         
-        // Build query manually to avoid type recursion
-        const baseQuery = supabase.from(tableName).select('*');
+        // Build query
+        let queryBuilder = supabase.from(tableName as any).select('*');
         
         // Apply filters one by one
-        let fullQuery = baseQuery;
         for (const [key, value] of Object.entries(queryObj)) {
-          fullQuery = fullQuery.eq(key, value);
+          queryBuilder = queryBuilder.eq(key, value);
         }
         
-        // Execute query
-        const { data, error } = await fullQuery;
-        
-        return { data, error };
+        query = await queryBuilder;
       }
+      
+      return { data: query.data as T, error: query.error };
     } catch (error) {
       console.error('API get error:', error);
       return { data: null, error };
@@ -74,18 +87,21 @@ export const api = {
   },
   
   // POST method
-  post: async (path: string, data: any): Promise<{data: any, error: any}> => {
+  post: async <T = any>(path: string, data: any): Promise<ApiResponse<T>> => {
     try {
       if (!isValidTable(path)) {
         throw new Error(`Invalid table name: ${path}`);
       }
       
-      const { data: responseData, error } = await supabase
-        .from(path)
+      const result = await supabase
+        .from(path as any)
         .insert(data)
         .select();
       
-      return { data: responseData?.[0] || null, error };
+      return { 
+        data: result.data?.[0] as T || null, 
+        error: result.error 
+      };
     } catch (error) {
       console.error('API post error:', error);
       return { data: null, error };
@@ -93,7 +109,7 @@ export const api = {
   },
   
   // PUT method
-  put: async (path: string, data: any): Promise<{data: any, error: any}> => {
+  put: async <T = any>(path: string, data: any): Promise<ApiResponse<T>> => {
     try {
       const parts = path.split('/');
       const tableName = parts[0];
@@ -103,13 +119,16 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const { data: responseData, error } = await supabase
-        .from(tableName)
+      const result = await supabase
+        .from(tableName as any)
         .update(data)
         .eq('id', id)
         .select();
       
-      return { data: responseData?.[0] || null, error };
+      return { 
+        data: result.data?.[0] as T || null, 
+        error: result.error 
+      };
     } catch (error) {
       console.error('API put error:', error);
       return { data: null, error };
@@ -117,7 +136,7 @@ export const api = {
   },
   
   // DELETE method
-  delete: async (path: string): Promise<{data: any, error: any}> => {
+  delete: async <T = any>(path: string): Promise<ApiResponse<T>> => {
     try {
       const parts = path.split('/');
       const tableName = parts[0];
@@ -127,33 +146,19 @@ export const api = {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
-      const { data: responseData, error } = await supabase
-        .from(tableName)
+      const result = await supabase
+        .from(tableName as any)
         .delete()
         .eq('id', id)
         .select();
       
-      return { data: responseData?.[0] || null, error };
+      return { 
+        data: result.data?.[0] as T || null, 
+        error: result.error 
+      };
     } catch (error) {
       console.error('API delete error:', error);
       return { data: null, error };
     }
   }
 };
-
-// Simple manual validation function to check table names
-function isValidTable(tableName: string): boolean {
-  const validTables = [
-    'projects', 
-    'conversations', 
-    'contribution_zones', 
-    'conversation_participants', 
-    'messages', 
-    'outputs', 
-    'profiles', 
-    'token_transactions', 
-    'user_tokens'
-  ];
-  
-  return validTables.includes(tableName);
-}
