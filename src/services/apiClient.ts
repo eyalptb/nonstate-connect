@@ -8,25 +8,20 @@ import { supabase } from '@/integrations/supabase/client';
 
 // Define response type without complex generics
 type ApiResponse = {
-  data: any;
+  data: any | null;
   error: Error | null;
 };
 
-// Define valid table names as a union type
-type ValidTable = 'projects' | 'conversations' | 'contribution_zones' | 
+// Define tables as string literal type without using array
+type TableName = 'projects' | 'conversations' | 'contribution_zones' | 
   'conversation_participants' | 'messages' | 'outputs' | 'profiles' | 
   'token_transactions' | 'user_tokens';
 
-// List of valid table names for runtime validation
+// List of valid table names as array for runtime validation
 const VALID_TABLES = [
   'projects', 'conversations', 'contribution_zones', 'conversation_participants', 
   'messages', 'outputs', 'profiles', 'token_transactions', 'user_tokens'
-] as const;
-
-// Type guard to validate table names
-function isValidTable(tableName: string): tableName is ValidTable {
-  return VALID_TABLES.includes(tableName as any);
-}
+];
 
 export const api = {
   // GET method
@@ -44,7 +39,7 @@ export const api = {
       const id = parts[1];
       
       // Validate table name
-      if (!isValidTable(tableName)) {
+      if (!VALID_TABLES.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -98,7 +93,7 @@ export const api = {
     try {
       const tableName = path;
       
-      if (!isValidTable(tableName)) {
+      if (!VALID_TABLES.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -122,7 +117,7 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!isValidTable(tableName)) {
+      if (!VALID_TABLES.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
@@ -147,7 +142,7 @@ export const api = {
       const tableName = parts[0];
       const id = parts[1];
       
-      if (!isValidTable(tableName)) {
+      if (!VALID_TABLES.includes(tableName)) {
         throw new Error(`Invalid table name: ${tableName}`);
       }
       
