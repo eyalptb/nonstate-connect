@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import {
@@ -44,9 +45,9 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <QueryClientProvider client={queryClient}>
-          <ThemeProvider defaultTheme="light" storageKey="theme">
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider defaultTheme="light" storageKey="theme">
+          <AuthProvider>
             <div className="min-h-screen bg-background">
               <Navbar />
               <Routes>
@@ -120,9 +121,9 @@ function App() {
               <Footer />
               <Toaster />
             </div>
-          </ThemeProvider>
-        </QueryClientProvider>
-      </AuthProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
     </Router>
   );
 }
