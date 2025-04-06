@@ -8,7 +8,7 @@ import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 const Index = () => {
   // Use multiple namespaces to ensure all text gets translated
-  const { t, currentLanguage } = useTranslation(["common", "navigation"]);
+  const { t } = useTranslation(["common", "navigation"]);
   
   return (
     <div className="flex flex-col min-h-screen">

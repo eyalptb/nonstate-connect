@@ -37,10 +37,10 @@ i18n
     // Allow keys to be phrases having `:`, `.` inside
     keySeparator: false,
     
-    // Debug mode for development
-    debug: false, // Set to false to reduce console noise
+    // Debug mode for development - set to true to help troubleshoot
+    debug: true,
     
-    // Namespaces to load on init - adding 'governance' here
+    // Namespaces to load on init - ensuring all needed namespaces are here
     ns: ['common', 'navigation', 'auth', 'messaging', 'governance'],
     
     // Interpolation options
@@ -53,25 +53,38 @@ i18n
       useSuspense: false, // Do not use suspense - simplifies usage
       bindI18n: 'languageChanged loaded', // Events that trigger a re-render
       bindI18nStore: 'added removed', // Store events that trigger a re-render
-    }
+    },
+    
+    // Ensure resources are loaded before app starts
+    initImmediate: false
   });
+
+// Add debug logging
+i18n.on('initialized', () => {
+  console.log('i18n initialized with language:', i18n.language);
+  console.log('Available namespaces:', i18n.options.ns);
+});
+
+i18n.on('loaded', (loaded) => {
+  console.log('i18n resources loaded:', loaded);
+});
 
 // Update HTML lang attribute when language changes
 i18n.on('languageChanged', (lng) => {
   document.documentElement.lang = lng;
+  console.log(`Language changed to ${lng}, updating document.documentElement.lang`);
   
-  // Reload resources for the current language - don't log errors here
-  // to prevent double notifications in the console
+  // Reload resources for the current language
   i18n.reloadResources([lng], ['common', 'navigation', 'messaging', 'auth', 'governance'])
-    .catch(() => {
-      // Silent catch to avoid duplicate error messages
-    });
+    .then(() => console.log(`Successfully reloaded resources for ${lng}`))
+    .catch((error) => console.error(`Failed to reload resources for ${lng}:`, error));
 });
 
 // Add the reloadTranslations function for explicit control
 export const reloadTranslations = async (language: string) => {
   try {
     await i18n.reloadResources(language, ['common', 'navigation', 'auth', 'messaging', 'governance']);
+    console.log(`Successfully reloaded translations for ${language}`);
     return true;
   } catch (error) {
     console.error(`Failed to reload translations for ${language}:`, error);

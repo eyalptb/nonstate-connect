@@ -16,14 +16,15 @@ const TranslationContext = createContext<TranslationContextType | undefined>(und
 
 export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
-  // Use common namespace by default to ensure it's always loaded
-  const { t, i18n: i18nInstance, ready } = useReactI18next(['common', 'navigation', 'auth']);
+  // Use all commonly needed namespaces by default to ensure they're always loaded
+  const { t, i18n: i18nInstance, ready } = useReactI18next(['common', 'navigation', 'auth', 'messaging', 'governance']);
 
   // Update language state when i18n language changes
   useEffect(() => {
     const handleLanguageChanged = (lng: string) => {
       setCurrentLanguage(lng);
       document.documentElement.lang = lng;
+      console.log(`Language changed to: ${lng}`);
     };
 
     // Set initial language
@@ -34,7 +35,11 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
     
     // Initial load to ensure we have all base namespaces
     i18n.loadNamespaces(['common', 'navigation', 'auth', 'messaging', 'governance'], (err) => {
-      if (err) console.error('Failed to load namespaces:', err);
+      if (err) {
+        console.error('Failed to load namespaces:', err);
+      } else {
+        console.log('Successfully loaded all base namespaces');
+      }
     });
     
     return () => {
@@ -47,6 +52,7 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
     try {
       // Only change language if it's different from current
       if (lang !== currentLanguage) {
+        console.log(`Changing language from ${currentLanguage} to ${lang}`);
         await i18n.changeLanguage(lang);
         localStorage.setItem("i18nextLng", lang);
       }

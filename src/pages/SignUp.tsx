@@ -5,20 +5,23 @@ import { Separator } from "@/components/ui/separator";
 import { SignUpForm } from "@/components/auth/SignUpForm";
 import { SocialSignIn } from "@/components/auth/SocialSignIn";
 import { AuthPageLayout } from "@/components/auth/AuthPageLayout";
+import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 const SignUp = () => {
+  const { t } = useTranslation("auth");
+
   return (
     <AuthPageLayout 
-      title="Sign Up"
-      description="Create an account to get started"
+      title={t("signUp", "Sign Up")}
+      description={t("createAccountDescription", "Create an account to get started")}
       footerContent={
         <div className="text-sm text-center text-muted-foreground">
-          Already have an account?{" "}
+          {t("haveAccount", "Already have an account?")}{" "}
           <Link
             to="/sign-in"
             className="text-primary underline underline-offset-4 hover:text-primary/90"
           >
-            Sign in
+            {t("signIn", "Sign in")}
           </Link>
         </div>
       }
@@ -28,7 +31,7 @@ const SignUp = () => {
 
         <div className="flex items-center">
           <Separator className="flex-grow" />
-          <span className="mx-2 text-xs text-muted-foreground">OR</span>
+          <span className="mx-2 text-xs text-muted-foreground">{t("or", "OR")}</span>
           <Separator className="flex-grow" />
         </div>
 

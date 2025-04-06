@@ -6,17 +6,19 @@ import { SignInTabs } from "@/components/auth/SignInTabs";
 import { SocialSignIn } from "@/components/auth/SocialSignIn";
 import { AuthDivider } from "@/components/auth/AuthDivider";
 import { AuthPageLayout } from "@/components/auth/AuthPageLayout";
+import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 const SignIn = () => {
   const [activeTab, setActiveTab] = useState("signin");
+  const { t } = useTranslation("auth");
 
   return (
     <AuthPageLayout
-      title={activeTab === "signin" ? "Welcome Back" : "Create Account"}
+      title={activeTab === "signin" ? t("welcomeBack", "Welcome Back") : t("createAccount", "Create Account")}
       description={
         activeTab === "signin" 
-          ? "Sign in to your account or create a new one" 
-          : "Enter your information to create an account"
+          ? t("signInDescription", "Sign in to your account or create a new one") 
+          : t("signUpDescription", "Enter your information to create an account")
       }
     >
       <CardContent>

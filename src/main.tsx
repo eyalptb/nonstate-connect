@@ -18,15 +18,25 @@ const root = createRoot(rootElement);
 
 // Function to render the app
 const renderApp = () => {
+  // Ensure language is set on document
   document.documentElement.lang = i18n.language;
-  root.render(
-    <TranslationProvider>
-      <NotificationProvider>
-        <App />
-        <Toaster />
-      </NotificationProvider>
-    </TranslationProvider>
-  );
+  
+  // Load all necessary namespaces at app initialization
+  const namespaces = ['common', 'navigation', 'auth', 'messaging', 'governance'];
+  
+  // Preload all necessary namespaces
+  i18n.loadNamespaces(namespaces, (err) => {
+    if (err) console.error('Failed to load namespaces:', err);
+    
+    root.render(
+      <TranslationProvider>
+        <NotificationProvider>
+          <App />
+          <Toaster />
+        </NotificationProvider>
+      </TranslationProvider>
+    );
+  });
 };
 
 // Initialize i18n and then render
@@ -35,12 +45,14 @@ if (i18n.isInitialized) {
 } else {
   // Set a timeout in case initialization takes too long
   const timeoutId = setTimeout(() => {
+    console.warn('i18n initialization timed out, rendering anyway');
     renderApp();
   }, 2000);
   
   // Listen for initialization
   i18n.on('initialized', () => {
     clearTimeout(timeoutId);
+    console.log('i18n initialized successfully');
     renderApp();
   });
 }
