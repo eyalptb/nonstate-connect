@@ -23,6 +23,8 @@ export const addComponentTranslations = (
     return false;
   }
   
+  console.log(`Adding translations for ${componentType}/${language}`, translations);
+  
   // Add translations to the i18n instance
   return addTranslations(language, namespace, translations);
 };
@@ -40,10 +42,24 @@ export const loadAllComponentTranslations = (
   const supportedLanguages = getSupportedLanguages();
   console.log(`Loading ${componentType} translations for languages:`, supportedLanguages);
   
+  // Check if translations exist for this component type
+  if (!translationResources[componentType]) {
+    console.error(`No translations found for component type: ${componentType}`);
+    return;
+  }
+  
   // Add translations for each language
   supportedLanguages.forEach(lang => {
-    addComponentTranslations(lang, componentType, namespace);
+    const success = addComponentTranslations(lang, componentType, namespace);
+    if (success) {
+      console.log(`Successfully loaded ${componentType} translations for ${lang}`);
+    } else {
+      console.warn(`Failed to load ${componentType} translations for ${lang}`);
+    }
   });
+  
+  // Dispatch event to notify that translations are loaded
+  document.dispatchEvent(new Event('i18n-resources-loaded'));
 };
 
 /**

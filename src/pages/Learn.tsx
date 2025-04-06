@@ -11,8 +11,28 @@ const Learn = () => {
 
   useEffect(() => {
     // Load Learn translations
-    loadAllLearnTranslations();
-  }, [i18n.language]);
+    const loadTranslations = async () => {
+      await loadAllLearnTranslations();
+      // Force a component re-render after translations are loaded
+      i18n.on('languageChanged', () => {});
+    };
+    
+    loadTranslations();
+    
+    // Add event listener for when translations are loaded
+    const handleTranslationsLoaded = () => {
+      console.log("Learn translations loaded, forcing re-render");
+      i18n.off('languageChanged'); // Remove the dummy listener
+      i18n.emit('languageChanged', i18n.language); // Trigger a language change event to force re-render
+    };
+    
+    document.addEventListener('i18n-resources-loaded', handleTranslationsLoaded);
+    
+    return () => {
+      document.removeEventListener('i18n-resources-loaded', handleTranslationsLoaded);
+      i18n.off('languageChanged');
+    };
+  }, [i18n]);
 
   return (
     <div className="container mx-auto py-12 px-4">
