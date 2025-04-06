@@ -13,18 +13,18 @@
   "create": "创建",
   "submit": "提交",
   "confirm": "确认",
-  "hero.tagline": "隐私优先的人工智能协作",
-  "hero.titleStart": "安全",
-  "hero.titleHighlight": "AI增强",
-  "hero.titleEnd": "变革者的协作平台",
-  "hero.description": "ParaCollab为科学家、环保卫士和教育工作者提供支持，让他们能够在保护数据隐私的同时开展影响力项目合作。",
+  "hero.tagline": "隐私优先的AI协作",
+  "hero.titleStart": "安全的",
+  "hero.titleHighlight": "AI增强的",
+  "hero.titleEnd": "变革者协作平台",
+  "hero.description": "ParaCollab使科学家、环保主义者和教育工作者能够在保持数据私密和安全的同时协作开展有影响力的项目。",
   "hero.primaryCta": "开始协作",
   "hero.secondaryCta": "探索功能",
   "hero.stats.count": "500",
-  "hero.stats.description": "个团队在创新的同时保护着他们的数据",
+  "hero.stats.description": "团队在创新的同时保护数据",
   "joinCta": {
     "heading": "加入网络",
-    "subheading": "与志同道合的组织和个人连接，共同致力于积极的全球变革。",
+    "subheading": "与志同道合的组织和个人联系，共同推动全球积极变革。",
     "benefits": {
       "secure": {
         "title": "安全协作",
@@ -32,7 +32,7 @@
       },
       "blockchain": {
         "title": "区块链验证",
-        "description": "所有贡献都经过验证并不可篡改地记录"
+        "description": "所有贡献都经过验证并不可更改地记录"
       },
       "impact": {
         "title": "全球影响",
@@ -40,14 +40,14 @@
       }
     },
     "buttons": {
-      "dashboard": "前往仪表盘",
+      "dashboard": "前往仪表板",
       "createAccount": "创建账户",
       "signIn": "登录"
     }
   },
   "wallet": {
     "title": "CollabCoin 钱包",
-    "description": "您的隐私保障激励",
+    "description": "您的代币激励",
     "coins": "CollabCoin 币",
     "earn": "通过安全协作赚取并用于高级功能"
   },
@@ -55,101 +55,47 @@
     "title": "隐私优先",
     "description": "您的数据始终属于您",
     "encrypted": "端到端加密",
-    "control": "完全控制权"
+    "control": "完全控制"
   },
   "features": {
-    "heading": "以隐私为先的创新基础设施",
-    "subheading": "我们的平台将安全加密技术与AI驱动的协作工具相结合，让变革者能够在不妥协隐私的情况下发挥力量。",
+    "heading": "专注隐私的创新基础架构",
+    "subheading": "我们的平台结合了安全加密技术和AI驱动的协作工具，在不损害隐私的情况下赋能变革者。",
     "privacy": {
       "title": "端到端隐私",
-      "description": "全程加密确保您的敏感数据在整个协作过程中保持私密。"
+      "description": "完全加密确保您的敏感数据在整个协作过程中保持私密。"
     },
     "ai": {
       "title": "AI协作助手",
-      "description": "在不接触敏感内容的情况下增强团队工作效率的AI助手。"
+      "description": "增强团队工作的AI助手，无需访问敏感内容。"
     },
     "zones": {
-      "title": "贡献专区",
-      "description": "分区管理的项目空间，在实现无缝协作的同时保持敏感数据隔离。"
+      "title": "贡献区域",
+      "description": "分隔的项目空间保持敏感数据分离，同时实现无缝协作。"
     },
     "dashboard": {
       "title": "隐私仪表板",
-      "description": "完全掌控您的数据及其访问权限。"
+      "description": "对您的数据及其访问权限的完全透明和控制。"
     },
     "simulator": {
-      "title": "影响力模拟器",
+      "title": "影响模拟器",
       "description": "预测项目成果，从环境影响到社会变革。"
     },
     "blueprints": {
-      "title": "演进模板",
-      "description": "在保持安全和隐私的同时扩展和调整成功的项目模式。"
-    },
-    "categories": {
-      "security": "安全性",
-      "collaboration": "协作",
-      "infrastructure": "基础设施"
-    },
-    "security": {
-      "encryption": {
-        "title": "端到端加密",
-        "description": "所有通信和共享文档都经过加密，确保所有参与者的隐私和安全。"
-      },
-      "identity": {
-        "title": "自主身份",
-        "description": "用户无需中央权威机构即可保持对其身份和凭证的控制。"
-      }
-    },
-    "collaboration": {
-      "global": {
-        "title": "全球协作",
-        "description": "与跨境合作伙伴连接，共同致力于共享倡议和合作游戏。"
-      },
-      "community": {
-        "title": "社区建设",
-        "description": "创建并加入对降落伞游戏和协作活动有共同兴趣的社区。"
-      },
-      "messaging": {
-        "title": "安全消息传递",
-        "description": "通过我们的加密消息系统与其他成员沟通。"
-      }
-    },
-    "infrastructure": {
-      "decentralized": {
-        "title": "分散式架构",
-        "description": "基于区块链技术构建，消除中心故障点和审查制度。"
-      },
-      "token": {
-        "title": "代币经济",
-        "description": "生态系统中奖励、认可和社区参与的数字代币。"
-      },
-      "governance": {
-        "title": "透明治理",
-        "description": "透明投票和资源分配的民主决策。"
-      },
-      "integration": {
-        "title": "集成中心",
-        "description": "连接外部工具和服务，增强您的协作体验。"
-      }
-    },
-    "pageTitle": "平台功能",
-    "pageDescription": "发现为ParaCollab平台提供动力的工具和技术",
-    "why": {
-      "title": "为什么选择ParaCollab？",
-      "description1": "ParaCollab专为希望在全球挑战方面进行协作的降落伞游戏爱好者和社区而设计。我们的平台将分散技术的优势与直观设计相结合，为所有用户创造无缝体验。",
-      "description2": "凭借涵盖安全、协作工具和强大基础设施的功能，我们提供您连接、创造和为全球有意义项目做出贡献所需的一切。"
+      "title": "进化蓝图",
+      "description": "在保持安全和隐私的同时扩展和调整成功的项目模板。"
     }
   },
   "projects": {
-    "heading": "活跃协作项目",
-    "subheading": "加入现有项目或提出新倡议，共同应对紧迫的全球挑战。",
+    "heading": "活跃协作",
+    "subheading": "加入现有项目或提出新倡议，以应对紧迫的全球挑战。",
     "viewAll": "查看所有项目",
-    "participants": "{{count}} 名参与者",
+    "participants": "{{count}} 参与者",
     "progress": "进度",
     "learnMore": "了解更多"
   },
   "dashboard": {
     "welcomeBack": "欢迎回来！",
-    "welcomeMessage": "欢迎回到您的安全协作仪表盘！",
+    "welcomeMessage": "欢迎回到您的安全协作仪表板！",
     "secureCollaboration": "您的安全协作中心",
     "yourProjects": "您的项目",
     "noProjects": "您尚未加入任何项目。浏览可用项目或创建新项目。",
@@ -164,33 +110,5 @@
     "afternoon": "下午好",
     "evening": "晚上好"
   },
-  "language": "语言",
-  "useCases": {
-    "pageTitle": "使用案例",
-    "pageDescription": "了解组织如何使用我们的平台实现安全、可验证的协作。",
-    "ngo": {
-      "title": "非政府组织协作",
-      "description": "在保护敏感数据和维护隐私的同时安全地跨境连接非政府组织。"
-    },
-    "humanRights": {
-      "title": "人权记录",
-      "description": "通过端到端加密和安全验证记录和验证人权问题。"
-    },
-    "environmental": {
-      "title": "环境监测",
-      "description": "通过多个来源的可信验证跟踪和验证环境数据。"
-    },
-    "corporate": {
-      "title": "企业可持续发展",
-      "description": "通过可验证的影响追踪验证ESG主张和供应链透明度。"
-    },
-    "grassroots": {
-      "title": "草根组织",
-      "description": "安全协调社区倡议，无需暴露参与者身份。"
-    },
-    "research": {
-      "title": "协作研究",
-      "description": "使用保护隐私的协作工具共享研究数据和发现。"
-    }
-  }
+  "language": "语言"
 }

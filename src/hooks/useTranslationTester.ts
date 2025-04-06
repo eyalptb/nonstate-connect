@@ -1,91 +1,107 @@
 
-import { useState, useEffect, useCallback } from 'react';
 import i18n from '@/i18n';
+import { useCallback } from 'react';
+import { verifyTranslationKeys } from '@/utils/i18nVerification';
+import { toast } from 'sonner';
 
-/**
- * Hook for debugging translation issues
- */
-export function useTranslationTester() {
-  const [translationTest, setTranslationTest] = useState<{
-    key: string;
-    translation: string;
-    namespace: string;
-    language: string;
-    success: boolean;
-  } | null>(null);
+interface TestResult {
+  success: boolean;
+  message: string;
+  key: string;
+}
 
-  // Test a specific translation key
-  const testTranslation = useCallback((key: string, namespace = 'common') => {
+const useTranslationTester = () => {
+  // Test if a specific translation key exists and has a value
+  const testTranslation = useCallback((key: string, namespace = 'common'): TestResult => {
+    // Get the current language
     const currentLang = i18n.language;
-    const translation = i18n.t(key, { ns: namespace });
-    const isSuccess = translation !== key; // If they match, translation failed
     
-    console.log(`Testing translation for ${namespace}:${key} in ${currentLang}`);
-    console.log(`Result: "${translation}" (Success: ${isSuccess})`);
+    // Get the translation
+    const translation = i18n.getResourceBundle(currentLang, namespace);
     
-    // Check if resource bundle exists
-    const bundle = i18n.getResourceBundle(currentLang, namespace);
-    console.log(`Resource bundle for ${namespace} in ${currentLang}:`, bundle);
-    
-    setTranslationTest({
-      key,
-      translation,
-      namespace,
-      language: currentLang,
-      success: isSuccess
-    });
-    
-    return { translation, success: isSuccess };
-  }, []);
-
-  // Test all keys in a specific namespace
-  const testNamespace = useCallback((namespace = 'common') => {
-    const currentLang = i18n.language;
-    const bundle = i18n.getResourceBundle(currentLang, namespace);
-    
-    if (!bundle) {
-      console.error(`No resource bundle found for ${namespace} in ${currentLang}`);
-      return { success: false, results: {} };
+    if (!translation) {
+      console.error(`No translations found for ${namespace} in ${currentLang}`);
+      return { 
+        success: false, 
+        message: `No translations found for ${namespace} in ${currentLang}`,
+        key
+      };
     }
     
-    const results: Record<string, { translation: string; success: boolean }> = {};
-    
-    // Test each key in the bundle
-    Object.keys(bundle).forEach(key => {
-      const translation = i18n.t(`${key}`, { ns: namespace });
-      const isSuccess = translation !== key;
-      results[key] = { translation, success: isSuccess };
-    });
-    
-    console.log(`Tested all keys in ${namespace} for ${currentLang}:`, results);
-    return { success: Object.values(results).every(r => r.success), results };
-  }, []);
-
-  // Force reload a namespace
-  const forceReloadNamespace = useCallback(async (namespace = 'common', language = i18n.language) => {
+    // Check if the key exists by trying to use it
+    // This handles nested keys like 'wallet.title'
+    let value;
     try {
-      console.log(`Forcing reload of ${namespace} for ${language}`);
-      await i18n.reloadResources([language], [namespace]);
-      
-      // Wait a moment for resources to load
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      const bundle = i18n.getResourceBundle(language, namespace);
-      console.log(`Reloaded bundle for ${namespace} in ${language}:`, bundle);
-      
-      return { success: !!bundle, bundle };
+      value = i18n.t(key, { ns: namespace });
     } catch (error) {
-      console.error(`Failed to reload ${namespace} for ${language}:`, error);
-      return { success: false, error };
+      console.error(`Error testing key ${key}:`, error);
+      return { 
+        success: false, 
+        message: `Error testing key ${key}`,
+        key
+      };
+    }
+    
+    // If the value is the same as the key, it means the translation doesn't exist
+    if (value === key || !value) {
+      console.error(`Translation missing for key ${key} in ${currentLang}`);
+      return { 
+        success: false, 
+        message: `Translation missing for key ${key} in ${currentLang}`,
+        key
+      };
+    }
+    
+    // Check for wallet-specific keys to ensure they're loaded
+    if (key.startsWith('wallet.') && value === key) {
+      console.error(`Wallet translation missing for key ${key} in ${currentLang}`);
+      return { 
+        success: false, 
+        message: `Wallet translation missing for key ${key} in ${currentLang}`,
+        key
+      };
+    }
+    
+    return { 
+      success: true, 
+      message: `Translation found for ${key} in ${currentLang}: ${value}`,
+      key
+    };
+  }, []);
+  
+  // Force reload a namespace for the current language
+  const forceReloadNamespace = useCallback(async (namespace = 'common') => {
+    const currentLang = i18n.language;
+    console.log(`Force reloading namespace ${namespace} for ${currentLang}`);
+    
+    try {
+      await i18n.reloadResources([currentLang], [namespace]);
+      console.log(`Successfully reloaded ${namespace} for ${currentLang}`);
+      toast.success(`Translations refreshed`);
+      return true;
+    } catch (error) {
+      console.error(`Failed to reload ${namespace} for ${currentLang}:`, error);
+      toast.error(`Failed to refresh translations`);
+      return false;
     }
   }, []);
-
+  
+  // Verify a set of critical translation keys
+  const verifyCriticalKeys = useCallback((criticalKeys: string[] = [], namespace = 'common') => {
+    const verificationResult = verifyTranslationKeys(i18n.language, namespace, criticalKeys);
+    
+    if (!verificationResult.success) {
+      console.error('Missing critical translation keys:', verificationResult.missingKeys);
+    }
+    
+    return verificationResult;
+  }, []);
+  
   return {
     testTranslation,
-    testNamespace,
     forceReloadNamespace,
-    translationTest
+    verifyCriticalKeys,
   };
-}
+};
 
 export default useTranslationTester;
