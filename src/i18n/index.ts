@@ -1,4 +1,3 @@
-
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import HttpBackend from 'i18next-http-backend';
@@ -9,6 +8,7 @@ import { joinCtaTranslations } from '@/utils/translations/joinCtaTranslations';
 import { projectTranslations } from '@/utils/translations/projectTranslations';
 import { footerTranslations } from '@/utils/translations/footerTranslations';
 import { backendTranslations } from '@/utils/translations/backendTranslations';
+import { learnTranslations } from '@/utils/translations/learnTranslations';
 
 // Define the window interface to include reloadTranslations property
 declare global {
@@ -48,6 +48,11 @@ const addInMemoryTranslations = (language: string) => {
   // Add backend translations
   if (backendTranslations[language]) {
     i18n.addResourceBundle(language, 'common', backendTranslations[language], true, true);
+  }
+  
+  // Add learn translations
+  if (learnTranslations[language]) {
+    i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
   }
 };
 
