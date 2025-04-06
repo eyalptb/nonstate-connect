@@ -13,21 +13,15 @@
   "create": "Create",
   "submit": "Submit",
   "confirm": "Confirm",
-  "hero": {
-    "tagline": "Privacy-First AI Collaboration",
-    "title": {
-      "start": "Secure",
-      "highlight": "AI-Enhanced",
-      "end": "Collaboration Platform for Changemakers"
-    },
-    "description": "ParaCollab empowers scientists, environmentalists, and educators to collaborate on impactful projects while keeping their data private and secure.",
-    "primaryCta": "Start Collaborating",
-    "secondaryCta": "Explore Features",
-    "stats": {
-      "count": "500",
-      "description": "teams protecting their data while innovating"
-    }
-  },
+  "hero.tagline": "Privacy-First AI Collaboration",
+  "hero.titleStart": "Secure",
+  "hero.titleHighlight": "AI-Enhanced",
+  "hero.titleEnd": "Collaboration Platform for Changemakers",
+  "hero.description": "ParaCollab empowers scientists, environmentalists, and educators to collaborate on impactful projects while keeping their data private and secure.",
+  "hero.primaryCta": "Start Collaborating",
+  "hero.secondaryCta": "Explore Features",
+  "hero.stats.count": "500",
+  "hero.stats.description": "teams protecting their data while innovating",
   "joinCta": {
     "heading": "Join the Network",
     "subheading": "Connect with like-minded organizations and individuals working toward positive global change.",

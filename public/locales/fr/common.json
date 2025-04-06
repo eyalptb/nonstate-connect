@@ -13,21 +13,15 @@
   "create": "Créer",
   "submit": "Soumettre",
   "confirm": "Confirmer",
-  "hero": {
-    "tagline": "Collaboration IA axée sur la confidentialité",
-    "title": {
-      "start": "Plateforme de collaboration",
-      "highlight": "améliorée par l'IA",
-      "end": "sécurisée pour les acteurs du changement"
-    },
-    "description": "ParaCollab permet aux scientifiques, aux écologistes et aux éducateurs de collaborer sur des projets à fort impact tout en gardant leurs données privées et sécurisées.",
-    "primaryCta": "Commencer à collaborer",
-    "secondaryCta": "Explorer les fonctionnalités",
-    "stats": {
-      "count": "500",
-      "description": "équipes protégeant leurs données tout en innovant"
-    }
-  },
+  "hero.tagline": "Collaboration IA axée sur la confidentialité",
+  "hero.titleStart": "Plateforme de collaboration",
+  "hero.titleHighlight": "améliorée par l'IA",
+  "hero.titleEnd": "sécurisée pour les acteurs du changement",
+  "hero.description": "ParaCollab permet aux scientifiques, aux écologistes et aux éducateurs de collaborer sur des projets à fort impact tout en gardant leurs données privées et sécurisées.",
+  "hero.primaryCta": "Commencer à collaborer",
+  "hero.secondaryCta": "Explorer les fonctionnalités",
+  "hero.stats.count": "500",
+  "hero.stats.description": "équipes protégeant leurs données tout en innovant",
   "joinCta": {
     "heading": "Rejoindre le réseau",
     "subheading": "Connectez-vous avec des organisations et des individus partageant les mêmes idées et travaillant pour un changement mondial positif.",

@@ -13,21 +13,15 @@
   "create": "Erstellen",
   "submit": "Absenden",
   "confirm": "Bestätigen",
-  "hero": {
-    "tagline": "Datenschutzorientierte KI-Zusammenarbeit",
-    "title": {
-      "start": "Sichere",
-      "highlight": "KI-verbesserte",
-      "end": "Kollaborationsplattform für Weltveränderer"
-    },
-    "description": "ParaCollab ermöglicht Wissenschaftlern, Umweltschützern und Pädagogen, an wirkungsvollen Projekten zusammenzuarbeiten und dabei ihre Daten privat und sicher zu halten.",
-    "primaryCta": "Starten Sie die Zusammenarbeit",
-    "secondaryCta": "Funktionen erkunden",
-    "stats": {
-      "count": "500",
-      "description": "Teams schützen ihre Daten während sie innovieren"
-    }
-  },
+  "hero.tagline": "Datenschutzorientierte KI-Zusammenarbeit",
+  "hero.titleStart": "Sichere",
+  "hero.titleHighlight": "KI-verbesserte",
+  "hero.titleEnd": "Kollaborationsplattform für Weltveränderer",
+  "hero.description": "ParaCollab ermöglicht Wissenschaftlern, Umweltschützern und Pädagogen, an wirkungsvollen Projekten zusammenzuarbeiten und dabei ihre Daten privat und sicher zu halten.",
+  "hero.primaryCta": "Starten Sie die Zusammenarbeit",
+  "hero.secondaryCta": "Funktionen erkunden",
+  "hero.stats.count": "500",
+  "hero.stats.description": "Teams schützen ihre Daten während sie innovieren",
   "joinCta": {
     "heading": "Dem Netzwerk beitreten",
     "subheading": "Verbinden Sie sich mit gleichgesinnten Organisationen und Einzelpersonen, die an positiven globalen Veränderungen arbeiten.",
