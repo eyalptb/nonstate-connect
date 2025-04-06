@@ -12,7 +12,8 @@ import {
   loadAllFeatureTranslations, 
   loadAllJoinCtaTranslations,
   loadAllProjectTranslations,
-  loadAllFooterTranslations
+  loadAllFooterTranslations,
+  loadAllBackendTranslations
 } from "@/utils/translationLoader";
 
 const Index = () => {
@@ -39,6 +40,9 @@ const Index = () => {
     
     // Load Footer translations
     loadAllFooterTranslations();
+    
+    // Load Backend translations
+    loadAllBackendTranslations();
   }, []);
   
   return (
