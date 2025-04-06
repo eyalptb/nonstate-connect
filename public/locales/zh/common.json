@@ -83,6 +83,60 @@
     "blueprints": {
       "title": "演进模板",
       "description": "在保持安全和隐私的同时扩展和调整成功的项目模式。"
+    },
+    "categories": {
+      "security": "安全性",
+      "collaboration": "协作",
+      "infrastructure": "基础设施"
+    },
+    "security": {
+      "encryption": {
+        "title": "端到端加密",
+        "description": "所有通信和共享文档都经过加密，确保所有参与者的隐私和安全。"
+      },
+      "identity": {
+        "title": "自主身份",
+        "description": "用户无需中央权威机构即可保持对其身份和凭证的控制。"
+      }
+    },
+    "collaboration": {
+      "global": {
+        "title": "全球协作",
+        "description": "与跨境合作伙伴连接，共同致力于共享倡议和合作游戏。"
+      },
+      "community": {
+        "title": "社区建设",
+        "description": "创建并加入对降落伞游戏和协作活动有共同兴趣的社区。"
+      },
+      "messaging": {
+        "title": "安全消息传递",
+        "description": "通过我们的加密消息系统与其他成员沟通。"
+      }
+    },
+    "infrastructure": {
+      "decentralized": {
+        "title": "分散式架构",
+        "description": "基于区块链技术构建，消除中心故障点和审查制度。"
+      },
+      "token": {
+        "title": "代币经济",
+        "description": "生态系统中奖励、认可和社区参与的数字代币。"
+      },
+      "governance": {
+        "title": "透明治理",
+        "description": "透明投票和资源分配的民主决策。"
+      },
+      "integration": {
+        "title": "集成中心",
+        "description": "连接外部工具和服务，增强您的协作体验。"
+      }
+    },
+    "pageTitle": "平台功能",
+    "pageDescription": "发现为ParaCollab平台提供动力的工具和技术",
+    "why": {
+      "title": "为什么选择ParaCollab？",
+      "description1": "ParaCollab专为希望在全球挑战方面进行协作的降落伞游戏爱好者和社区而设计。我们的平台将分散技术的优势与直观设计相结合，为所有用户创造无缝体验。",
+      "description2": "凭借涵盖安全、协作工具和强大基础设施的功能，我们提供您连接、创造和为全球有意义项目做出贡献所需的一切。"
     }
   },
   "projects": {
@@ -110,5 +164,33 @@
     "afternoon": "下午好",
     "evening": "晚上好"
   },
-  "language": "语言"
+  "language": "语言",
+  "useCases": {
+    "pageTitle": "使用案例",
+    "pageDescription": "了解组织如何使用我们的平台实现安全、可验证的协作。",
+    "ngo": {
+      "title": "非政府组织协作",
+      "description": "在保护敏感数据和维护隐私的同时安全地跨境连接非政府组织。"
+    },
+    "humanRights": {
+      "title": "人权记录",
+      "description": "通过端到端加密和安全验证记录和验证人权问题。"
+    },
+    "environmental": {
+      "title": "环境监测",
+      "description": "通过多个来源的可信验证跟踪和验证环境数据。"
+    },
+    "corporate": {
+      "title": "企业可持续发展",
+      "description": "通过可验证的影响追踪验证ESG主张和供应链透明度。"
+    },
+    "grassroots": {
+      "title": "草根组织",
+      "description": "安全协调社区倡议，无需暴露参与者身份。"
+    },
+    "research": {
+      "title": "协作研究",
+      "description": "使用保护隐私的协作工具共享研究数据和发现。"
+    }
+  }
 }

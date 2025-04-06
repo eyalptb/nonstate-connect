@@ -92,7 +92,8 @@ export const useTranslation = (namespaces?: string | string[]) => {
       ...context,
       t,
       i18n,
-      ready  // Include ready flag to know if translations are loaded
+      ready,
+      currentLanguage: context.currentLanguage
     };
   }
   

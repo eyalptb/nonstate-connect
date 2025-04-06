@@ -83,6 +83,60 @@
     "blueprints": {
       "title": "Modelos Evolutivos",
       "description": "Escale e adapte modelos de projetos bem-sucedidos mantendo segurança e privacidade."
+    },
+    "categories": {
+      "security": "Segurança",
+      "collaboration": "Colaboração",
+      "infrastructure": "Infraestrutura"
+    },
+    "security": {
+      "encryption": {
+        "title": "Criptografia de Ponta a Ponta",
+        "description": "Todas as comunicações e documentos compartilhados são criptografados para garantir privacidade e segurança para todos os participantes."
+      },
+      "identity": {
+        "title": "Identidade Auto-Soberana",
+        "description": "Os usuários mantêm controle de sua identidade e credenciais sem autoridades centralizadas."
+      }
+    },
+    "collaboration": {
+      "global": {
+        "title": "Colaboração Global",
+        "description": "Conecte-se com parceiros além das fronteiras para trabalhar em iniciativas compartilhadas e jogos cooperativos."
+      },
+      "community": {
+        "title": "Construção de Comunidade",
+        "description": "Crie e participe de comunidades com interesses compartilhados em jogos de paraquedas e atividades colaborativas."
+      },
+      "messaging": {
+        "title": "Mensagens Seguras",
+        "description": "Comunique-se com outros membros através do nosso sistema de mensagens criptografado."
+      }
+    },
+    "infrastructure": {
+      "decentralized": {
+        "title": "Arquitetura Descentralizada",
+        "description": "Construída sobre tecnologia blockchain para eliminar pontos centrais de falha e censura."
+      },
+      "token": {
+        "title": "Economia de Tokens",
+        "description": "Tokens digitais para recompensa, reconhecimento e participação da comunidade no ecossistema."
+      },
+      "governance": {
+        "title": "Governança Transparente",
+        "description": "Tomada de decisão democrática com votação transparente e alocação de recursos."
+      },
+      "integration": {
+        "title": "Hub de Integração",
+        "description": "Conecte-se com ferramentas e serviços externos para melhorar sua experiência de colaboração."
+      }
+    },
+    "pageTitle": "Recursos da Plataforma",
+    "pageDescription": "Descubra as ferramentas e tecnologias que alimentam a plataforma ParaCollab",
+    "why": {
+      "title": "Por que escolher ParaCollab?",
+      "description1": "ParaCollab é projetado especificamente para entusiastas de jogos de paraquedas e comunidades que desejam colaborar em desafios globais. Nossa plataforma combina o melhor da tecnologia descentralizada com design intuitivo para criar uma experiência perfeita para todos os usuários.",
+      "description2": "Com recursos abrangendo segurança, ferramentas de colaboração e infraestrutura robusta, fornecemos tudo o que você precisa para conectar, criar e contribuir para projetos significativos em todo o mundo."
     }
   },
   "projects": {
@@ -110,5 +164,33 @@
     "afternoon": "Boa Tarde",
     "evening": "Boa Noite"
   },
-  "language": "Idioma"
+  "language": "Idioma",
+  "useCases": {
+    "pageTitle": "Casos de Uso",
+    "pageDescription": "Descubra como organizações estão usando nossa plataforma para permitir colaboração segura e verificável.",
+    "ngo": {
+      "title": "Colaboração de ONGs",
+      "description": "Conecte ONGs de forma segura através de fronteiras enquanto protege dados sensíveis e mantém a privacidade."
+    },
+    "humanRights": {
+      "title": "Documentação de Direitos Humanos",
+      "description": "Documente e verifique questões de direitos humanos com criptografia de ponta a ponta e verificação segura."
+    },
+    "environmental": {
+      "title": "Monitoramento Ambiental",
+      "description": "Rastreie e verifique dados ambientais com validação confiável de múltiplas fontes."
+    },
+    "corporate": {
+      "title": "Sustentabilidade Corporativa",
+      "description": "Valide reivindicações ESG e transparência da cadeia de suprimentos com rastreamento de impacto verificável."
+    },
+    "grassroots": {
+      "title": "Organização Comunitária",
+      "description": "Coordene iniciativas comunitárias com segurança sem expor identidades de participantes."
+    },
+    "research": {
+      "title": "Pesquisa Colaborativa",
+      "description": "Compartilhe dados de pesquisa e descobertas com ferramentas de colaboração que preservam a privacidade."
+    }
+  }
 }

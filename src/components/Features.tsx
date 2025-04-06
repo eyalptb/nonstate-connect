@@ -4,7 +4,7 @@ import { Shield, Lock, Brain, Fingerprint, Layers, Sparkles, FileCode } from "lu
 import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 const Features = () => {
-  const { t, currentLanguage } = useTranslation();
+  const { t, currentLanguage } = useTranslation(['common']);
 
   const features = [
     {

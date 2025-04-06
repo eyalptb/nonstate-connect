@@ -3,51 +3,54 @@ import React from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Lightbulb, Shield, Users, Globe, Building, Leaf } from "lucide-react";
+import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 const UseCases = () => {
+  const { t, currentLanguage } = useTranslation(['common', 'navigation']);
+
   const useCasesList = [
     {
-      title: "NGO Collaboration",
-      description: "Securely connect NGOs across borders while protecting sensitive data and maintaining privacy.",
+      title: t("useCases.ngo.title", "NGO Collaboration"),
+      description: t("useCases.ngo.description", "Securely connect NGOs across borders while protecting sensitive data and maintaining privacy."),
       icon: <Globe className="h-12 w-12 text-primary" />
     },
     {
-      title: "Human Rights Documentation",
-      description: "Document and verify human rights issues with end-to-end encryption and secure verification.",
+      title: t("useCases.humanRights.title", "Human Rights Documentation"),
+      description: t("useCases.humanRights.description", "Document and verify human rights issues with end-to-end encryption and secure verification."),
       icon: <Shield className="h-12 w-12 text-primary" />
     },
     {
-      title: "Environmental Monitoring",
-      description: "Track and verify environmental data with trusted validation from multiple sources.",
+      title: t("useCases.environmental.title", "Environmental Monitoring"),
+      description: t("useCases.environmental.description", "Track and verify environmental data with trusted validation from multiple sources."),
       icon: <Leaf className="h-12 w-12 text-primary" />
     },
     {
-      title: "Corporate Sustainability",
-      description: "Validate ESG claims and supply chain transparency with verifiable impact tracking.",
+      title: t("useCases.corporate.title", "Corporate Sustainability"),
+      description: t("useCases.corporate.description", "Validate ESG claims and supply chain transparency with verifiable impact tracking."),
       icon: <Building className="h-12 w-12 text-primary" />
     },
     {
-      title: "Grassroots Organizing",
-      description: "Coordinate community initiatives securely without exposing participant identities.",
+      title: t("useCases.grassroots.title", "Grassroots Organizing"),
+      description: t("useCases.grassroots.description", "Coordinate community initiatives securely without exposing participant identities."),
       icon: <Users className="h-12 w-12 text-primary" />
     },
     {
-      title: "Collaborative Research",
-      description: "Share research data and findings with privacy-preserving collaboration tools.",
+      title: t("useCases.research.title", "Collaborative Research"),
+      description: t("useCases.research.description", "Share research data and findings with privacy-preserving collaboration tools."),
       icon: <Lightbulb className="h-12 w-12 text-primary" />
     }
   ];
 
   return (
-    <div className="container mx-auto py-12 px-4">
+    <div className="container mx-auto py-12 px-4" key={`usecases-${currentLanguage}`}>
       <PageHeader
-        title="Use Cases"
-        description="Discover how organizations are using our platform to enable secure, verifiable collaboration."
+        title={t("useCases.pageTitle", "Use Cases")}
+        description={t("useCases.pageDescription", "Discover how organizations are using our platform to enable secure, verifiable collaboration.")}
       />
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
         {useCasesList.map((useCase, index) => (
-          <Card key={index} className="border bg-card">
+          <Card key={`${index}-${currentLanguage}`} className="border bg-card">
             <CardHeader className="flex flex-row items-center gap-4">
               {useCase.icon}
               <div>

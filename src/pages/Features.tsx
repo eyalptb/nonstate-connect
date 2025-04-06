@@ -1,4 +1,5 @@
 
+import React from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Container } from "@/components/ui/container";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,7 +18,7 @@ import {
 import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 const Features = () => {
-  const { t, currentLanguage } = useTranslation();
+  const { t, currentLanguage } = useTranslation(['common', 'navigation']);
 
   // Feature categories - using translation keys
   const featureCategories = [
