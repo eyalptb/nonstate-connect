@@ -8,8 +8,9 @@ import { loadAllLearnTranslations } from "@/utils/translationLoader";
 import i18n from '@/i18n';
 
 const Learn = () => {
-  const { t, i18n: i18nInstance } = useTranslation(['common']);
+  const { t } = useTranslation(['common']);
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
+  const [translationsLoaded, setTranslationsLoaded] = useState(false);
 
   // Load learn page translations on mount
   useEffect(() => {
@@ -18,6 +19,7 @@ const Learn = () => {
       try {
         await loadAllLearnTranslations();
         console.log("Learn translations loaded successfully");
+        setTranslationsLoaded(true);
       } catch (error) {
         console.error("Failed to load learn translations:", error);
       }
@@ -32,12 +34,27 @@ const Learn = () => {
       console.log(`Language changed to ${lng}, reloading learn translations`);
       setCurrentLanguage(lng);
       await loadAllLearnTranslations();
+      setTranslationsLoaded(true);
     };
     
     i18n.on('languageChanged', handleLanguageChanged);
     
     return () => {
       i18n.off('languageChanged', handleLanguageChanged);
+    };
+  }, []);
+
+  // Force re-render when language changes to update translations
+  useEffect(() => {
+    const forceUpdate = (e: Event) => {
+      console.log("i18n resources loaded event detected, forcing update");
+      setTranslationsLoaded(prev => !prev); // Toggle to force re-render
+    };
+    
+    document.addEventListener('i18n-resources-loaded', forceUpdate);
+    
+    return () => {
+      document.removeEventListener('i18n-resources-loaded', forceUpdate);
     };
   }, []);
 

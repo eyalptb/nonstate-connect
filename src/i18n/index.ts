@@ -1,3 +1,4 @@
+
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import HttpBackend from 'i18next-http-backend';
@@ -101,6 +102,7 @@ i18n.on('initialized', () => {
   const currentResources = i18n.getResourceBundle(i18n.language, 'common');
   console.log(`Initial resources for ${i18n.language}:`, currentResources);
   
+  // Check if Learn translations are loaded
   const hasLearnTranslations = currentResources && 
     currentResources.learn && 
     Object.keys(currentResources.learn).length > 0;
@@ -137,6 +139,7 @@ i18n.on('languageChanged', (lng) => {
   i18n.reloadResources([lng], ['common', 'navigation', 'auth', 'messaging', 'governance'])
     .then(() => {
       console.log(`Successfully reloaded resources for ${lng}`);
+      // Dispatch an event that components can listen for to know when to update
       document.dispatchEvent(new Event('i18n-resources-loaded'));
     })
     .catch((error) => console.error(`Failed to reload resources for ${lng}:`, error));

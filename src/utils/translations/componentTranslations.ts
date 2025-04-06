@@ -1,30 +1,8 @@
+
 import i18n from '@/i18n';
 import { addTranslations, getSupportedLanguages } from './translationHelpers';
-import { 
-  addComponentTranslations, 
-  loadAllComponentTranslations, 
-  loadTranslations 
-} from './translationCore';
-import { 
-  addWalletTranslations, 
-  addFeatureTranslations, 
-  addJoinCtaTranslations, 
-  addProjectTranslations, 
-  addFooterTranslations, 
-  addBackendTranslations, 
-  addFeaturePageTranslations, 
-  addUseCasesTranslations,
-  addLearnTranslations,
-  loadAllWalletTranslations, 
-  loadAllFeatureTranslations, 
-  loadAllJoinCtaTranslations, 
-  loadAllProjectTranslations, 
-  loadAllFooterTranslations, 
-  loadAllBackendTranslations, 
-  loadAllFeaturePageTranslations,
-  loadAllUseCasesTranslations,
-  loadAllLearnTranslations
-} from './componentTranslations';
+import { addComponentTranslations, loadAllComponentTranslations, loadTranslations } from './translationCore';
+import { learnTranslations } from './learnTranslations';
 
 // Wallet translations
 export const addWalletTranslations = (language: string, namespace: string = 'common') => {
