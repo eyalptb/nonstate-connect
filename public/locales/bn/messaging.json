@@ -1,8 +1,8 @@
 
 {
-  "messagingTitle": "মেসেজিং",
-  "messagingUnavailable": "এই বৈশিষ্ট্যটি বর্তমানে অনুপলব্ধ",
-  "messagingDescription": "মেসেজিং ফাংশনালিটি বর্তমানে অনুপলব্ধ।",
+  "messagingTitle": "নিরাপদ বার্তা",
+  "messagingUnavailable": "নিরাপদ বার্তা শুধুমাত্র প্রমাণীকৃত ব্যবহারকারীদের জন্য উপলব্ধ।",
+  "messagingDescription": "এন্ড-টু-এন্ড এনক্রিপ্টেড বার্তা পাঠাতে এবং গ্রহণ করতে লগইন করুন।",
   "returnToHome": "হোম পেজে ফিরে যান",
   "selectConversation": "একটি কথোপকথন নির্বাচন করুন",
   "chooseConversation": "একটি বিদ্যমান কথোপকথন বেছে নিন বা একটি নতুন শুরু করুন",
