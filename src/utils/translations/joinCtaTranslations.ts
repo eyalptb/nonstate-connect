@@ -1,6 +1,6 @@
 
 /**
- * Translations for Join CTA component
+ * Translations for join CTA component
  */
 export const joinCtaTranslations: Record<string, Record<string, string>> = {
   en: {
@@ -12,99 +12,151 @@ export const joinCtaTranslations: Record<string, Record<string, string>> = {
     "joinCta.blockchain.description": "All contributions are verified and immutably recorded",
     "joinCta.impact.title": "Global Impact",
     "joinCta.impact.description": "Drive meaningful change on a worldwide scale",
-    "joinCta.dashboard": "Go to Dashboard",
     "joinCta.createAccount": "Create Account",
-    "joinCta.signIn": "Sign In"
+    "joinCta.signIn": "Sign In",
+    "joinCta.dashboard": "Go to Dashboard"
   },
   fr: {
     "joinCta.heading": "Rejoindre le Réseau",
-    "joinCta.subheading": "Connectez-vous avec des organisations et des individus partageant les mêmes idées et travaillant pour un changement global positif.",
+    "joinCta.subheading": "Connectez-vous avec des organisations et des individus partageant les mêmes idées et travaillant pour un changement mondial positif.",
     "joinCta.secure.title": "Collaboration Sécurisée",
     "joinCta.secure.description": "Travaillez ensemble avec une confidentialité et une sécurité des données complètes",
     "joinCta.blockchain.title": "Vérifié par Blockchain",
     "joinCta.blockchain.description": "Toutes les contributions sont vérifiées et enregistrées de manière immuable",
     "joinCta.impact.title": "Impact Mondial",
-    "joinCta.impact.description": "Conduisez un changement significatif à l'échelle mondiale",
-    "joinCta.dashboard": "Aller au Tableau de Bord",
+    "joinCta.impact.description": "Conduire un changement significatif à l'échelle mondiale",
     "joinCta.createAccount": "Créer un Compte",
-    "joinCta.signIn": "Se Connecter"
+    "joinCta.signIn": "Se Connecter",
+    "joinCta.dashboard": "Aller au Tableau de Bord"
   },
   de: {
-    "joinCta.heading": "Dem Netzwerk Beitreten",
+    "joinCta.heading": "Dem Netzwerk beitreten",
     "joinCta.subheading": "Verbinden Sie sich mit gleichgesinnten Organisationen und Einzelpersonen, die an positiven globalen Veränderungen arbeiten.",
     "joinCta.secure.title": "Sichere Zusammenarbeit",
     "joinCta.secure.description": "Arbeiten Sie mit vollständiger Privatsphäre und Datensicherheit zusammen",
-    "joinCta.blockchain.title": "Blockchain-Verifiziert",
+    "joinCta.blockchain.title": "Blockchain-verifiziert",
     "joinCta.blockchain.description": "Alle Beiträge werden verifiziert und unveränderlich aufgezeichnet",
-    "joinCta.impact.title": "Globale Auswirkung",
-    "joinCta.impact.description": "Treiben Sie bedeutsame Veränderungen im weltweiten Maßstab voran",
-    "joinCta.dashboard": "Zum Dashboard",
-    "joinCta.createAccount": "Konto Erstellen",
-    "joinCta.signIn": "Anmelden"
+    "joinCta.impact.title": "Globale Wirkung",
+    "joinCta.impact.description": "Treiben Sie bedeutungsvolle Veränderungen im weltweiten Maßstab voran",
+    "joinCta.createAccount": "Konto erstellen",
+    "joinCta.signIn": "Anmelden",
+    "joinCta.dashboard": "Zum Dashboard"
+  },
+  es: {
+    "joinCta.heading": "Únase a la Red",
+    "joinCta.subheading": "Conéctese con organizaciones e individuos de ideas afines que trabajan por un cambio global positivo.",
+    "joinCta.secure.title": "Colaboración Segura",
+    "joinCta.secure.description": "Trabajen juntos con total privacidad y seguridad de datos",
+    "joinCta.blockchain.title": "Verificado por Blockchain",
+    "joinCta.blockchain.description": "Todas las contribuciones son verificadas y registradas de manera inmutable",
+    "joinCta.impact.title": "Impacto Global",
+    "joinCta.impact.description": "Impulse un cambio significativo a escala mundial",
+    "joinCta.createAccount": "Crear Cuenta",
+    "joinCta.signIn": "Iniciar Sesión",
+    "joinCta.dashboard": "Ir al Panel de Control"
+  },
+  ar: {
+    "joinCta.heading": "انضم إلى الشبكة",
+    "joinCta.subheading": "تواصل مع المنظمات والأفراد ذوي التفكير المماثل الذين يعملون من أجل تغيير عالمي إيجابي.",
+    "joinCta.secure.title": "تعاون آمن",
+    "joinCta.secure.description": "العمل معًا مع خصوصية كاملة وأمان البيانات",
+    "joinCta.blockchain.title": "موثق بالبلوكتشين",
+    "joinCta.blockchain.description": "يتم التحقق من جميع المساهمات وتسجيلها بشكل غير قابل للتغيير",
+    "joinCta.impact.title": "تأثير عالمي",
+    "joinCta.impact.description": "قم بإحداث تغيير هادف على نطاق عالمي",
+    "joinCta.createAccount": "إنشاء حساب",
+    "joinCta.signIn": "تسجيل الدخول",
+    "joinCta.dashboard": "الذهاب إلى لوحة التحكم"
+  },
+  bn: {
+    "joinCta.heading": "নেটওয়ার্কে যোগ দিন",
+    "joinCta.subheading": "ইতিবাচক বিশ্বব্যাপী পরিবর্তনের জন্য কাজ করা একই মনোভাবাপন্ন সংস্থা এবং ব্যক্তিদের সাথে সংযোগ করুন।",
+    "joinCta.secure.title": "নিরাপদ সহযোগিতা",
+    "joinCta.secure.description": "সম্পূর্ণ গোপনীয়তা এবং ডেটা সুরক্ষার সাথে একসাথে কাজ করুন",
+    "joinCta.blockchain.title": "ব্লকচেইন যাচাইকৃত",
+    "joinCta.blockchain.description": "সমস্ত অবদান যাচাই করা হয় এবং অপরিবর্তনীয়ভাবে রেকর্ড করা হয়",
+    "joinCta.impact.title": "বিশ্বব্যাপী প্রভাব",
+    "joinCta.impact.description": "বিশ্বব্যাপী স্কেলে অর্থপূর্ণ পরিবর্তন চালান",
+    "joinCta.createAccount": "অ্যাকাউন্ট তৈরি করুন",
+    "joinCta.signIn": "সাইন ইন করুন",
+    "joinCta.dashboard": "ড্যাশবোর্ডে যান"
+  },
+  hi: {
+    "joinCta.heading": "नेटवर्क में शामिल हों",
+    "joinCta.subheading": "सकारात्मक वैश्विक परिवर्तन के लिए काम करने वाले समान विचारधारा वाले संगठनों और व्यक्तियों से जुड़ें।",
+    "joinCta.secure.title": "सुरक्षित सहयोग",
+    "joinCta.secure.description": "पूर्ण गोपनीयता और डेटा सुरक्षा के साथ एक साथ काम करें",
+    "joinCta.blockchain.title": "ब्लॉकचेन द्वारा सत्यापित",
+    "joinCta.blockchain.description": "सभी योगदानों का सत्यापन किया जाता है और अपरिवर्तनीय रूप से दर्ज किया जाता है",
+    "joinCta.impact.title": "वैश्विक प्रभाव",
+    "joinCta.impact.description": "विश्वव्यापी स्तर पर सार्थक परिवर्तन लाएं",
+    "joinCta.createAccount": "खाता बनाएँ",
+    "joinCta.signIn": "साइन इन करें",
+    "joinCta.dashboard": "डैशबोर्ड पर जाएँ"
+  },
+  ja: {
+    "joinCta.heading": "ネットワークに参加",
+    "joinCta.subheading": "前向きな世界的変化を目指す同じ志を持つ組織や個人とつながりましょう。",
+    "joinCta.secure.title": "安全なコラボレーション",
+    "joinCta.secure.description": "完全なプライバシーとデータセキュリティを備えた共同作業",
+    "joinCta.blockchain.title": "ブロックチェーン検証済み",
+    "joinCta.blockchain.description": "すべての貢献は検証され、不変に記録されます",
+    "joinCta.impact.title": "世界的な影響",
+    "joinCta.impact.description": "世界規模で意味のある変化を推進",
+    "joinCta.createAccount": "アカウント作成",
+    "joinCta.signIn": "サインイン",
+    "joinCta.dashboard": "ダッシュボードへ"
+  },
+  pt: {
+    "joinCta.heading": "Junte-se à Rede",
+    "joinCta.subheading": "Conecte-se com organizações e indivíduos de ideias semelhantes trabalhando por mudanças globais positivas.",
+    "joinCta.secure.title": "Colaboração Segura",
+    "joinCta.secure.description": "Trabalhe em conjunto com privacidade completa e segurança de dados",
+    "joinCta.blockchain.title": "Verificado por Blockchain",
+    "joinCta.blockchain.description": "Todas as contribuições são verificadas e registradas de forma imutável",
+    "joinCta.impact.title": "Impacto Global",
+    "joinCta.impact.description": "Promover mudanças significativas em escala mundial",
+    "joinCta.createAccount": "Criar Conta",
+    "joinCta.signIn": "Entrar",
+    "joinCta.dashboard": "Ir para o Painel"
   },
   ru: {
-    "joinCta.heading": "Присоединиться к Сети",
-    "joinCta.subheading": "Свяжитесь с единомышленниками и организациями, работающими над позитивными глобальными изменениями.",
-    "joinCta.secure.title": "Безопасное Сотрудничество",
+    "joinCta.heading": "Присоединиться к сети",
+    "joinCta.subheading": "Свяжитесь с единомышленниками и организациями, работающими над положительными глобальными изменениями.",
+    "joinCta.secure.title": "Безопасное сотрудничество",
     "joinCta.secure.description": "Работайте вместе с полной конфиденциальностью и защитой данных",
-    "joinCta.blockchain.title": "Подтверждено Блокчейном",
-    "joinCta.blockchain.description": "Все вклады проверяются и неизменно записываются",
-    "joinCta.impact.title": "Глобальное Влияние",
-    "joinCta.impact.description": "Стимулируйте значимые изменения в мировом масштабе",
-    "joinCta.dashboard": "Перейти в Панель Управления",
-    "joinCta.createAccount": "Создать Аккаунт",
-    "joinCta.signIn": "Войти"
+    "joinCta.blockchain.title": "Проверено блокчейном",
+    "joinCta.blockchain.description": "Все вклады проверяются и неизменно регистрируются",
+    "joinCta.impact.title": "Глобальное влияние",
+    "joinCta.impact.description": "Осуществляйте значимые изменения в мировом масштабе",
+    "joinCta.createAccount": "Создать аккаунт",
+    "joinCta.signIn": "Войти",
+    "joinCta.dashboard": "Перейти в панель управления"
   },
   zh: {
     "joinCta.heading": "加入网络",
-    "joinCta.subheading": "与志同道合的组织和个人联系，共同推动积极的全球变革。",
+    "joinCta.subheading": "与志同道合的组织和个人建立联系，共同致力于积极的全球变革。",
     "joinCta.secure.title": "安全协作",
-    "joinCta.secure.description": "在完全隐私和数据安全的环境中共同工作",
+    "joinCta.secure.description": "在完全保护隐私和数据安全的情况下共同工作",
     "joinCta.blockchain.title": "区块链验证",
     "joinCta.blockchain.description": "所有贡献都经过验证并不可更改地记录",
     "joinCta.impact.title": "全球影响",
     "joinCta.impact.description": "在全球范围内推动有意义的变革",
-    "joinCta.dashboard": "前往仪表板",
     "joinCta.createAccount": "创建账户",
-    "joinCta.signIn": "登录"
+    "joinCta.signIn": "登录",
+    "joinCta.dashboard": "前往控制面板"
   },
-  ja: {
-    "joinCta.heading": "ネットワークに参加",
-    "joinCta.subheading": "前向きな世界的な変化に向けて取り組む同じ志を持つ組織や個人とつながりましょう。",
-    "joinCta.secure.title": "安全な協力",
-    "joinCta.secure.description": "完全なプライバシーとデータセキュリティで共に働く",
-    "joinCta.blockchain.title": "ブロックチェーン検証済み",
-    "joinCta.blockchain.description": "すべての貢献は検証され、不変的に記録されます",
-    "joinCta.impact.title": "グローバルな影響",
-    "joinCta.impact.description": "世界規模で意味のある変化を推進する",
-    "joinCta.dashboard": "ダッシュボードへ",
-    "joinCta.createAccount": "アカウント作成",
-    "joinCta.signIn": "サインイン"
-  },
-  hi: {
-    "joinCta.heading": "नेटवर्क में शामिल हों",
-    "joinCta.subheading": "सकारात्मक वैश्विक परिवर्तन के लिए काम कर रहे समान विचारधारा वाले संगठनों और व्यक्तियों से जुड़ें।",
-    "joinCta.secure.title": "सुरक्षित सहयोग",
-    "joinCta.secure.description": "पूर्ण गोपनीयता और डेटा सुरक्षा के साथ मिलकर काम करें",
-    "joinCta.blockchain.title": "ब्लॉकचैन सत्यापित",
-    "joinCta.blockchain.description": "सभी योगदानों को सत्यापित और अपरिवर्तनीय रूप से दर्ज किया जाता है",
-    "joinCta.impact.title": "वैश्विक प्रभाव",
-    "joinCta.impact.description": "विश्वव्यापी स्तर पर सार्थक परिवर्तन लाएँ",
-    "joinCta.dashboard": "डैशबोर्ड पर जाएँ",
-    "joinCta.createAccount": "खाता बनाएँ",
-    "joinCta.signIn": "साइन इन करें"
-  },
-  ar: {
-    "joinCta.heading": "انضم إلى الشبكة",
-    "joinCta.subheading": "تواصل مع المؤسسات والأفراد ذوي التفكير المماثل الذين يعملون نحو تغيير عالمي إيجابي.",
-    "joinCta.secure.title": "تعاون آمن",
-    "joinCta.secure.description": "العمل معًا مع خصوصية كاملة وأمان للبيانات",
-    "joinCta.blockchain.title": "تحقق بواسطة البلوكتشين",
-    "joinCta.blockchain.description": "يتم التحقق من جميع المساهمات وتسجيلها بشكل غير قابل للتغيير",
-    "joinCta.impact.title": "تأثير عالمي",
-    "joinCta.impact.description": "قيادة تغيير هادف على نطاق عالمي",
-    "joinCta.dashboard": "الذهاب إلى لوحة التحكم",
-    "joinCta.createAccount": "إنشاء حساب",
-    "joinCta.signIn": "تسجيل الدخول"
+  he: {
+    "joinCta.heading": "הצטרף לרשת",
+    "joinCta.subheading": "התחבר עם ארגונים ואנשים בעלי חשיבה דומה העובדים למען שינוי גלובלי חיובי.",
+    "joinCta.secure.title": "שיתוף פעולה מאובטח",
+    "joinCta.secure.description": "עבודה משותפת עם פרטיות מלאה ואבטחת נתונים",
+    "joinCta.blockchain.title": "מאומת בבלוקצ'יין",
+    "joinCta.blockchain.description": "כל התרומות מאומתות ונרשמות באופן בלתי ניתן לשינוי",
+    "joinCta.impact.title": "השפעה גלובלית",
+    "joinCta.impact.description": "הובל שינוי משמעותי בקנה מידה עולמי",
+    "joinCta.createAccount": "צור חשבון",
+    "joinCta.signIn": "התחבר",
+    "joinCta.dashboard": "עבור ללוח הבקרה"
   }
 };
