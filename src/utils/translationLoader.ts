@@ -6,6 +6,7 @@ import { projectTranslations } from './translations/projectTranslations';
 import { footerTranslations } from './translations/footerTranslations';
 import { backendTranslations } from './translations/backendTranslations';
 import { featurePageTranslations } from './translations/featurePageTranslations';
+import { useCasesTranslations } from './translations/useCasesTranslations';
 
 /**
  * Type for component translation resources
@@ -22,7 +23,8 @@ const translationResources: TranslationResources = {
   project: projectTranslations,
   footer: footerTranslations,
   backend: backendTranslations,
-  featurePage: featurePageTranslations
+  featurePage: featurePageTranslations,
+  useCases: useCasesTranslations
 };
 
 /**
@@ -154,6 +156,9 @@ export const addBackendTranslations = (language: string) =>
 export const addFeaturePageTranslations = (language: string) => 
   addComponentTranslations(language, 'featurePage');
 
+export const addUseCasesTranslations = (language: string) =>
+  addComponentTranslations(language, 'useCases');
+
 // Load all translations functions for backward compatibility
 export const loadAllWalletTranslations = () => 
   loadTranslations('wallet', { allLanguages: true });
@@ -176,6 +181,9 @@ export const loadAllBackendTranslations = () =>
 export const loadAllFeaturePageTranslations = () => 
   loadTranslations('featurePage', { allLanguages: true });
 
+export const loadAllUseCasesTranslations = () =>
+  loadTranslations('useCases', { allLanguages: true });
+
 // Export public API
 export default {
   addTranslations,
@@ -189,11 +197,13 @@ export default {
   addFooterTranslations,
   addBackendTranslations,
   addFeaturePageTranslations,
+  addUseCasesTranslations,
   loadAllWalletTranslations,
   loadAllFeatureTranslations,
   loadAllJoinCtaTranslations,
   loadAllProjectTranslations,
   loadAllFooterTranslations,
   loadAllBackendTranslations,
-  loadAllFeaturePageTranslations
+  loadAllFeaturePageTranslations,
+  loadAllUseCasesTranslations
 };

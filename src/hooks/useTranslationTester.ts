@@ -1,3 +1,4 @@
+
 import i18n from '@/i18n';
 import { useCallback } from 'react';
 import { verifyTranslationKeys } from '@/utils/i18nVerification';
@@ -64,6 +65,16 @@ const useTranslationTester = () => {
       };
     }
     
+    // Check for useCases-specific keys
+    if (key.startsWith('useCases.') && (value === key || value === undefined)) {
+      console.error(`UseCases translation missing for key ${key} in ${currentLang}`);
+      return { 
+        success: false, 
+        message: `UseCases translation missing for key ${key} in ${currentLang}`,
+        key
+      };
+    }
+    
     return { 
       success: true, 
       message: `Translation found for key ${key} in ${currentLang}`,
@@ -98,6 +109,22 @@ const useTranslationTester = () => {
             results.filter(r => !r.success).map(r => r.key));
         } else {
           console.log('All wallet translations successfully loaded');
+        }
+        
+        // Verify useCases keys if needed
+        const useCasesKeys = ['useCases.title', 'useCases.description', 'useCases.privacy.title'];
+        console.log(`Testing useCases keys after reload for ${currentLang}:`);
+        const useCasesResults = useCasesKeys.map(key => {
+          const testResult = testTranslation(key, namespace);
+          console.log(`- ${key}: ${testResult.success ? 'OK' : 'MISSING'} (${testResult.value || 'no value'})`);
+          return testResult;
+        });
+        
+        if (useCasesResults.some(result => !result.success)) {
+          console.error('Some useCases translations are still missing after reload:', 
+            useCasesResults.filter(r => !r.success).map(r => r.key));
+        } else {
+          console.log('All useCases translations successfully loaded');
         }
         
         // Force a refresh by updating language to the same language
