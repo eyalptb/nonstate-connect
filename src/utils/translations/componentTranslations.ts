@@ -83,13 +83,13 @@ export const addLearnTranslations = (language: string, namespace: string = 'comm
     // Try to add English translations as fallback
     if (learnTranslations['en']) {
       console.log(`[addLearnTranslations] Adding English learn translations as fallback for ${language}`);
-      return addTranslations(language, namespace, learnTranslations['en']);
+      return i18n.addResourceBundle(language, namespace, learnTranslations['en'], true, true);
     }
     return false;
   }
   
   console.log(`[addLearnTranslations] Adding learn translations for ${language}:`, learnTranslations[language]);
-  return addTranslations(language, namespace, learnTranslations[language]);
+  return i18n.addResourceBundle(language, namespace, learnTranslations[language], true, true);
 };
 
 export const loadAllLearnTranslations = () => {

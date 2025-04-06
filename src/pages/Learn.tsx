@@ -14,44 +14,23 @@ const Learn = () => {
     console.log(`[Learn] Loading Learn page translations for language: ${i18n.language}`);
     loadAllLearnTranslations();
     
-    // Debug: Check if translations exist after loading
+    // Verify translations are loaded correctly after a short delay
     setTimeout(() => {
-      // Check the full resource bundle to see all available translations
+      // Check if the translations were loaded properly
       const bundle = i18n.getResourceBundle(i18n.language, 'common');
-      console.log(`[Learn] Resource bundle for ${i18n.language}:`, bundle);
+      const learnSection = bundle?.learn;
       
-      // Check if the 'learn' key exists in the bundle
-      if (bundle) {
-        console.log(`[Learn] Has learn key in bundle:`, bundle.hasOwnProperty('learn') ? 'Yes' : 'No');
-        
-        // If 'learn' key exists, log its structure
-        if (bundle.learn) {
-          console.log(`[Learn] learn structure:`, bundle.learn);
-          console.log(`[Learn] learn.title:`, bundle.learn.title);
-          console.log(`[Learn] learn.description:`, bundle.learn.description);
-          console.log(`[Learn] learn.tabs:`, bundle.learn.tabs);
-        }
+      console.log(`[Learn] Current language: ${i18n.language}`);
+      console.log(`[Learn] Has learn translations: ${!!learnSection}`);
+      
+      if (learnSection) {
+        console.log(`[Learn] Learn title translation: "${t('learn.title')}"`);
+        console.log(`[Learn] Learn description translation: "${t('learn.description')}"`);
+      } else {
+        console.warn(`[Learn] Missing learn translations for ${i18n.language}`);
       }
-      
-      // Try to access translations using t function
-      const titleTranslation = t("learn.title", "Learning Resources");
-      const descTranslation = t("learn.description", "Expand your knowledge with guides, tutorials, and best practices");
-      const tabGuidesTranslation = t("learn.tabs.guides", "Guides");
-      
-      console.log(`[Learn] Translation results:`);
-      console.log(`- learn.title: "${titleTranslation}"`);
-      console.log(`- learn.description: "${descTranslation}"`);
-      console.log(`- learn.tabs.guides: "${tabGuidesTranslation}"`);
-      
-      // Check if translations are returning default values (indicating missing translations)
-      const usingDefaults = 
-        titleTranslation === "Learning Resources" && 
-        descTranslation === "Expand your knowledge with guides, tutorials, and best practices" && 
-        tabGuidesTranslation === "Guides";
-      
-      console.log(`[Learn] Using default fallback values: ${usingDefaults ? 'Yes' : 'No'}`);
-    }, 500);
-  }, [i18n.language, t]); // Re-run when language changes
+    }, 300);
+  }, [i18n.language, t]);
 
   return (
     <div className="container mx-auto py-12 px-4" key={`learn-page-${i18n.language}`}>

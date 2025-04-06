@@ -20,7 +20,7 @@ export const getSupportedLanguages = (): string[] => {
 export const addTranslations = (
   language: string, 
   namespace: string, 
-  resources: Record<string, string>
+  resources: Record<string, any>
 ): boolean => {
   try {
     // Add the resources to the i18n instance
