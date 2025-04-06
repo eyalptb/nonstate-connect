@@ -11,7 +11,8 @@ import {
   loadAllWalletTranslations, 
   loadAllFeatureTranslations, 
   loadAllJoinCtaTranslations,
-  loadAllProjectTranslations
+  loadAllProjectTranslations,
+  loadAllFooterTranslations
 } from "@/utils/translationLoader";
 
 const Index = () => {
@@ -35,6 +36,9 @@ const Index = () => {
     
     // Load Project translations
     loadAllProjectTranslations();
+    
+    // Load Footer translations
+    loadAllFooterTranslations();
   }, []);
   
   return (

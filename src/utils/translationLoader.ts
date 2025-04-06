@@ -4,6 +4,7 @@ import { walletTranslations } from './translations/walletTranslations';
 import { featureTranslations } from './translations/featureTranslations';
 import { joinCtaTranslations } from './translations/joinCtaTranslations';
 import { projectTranslations } from './translations/projectTranslations';
+import { footerTranslations } from './translations/footerTranslations';
 
 /**
  * Dynamically adds translations to the i18n instance
@@ -70,6 +71,17 @@ export const addProjectTranslations = (language: string) => {
 };
 
 /**
+ * Adds Footer translations for a specific language
+ */
+export const addFooterTranslations = (language: string) => {
+  // Get translations for the requested language, fallback to English
+  const translations = footerTranslations[language] || footerTranslations.en;
+  
+  // Add translations to the i18n instance
+  return addTranslations(language, 'common', translations);
+};
+
+/**
  * Load wallet translations for all supported languages
  */
 export const loadAllWalletTranslations = () => {
@@ -122,6 +134,19 @@ export const loadAllProjectTranslations = () => {
 };
 
 /**
+ * Load Footer translations for all supported languages
+ */
+export const loadAllFooterTranslations = () => {
+  const supportedLanguages = getSupportedLanguages();
+  console.log('Loading Footer translations for languages:', supportedLanguages);
+  
+  // Add translations for each language
+  supportedLanguages.forEach(lang => {
+    addFooterTranslations(lang);
+  });
+};
+
+/**
  * Helper to get supported languages excluding special codes
  */
 const getSupportedLanguages = () => {
@@ -139,8 +164,10 @@ export default {
   addFeatureTranslations,
   addJoinCtaTranslations,
   addProjectTranslations,
+  addFooterTranslations,
   loadAllWalletTranslations,
   loadAllFeatureTranslations,
   loadAllJoinCtaTranslations,
-  loadAllProjectTranslations
+  loadAllProjectTranslations,
+  loadAllFooterTranslations
 };
