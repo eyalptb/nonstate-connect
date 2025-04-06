@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import TokenWallet from "@/components/TokenWallet";
@@ -5,7 +6,7 @@ import ProjectContribution from "@/components/ProjectContribution";
 import TokenMarketplace from "@/components/TokenMarketplace";
 import { useAuth } from "@/contexts/auth";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
-import { useTranslation } from "@/contexts/translation/TranslationContext";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useNotifications } from "@/contexts/notification/NotificationContext";
 import { useEffect, useRef } from "react";
@@ -36,7 +37,7 @@ const mockActivities = [
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { t, currentLanguage } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { addNotification } = useNotifications();
   const welcomeShownRef = useRef(false);
   
@@ -46,8 +47,8 @@ const Dashboard = () => {
       
       addNotification({
         type: 'success',
-        title: t('dashboard.welcomeBack'),
-        message: t('dashboard.welcomeMessage', { defaultValue: 'Welcome back to your secure collaboration dashboard!' }),
+        title: 'Welcome Back!',
+        message: 'Welcome back to your secure collaboration dashboard!',
         autoClose: true,
         duration: 5000
       });
@@ -60,9 +61,9 @@ const Dashboard = () => {
   
   const getTimeBasedGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return t('greetings.morning');
-    if (hour < 18) return t('greetings.afternoon');
-    return t('greetings.evening');
+    if (hour < 12) return 'Good Morning';
+    if (hour < 18) return 'Good Afternoon';
+    return 'Good Evening';
   };
 
   return (
@@ -81,7 +82,7 @@ const Dashboard = () => {
                   {getTimeBasedGreeting()}, {displayName}!
                 </h1>
                 <p className="text-muted-foreground">
-                  {t('dashboard.secureCollaboration')}
+                  Your secure collaboration hub
                 </p>
               </div>
             </div>
@@ -94,28 +95,28 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <Card>
               <CardHeader>
-                <CardTitle>{t('dashboard.yourProjects')}</CardTitle>
+                <CardTitle>Your Projects</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground mb-4">
-                  {t('dashboard.noProjects')}
+                  You haven't joined any projects yet. Browse available projects or create a new one.
                 </p>
                 <Button variant="outline" className="w-full">
-                  {t('dashboard.browseProjects')}
+                  Browse Projects
                 </Button>
               </CardContent>
             </Card>
             
             <Card>
               <CardHeader>
-                <CardTitle>{t('dashboard.networkActivity')}</CardTitle>
+                <CardTitle>Network Activity</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground mb-4">
-                  {t('dashboard.seeLatestActivities')}
+                  See the latest activities from your network.
                 </p>
                 <Button variant="outline" className="w-full">
-                  {t('dashboard.viewActivity')}
+                  View Activity
                 </Button>
               </CardContent>
             </Card>
@@ -124,7 +125,7 @@ const Dashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Leaf className="mr-2 h-5 w-5 text-green-600" />
-                  {t('dashboard.createProject')}
+                  Create Project
                 </CardTitle>
               </CardHeader>
               <CardContent>

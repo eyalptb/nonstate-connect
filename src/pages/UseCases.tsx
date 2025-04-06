@@ -1,70 +1,79 @@
 
-import React from "react";
+import { Container } from "@/components/ui/container";
+import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Lightbulb, Shield, Users, Globe, Building, Leaf } from "lucide-react";
-import { useTranslation } from "@/contexts/translation/TranslationContext";
+import { useTranslation } from "react-i18next";
+import { Shield, Users, Building, School, Trees, Globe } from "lucide-react";
 
 const UseCases = () => {
-  const { t, currentLanguage } = useTranslation(['common', 'navigation']);
+  const { t, i18n } = useTranslation(['common', 'navigation']);
 
-  const useCasesList = [
+  const useCases = [
     {
-      titleKey: "useCases.ngo.title",
-      descriptionKey: "useCases.ngo.description",
-      icon: <Globe className="h-12 w-12 text-primary" />
+      icon: <Shield className="h-8 w-8 text-primary" />,
+      title: "Privacy Advocates",
+      description: "Organizations and communities focused on protecting digital privacy rights and promoting responsible data governance."
     },
     {
-      titleKey: "useCases.humanRights.title",
-      descriptionKey: "useCases.humanRights.description",
-      icon: <Shield className="h-12 w-12 text-primary" />
+      icon: <Users className="h-8 w-8 text-primary" />,
+      title: "Community Networks",
+      description: "Local groups working together to solve community challenges while protecting sensitive participant information."
     },
     {
-      titleKey: "useCases.environmental.title",
-      descriptionKey: "useCases.environmental.description",
-      icon: <Leaf className="h-12 w-12 text-primary" />
+      icon: <Building className="h-8 w-8 text-primary" />,
+      title: "Enterprise Collaboration",
+      description: "Companies requiring secure cross-team and cross-organization collaboration on sensitive projects."
     },
     {
-      titleKey: "useCases.corporate.title",
-      descriptionKey: "useCases.corporate.description",
-      icon: <Building className="h-12 w-12 text-primary" />
+      icon: <School className="h-8 w-8 text-primary" />,
+      title: "Academic Research",
+      description: "Research groups that need to collaborate on sensitive data while maintaining privacy and security requirements."
     },
     {
-      titleKey: "useCases.grassroots.title",
-      descriptionKey: "useCases.grassroots.description",
-      icon: <Users className="h-12 w-12 text-primary" />
+      icon: <Trees className="h-8 w-8 text-primary" />,
+      title: "Environmental Projects",
+      description: "Organizations working on climate and environmental initiatives requiring secure collaboration and data sharing."
     },
     {
-      titleKey: "useCases.research.title",
-      descriptionKey: "useCases.research.description",
-      icon: <Lightbulb className="h-12 w-12 text-primary" />
+      icon: <Globe className="h-8 w-8 text-primary" />,
+      title: "Global Initiatives",
+      description: "International collaborations working on cross-border projects with varying privacy requirements."
     }
   ];
 
   return (
-    <div className="container mx-auto py-12 px-4" key={`usecases-${currentLanguage}`}>
-      <PageHeader
-        title={t("useCases.pageTitle")}
-        description={t("useCases.pageDescription")}
-      />
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-        {useCasesList.map((useCase, index) => (
-          <Card key={`${index}-${currentLanguage}`} className="border bg-card">
-            <CardHeader className="flex flex-row items-center gap-4">
-              {useCase.icon}
-              <div>
-                <CardTitle>{t(useCase.titleKey)}</CardTitle>
+    <div>
+      <Container className="py-20">
+        <PageHeader
+          title="Use Cases"
+          description="Discover how ParaCollab securely powers collaboration across different sectors"
+          className="text-center"
+        />
+        
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-12">
+          {useCases.map((useCase, index) => (
+            <div key={index} className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+              <div className="rounded-full bg-primary/10 p-3 w-fit mb-4">
+                {useCase.icon}
               </div>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-foreground/70 text-base">
-                {t(useCase.descriptionKey)}
-              </CardDescription>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              <h3 className="text-xl font-semibold mb-2">{useCase.title}</h3>
+              <p className="text-muted-foreground mb-4">{useCase.description}</p>
+              <Button variant="outline" size="sm">Learn More</Button>
+            </div>
+          ))}
+        </div>
+        
+        <div className="mt-16 text-center">
+          <h2 className="text-2xl font-bold mb-4">Ready to explore ParaCollab?</h2>
+          <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Join thousands of organizations who trust ParaCollab for their secure collaboration needs.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg">Get Started</Button>
+            <Button variant="outline" size="lg">Contact Sales</Button>
+          </div>
+        </div>
+      </Container>
     </div>
   );
 };

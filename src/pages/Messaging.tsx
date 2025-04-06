@@ -2,7 +2,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
-import { useTranslation } from '@/contexts/translation/TranslationContext';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/auth';
 import ConversationsList from '@/components/messaging/ConversationsList';
 import ConversationView from '@/components/messaging/ConversationView';
@@ -10,7 +10,7 @@ import NewConversation from '@/components/messaging/NewConversation';
 import { ensureUserKeys } from '@/services/encryptionService';
 
 const Messaging = () => {
-  const { t, currentLanguage } = useTranslation(['messaging', 'common']);
+  const { t, i18n } = useTranslation(['messaging', 'common']);
   const { user, loading } = useAuth();
   const [keysInitialized, setKeysInitialized] = React.useState(false);
 
@@ -35,12 +35,12 @@ const Messaging = () => {
   // If not authenticated, show a message about secure messaging
   if (!user && !loading) {
     return (
-      <div className="container mx-auto py-10 px-4" key={`messaging-${currentLanguage}`}>
+      <div className="container mx-auto py-10 px-4" key={`messaging-${i18n.language}`}>
         <Card className="max-w-2xl mx-auto p-8 text-center">
-          <h1 className="text-2xl font-semibold mb-4">{t('messagingTitle')}</h1>
-          <p className="mb-6">{t('messagingUnavailable')}</p>
+          <h1 className="text-2xl font-semibold mb-4">Secure Messaging</h1>
+          <p className="mb-6">This feature is currently unavailable</p>
           <p className="text-muted-foreground">
-            {t('messagingDescription')}
+            The messaging functionality is currently unavailable.
           </p>
         </Card>
       </div>
@@ -67,9 +67,9 @@ const Messaging = () => {
           <Route path="/" element={
             <div className="hidden md:flex items-center justify-center h-full text-center bg-muted/20 p-8">
               <div>
-                <h3 className="text-lg font-medium mb-2">{t('selectConversation', 'Select a conversation')}</h3>
+                <h3 className="text-lg font-medium mb-2">Select a conversation</h3>
                 <p className="text-muted-foreground">
-                  {t('chooseConversation', 'Choose an existing conversation or start a new one')}
+                  Choose an existing conversation or start a new one
                 </p>
               </div>
             </div>

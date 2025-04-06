@@ -1,61 +1,54 @@
 
-import React from "react";
+import { useState } from "react";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
-import { ProposalList } from "@/components/governance/ProposalList";
-import { CreateProposal } from "@/components/governance/CreateProposal";
-import { GovernanceStats } from "@/components/governance/GovernanceStats";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useTranslation } from "@/contexts/translation/TranslationContext";
-import { Skeleton } from "@/components/ui/skeleton";
+import { GovernanceProposals } from "@/components/governance/GovernanceProposals";
+import { GovernanceStats } from "@/components/governance/GovernanceStats";
+import { useTranslation } from "react-i18next";
 
-export function Governance() {
-  const { t, currentLanguage, ready } = useTranslation(["governance"]);
-  
-  // Show skeleton loading state while translations are loading
-  if (!ready) {
-    return (
-      <Container className="py-10">
-        <Skeleton className="h-12 w-3/4 mb-2" />
-        <Skeleton className="h-6 w-1/2 mb-8" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Skeleton className="h-28 w-full" />
-          <Skeleton className="h-28 w-full" />
-          <Skeleton className="h-28 w-full" />
-        </div>
-        <Skeleton className="h-10 w-64 mb-6" />
-        <Skeleton className="h-80 w-full" />
-      </Container>
-    );
-  }
-  
+const Governance = () => {
+  const [activeTab, setActiveTab] = useState("active");
+  const { t, i18n } = useTranslation(['governance']);
+
   return (
-    <Container className="py-10" key={`governance-${currentLanguage}`}>
-      <PageHeader 
-        title={t("title")} 
-        description={t("description")}
+    <Container className="py-10">
+      <PageHeader
+        title="Governance Hub"
+        description="Participate in decentralized governance by voting on proposals and contributing to decision-making."
       />
       
-      <GovernanceStats />
-
-      <Tabs defaultValue="active" className="mt-8">
-        <TabsList className="grid w-full md:w-auto grid-cols-3">
-          <TabsTrigger value="active">{t("tabs.active")}</TabsTrigger>
-          <TabsTrigger value="completed">{t("tabs.completed")}</TabsTrigger>
-          <TabsTrigger value="create">{t("tabs.create")}</TabsTrigger>
-        </TabsList>
-        <TabsContent value="active" className="mt-6">
-          <ProposalList status="active" />
-        </TabsContent>
-        <TabsContent value="completed" className="mt-6">
-          <ProposalList status="completed" />
-        </TabsContent>
-        <TabsContent value="create" className="mt-6">
-          <CreateProposal />
-        </TabsContent>
-      </Tabs>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div className="md:col-span-2">
+          <Tabs defaultValue={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="active">Active Proposals</TabsTrigger>
+              <TabsTrigger value="completed">Completed</TabsTrigger>
+              <TabsTrigger value="create">Create Proposal</TabsTrigger>
+            </TabsList>
+            <TabsContent value="active" className="space-y-4 mt-4">
+              <GovernanceProposals status="active" />
+            </TabsContent>
+            <TabsContent value="completed" className="space-y-4 mt-4">
+              <GovernanceProposals status="completed" />
+            </TabsContent>
+            <TabsContent value="create" className="space-y-4 mt-4">
+              <div className="p-6 border rounded-lg">
+                <h3 className="text-lg font-medium mb-2">Create a New Proposal</h3>
+                <p className="text-muted-foreground">
+                  This feature is coming soon. You'll be able to create governance proposals here.
+                </p>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+        
+        <div>
+          <GovernanceStats />
+        </div>
+      </div>
     </Container>
   );
-}
+};
 
 export default Governance;

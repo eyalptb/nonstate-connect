@@ -1,66 +1,79 @@
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ProposalType } from "./types";
-import { useTranslation } from "@/contexts/translation/TranslationContext";
-import { useNotifications } from "@/contexts/notification/NotificationContext";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
+import { useTranslation } from "react-i18next";
 
 interface ProposalVotingDialogProps {
-  proposal: ProposalType;
-  voteFor: boolean;
-  onVote: (proposalId: string, voteFor: boolean, amount?: number) => void;
-  balance: number;
-  children: React.ReactNode;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  proposalTitle: string;
+  vote: "for" | "against";
+  onVote: (amount: number) => Promise<boolean>;
 }
 
-export function ProposalVotingDialog({ 
-  proposal, 
-  voteFor, 
-  onVote, 
-  balance, 
-  children 
+export function ProposalVotingDialog({
+  open,
+  onOpenChange,
+  proposalTitle,
+  vote,
+  onVote
 }: ProposalVotingDialogProps) {
-  const { t, currentLanguage } = useTranslation(["governance", "common"]);
-  const { addNotification } = useNotifications();
-  const [votingAmount, setVotingAmount] = useState(1);
-  const [isOpen, setIsOpen] = useState(false);
+  const [amount, setAmount] = useState("10");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleClick = () => {
-    setIsOpen(true);
+  const { t, i18n } = useTranslation(['governance', 'common']);
+  const { toast } = useToast();
+  
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.trim();
+    if (value === "" || /^\d+$/.test(value)) {
+      setAmount(value);
+    }
   };
-
-  const handleConfirm = async () => {
-    if (!votingAmount || votingAmount <= 0) {
-      addNotification({
-        type: 'warning',
-        title: t('vote.invalidAmount'),
-        message: t('vote.pleaseEnterValidAmount'),
+  
+  const handleSubmit = async () => {
+    if (!amount || Number(amount) <= 0) {
+      toast({
+        title: "Invalid Amount",
+        description: "Please enter a valid voting amount.",
+        variant: "destructive"
       });
       return;
     }
-
+    
+    setIsSubmitting(true);
+    
     try {
-      setIsSubmitting(true);
-      await onVote(proposal.id, voteFor, votingAmount);
+      const success = await onVote(Number(amount));
       
-      addNotification({
-        type: 'success',
-        title: t('vote.voteSubmitted'),
-        message: t('vote.voteSubmittedDescription', {
-          vote: voteFor ? t('vote.for') : t('vote.against'),
-          title: proposal.title
-        }),
-      });
-      
-      setIsOpen(false);
+      if (success) {
+        toast({
+          title: "Vote Submitted",
+          description: `Your vote ${vote} "${proposalTitle}" was submitted successfully.`
+        });
+        onOpenChange(false);
+      } else {
+        toast({
+          title: "Vote Failed",
+          description: "There was a problem submitting your vote. Please try again.",
+          variant: "destructive"
+        });
+      }
     } catch (error) {
-      console.error("Error submitting vote:", error);
-      addNotification({
-        type: 'error',
-        title: t('vote.voteFailed'),
-        message: t('vote.voteFailedDescription'),
+      toast({
+        title: "Vote Failed",
+        description: "There was a problem submitting your vote. Please try again.",
+        variant: "destructive"
       });
     } finally {
       setIsSubmitting(false);
@@ -68,67 +81,42 @@ export function ProposalVotingDialog({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild onClick={handleClick}>
-        {children}
-      </DialogTrigger>
-      <DialogContent key={`dialog-${currentLanguage}`}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            {t("vote.title", {
-              vote: voteFor ? t("vote.for") : t("vote.against"),
-              defaultValue: voteFor ? "Vote For Proposal" : "Vote Against Proposal"
-            })}
-          </DialogTitle>
+          <DialogTitle>{vote === "for" ? "Support" : "Oppose"} Proposal</DialogTitle>
           <DialogDescription>
-            {t("vote.description", {
-              vote: voteFor ? t("vote.for") : t("vote.against"),
-              title: proposal.title,
-              defaultValue: `You are about to vote ${voteFor ? "for" : "against"} "${proposal.title}"`
-            })}
+            You are about to vote {vote} "{proposalTitle}"
           </DialogDescription>
         </DialogHeader>
+        
         <div className="py-4">
-          <p className="text-sm mb-4">
-            {t("vote.balance", {balance, defaultValue: `You have ${balance} voting tokens available`})}
-          </p>
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <input
-                type="range"
-                min="1"
-                max={balance}
-                value={votingAmount}
-                onChange={(e) => setVotingAmount(parseInt(e.target.value))}
-                className="w-full"
-              />
-              <span className="font-semibold w-10 text-center">{votingAmount}</span>
-            </div>
-            <div className="text-xs text-muted-foreground text-center">
-              {t("vote.amountDescription", {
-                defaultValue: "Select the number of tokens to use for voting"
-              })}
-            </div>
+          <div className="mb-4">
+            <Label htmlFor="amount">Voting Power</Label>
+            <Input
+              id="amount"
+              value={amount}
+              onChange={handleAmountChange}
+              className="mt-1"
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Select the number of tokens to use for voting
+            </p>
+          </div>
+          
+          <div className="bg-muted/40 p-3 rounded-md">
+            <p className="text-sm">
+              You have <span className="font-semibold">42</span> voting tokens available
+            </p>
           </div>
         </div>
+        
         <DialogFooter>
-          <Button 
-            variant="outline" 
-            onClick={() => setIsOpen(false)}
-            disabled={isSubmitting}
-          >
-            {t("common.cancel", {ns: "common", defaultValue: "Cancel"})}
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
+            Cancel
           </Button>
-          <Button 
-            onClick={handleConfirm}
-            variant={voteFor ? "default" : "destructive"}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <span>{t("vote.submitting", {defaultValue: "Submitting..."})}</span>
-            ) : (
-              <span>{t("vote.confirmButton", {defaultValue: "Confirm Vote"})}</span>
-            )}
+          <Button onClick={handleSubmit} disabled={isSubmitting}>
+            {isSubmitting ? "Submitting..." : "Confirm Vote"}
           </Button>
         </DialogFooter>
       </DialogContent>

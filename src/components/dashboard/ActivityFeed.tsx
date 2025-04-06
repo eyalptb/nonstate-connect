@@ -1,143 +1,82 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useTranslation } from '@/contexts/translation/TranslationContext';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ScrollArea } from '@/components/ui/scroll-area';
-
-export interface Activity {
-  id: string;
-  type: 'task_completed' | 'proposal_voted' | 'project_joined' | 'message_received' | 'impact_verified';
-  timestamp: string;
-  actor?: {
-    name: string;
-    avatar?: string;
-  };
-  target?: {
-    name: string;
-    link?: string;
-  };
-  description?: string;
-}
+import { Activity } from '@/types/activity';
+import { formatDistanceToNow } from 'date-fns';
+import { useTranslation } from 'react-i18next';
+import { ArrowUpRight, MessageSquare, Vote, Users } from 'lucide-react';
 
 interface ActivityFeedProps {
   activities: Activity[];
-  loading?: boolean;
   maxItems?: number;
-  className?: string;
 }
 
-export function ActivityFeed({ 
-  activities, 
-  loading = false, 
-  maxItems = 10,
-  className 
-}: ActivityFeedProps) {
-  const { t, currentLanguage } = useTranslation(['common']);
+export function ActivityFeed({ activities, maxItems = 5 }: ActivityFeedProps) {
+  const { t, i18n } = useTranslation(['common']);
   
+  // Take only the most recent activities up to maxItems
+  const recentActivities = activities.slice(0, maxItems);
+
   const getActivityIcon = (type: Activity['type']) => {
     switch (type) {
-      case 'task_completed':
-        return '✓';
       case 'proposal_voted':
-        return '🗳️';
-      case 'project_joined':
-        return '🤝';
-      case 'message_received':
-        return '💬';
-      case 'impact_verified':
-        return '🌟';
-      default:
-        return '📝';
-    }
-  };
-  
-  const getActivityMessage = (activity: Activity) => {
-    const { type, actor, target } = activity;
-    
-    switch (type) {
+        return <Vote className="h-4 w-4 text-indigo-500" />;
       case 'task_completed':
-        return t('activity.taskCompleted', { 
-          actor: actor?.name || t('common.you'),
-          target: target?.name || ''
-        });
-      case 'proposal_voted':
-        return t('activity.proposalVoted', { 
-          actor: actor?.name || t('common.you'),
-          target: target?.name || ''
-        });
-      case 'project_joined':
-        return t('activity.projectJoined', { 
-          actor: actor?.name || t('common.you'),
-          target: target?.name || ''
-        });
+        return <ArrowUpRight className="h-4 w-4 text-green-500" />;
       case 'message_received':
-        return t('activity.messageReceived', { 
-          actor: actor?.name || ''
-        });
-      case 'impact_verified':
-        return t('activity.impactVerified', { 
-          target: target?.name || ''
-        });
+        return <MessageSquare className="h-4 w-4 text-blue-500" />;
+      case 'project_joined':
+        return <Users className="h-4 w-4 text-amber-500" />;
       default:
-        return activity.description || '';
+        return <ArrowUpRight className="h-4 w-4 text-primary" />;
     }
   };
 
-  const displayedActivities = activities.slice(0, maxItems);
+  const getActivityTitle = (activity: Activity) => {
+    switch (activity.type) {
+      case 'proposal_voted':
+        return `Voted on ${activity.target.name}`;
+      case 'task_completed':
+        return `Completed ${activity.target.name}`;
+      case 'message_received':
+        return `New message in ${activity.target.name}`;
+      case 'project_joined':
+        return `Joined ${activity.target.name}`;
+      default:
+        return `Activity on ${activity.target.name}`;
+    }
+  };
 
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle>{t('dashboard.recentActivity')}</CardTitle>
+    <Card className="h-full">
+      <CardHeader className="pb-3">
+        <CardTitle>Recent Activity</CardTitle>
       </CardHeader>
-      <CardContent>
-        {loading ? (
-          <div className="space-y-2">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="flex items-center space-x-4">
-                <div className="h-10 w-10 rounded-full bg-muted animate-pulse" />
-                <div className="space-y-2 flex-1">
-                  <div className="h-4 bg-muted animate-pulse rounded" />
-                  <div className="h-3 bg-muted animate-pulse rounded w-3/4" />
-                </div>
+      <CardContent className="space-y-4">
+        {recentActivities.length > 0 ? (
+          recentActivities.map((activity) => (
+            <div key={activity.id} className="flex items-start space-x-3">
+              <div className="bg-primary/10 p-2 rounded-full">
+                {getActivityIcon(activity.type)}
               </div>
-            ))}
-          </div>
-        ) : displayedActivities.length > 0 ? (
-          <ScrollArea className="h-[300px]">
-            <div className="space-y-4">
-              {displayedActivities.map((activity) => (
-                <div key={activity.id} className="flex items-start gap-4">
-                  <div className="mt-1">
-                    <Avatar>
-                      <AvatarImage 
-                        src={activity.actor?.avatar} 
-                        alt={activity.actor?.name || ''} 
-                      />
-                      <AvatarFallback className="text-xs">
-                        {getActivityIcon(activity.type)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm">{getActivityMessage(activity)}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(activity.timestamp).toLocaleString(currentLanguage)}
-                    </p>
-                  </div>
-                </div>
-              ))}
+              <div className="space-y-1">
+                <p className="text-sm font-medium">{getActivityTitle(activity)}</p>
+                <p className="text-xs text-muted-foreground">
+                  {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
+                </p>
+              </div>
             </div>
-          </ScrollArea>
+          ))
         ) : (
-          <p className="text-center py-8 text-muted-foreground">
-            {t('dashboard.noRecentActivity')}
-          </p>
+          <p className="text-sm text-muted-foreground">No recent activity</p>
+        )}
+        
+        {activities.length > maxItems && (
+          <button className="text-xs text-primary hover:underline w-full text-center mt-2">
+            View all activity
+          </button>
         )}
       </CardContent>
     </Card>
   );
 }
-
-export default ActivityFeed;

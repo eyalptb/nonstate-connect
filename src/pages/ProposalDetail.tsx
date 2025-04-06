@@ -1,35 +1,31 @@
 
-import React from "react";
+import { useParams } from "react-router-dom";
 import { Container } from "@/components/ui/container";
-import { PageHeader } from "@/components/ui/page-header";
-import { ProposalDetailView } from "@/components/governance/ProposalDetailView";
-import { useTranslation } from "@/contexts/translation/TranslationContext";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslation } from "react-i18next";
 
-export function ProposalDetail() {
-  const { t, currentLanguage, ready } = useTranslation(["governance"]);
-  
-  // Show loading skeleton while translations are loading
-  if (!ready) {
-    return (
-      <Container className="py-10">
-        <Skeleton className="h-12 w-3/4 mb-2" />
-        <Skeleton className="h-6 w-1/2 mb-8" />
-        <Skeleton className="h-[600px] w-full rounded-lg" />
-      </Container>
-    );
-  }
-  
+const ProposalDetail = () => {
+  const { id } = useParams<{ id: string }>();
+  const { t, i18n } = useTranslation(['governance']);
+
   return (
-    <Container className="py-10" key={`proposal-detail-${currentLanguage}`}>
-      <PageHeader 
-        title={t("proposalDetails.title", "Proposal Details")}
-        description={t("proposalDetails.description", "View detailed information about this governance proposal")}
-      />
-      
-      <ProposalDetailView />
+    <Container className="py-10">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6">Proposal Details</h1>
+        <p className="text-muted-foreground">
+          View detailed information about this governance proposal
+        </p>
+        <div className="mt-8 p-6 border rounded-lg">
+          <h2 className="text-xl font-semibold mb-2">
+            Proposal #{id}
+          </h2>
+          <p>
+            This is a placeholder for the proposal details. In a real application, this would show
+            the actual proposal content, voting status, and allow for interaction.
+          </p>
+        </div>
+      </div>
     </Container>
   );
-}
+};
 
 export default ProposalDetail;
