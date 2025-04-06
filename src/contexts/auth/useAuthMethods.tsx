@@ -3,48 +3,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import type { User } from "./types";
 
 export const useAuthMethods = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   
-  // Get current user data
-  const getUser = async (): Promise<User | null> => {
-    try {
-      const { data: { user }, error } = await supabase.auth.getUser();
-      
-      if (error) {
-        console.error("Error getting user:", error);
-        return null;
-      }
-      
-      if (!user) return null;
-      
-      // Get additional profile data from profiles table
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('username, role')
-        .eq('id', user.id)
-        .single();
-      
-      if (profileError && profileError.code !== 'PGRST116') {
-        console.error("Error fetching profile:", profileError);
-      }
-      
-      return {
-        id: user.id,
-        email: user.email,
-        username: profile?.username || user.email?.split('@')[0],
-        roles: profile?.role ? [profile.role] : ["user"]
-      };
-    } catch (error) {
-      console.error("Get user error:", error);
-      return null;
-    }
-  };
-
-  // Sign in with email/username and password
+  // Sign in with email or username and password
   const signIn = async ({ identifier, password }: { identifier: string; password: string }) => {
     try {
       setLoading(true);
@@ -130,110 +94,6 @@ export const useAuthMethods = () => {
     }
   };
 
-  // Sign out
-  const signOut = async () => {
-    try {
-      setLoading(true);
-      
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        console.error('Sign out error:', error);
-        throw error;
-      }
-      
-      // Navigate to home page after sign out
-      navigate('/');
-      
-      return { success: true };
-    } catch (error) {
-      console.error('Sign out error:', error);
-      return { success: false, error: error as Error };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Reset password
-  const resetPassword = async (email: string) => {
-    try {
-      setLoading(true);
-      
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/callback?type=recovery`
-      });
-      
-      if (error) throw error;
-      
-      toast.success('Password reset email sent');
-      return { success: true };
-    } catch (error) {
-      toast.error('Failed to send password reset email');
-      console.error('Password reset error:', error);
-      return { success: false, error: error as Error };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Update user profile
-  const updateProfile = async (updates: Partial<User>) => {
-    try {
-      setLoading(true);
-      
-      // Get current user
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
-      if (userError || !user) {
-        toast.error('Failed to get current user');
-        return { success: false, error: userError || new Error('User not found') };
-      }
-      
-      // Update profile in database
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({
-          username: updates.username,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', user.id);
-      
-      if (updateError) throw updateError;
-      
-      toast.success('Profile updated successfully');
-      return { success: true };
-    } catch (error) {
-      toast.error('Failed to update profile');
-      console.error('Update profile error:', error);
-      return { success: false, error: error as Error };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Delete user account
-  const deleteAccount = async () => {
-    try {
-      setLoading(true);
-      
-      // For security, this should be implemented through a Supabase Edge Function
-      // that has the service_role key to delete users
-      const { error } = await supabase.functions.invoke('delete-user', {});
-      
-      if (error) throw error;
-      
-      toast.success('Account deleted successfully');
-      navigate('/');
-      return { success: true };
-    } catch (error) {
-      toast.error('Failed to delete account');
-      console.error('Delete account error:', error);
-      return { success: false, error: error as Error };
-    } finally {
-      setLoading(false);
-    }
-  };
-  
   // Sign in with Google
   const signInWithGoogle = async () => {
     try {
@@ -282,7 +142,30 @@ export const useAuthMethods = () => {
     }
   };
 
-  // Check username availability
+  // Sign out
+  const signOut = async () => {
+    try {
+      setLoading(true);
+      
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('Sign out error:', error);
+        return { error };
+      }
+      
+      // Don't navigate here - let the auth state change handler handle it
+      
+      return { error: null };
+    } catch (error) {
+      console.error('Sign out error:', error);
+      return { error: error as Error };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Check if username is available
   const checkUsernameAvailability = async (username: string): Promise<boolean> => {
     try {
       const { data, error } = await supabase
@@ -306,13 +189,9 @@ export const useAuthMethods = () => {
   return {
     signIn,
     signUp,
-    signOut,
-    getUser,
-    resetPassword,
-    updateProfile,
-    deleteAccount,
     signInWithGoogle,
     signInWithApple,
+    signOut,
     checkUsernameAvailability,
     loading
   };

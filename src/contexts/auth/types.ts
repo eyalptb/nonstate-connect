@@ -16,8 +16,8 @@ export type AuthContextType = {
   loading: boolean;
   user: User | null;
   isAdmin: boolean;
-  signInWithEmail: (email: string, password: string) => Promise<{ success: boolean; data?: any; error?: any }>;
-  signUpWithEmail: (email: string, password: string) => Promise<{ success: boolean; data?: any; error?: any }>;
+  signInWithEmail: (email: string, password: string) => Promise<{ success: boolean; error?: any }>;
+  signUpWithEmail: (email: string, password: string) => Promise<{ success: boolean; error?: any }>;
   signOut: () => Promise<{ success: boolean; error?: any }>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: any }>;
   updateProfile: (updates: Partial<User>) => Promise<{ success: boolean; error?: any }>;
