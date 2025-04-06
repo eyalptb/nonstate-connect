@@ -8,6 +8,7 @@ export type User = {
   email?: string;
   username?: string;
   avatar_url?: string;
+  roles?: string[];
 };
 
 // Updated context with non-null user id

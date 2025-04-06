@@ -3,6 +3,7 @@ import React, { createContext, useEffect, useState } from 'react';
 import { AuthContext } from './types';
 import type { User, AuthContextType } from './types';
 import { useAuthMethods } from './useAuthMethods';
+import { useNavigate } from 'react-router-dom';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   console.log("AuthProvider initializing"); // Debug log
@@ -11,13 +12,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAdmin, setIsAdmin] = useState(false);
   
   const { 
-    signUp, 
     signIn, 
+    signUp, 
     signOut, 
     resetPassword, 
     updateProfile,
     deleteAccount,
-    getUser
+    getUser,
+    loading: authMethodsLoading
   } = useAuthMethods();
   
   useEffect(() => {
@@ -40,16 +42,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     initAuth();
   }, [getUser]);
   
+  // Create an object with the properly typed methods
+  const signInWithEmail = async (email: string, password: string) => {
+    const result = await signIn({ identifier: email, password });
+    return { success: !result.error, error: result.error };
+  };
+
+  const signUpWithEmail = async (email: string, password: string) => {
+    const result = await signUp({ email, password });
+    return { success: !result.error, error: result.error };
+  };
+  
   const authContext: AuthContextType = {
     user,
-    loading,
+    loading: loading || authMethodsLoading,
     isAdmin,
-    signUp,
-    signIn,
+    signInWithEmail,
+    signUpWithEmail,
     signOut,
     resetPassword,
     updateProfile,
-    deleteAccount,
   };
   
   console.log("Auth state:", { user: user?.id || "none", loading, isAdmin }); // Debug log
