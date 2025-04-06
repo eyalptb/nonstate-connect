@@ -25,6 +25,11 @@ export const addComponentTranslations = (
   
   console.log(`Adding translations for ${componentType}/${language}`, translations);
   
+  // Special handling for learn component to ensure proper structure
+  if (componentType === 'learn') {
+    return addTranslations(language, namespace, { learn: translations.learn });
+  }
+  
   // Add translations to the i18n instance
   return addTranslations(language, namespace, translations);
 };

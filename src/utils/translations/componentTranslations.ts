@@ -41,22 +41,22 @@ export const loadAllBackendTranslations = () => loadAllComponentTranslations('ba
 export const loadAllFeaturePageTranslations = () => loadAllComponentTranslations('featurePage');
 export const loadAllUseCasesTranslations = () => loadAllComponentTranslations('useCases');
 export const loadAllLearnTranslations = () => {
-  console.log("Loading all learn translations");
-  
-  // Debugging: log available translations
-  const supportedLanguages = i18n.options.supportedLngs || [];
-  console.log("Supported languages:", supportedLanguages);
-  
-  // For debugging, check if translations exist for current language
-  const currentLang = i18n.language;
-  console.log(`Current language: ${currentLang}, has translations:`, !!learnTranslations[currentLang]);
-  
-  // Load all component translations
+  // Simple approach like other working pages
   loadAllComponentTranslations('learn');
   
-  // Explicitly add translations for the current language as a fallback
+  // Ensure translations are directly added for the current language
+  const currentLang = i18n.language;
   if (learnTranslations[currentLang]) {
+    console.log(`Adding learn translations directly for ${currentLang}`);
     i18n.addResourceBundle(currentLang, 'common', { learn: learnTranslations[currentLang].learn }, true, true);
-    console.log(`Explicitly added learn translations for ${currentLang}`);
   }
+  
+  // Fallback to English if needed
+  if (currentLang !== 'en' && learnTranslations.en) {
+    console.log('Adding English learn translations as fallback');
+    i18n.addResourceBundle('en', 'common', { learn: learnTranslations.en.learn }, true, false);
+  }
+  
+  // Force refresh
+  document.dispatchEvent(new Event('i18n-resources-loaded'));
 };

@@ -10,29 +10,18 @@ const Learn = () => {
   const { t, i18n } = useTranslation(['common']);
 
   useEffect(() => {
-    // Load Learn translations
+    // Load Learn translations in a simpler way, similar to other pages
     const loadTranslations = async () => {
       await loadAllLearnTranslations();
-      // Force a component re-render after translations are loaded
-      i18n.on('languageChanged', () => {});
+      console.log("Learn translations loaded for language:", i18n.language);
+      
+      // Check if translations are actually loaded
+      const resources = i18n.getResourceBundle(i18n.language, 'common');
+      console.log("Learn translations available:", resources?.learn ? "Yes" : "No");
     };
     
     loadTranslations();
-    
-    // Add event listener for when translations are loaded
-    const handleTranslationsLoaded = () => {
-      console.log("Learn translations loaded, forcing re-render");
-      i18n.off('languageChanged'); // Remove the dummy listener
-      i18n.emit('languageChanged', i18n.language); // Trigger a language change event to force re-render
-    };
-    
-    document.addEventListener('i18n-resources-loaded', handleTranslationsLoaded);
-    
-    return () => {
-      document.removeEventListener('i18n-resources-loaded', handleTranslationsLoaded);
-      i18n.off('languageChanged');
-    };
-  }, [i18n]);
+  }, [i18n.language]); // Add language dependency to reload on language change
 
   return (
     <div className="container mx-auto py-12 px-4">
