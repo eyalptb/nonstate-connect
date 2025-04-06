@@ -31,7 +31,20 @@ export const TokenWallet = () => {
     };
 
     fetchTokenBalance();
-  }, []);
+    
+    // Ensure wallet namespace is loaded
+    i18n.loadNamespaces('common', (err) => {
+      if (err) {
+        console.error('Failed to load common namespace for wallet:', err);
+      }
+    });
+  }, [i18n]);
+  
+  // Force wallet component to re-render on language change
+  useEffect(() => {
+    console.log('TokenWallet: Language changed to', i18n.language);
+    console.log('TokenWallet: Wallet title translation:', t('wallet.title', 'CollabCoin Wallet'));
+  }, [i18n.language, t]);
   
   return (
     <Card className="w-full shadow-sm" key={`wallet-${i18n.language}`}>
@@ -53,12 +66,12 @@ export const TokenWallet = () => {
           <span className="text-3xl font-bold">{tokenBalance}</span>
         </div>
         <p className="text-muted-foreground text-sm">
-          {t("wallet.earn", "Earn through secure collaboration and spend on premium features")}
+          {t("wallet.earn_description", "Earn through secure collaboration and spend on premium features")}
         </p>
       </CardContent>
       <CardFooter className="flex justify-between border-t pt-4">
         <p className="text-xs text-muted-foreground">
-          {t("wallet.earn", "Earn through secure collaboration and spend on premium features")}
+          {t("wallet.footer_description", "Earn through secure collaboration and spend on premium features")}
         </p>
       </CardFooter>
     </Card>

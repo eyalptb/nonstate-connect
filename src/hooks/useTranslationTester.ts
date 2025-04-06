@@ -2,7 +2,6 @@
 import i18n from '@/i18n';
 import { useCallback } from 'react';
 import { verifyTranslationKeys } from '@/utils/i18nVerification';
-import { toast } from 'sonner';
 
 interface TestResult {
   success: boolean;
@@ -64,7 +63,7 @@ const useTranslationTester = () => {
     
     return { 
       success: true, 
-      message: `Translation found for ${key} in ${currentLang}: ${value}`,
+      message: `Translation found for key ${key} in ${currentLang}: ${value}`,
       key
     };
   }, []);
@@ -77,11 +76,9 @@ const useTranslationTester = () => {
     try {
       await i18n.reloadResources([currentLang], [namespace]);
       console.log(`Successfully reloaded ${namespace} for ${currentLang}`);
-      toast.success(`Translations refreshed`);
       return true;
     } catch (error) {
       console.error(`Failed to reload ${namespace} for ${currentLang}:`, error);
-      toast.error(`Failed to refresh translations`);
       return false;
     }
   }, []);

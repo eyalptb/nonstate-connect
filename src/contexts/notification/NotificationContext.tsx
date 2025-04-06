@@ -1,8 +1,7 @@
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { toast } from 'sonner'; // Import directly from the sonner package
 import { useTranslation } from 'react-i18next';
-import i18n from '@/i18n';
 
 export type NotificationType = 'info' | 'success' | 'warning' | 'error';
 
@@ -28,6 +27,14 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const { t } = useTranslation(['common']);
 
   const addNotification = (notification: Omit<Notification, 'id'>) => {
+    // Skip any notifications related to language changes
+    if (notification.title.toLowerCase().includes('language') || 
+        notification.message.toLowerCase().includes('language') ||
+        notification.title.toLowerCase().includes('translation') || 
+        notification.message.toLowerCase().includes('translation')) {
+      return;
+    }
+    
     const id = Math.random().toString(36).substring(2, 9);
     const newNotification = { ...notification, id };
     
@@ -51,8 +58,6 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setNotifications((prev) => prev.filter(notification => notification.id !== id));
     toast.dismiss(id);
   };
-
-  // We don't need to handle language changes here, it's now handled in TranslationContext only
 
   return (
     <NotificationContext.Provider

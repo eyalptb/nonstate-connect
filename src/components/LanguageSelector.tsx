@@ -35,7 +35,7 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
   const handleLanguageChange = async (langCode: string) => {
     // Only change language if it's different from current
     if (langCode !== i18n.language) {
-      // Change language without any toast notification - notification is ONLY handled in TranslationContext
+      // Change language without any toast notification
       await i18n.changeLanguage(langCode);
     }
   };

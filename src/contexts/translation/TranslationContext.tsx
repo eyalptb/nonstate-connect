@@ -3,7 +3,6 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import i18n from '@/i18n';
 import { useTranslation as useReactI18next } from 'react-i18next';
 import type { TFunction } from 'i18next';
-import { toast } from 'sonner';
 
 type TranslationContextType = {
   currentLanguage: string;
@@ -28,23 +27,6 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
       setCurrentLanguage(lng);
       document.documentElement.lang = lng;
       console.log(`Language changed to: ${lng}`);
-      
-      // Language display names
-      const languages: Record<string, string> = {
-        en: 'English',
-        fr: 'Français',
-        de: 'Deutsch',
-        zh: '中文',
-        pt: 'Português',
-        ar: 'العربية',
-        hi: 'हिन्दी',
-        ja: '日本語',
-        ru: 'Русский',
-        he: 'עברית'
-      };
-      
-      // Show toast notification when language changes (only here, not in the selector or elsewhere)
-      toast.success(`Language changed to ${languages[lng] || lng}`);
     };
     
     // Set initial language
@@ -98,7 +80,6 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
     } catch (error) {
       console.error('Error changing language:', error);
       setIsChangingLanguage(false);
-      toast.error('Failed to change language. Please try again.');
     }
   };
 
