@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Container } from "@/components/ui/container";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,71 +16,77 @@ import {
   Puzzle
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { loadAllFeaturePageTranslations } from "@/utils/translationLoader";
 
 const Features = () => {
   const { t, i18n } = useTranslation(['common', 'navigation']);
 
-  // Define feature categories with direct text
+  // Load feature page translations when component mounts
+  useEffect(() => {
+    loadAllFeaturePageTranslations();
+  }, []);
+
+  // Define feature categories with translation keys
   const featureCategories = [
     {
       id: "security",
-      name: "Security",
+      name: t("featuresPage.tabs.security", "Security"),
       features: [
         {
-          title: "End-to-End Encryption",
-          description: "Keep your data completely private with our sophisticated encryption technology",
+          title: t("featuresPage.security.endToEndEncryption.title", "End-to-End Encryption"),
+          description: t("featuresPage.security.endToEndEncryption.description", "Keep your data completely private with our sophisticated encryption technology"),
           icon: <Lock className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: "Secure Identity",
-          description: "Verify collaborators while maintaining privacy through our decentralized identity system",
+          title: t("featuresPage.security.secureIdentity.title", "Secure Identity"),
+          description: t("featuresPage.security.secureIdentity.description", "Verify collaborators while maintaining privacy through our decentralized identity system"),
           icon: <Shield className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         }
       ]
     },
     {
       id: "collaboration",
-      name: "Collaboration",
+      name: t("featuresPage.tabs.collaboration", "Collaboration"),
       features: [
         {
-          title: "Global Connections",
-          description: "Connect with changemakers worldwide working on similar challenges",
+          title: t("featuresPage.collaboration.globalConnections.title", "Global Connections"),
+          description: t("featuresPage.collaboration.globalConnections.description", "Connect with changemakers worldwide working on similar challenges"),
           icon: <Globe className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: "Community Building",
-          description: "Create and grow communities focused on specific causes or technologies",
+          title: t("featuresPage.collaboration.communityBuilding.title", "Community Building"),
+          description: t("featuresPage.collaboration.communityBuilding.description", "Create and grow communities focused on specific causes or technologies"),
           icon: <Users className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: "Secure Messaging",
-          description: "Communicate with your team through our encrypted messaging system",
+          title: t("featuresPage.collaboration.secureMessaging.title", "Secure Messaging"),
+          description: t("featuresPage.collaboration.secureMessaging.description", "Communicate with your team through our encrypted messaging system"),
           icon: <MessageSquareText className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         }
       ]
     },
     {
       id: "infrastructure",
-      name: "Infrastructure",
+      name: t("featuresPage.tabs.infrastructure", "Infrastructure"),
       features: [
         {
-          title: "Decentralized Network",
-          description: "Built on blockchain technology for transparency and security",
+          title: t("featuresPage.infrastructure.decentralizedNetwork.title", "Decentralized Network"),
+          description: t("featuresPage.infrastructure.decentralizedNetwork.description", "Built on blockchain technology for transparency and security"),
           icon: <Network className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: "Token Economy",
-          description: "Incentivize participation and reward contributions with our token system",
+          title: t("featuresPage.infrastructure.tokenEconomy.title", "Token Economy"),
+          description: t("featuresPage.infrastructure.tokenEconomy.description", "Incentivize participation and reward contributions with our token system"),
           icon: <Wallet className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: "Community Governance",
-          description: "Participate in platform decisions through our democratic governance system",
+          title: t("featuresPage.infrastructure.communityGovernance.title", "Community Governance"),
+          description: t("featuresPage.infrastructure.communityGovernance.description", "Participate in platform decisions through our democratic governance system"),
           icon: <Vote className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: "Integration Hub",
-          description: "Connect your existing tools and workflows with our extensive integration options",
+          title: t("featuresPage.infrastructure.integrationHub.title", "Integration Hub"),
+          description: t("featuresPage.infrastructure.integrationHub.description", "Connect your existing tools and workflows with our extensive integration options"),
           icon: <Puzzle className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         }
       ]
@@ -92,8 +98,8 @@ const Features = () => {
     <div className="py-8 md:py-12" key={`features-page-${i18n.language}`}>
       <Container>
         <PageHeader 
-          title="Platform Features"
-          description="Discover how our technology empowers secure collaboration and global impact"
+          title={t("featuresPage.title", "Platform Features")}
+          description={t("featuresPage.description", "Discover how our technology empowers secure collaboration and global impact")}
         />
         
         <Tabs defaultValue="security" className="w-full mt-8">
@@ -127,12 +133,12 @@ const Features = () => {
         </Tabs>
         
         <div className="mt-16 bg-muted/50 p-6 rounded-lg">
-          <h3 className="text-xl font-bold mb-4">Why Choose Our Platform?</h3>
+          <h3 className="text-xl font-bold mb-4">{t("featuresPage.whyChoose.title", "Why Choose Our Platform?")}</h3>
           <p className="text-foreground/70 mb-4">
-            Our technology is designed from the ground up to protect your privacy while enabling powerful collaboration.
+            {t("featuresPage.whyChoose.description1", "Our technology is designed from the ground up to protect your privacy while enabling powerful collaboration.")}
           </p>
           <p className="text-foreground/70">
-            Join a growing network of researchers, educators, activists, and organizations making a difference without compromising their data.
+            {t("featuresPage.whyChoose.description2", "Join a growing network of researchers, educators, activists, and organizations making a difference without compromising their data.")}
           </p>
         </div>
       </Container>

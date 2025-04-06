@@ -1,4 +1,3 @@
-
 import i18n from '@/i18n';
 import { walletTranslations } from './translations/walletTranslations';
 import { featureTranslations } from './translations/featureTranslations';
@@ -6,6 +5,7 @@ import { joinCtaTranslations } from './translations/joinCtaTranslations';
 import { projectTranslations } from './translations/projectTranslations';
 import { footerTranslations } from './translations/footerTranslations';
 import { backendTranslations } from './translations/backendTranslations';
+import { featurePageTranslations } from './translations/featurePageTranslations';
 
 /**
  * Type for component translation resources
@@ -21,7 +21,8 @@ const translationResources: TranslationResources = {
   joinCta: joinCtaTranslations,
   project: projectTranslations,
   footer: footerTranslations,
-  backend: backendTranslations
+  backend: backendTranslations,
+  featurePage: featurePageTranslations
 };
 
 /**
@@ -150,6 +151,9 @@ export const addFooterTranslations = (language: string) =>
 export const addBackendTranslations = (language: string) => 
   addComponentTranslations(language, 'backend');
 
+export const addFeaturePageTranslations = (language: string) => 
+  addComponentTranslations(language, 'featurePage');
+
 // Load all translations functions for backward compatibility
 export const loadAllWalletTranslations = () => 
   loadTranslations('wallet', { allLanguages: true });
@@ -169,6 +173,9 @@ export const loadAllFooterTranslations = () =>
 export const loadAllBackendTranslations = () => 
   loadTranslations('backend', { allLanguages: true });
 
+export const loadAllFeaturePageTranslations = () => 
+  loadTranslations('featurePage', { allLanguages: true });
+
 // Export public API
 export default {
   addTranslations,
@@ -181,10 +188,12 @@ export default {
   addProjectTranslations,
   addFooterTranslations,
   addBackendTranslations,
+  addFeaturePageTranslations,
   loadAllWalletTranslations,
   loadAllFeatureTranslations,
   loadAllJoinCtaTranslations,
   loadAllProjectTranslations,
   loadAllFooterTranslations,
-  loadAllBackendTranslations
+  loadAllBackendTranslations,
+  loadAllFeaturePageTranslations
 };
