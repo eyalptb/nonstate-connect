@@ -7,7 +7,7 @@ import { VideosList } from "./VideosList";
 import { ArticlesList } from "./ArticlesList";
 
 export const LearnTabs = () => {
-  const { t } = useTranslation(['common']);
+  const { t, i18n } = useTranslation(['common']);
 
   return (
     <Tabs defaultValue="guides">
@@ -17,15 +17,15 @@ export const LearnTabs = () => {
         <TabsTrigger value="articles">{t("learn.tabs.articles", "Articles")}</TabsTrigger>
       </TabsList>
       
-      <TabsContent value="guides" className="space-y-6">
+      <TabsContent value="guides" className="space-y-6" key={`guides-content-${i18n.language}`}>
         <GuidesList />
       </TabsContent>
       
-      <TabsContent value="videos" className="space-y-6">
+      <TabsContent value="videos" className="space-y-6" key={`videos-content-${i18n.language}`}>
         <VideosList />
       </TabsContent>
       
-      <TabsContent value="articles" className="space-y-6">
+      <TabsContent value="articles" className="space-y-6" key={`articles-content-${i18n.language}`}>
         <ArticlesList />
       </TabsContent>
     </Tabs>

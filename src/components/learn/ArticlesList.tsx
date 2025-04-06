@@ -5,7 +5,7 @@ import { FileText } from "lucide-react";
 import { ResourceCard } from "./ResourceCard";
 
 export const ArticlesList = () => {
-  const { t } = useTranslation(['common']);
+  const { t, i18n } = useTranslation(['common']);
   
   const articles = [
     {
@@ -35,7 +35,7 @@ export const ArticlesList = () => {
     <>
       {articles.map((article, i) => (
         <ResourceCard
-          key={i}
+          key={`article-${i}-${i18n.language}`}
           title={article.title}
           description={article.description}
           icon={article.icon}

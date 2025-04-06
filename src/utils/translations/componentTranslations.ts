@@ -76,11 +76,34 @@ export const loadAllUseCasesTranslations = () => {
   loadAllComponentTranslations('useCases');
 };
 
-// Learn translations - Fix the typing issue by directly using the component translations approach
+// Learn translations
 export const addLearnTranslations = (language: string, namespace: string = 'common') => {
-  return addComponentTranslations(language, 'learn', namespace);
+  if (!learnTranslations[language]) {
+    console.warn(`No learn translations found for ${language}, falling back to English`);
+    // Try to add English translations as fallback
+    if (learnTranslations['en']) {
+      return addTranslations(language, namespace, { learn: learnTranslations['en'].learn });
+    }
+    return false;
+  }
+  
+  console.log(`Adding learn translations for ${language}:`, learnTranslations[language]);
+  return addTranslations(language, namespace, { learn: learnTranslations[language].learn });
 };
 
 export const loadAllLearnTranslations = () => {
-  loadAllComponentTranslations('learn');
+  const supportedLanguages = getSupportedLanguages();
+  console.log(`Loading learn translations for languages:`, supportedLanguages);
+  
+  supportedLanguages.forEach(lang => {
+    const success = addLearnTranslations(lang);
+    if (success) {
+      console.log(`Successfully loaded learn translations for ${lang}`);
+    } else {
+      console.warn(`Failed to load learn translations for ${lang}`);
+    }
+  });
+  
+  // Dispatch event to notify that translations are loaded
+  document.dispatchEvent(new Event('i18n-resources-loaded'));
 };

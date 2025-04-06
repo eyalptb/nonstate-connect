@@ -5,7 +5,7 @@ import { BookOpen } from "lucide-react";
 import { ResourceCard } from "./ResourceCard";
 
 export const GuidesList = () => {
-  const { t } = useTranslation(['common']);
+  const { t, i18n } = useTranslation(['common']);
 
   const guides = [
     {
@@ -35,7 +35,7 @@ export const GuidesList = () => {
     <>
       {guides.map((guide, i) => (
         <ResourceCard
-          key={i}
+          key={`guide-${i}-${i18n.language}`}
           title={guide.title}
           description={guide.description}
           icon={guide.icon}

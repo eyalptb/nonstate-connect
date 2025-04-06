@@ -5,7 +5,7 @@ import { Video } from "lucide-react";
 import { ResourceCard } from "./ResourceCard";
 
 export const VideosList = () => {
-  const { t } = useTranslation(['common']);
+  const { t, i18n } = useTranslation(['common']);
 
   const videos = [
     {
@@ -35,7 +35,7 @@ export const VideosList = () => {
     <>
       {videos.map((video, i) => (
         <ResourceCard
-          key={i}
+          key={`video-${i}-${i18n.language}`}
           title={video.title}
           description={video.description}
           icon={video.icon}
