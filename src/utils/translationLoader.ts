@@ -3,6 +3,7 @@ import i18n from '@/i18n';
 import { walletTranslations } from './translations/walletTranslations';
 import { featureTranslations } from './translations/featureTranslations';
 import { joinCtaTranslations } from './translations/joinCtaTranslations';
+import { projectTranslations } from './translations/projectTranslations';
 
 /**
  * Dynamically adds translations to the i18n instance
@@ -58,6 +59,17 @@ export const addJoinCtaTranslations = (language: string) => {
 };
 
 /**
+ * Adds Project translations for a specific language
+ */
+export const addProjectTranslations = (language: string) => {
+  // Get translations for the requested language, fallback to English
+  const translations = projectTranslations[language] || projectTranslations.en;
+  
+  // Add translations to the i18n instance
+  return addTranslations(language, 'common', translations);
+};
+
+/**
  * Load wallet translations for all supported languages
  */
 export const loadAllWalletTranslations = () => {
@@ -97,6 +109,19 @@ export const loadAllJoinCtaTranslations = () => {
 };
 
 /**
+ * Load Project translations for all supported languages
+ */
+export const loadAllProjectTranslations = () => {
+  const supportedLanguages = getSupportedLanguages();
+  console.log('Loading Project translations for languages:', supportedLanguages);
+  
+  // Add translations for each language
+  supportedLanguages.forEach(lang => {
+    addProjectTranslations(lang);
+  });
+};
+
+/**
  * Helper to get supported languages excluding special codes
  */
 const getSupportedLanguages = () => {
@@ -113,7 +138,9 @@ export default {
   addWalletTranslations,
   addFeatureTranslations,
   addJoinCtaTranslations,
+  addProjectTranslations,
   loadAllWalletTranslations,
   loadAllFeatureTranslations,
-  loadAllJoinCtaTranslations
+  loadAllJoinCtaTranslations,
+  loadAllProjectTranslations
 };
