@@ -1,14 +1,23 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import Projects from "@/components/Projects";
 import JoinCta from "@/components/JoinCta";
 import TokenWallet from "@/components/TokenWallet";
 import { useTranslation } from "react-i18next";
+import i18n from '@/i18n';
 
 const Index = () => {
   const { t } = useTranslation(["common"]);
+  
+  // Ensure wallet translation namespace is loaded
+  useEffect(() => {
+    // Make sure the 'common' namespace is loaded
+    if (!i18n.hasResourceBundle(i18n.language, 'common')) {
+      i18n.loadNamespaces('common');
+    }
+  }, []);
   
   return (
     <div className="flex flex-col min-h-screen">
