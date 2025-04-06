@@ -33,6 +33,9 @@ const useTranslationTester = () => {
     let value;
     try {
       value = i18n.t(key, { ns: namespace });
+      
+      // Log for debugging
+      console.log(`Testing translation for "${key}": "${value}"`);
     } catch (error) {
       console.error(`Error testing key ${key}:`, error);
       return { 
@@ -53,7 +56,7 @@ const useTranslationTester = () => {
     }
     
     // Check for wallet-specific keys to ensure they're loaded
-    if (key.startsWith('wallet.') && value === key) {
+    if (key.startsWith('wallet.') && (value === key || value === undefined)) {
       console.error(`Wallet translation missing for key ${key} in ${currentLang}`);
       return { 
         success: false, 
@@ -76,13 +79,20 @@ const useTranslationTester = () => {
     console.log(`Force reloading namespace ${namespace} for ${currentLang}`);
     
     try {
+      // First unload and reload the namespace
       await i18n.reloadResources([currentLang], [namespace]);
       console.log(`Successfully reloaded ${namespace} for ${currentLang}`);
       
       // Verify wallet keys specifically to ensure they're loaded
       if (namespace === 'common') {
         const walletKeys = ['wallet.title', 'wallet.description', 'wallet.coins', 'wallet.earn'];
-        const results = walletKeys.map(key => testTranslation(key, namespace));
+        
+        console.log(`Testing wallet keys after reload for ${currentLang}:`);
+        const results = walletKeys.map(key => {
+          const testResult = testTranslation(key, namespace);
+          console.log(`- ${key}: ${testResult.success ? 'OK' : 'MISSING'} (${testResult.value || 'no value'})`);
+          return testResult;
+        });
         
         if (results.some(result => !result.success)) {
           console.error('Some wallet translations are still missing after reload:', 
@@ -90,6 +100,11 @@ const useTranslationTester = () => {
         } else {
           console.log('All wallet translations successfully loaded');
         }
+        
+        // Force a refresh by updating language to the same language
+        // This is a hack, but it forces a re-render
+        const currentLanguage = i18n.language;
+        await i18n.changeLanguage(currentLanguage);
       }
       
       return true;
@@ -110,10 +125,37 @@ const useTranslationTester = () => {
     return verificationResult;
   }, []);
   
+  // Returns translations for a set of keys
+  const getTranslationsForComponent = useCallback((keys: string[], namespace = 'common') => {
+    const currentLang = i18n.language;
+    const results: Record<string, string> = {};
+    
+    console.log(`Getting translations for ${keys.length} keys in ${namespace} (${currentLang})`);
+    
+    keys.forEach(key => {
+      try {
+        const value = i18n.t(key, { ns: namespace });
+        results[key] = value;
+        
+        // Check if translation is missing (value equals key)
+        if (value === key) {
+          console.warn(`Missing translation for ${key} in ${currentLang}`);
+        }
+      } catch (error) {
+        console.error(`Error getting translation for ${key}:`, error);
+        results[key] = key; // Fallback to key
+      }
+    });
+    
+    console.log('Translation results:', results);
+    return results;
+  }, []);
+  
   return {
     testTranslation,
     forceReloadNamespace,
     verifyCriticalKeys,
+    getTranslationsForComponent,
   };
 };
 

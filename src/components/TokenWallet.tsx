@@ -7,7 +7,7 @@ import { api } from '@/services/apiClient';
 import { supabase } from '@/integrations/supabase/client';
 
 export const TokenWallet = () => {
-  const { t, i18n } = useTranslation(['common']);
+  const { t } = useTranslation(['common']);
   const [tokenBalance, setTokenBalance] = useState(0);
   
   useEffect(() => {
@@ -33,12 +33,19 @@ export const TokenWallet = () => {
     fetchTokenBalance();
   }, []);
   
-  // Force component to re-render when language changes
+  // Get translations directly - This ensures they're evaluated on every render
   const walletTitle = t("wallet.title", "CollabCoin Wallet");
   const walletDescription = t("wallet.description", "Your tokenized incentives");
   const walletCoins = t("wallet.coins", "CollabCoins");
   const walletEarn = t("wallet.earn", "Earn through secure collaboration and spend on premium features");
-  const walletFooter = t("wallet.footer_description", "Earn through secure collaboration and spend on premium features");
+  
+  console.log("TokenWallet Translation Values:", {
+    walletTitle,
+    walletDescription,
+    walletCoins,
+    walletEarn,
+    currentLang: t("language_code", "en")
+  });
   
   return (
     <Card className="w-full shadow-sm">
@@ -65,7 +72,7 @@ export const TokenWallet = () => {
       </CardContent>
       <CardFooter className="flex justify-between border-t pt-4">
         <p className="text-xs text-muted-foreground">
-          {walletFooter}
+          {walletEarn}
         </p>
       </CardFooter>
     </Card>
