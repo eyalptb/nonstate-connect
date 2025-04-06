@@ -7,32 +7,34 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
+  DialogTrigger
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { ProposalType } from "./types";
 
 interface ProposalVotingDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  proposalTitle: string;
-  vote: "for" | "against";
-  onVote: (amount: number) => Promise<boolean>;
+  children: React.ReactNode;
+  proposal: ProposalType;
+  voteFor: boolean;
+  onVote: (proposalId: string, voteFor: boolean, amount: number) => Promise<boolean>;
+  balance: number;
 }
 
 export function ProposalVotingDialog({
-  open,
-  onOpenChange,
-  proposalTitle,
-  vote,
-  onVote
+  children,
+  proposal,
+  voteFor,
+  onVote,
+  balance
 }: ProposalVotingDialogProps) {
+  const [open, setOpen] = useState(false);
   const [amount, setAmount] = useState("10");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { t, i18n } = useTranslation(['governance', 'common']);
-  const { toast } = useToast();
+  const { t } = useTranslation(['governance', 'common']);
   
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim();
@@ -43,50 +45,44 @@ export function ProposalVotingDialog({
   
   const handleSubmit = async () => {
     if (!amount || Number(amount) <= 0) {
-      toast({
-        title: "Invalid Amount",
-        description: "Please enter a valid voting amount.",
-        variant: "destructive"
-      });
+      toast.error("Please enter a valid voting amount.");
+      return;
+    }
+    
+    if (Number(amount) > balance) {
+      toast.error("You don't have enough tokens for this vote.");
       return;
     }
     
     setIsSubmitting(true);
     
     try {
-      const success = await onVote(Number(amount));
+      const success = await onVote(proposal.id, voteFor, Number(amount));
       
       if (success) {
-        toast({
-          title: "Vote Submitted",
-          description: `Your vote ${vote} "${proposalTitle}" was submitted successfully.`
-        });
-        onOpenChange(false);
+        toast.success(`Your vote ${voteFor ? 'for' : 'against'} "${proposal.title}" was submitted successfully.`);
+        setOpen(false);
       } else {
-        toast({
-          title: "Vote Failed",
-          description: "There was a problem submitting your vote. Please try again.",
-          variant: "destructive"
-        });
+        toast.error("There was a problem submitting your vote. Please try again.");
       }
     } catch (error) {
-      toast({
-        title: "Vote Failed",
-        description: "There was a problem submitting your vote. Please try again.",
-        variant: "destructive"
-      });
+      toast.error("There was a problem submitting your vote. Please try again.");
+      console.error("Vote error:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        {children}
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{vote === "for" ? "Support" : "Oppose"} Proposal</DialogTitle>
+          <DialogTitle>{voteFor ? "Support" : "Oppose"} Proposal</DialogTitle>
           <DialogDescription>
-            You are about to vote {vote} "{proposalTitle}"
+            You are about to vote {voteFor ? "for" : "against"} "{proposal.title}"
           </DialogDescription>
         </DialogHeader>
         
@@ -106,13 +102,13 @@ export function ProposalVotingDialog({
           
           <div className="bg-muted/40 p-3 rounded-md">
             <p className="text-sm">
-              You have <span className="font-semibold">42</span> voting tokens available
+              You have <span className="font-semibold">{balance}</span> voting tokens available
             </p>
           </div>
         </div>
         
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
+          <Button variant="outline" onClick={() => setOpen(false)} disabled={isSubmitting}>
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={isSubmitting}>

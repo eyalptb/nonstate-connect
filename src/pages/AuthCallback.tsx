@@ -5,11 +5,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { Container } from '@/components/ui/container';
 import { Card, CardContent } from '@/components/ui/card';
 import { Loader, AlertCircle } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 const AuthCallback = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [error, setError] = useState<string | null>(null);
   const [verifying, setVerifying] = useState(true);
 
@@ -27,21 +26,14 @@ const AuthCallback = () => {
           
           if (verifyError) {
             console.error('Error verifying email:', verifyError);
-            toast({
-              title: type === 'recovery' ? "Password reset failed" : "Email verification failed",
-              description: "The link may have expired or is invalid. Please try again.",
-              variant: "destructive",
-            });
+            toast.error(type === 'recovery' ? "Password reset failed" : "Email verification failed");
             
             setTimeout(() => navigate('/sign-in'), 2000);
             return;
           }
           
           if (data.session) {
-            toast({
-              title: type === 'recovery' ? "Password reset successful" : "Email verified successfully",
-              description: type === 'recovery' ? "You can now sign in with your new password" : "Your email has been verified",
-            });
+            toast.success(type === 'recovery' ? "Password reset successful" : "Email verified successfully");
             
             // For password recovery, send to sign in
             if (type === 'recovery') {
@@ -84,30 +76,20 @@ const AuthCallback = () => {
           
           // If the user doesn't have a username (typically OAuth users), redirect to set one
           if (!profile?.username) {
-            toast({
-              title: "Authentication successful",
-              description: "Please set your username to continue",
-            });
+            toast.success("Authentication successful");
             setTimeout(() => navigate('/set-username'), 1000);
             return;
           }
         }
         
-        toast({
-          title: "Authentication successful",
-          description: "You have been signed in",
-        });
+        toast.success("Authentication successful");
         
         setTimeout(() => navigate('/dashboard'), 1000);
       } catch (err) {
         console.error('Error during authentication callback:', err);
         setError('Authentication failed');
         
-        toast({
-          title: "Authentication failed",
-          description: "Please try again",
-          variant: "destructive",
-        });
+        toast.error("Authentication failed");
         
         setTimeout(() => navigate('/sign-in'), 2000);
       } finally {
@@ -116,7 +98,7 @@ const AuthCallback = () => {
     };
 
     handleAuthCallback();
-  }, [navigate, toast]);
+  }, [navigate]);
 
   return (
     <Container className="flex items-center justify-center min-h-screen">

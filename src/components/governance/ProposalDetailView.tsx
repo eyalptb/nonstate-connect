@@ -16,7 +16,6 @@ export function ProposalDetailView() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { balance } = useTokens();
-  const [isVoting, setIsVoting] = useState(false);
   
   // Find proposal in mock data
   const allProposals = [...mockProposals.active, ...mockProposals.completed];
@@ -52,8 +51,10 @@ export function ProposalDetailView() {
   const totalVotes = proposal.votesFor + proposal.votesAgainst;
   const forPercentage = totalVotes > 0 ? (proposal.votesFor / totalVotes) * 100 : 0;
   
-  const handleVote = (proposalId: string, voteFor: boolean) => {
-    setIsVoting(true);
+  const handleVote = async (proposalId: string, voteFor: boolean, amount: number) => {
+    console.log(`Voting ${voteFor ? 'for' : 'against'} proposal ${proposalId} with ${amount} tokens`);
+    // In a real app, this would make an API call
+    return true;
   };
   
   const statusStyles = {

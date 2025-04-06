@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { ThumbsUp, ThumbsDown, AlertTriangle, CheckCircle, Clock, ExternalLink } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ProposalVotingDialog } from "./ProposalVotingDialog";
@@ -12,7 +11,7 @@ import { ProposalType } from "./types";
 
 interface ProposalCardProps {
   proposal: ProposalType;
-  onVote: (proposalId: string, voteFor: boolean) => void;
+  onVote: (proposalId: string, voteFor: boolean, amount: number) => Promise<boolean>;
   balance: number;
 }
 
@@ -68,7 +67,7 @@ export function ProposalCard({ proposal, onVote, balance }: ProposalCardProps) {
       </CardContent>
       {proposal.status === "active" && (
         <CardFooter className="border-t pt-4 flex justify-between">
-          <Link to={`/governance/proposal/${proposal.id}`}>
+          <Link to={`/proposals/${proposal.id}`}>
             <Button 
               variant="outline" 
               size="sm"
@@ -87,7 +86,6 @@ export function ProposalCard({ proposal, onVote, balance }: ProposalCardProps) {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => onVote(proposal.id, false)}
                 disabled={balance <= 0}
               >
                 <ThumbsDown className="mr-2 h-4 w-4" />
@@ -103,7 +101,6 @@ export function ProposalCard({ proposal, onVote, balance }: ProposalCardProps) {
             >
               <Button 
                 size="sm"
-                onClick={() => onVote(proposal.id, true)}
                 disabled={balance <= 0}
               >
                 <ThumbsUp className="mr-2 h-4 w-4" />
@@ -115,7 +112,7 @@ export function ProposalCard({ proposal, onVote, balance }: ProposalCardProps) {
       )}
       {proposal.status === "passed" && proposal.executedAt && (
         <CardFooter className="border-t pt-4 flex justify-between">
-          <Link to={`/governance/proposal/${proposal.id}`}>
+          <Link to={`/proposals/${proposal.id}`}>
             <Button 
               variant="outline" 
               size="sm"
@@ -137,7 +134,7 @@ export function ProposalCard({ proposal, onVote, balance }: ProposalCardProps) {
       )}
       {proposal.status === "rejected" && (
         <CardFooter className="border-t pt-4 flex justify-between">
-          <Link to={`/governance/proposal/${proposal.id}`}>
+          <Link to={`/proposals/${proposal.id}`}>
             <Button 
               variant="outline" 
               size="sm"
