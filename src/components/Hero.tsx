@@ -18,26 +18,26 @@ const Hero = () => {
           <div className="flex-1 text-center lg:text-left">
             <div className="inline-flex items-center px-3 py-1 mb-6 rounded-full bg-primary/10 text-primary text-sm font-medium">
               <Shield className="w-4 h-4 mr-2" />
-              Privacy-First Collaboration
+              {t("hero.tagline", "Privacy-First Collaboration")}
             </div>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              Secure <span className="text-primary">Collaboration</span> for Global Impact
+              {t("hero.titleStart", "Secure")} <span className="text-primary">{t("hero.titleHighlight", "Collaboration")}</span> {t("hero.titleEnd", "for Global Impact")}
             </h1>
             
             <p className="text-lg text-foreground/80 mb-8 max-w-2xl mx-auto lg:mx-0">
-              Our platform enables teams to collaborate on sensitive projects while maintaining complete control over their data and privacy.
+              {t("hero.description", "Our platform enables teams to collaborate on sensitive projects while maintaining complete control over their data and privacy.")}
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button size="lg" className="font-semibold" asChild>
                 <Link to="/sign-up">
-                  Get Started
+                  {t("hero.primaryCta", "Get Started")}
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="font-semibold" asChild>
                 <Link to="/features">
-                  Explore Features
+                  {t("hero.secondaryCta", "Explore Features")}
                 </Link>
               </Button>
             </div>
@@ -52,7 +52,7 @@ const Hero = () => {
                 ))}
               </div>
               <p className="text-sm text-foreground/70">
-                <span className="font-semibold">1,000+</span> organizations using our platform
+                <span className="font-semibold">{t("hero.stats.count", "1,000+")}</span> {t("hero.stats.description", "organizations using our platform")}
               </p>
             </div>
           </div>

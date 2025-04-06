@@ -10,7 +10,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
 import i18n from "@/i18n";
 
 interface LanguageSelectorProps {
@@ -34,16 +33,10 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
   ];
 
   const handleLanguageChange = async (langCode: string) => {
-    // Only show toast and change language if it's different from current
+    // Only change language if it's different from current - without showing toast
     if (langCode !== i18n.language) {
-      toast.promise(
-        i18n.changeLanguage(langCode),
-        {
-          loading: `Changing language to ${languages.find(l => l.code === langCode)?.name || langCode}...`,
-          success: `Language changed to ${languages.find(l => l.code === langCode)?.name || langCode}`,
-          error: `Failed to change language`,
-        }
-      );
+      // Change language without toast notification
+      await i18n.changeLanguage(langCode);
     }
   };
 
