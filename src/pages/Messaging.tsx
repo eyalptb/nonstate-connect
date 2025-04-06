@@ -3,7 +3,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { useTranslation } from '@/contexts/translation/TranslationContext';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/auth';
 import ConversationsList from '@/components/messaging/ConversationsList';
 import ConversationView from '@/components/messaging/ConversationView';
 import NewConversation from '@/components/messaging/NewConversation';
