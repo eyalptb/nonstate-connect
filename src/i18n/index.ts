@@ -69,9 +69,6 @@ i18n
     // Don't use nested objects
     nsSeparator: ':',
     
-    // Retry on failed resource loading
-    retry: 5,
-    
     // Enable fallback to other languages
     fallbackNS: 'common'
   });

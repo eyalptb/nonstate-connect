@@ -98,26 +98,6 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
   );
 };
 
-export const useTranslation = (namespaces?: string | string[]) => {
-  const context = useContext(TranslationContext);
-  
-  if (context === undefined) {
-    throw new Error('useTranslation must be used within a TranslationProvider');
-  }
-  
-  // If namespaces are provided, use them with the hook
-  if (namespaces) {
-    const { t, i18n, ready } = useReactI18next(namespaces);
-    return {
-      ...context,
-      t,
-      i18n,
-      ready,
-      currentLanguage: context.currentLanguage
-    };
-  }
-  
-  return context;
-};
+export const useTranslation = useReactI18next;
 
 export default TranslationContext;

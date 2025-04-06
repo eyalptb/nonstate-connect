@@ -4,15 +4,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Network, Shield, Globe } from "lucide-react";
 import { useAuth } from "@/contexts/auth";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "@/contexts/translation/TranslationContext";
+import { useTranslation } from "react-i18next";
 
 const JoinCta = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { t, currentLanguage } = useTranslation(["common"]);
+  const { t, i18n } = useTranslation(["common"]);
 
   return (
-    <section id="join" className="py-20 relative overflow-hidden" key={`join-cta-${currentLanguage}`}>
+    <section id="join" className="py-20 relative overflow-hidden" key={`join-cta-${i18n.language}`}>
       {/* Background decorative elements */}
       <div className="absolute inset-0 bg-gradient-network -z-10"></div>
       
@@ -20,9 +20,9 @@ const JoinCta = () => {
         <Card className="border-0 bg-card/80 backdrop-blur-sm shadow-lg max-w-4xl mx-auto">
           <CardContent className="p-8 md:p-12">
             <div className="text-center mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">{t("joinCta.heading")}</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Join the Network</h2>
               <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-                {t("joinCta.subheading")}
+                Connect with like-minded organizations and individuals working toward positive global change.
               </p>
             </div>
             
@@ -31,9 +31,9 @@ const JoinCta = () => {
                 <div className="bg-primary/10 p-3 rounded-full mb-4">
                   <Shield className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold mb-2">{t("joinCta.benefits.secure.title")}</h3>
+                <h3 className="font-semibold mb-2">Secure Collaboration</h3>
                 <p className="text-sm text-foreground/70">
-                  {t("joinCta.benefits.secure.description")}
+                  Work together with complete privacy and data security
                 </p>
               </div>
               
@@ -41,9 +41,9 @@ const JoinCta = () => {
                 <div className="bg-primary/10 p-3 rounded-full mb-4">
                   <Network className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold mb-2">{t("joinCta.benefits.blockchain.title")}</h3>
+                <h3 className="font-semibold mb-2">Blockchain Verified</h3>
                 <p className="text-sm text-foreground/70">
-                  {t("joinCta.benefits.blockchain.description")}
+                  All contributions are verified and immutably recorded
                 </p>
               </div>
               
@@ -51,9 +51,9 @@ const JoinCta = () => {
                 <div className="bg-primary/10 p-3 rounded-full mb-4">
                   <Globe className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="font-semibold mb-2">{t("joinCta.benefits.impact.title")}</h3>
+                <h3 className="font-semibold mb-2">Global Impact</h3>
                 <p className="text-sm text-foreground/70">
-                  {t("joinCta.benefits.impact.description")}
+                  Drive meaningful change on a worldwide scale
                 </p>
               </div>
             </div>
@@ -61,15 +61,15 @@ const JoinCta = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {user ? (
                 <Button size="lg" className="font-semibold" onClick={() => navigate('/dashboard')}>
-                  {t("joinCta.buttons.dashboard")}
+                  Go to Dashboard
                 </Button>
               ) : (
                 <>
                   <Button size="lg" className="font-semibold" onClick={() => navigate('/sign-up')}>
-                    {t("joinCta.buttons.createAccount")}
+                    Create Account
                   </Button>
                   <Button size="lg" variant="outline" className="font-semibold" onClick={() => navigate('/sign-in')}>
-                    {t("joinCta.buttons.signIn")}
+                    Sign In
                   </Button>
                 </>
               )}

@@ -59,7 +59,7 @@ const TranslationDebugger: React.FC<TranslationDebuggerProps> = ({
         <div className="flex justify-between items-center">
           <CardTitle>Translation Debugger</CardTitle>
           <div className="flex space-x-2">
-            <Badge variant={successCount === keys.length ? "success" : "destructive"}>
+            <Badge variant={successCount === keys.length ? "secondary" : "destructive"}>
               {successCount}/{keys.length} Keys Working
             </Badge>
             <Badge variant="outline">{currentLanguage}</Badge>
@@ -87,7 +87,7 @@ const TranslationDebugger: React.FC<TranslationDebuggerProps> = ({
                 <span className={success ? "text-green-600" : "text-red-600"}>
                   {success ? translation : `"${translation}" (FAILED)`}
                 </span>
-                <Badge variant={success ? "success" : "destructive"}>
+                <Badge variant={success ? "secondary" : "destructive"}>
                   {success ? "✓" : "✗"}
                 </Badge>
               </div>
