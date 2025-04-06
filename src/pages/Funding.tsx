@@ -2,7 +2,7 @@
 import { useState } from "react";
 import FundingProjects from "@/components/FundingProjects";
 import CreateFundingProject from "@/components/CreateFundingProject";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/auth";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Network, LucideDollarSign, Users } from "lucide-react";

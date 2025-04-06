@@ -1,7 +1,6 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/auth';
 import { useConversations, Conversation } from '@/hooks/useConversations';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,18 +14,15 @@ const ConversationsList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
-  // Filter conversations based on search query
   const filteredConversations = conversations.filter(conversation => {
     if (!searchQuery.trim()) return true;
     
-    // Search in participant names
     return conversation.participants.some(participant => {
       const fullName = `${participant.first_name || ''} ${participant.last_name || ''}`.trim().toLowerCase();
       return fullName.includes(searchQuery.toLowerCase());
     });
   });
 
-  // Get the other participant in a conversation (for display purposes)
   const getOtherParticipant = (conversation: Conversation) => {
     const userId = user?.id || '';
     return conversation.participants.find(p => p.user_id !== userId);
@@ -58,7 +54,6 @@ const ConversationsList = () => {
       
       <div className="flex-1 overflow-y-auto">
         {loading ? (
-          // Loading skeletons
           Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="p-4 border-b flex items-center gap-3">
               <Skeleton className="h-10 w-10 rounded-full" />

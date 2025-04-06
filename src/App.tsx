@@ -46,8 +46,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="theme">
-        <Router>
-          <AuthProvider>
+        <AuthProvider>
+          <Router>
             <div className="min-h-screen bg-background">
               <Navbar />
               <Routes>
@@ -112,7 +112,7 @@ function App() {
                 {/* Garden-specific routes */}
                 <Route path="/garden" element={<GardenProjects />} />
                 <Route path="/garden/create" element={<GardenProjectCreation />} />
-                <Route path="/garden/:projectId" element={<GardenProject />} />
+                <Route path="/garden/projects/:projectId" element={<GardenProject />} />
                 <Route path="/projects/:projectId/setup" element={<GardenProjectSetup />} />
                 
                 {/* 404 Route */}
@@ -121,8 +121,8 @@ function App() {
               <Footer />
               <Toaster />
             </div>
-          </AuthProvider>
-        </Router>
+          </Router>
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

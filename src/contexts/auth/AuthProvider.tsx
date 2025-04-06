@@ -1,13 +1,10 @@
 
-import React, { createContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { toast } from "sonner";
-import { AuthContextType, User } from './types';
+import { AuthContext, AuthContextType, User } from './types';
 import { useTranslation } from '@/contexts/translation/TranslationContext';
-
-// Create the auth context
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Auth Provider component
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

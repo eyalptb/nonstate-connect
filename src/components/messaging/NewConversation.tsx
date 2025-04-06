@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/auth';
 import { useConversations } from '@/hooks/useConversations';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,16 +15,13 @@ const NewConversation = () => {
   const { createConversation } = useConversations();
   const navigate = useNavigate();
 
-  // In a real app, this would fetch from an API
   useEffect(() => {
-    // Mock search functionality
     if (!searchQuery.trim()) {
       setSearchResults([]);
       return;
     }
 
     setLoading(true);
-    // Simulate API call with a delay
     const timer = setTimeout(() => {
       setSearchResults([
         {
@@ -85,7 +81,6 @@ const NewConversation = () => {
 
       <div className="flex-1 overflow-y-auto p-4">
         {loading ? (
-          // Loading skeletons
           Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="p-4 border-b flex items-center gap-3">
               <Skeleton className="h-10 w-10 rounded-full" />
