@@ -30,7 +30,7 @@ export const addComponentTranslations = (
   if (componentType === 'learn') {
     if (language === 'ru' && learnTranslations.ru) {
       console.log(`Adding learn translations for ${language}`, learnTranslations[language]);
-      // For Russian, ensure we're explicitly adding the learn translations
+      // For Russian, ensure we're explicitly adding the learn translations with the correct structure
       return addTranslations(language, namespace, { learn: learnTranslations[language].learn });
     }
     
@@ -43,7 +43,7 @@ export const addComponentTranslations = (
     }
   }
   
-  // Add translations to the i18n instance
+  // Add translations to the i18n instance (for non-learn components)
   return addTranslations(language, namespace, translations);
 };
 
