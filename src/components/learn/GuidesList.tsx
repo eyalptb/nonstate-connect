@@ -1,11 +1,27 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { BookOpen, ArrowRight } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { ResourceCard } from "./ResourceCard";
+import i18n from '@/i18n';
 
 export const GuidesList = () => {
   const { t } = useTranslation(['common']);
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
+
+  // Listen for language changes
+  useEffect(() => {
+    const handleLanguageChanged = (lng: string) => {
+      console.log(`GuidesList: Language changed to ${lng}`);
+      setCurrentLanguage(lng);
+    };
+    
+    i18n.on('languageChanged', handleLanguageChanged);
+    
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
+  }, []);
 
   const guides = [
     {
@@ -35,7 +51,7 @@ export const GuidesList = () => {
     <>
       {guides.map((guide, i) => (
         <ResourceCard
-          key={i}
+          key={`${i}-${currentLanguage}`}
           title={guide.title}
           description={guide.description}
           icon={guide.icon}

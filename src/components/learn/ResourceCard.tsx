@@ -1,40 +1,41 @@
 
-import React, { ReactNode } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
 interface ResourceCardProps {
   title: string;
   description: string;
-  icon: ReactNode;
+  icon: React.ReactNode;
   metadata: string;
   cta: string;
 }
 
-export const ResourceCard = ({ title, description, icon, metadata, cta }: ResourceCardProps) => {
+export const ResourceCard = ({ 
+  title, 
+  description, 
+  icon, 
+  metadata, 
+  cta 
+}: ResourceCardProps) => {
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex justify-between items-center">
-          <CardTitle className="flex items-center gap-2">
-            {icon}
-            {title}
-          </CardTitle>
-          <span className="text-sm text-muted-foreground">{metadata}</span>
+    <Card className="border border-muted-foreground/20 hover:border-primary/20 transition-colors">
+      <CardContent className="p-6">
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2 text-primary">
+              {icon}
+              <span className="text-sm font-medium">{metadata}</span>
+            </div>
+            <h3 className="text-xl font-semibold mb-2">{title}</h3>
+            <p className="text-muted-foreground mb-4">{description}</p>
+            <Button variant="link" className="p-0 h-auto font-medium gap-1 items-center flex">
+              {cta} <ArrowRight className="h-4 w-4 ml-1" />
+            </Button>
+          </div>
         </div>
-      </CardHeader>
-      <CardContent>
-        <CardDescription className="text-base">
-          {description}
-        </CardDescription>
       </CardContent>
-      <CardFooter>
-        <Button variant="outline" className="w-full">
-          {cta}
-          <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
-      </CardFooter>
     </Card>
   );
 };

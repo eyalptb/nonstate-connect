@@ -8,7 +8,7 @@ import { loadAllLearnTranslations } from "@/utils/translationLoader";
 import i18n from '@/i18n';
 
 const Learn = () => {
-  const { t } = useTranslation(['common']);
+  const { t, i18n: i18nInstance } = useTranslation(['common']);
   const [translationsLoaded, setTranslationsLoaded] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
   
@@ -17,8 +17,16 @@ const Learn = () => {
     console.log("Loading learn translations for language:", i18n.language);
     
     const loadTranslations = async () => {
-      await loadAllLearnTranslations();
-      setTranslationsLoaded(true);
+      try {
+        await loadAllLearnTranslations();
+        console.log("Learn translations loaded successfully");
+        
+        // Force a refresh to ensure translations are applied
+        setTranslationsLoaded(true);
+        setCurrentLanguage(i18n.language);
+      } catch (error) {
+        console.error("Failed to load learn translations:", error);
+      }
     };
     
     loadTranslations();
@@ -26,7 +34,11 @@ const Learn = () => {
     // Set up language change listener
     const handleLanguageChanged = (lng: string) => {
       console.log(`Language changed to ${lng}, reloading learn translations`);
-      setCurrentLanguage(lng); // Force component re-render
+      
+      // Force component re-render with new language
+      setCurrentLanguage(lng);
+      
+      // Reload translations for the new language
       loadAllLearnTranslations();
     };
     

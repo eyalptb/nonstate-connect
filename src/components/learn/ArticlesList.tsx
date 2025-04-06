@@ -1,12 +1,28 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FileText, ArrowRight } from "lucide-react";
+import { FileText } from "lucide-react";
 import { ResourceCard } from "./ResourceCard";
+import i18n from '@/i18n';
 
 export const ArticlesList = () => {
   const { t } = useTranslation(['common']);
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
 
+  // Listen for language changes
+  useEffect(() => {
+    const handleLanguageChanged = (lng: string) => {
+      console.log(`ArticlesList: Language changed to ${lng}`);
+      setCurrentLanguage(lng);
+    };
+    
+    i18n.on('languageChanged', handleLanguageChanged);
+    
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
+  }, []);
+  
   const articles = [
     {
       title: t("learn.articles.futureOfCollaboration.title", "The Future of Secure Collaboration"),
@@ -35,7 +51,7 @@ export const ArticlesList = () => {
     <>
       {articles.map((article, i) => (
         <ResourceCard
-          key={i}
+          key={`${i}-${currentLanguage}`}
           title={article.title}
           description={article.description}
           icon={article.icon}

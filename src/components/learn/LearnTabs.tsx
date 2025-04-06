@@ -31,7 +31,7 @@ export const LearnTabs = () => {
   const articlesLabel = t("learn.tabs.articles", "Articles");
 
   return (
-    <Tabs defaultValue="guides">
+    <Tabs defaultValue="guides" key={`tabs-container-${currentLanguage}`}>
       <TabsList className="grid w-full grid-cols-3 mb-8">
         <TabsTrigger value="guides">{guidesLabel}</TabsTrigger>
         <TabsTrigger value="videos">{videosLabel}</TabsTrigger>
