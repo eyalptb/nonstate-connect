@@ -12,7 +12,32 @@ export const LearnTabs = () => {
   useEffect(() => {
     // Debug translations on component mount and language change
     console.log(`[LearnTabs] Current language: ${i18n.language}`);
-    console.log(`[LearnTabs] Translation for tabs.guides: "${t("learn.tabs.guides", "Guides")}"`);
+    
+    // Check translation results
+    const guidesTab = t("learn.tabs.guides", "Guides");
+    const videosTab = t("learn.tabs.videos", "Videos");
+    const articlesTab = t("learn.tabs.articles", "Articles");
+    
+    console.log(`[LearnTabs] Translation results:`);
+    console.log(`- learn.tabs.guides: "${guidesTab}"`);
+    console.log(`- learn.tabs.videos: "${videosTab}"`);
+    console.log(`- learn.tabs.articles: "${articlesTab}"`);
+    
+    // Check if the translations are default values
+    const usingDefaults = 
+      guidesTab === "Guides" && 
+      videosTab === "Videos" && 
+      articlesTab === "Articles";
+    
+    console.log(`[LearnTabs] Using default fallback values: ${usingDefaults ? 'Yes' : 'No'}`);
+    
+    // Check resource bundle
+    const bundle = i18n.getResourceBundle(i18n.language, 'common');
+    if (bundle && bundle.learn && bundle.learn.tabs) {
+      console.log(`[LearnTabs] Bundle tabs object:`, bundle.learn.tabs);
+    } else {
+      console.log(`[LearnTabs] Bundle missing tabs object`);
+    }
   }, [i18n.language, t]);
 
   return (

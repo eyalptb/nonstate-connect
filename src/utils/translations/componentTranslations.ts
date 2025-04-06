@@ -76,19 +76,20 @@ export const loadAllUseCasesTranslations = () => {
   loadAllComponentTranslations('useCases');
 };
 
-// Learn translations
+// Learn translations - Fixed to handle the nested structure correctly
 export const addLearnTranslations = (language: string, namespace: string = 'common') => {
   if (!learnTranslations[language]) {
     console.warn(`[addLearnTranslations] No learn translations found for ${language}, falling back to English`);
     // Try to add English translations as fallback
     if (learnTranslations['en']) {
-      return addTranslations(language, namespace, { learn: learnTranslations['en'] });
+      console.log(`[addLearnTranslations] Adding English learn translations as fallback for ${language}`);
+      return addTranslations(language, namespace, learnTranslations['en']);
     }
     return false;
   }
   
   console.log(`[addLearnTranslations] Adding learn translations for ${language}:`, learnTranslations[language]);
-  return addTranslations(language, namespace, { learn: learnTranslations[language] });
+  return addTranslations(language, namespace, learnTranslations[language]);
 };
 
 export const loadAllLearnTranslations = () => {

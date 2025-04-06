@@ -25,20 +25,7 @@ export const addComponentTranslations = (
   
   console.log(`[addComponentTranslations] Adding translations for ${componentType}/${language}`, translations);
   
-  // For Learn component, we need to handle the nested structure differently
-  if (componentType === 'learn') {
-    // Add the entire nested object structure for learn
-    try {
-      i18n.addResourceBundle(language, namespace, { learn: translations.learn }, true, true);
-      console.log(`[addComponentTranslations] Successfully added learn translations for ${language}`);
-      return true;
-    } catch (error) {
-      console.error(`[addComponentTranslations] Failed to add learn translations for ${language}:`, error);
-      return false;
-    }
-  }
-  
-  // Add translations to the i18n instance for other components
+  // Add translations to the i18n instance - handle as a unified object, not specifically for "learn"
   return addTranslations(language, namespace, translations);
 };
 
