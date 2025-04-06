@@ -6,6 +6,7 @@ import { useTranslation } from "@/contexts/translation/TranslationContext";
 const Features = () => {
   const { t, currentLanguage } = useTranslation(['common']);
 
+  // Define features array with proper translation keys
   const features = [
     {
       icon: <Lock className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,

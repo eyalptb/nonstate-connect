@@ -20,67 +20,67 @@ import { useTranslation } from "@/contexts/translation/TranslationContext";
 const Features = () => {
   const { t, currentLanguage } = useTranslation(['common', 'navigation']);
 
-  // Feature categories - using translation keys
+  // Feature categories using direct translation calls
   const featureCategories = [
     {
       id: "security",
-      name: t("features.categories.security", "Security"),
+      name: t("features.categories.security"),
       features: [
         {
-          title: t("features.security.encryption.title", "End-to-End Encryption"),
-          description: t("features.security.encryption.description", "All communications and shared documents are encrypted to ensure privacy and security for all participants."),
+          title: t("features.security.encryption.title"),
+          description: t("features.security.encryption.description"),
           icon: <Lock className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: t("features.security.identity.title", "Self-Sovereign Identity"),
-          description: t("features.security.identity.description", "Users maintain control of their identity and credentials without centralized authorities."),
+          title: t("features.security.identity.title"),
+          description: t("features.security.identity.description"),
           icon: <Shield className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         }
       ]
     },
     {
       id: "collaboration",
-      name: t("features.categories.collaboration", "Collaboration"),
+      name: t("features.categories.collaboration"),
       features: [
         {
-          title: t("features.collaboration.global.title", "Global Collaboration"),
-          description: t("features.collaboration.global.description", "Connect with partners across borders to work on shared initiatives and cooperative games."),
+          title: t("features.collaboration.global.title"),
+          description: t("features.collaboration.global.description"),
           icon: <Globe className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: t("features.collaboration.community.title", "Community Building"),
-          description: t("features.collaboration.community.description", "Create and join communities with shared interests in parachute games and collaborative activities."),
+          title: t("features.collaboration.community.title"),
+          description: t("features.collaboration.community.description"),
           icon: <Users className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: t("features.collaboration.messaging.title", "Secure Messaging"),
-          description: t("features.collaboration.messaging.description", "Communicate with other members through our encrypted messaging system."),
+          title: t("features.collaboration.messaging.title"),
+          description: t("features.collaboration.messaging.description"),
           icon: <MessageSquareText className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         }
       ]
     },
     {
       id: "infrastructure",
-      name: t("features.categories.infrastructure", "Infrastructure"),
+      name: t("features.categories.infrastructure"),
       features: [
         {
-          title: t("features.infrastructure.decentralized.title", "Decentralized Architecture"),
-          description: t("features.infrastructure.decentralized.description", "Built on blockchain technology to eliminate central points of failure and censorship."),
+          title: t("features.infrastructure.decentralized.title"),
+          description: t("features.infrastructure.decentralized.description"),
           icon: <Network className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: t("features.infrastructure.token.title", "Token Economy"),
-          description: t("features.infrastructure.token.description", "Digital tokens for reward, recognition and community participation in the ecosystem."),
+          title: t("features.infrastructure.token.title"),
+          description: t("features.infrastructure.token.description"),
           icon: <Wallet className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: t("features.infrastructure.governance.title", "Transparent Governance"),
-          description: t("features.infrastructure.governance.description", "Democratic decision-making with transparent voting and resource allocation."),
+          title: t("features.infrastructure.governance.title"),
+          description: t("features.infrastructure.governance.description"),
           icon: <Vote className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: t("features.infrastructure.integration.title", "Integration Hub"),
-          description: t("features.infrastructure.integration.description", "Connect with external tools and services to enhance your collaboration experience."),
+          title: t("features.infrastructure.integration.title"),
+          description: t("features.infrastructure.integration.description"),
           icon: <Puzzle className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         }
       ]
@@ -92,8 +92,8 @@ const Features = () => {
     <div className="py-8 md:py-12" key={`features-page-${currentLanguage}`}>
       <Container>
         <PageHeader 
-          title={t("features.pageTitle", "Platform Features")}
-          description={t("features.pageDescription", "Discover the tools and technologies that power the ParaCollab platform")}
+          title={t("features.pageTitle")}
+          description={t("features.pageDescription")}
         />
         
         <Tabs defaultValue="security" className="w-full mt-8">
@@ -127,12 +127,12 @@ const Features = () => {
         </Tabs>
         
         <div className="mt-16 bg-muted/50 p-6 rounded-lg">
-          <h3 className="text-xl font-bold mb-4">{t("features.why.title", "Why Choose ParaCollab?")}</h3>
+          <h3 className="text-xl font-bold mb-4">{t("features.why.title")}</h3>
           <p className="text-foreground/70 mb-4">
-            {t("features.why.description1", "ParaCollab is designed specifically for parachute game enthusiasts and communities who want to collaborate on global challenges. Our platform combines the best of decentralized technology with intuitive design to create a seamless experience for all users.")}
+            {t("features.why.description1")}
           </p>
           <p className="text-foreground/70">
-            {t("features.why.description2", "With features spanning security, collaboration tools, and robust infrastructure, we provide everything you need to connect, create, and contribute to meaningful projects around the world.")}
+            {t("features.why.description2")}
           </p>
         </div>
       </Container>

@@ -10,33 +10,33 @@ const UseCases = () => {
 
   const useCasesList = [
     {
-      title: t("useCases.ngo.title", "NGO Collaboration"),
-      description: t("useCases.ngo.description", "Securely connect NGOs across borders while protecting sensitive data and maintaining privacy."),
+      title: t("useCases.ngo.title"),
+      description: t("useCases.ngo.description"),
       icon: <Globe className="h-12 w-12 text-primary" />
     },
     {
-      title: t("useCases.humanRights.title", "Human Rights Documentation"),
-      description: t("useCases.humanRights.description", "Document and verify human rights issues with end-to-end encryption and secure verification."),
+      title: t("useCases.humanRights.title"),
+      description: t("useCases.humanRights.description"),
       icon: <Shield className="h-12 w-12 text-primary" />
     },
     {
-      title: t("useCases.environmental.title", "Environmental Monitoring"),
-      description: t("useCases.environmental.description", "Track and verify environmental data with trusted validation from multiple sources."),
+      title: t("useCases.environmental.title"),
+      description: t("useCases.environmental.description"),
       icon: <Leaf className="h-12 w-12 text-primary" />
     },
     {
-      title: t("useCases.corporate.title", "Corporate Sustainability"),
-      description: t("useCases.corporate.description", "Validate ESG claims and supply chain transparency with verifiable impact tracking."),
+      title: t("useCases.corporate.title"),
+      description: t("useCases.corporate.description"),
       icon: <Building className="h-12 w-12 text-primary" />
     },
     {
-      title: t("useCases.grassroots.title", "Grassroots Organizing"),
-      description: t("useCases.grassroots.description", "Coordinate community initiatives securely without exposing participant identities."),
+      title: t("useCases.grassroots.title"),
+      description: t("useCases.grassroots.description"),
       icon: <Users className="h-12 w-12 text-primary" />
     },
     {
-      title: t("useCases.research.title", "Collaborative Research"),
-      description: t("useCases.research.description", "Share research data and findings with privacy-preserving collaboration tools."),
+      title: t("useCases.research.title"),
+      description: t("useCases.research.description"),
       icon: <Lightbulb className="h-12 w-12 text-primary" />
     }
   ];
@@ -44,8 +44,8 @@ const UseCases = () => {
   return (
     <div className="container mx-auto py-12 px-4" key={`usecases-${currentLanguage}`}>
       <PageHeader
-        title={t("useCases.pageTitle", "Use Cases")}
-        description={t("useCases.pageDescription", "Discover how organizations are using our platform to enable secure, verifiable collaboration.")}
+        title={t("useCases.pageTitle")}
+        description={t("useCases.pageDescription")}
       />
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
