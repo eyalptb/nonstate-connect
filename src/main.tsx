@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 import i18n from './i18n'
-import { AuthProvider } from './contexts/auth'
 import { TranslationProvider } from './contexts/translation/TranslationContext'
 import { NotificationProvider } from './contexts/notification/NotificationContext'
 import { Toaster } from 'sonner'
@@ -21,14 +20,12 @@ const root = createRoot(rootElement);
 const renderApp = () => {
   document.documentElement.lang = i18n.language;
   root.render(
-    <AuthProvider>
-      <TranslationProvider>
-        <NotificationProvider>
-          <App />
-          <Toaster />
-        </NotificationProvider>
-      </TranslationProvider>
-    </AuthProvider>
+    <TranslationProvider>
+      <NotificationProvider>
+        <App />
+        <Toaster />
+      </NotificationProvider>
+    </TranslationProvider>
   );
 };
 
