@@ -76,7 +76,7 @@ export const loadAllUseCasesTranslations = () => {
   loadAllComponentTranslations('useCases');
 };
 
-// Learn translations - Fixed to handle the nested structure correctly
+// Learn translations - implemented correctly to handle the flat structure required by i18next
 export const addLearnTranslations = (language: string, namespace: string = 'common') => {
   if (!learnTranslations[language]) {
     console.warn(`[addLearnTranslations] No learn translations found for ${language}, falling back to English`);
@@ -89,6 +89,8 @@ export const addLearnTranslations = (language: string, namespace: string = 'comm
   }
   
   console.log(`[addLearnTranslations] Adding learn translations for ${language}:`, learnTranslations[language]);
+  
+  // Direct use of i18n.addResourceBundle to ensure the structure is preserved
   return i18n.addResourceBundle(language, namespace, learnTranslations[language], true, true);
 };
 
@@ -104,6 +106,19 @@ export const loadAllLearnTranslations = () => {
       console.warn(`[loadAllLearnTranslations] Failed to load learn translations for ${lang}`);
     }
   });
+  
+  // Force a check to see if translations were added correctly
+  setTimeout(() => {
+    supportedLanguages.forEach(lang => {
+      const bundle = i18n.getResourceBundle(lang, 'common');
+      const hasLearnTranslations = bundle && bundle.learn && Object.keys(bundle.learn).length > 0;
+      if (!hasLearnTranslations) {
+        console.error(`[loadAllLearnTranslations] Learn translations missing for ${lang} after loading!`);
+        // Try again one more time
+        addLearnTranslations(lang);
+      }
+    });
+  }, 100);
   
   // Dispatch event to notify that translations are loaded
   document.dispatchEvent(new Event('i18n-resources-loaded'));

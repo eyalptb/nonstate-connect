@@ -43,10 +43,18 @@ const addInMemoryTranslations = (language: string) => {
     i18n.addResourceBundle(language, 'common', backendTranslations[language], true, true);
   }
   
-  // Add Learn translations
+  // Add Learn translations - with forced debug
   if (learnTranslations[language]) {
     console.log(`Adding learn translations for ${language} during initialization`);
-    i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
+    
+    // CRITICAL: We need to add the translations in the exact format expected by i18next
+    const success = i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
+    console.log(`Learn translations add result: ${success ? 'Success' : 'Failed'}`);
+    
+    // Verify the translations were added
+    const bundle = i18n.getResourceBundle(language, 'common');
+    console.log(`Resource bundle after adding learn translations:`, 
+      bundle && bundle.learn ? 'Has learn section' : 'Missing learn section');
   } else if (learnTranslations['en']) {
     console.log(`No learn translations for ${language}, adding English as fallback`);
     i18n.addResourceBundle(language, 'common', learnTranslations['en'], true, true);
