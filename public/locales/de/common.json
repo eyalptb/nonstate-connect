@@ -13,6 +13,44 @@
   "create": "Erstellen",
   "submit": "Absenden",
   "confirm": "Bestätigen",
+  "hero": {
+    "tagline": "Datenschutzorientierte KI-Zusammenarbeit",
+    "title": {
+      "start": "Sichere",
+      "highlight": "KI-verbesserte",
+      "end": "Kollaborationsplattform für Weltveränderer"
+    },
+    "description": "ParaCollab ermöglicht Wissenschaftlern, Umweltschützern und Pädagogen, an wirkungsvollen Projekten zusammenzuarbeiten und dabei ihre Daten privat und sicher zu halten.",
+    "primaryCta": "Starten Sie die Zusammenarbeit",
+    "secondaryCta": "Funktionen erkunden",
+    "stats": {
+      "count": "500",
+      "description": "Teams schützen ihre Daten während sie innovieren"
+    }
+  },
+  "joinCta": {
+    "heading": "Dem Netzwerk beitreten",
+    "subheading": "Verbinden Sie sich mit gleichgesinnten Organisationen und Einzelpersonen, die an positiven globalen Veränderungen arbeiten.",
+    "benefits": {
+      "secure": {
+        "title": "Sichere Zusammenarbeit",
+        "description": "Arbeiten Sie mit vollständiger Privatsphäre und Datensicherheit zusammen"
+      },
+      "blockchain": {
+        "title": "Blockchain-verifiziert",
+        "description": "Alle Beiträge werden verifiziert und unveränderlich aufgezeichnet"
+      },
+      "impact": {
+        "title": "Globale Wirkung",
+        "description": "Treiben Sie bedeutungsvolle Veränderungen im weltweiten Maßstab voran"
+      }
+    },
+    "buttons": {
+      "dashboard": "Zum Dashboard",
+      "createAccount": "Konto erstellen",
+      "signIn": "Anmelden"
+    }
+  },
   "wallet": {
     "title": "CollabCoin Wallet",
     "description": "Ihre datenschutzgesicherten Anreize",
@@ -52,5 +90,31 @@
       "title": "Sich entwickelnde Blaupausen",
       "description": "Skalieren und adaptieren Sie erfolgreiche Projektvorlagen unter Beibehaltung von Sicherheit und Datenschutz."
     }
-  }
+  },
+  "projects": {
+    "heading": "Aktive Kollaborationen",
+    "subheading": "Nehmen Sie an bestehenden Projekten teil oder schlagen Sie neue Initiativen vor, um dringende globale Herausforderungen anzugehen.",
+    "viewAll": "Alle Projekte anzeigen",
+    "participants": "{{count}} Teilnehmer",
+    "progress": "Fortschritt",
+    "learnMore": "Mehr erfahren"
+  },
+  "dashboard": {
+    "welcomeBack": "Willkommen zurück!",
+    "welcomeMessage": "Willkommen zurück in Ihrem sicheren Kollaborations-Dashboard!",
+    "secureCollaboration": "Ihr sicherer Kollaborations-Hub",
+    "yourProjects": "Ihre Projekte",
+    "noProjects": "Sie sind noch keinem Projekt beigetreten. Durchsuchen Sie verfügbare Projekte oder erstellen Sie ein neues.",
+    "browseProjects": "Projekte durchsuchen",
+    "networkActivity": "Netzwerkaktivität",
+    "seeLatestActivities": "Sehen Sie die neuesten Aktivitäten aus Ihrem Netzwerk.",
+    "viewActivity": "Aktivität anzeigen",
+    "createProject": "Projekt erstellen"
+  },
+  "greetings": {
+    "morning": "Guten Morgen",
+    "afternoon": "Guten Tag",
+    "evening": "Guten Abend"
+  },
+  "language": "Sprache"
 }

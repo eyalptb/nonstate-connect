@@ -57,6 +57,12 @@
     "coins": "CollabCoin 币",
     "earn": "通过安全协作赚取并用于高级功能"
   },
+  "privacy": {
+    "title": "隐私优先",
+    "description": "您的数据始终属于您",
+    "encrypted": "端到端加密",
+    "control": "完全控制权"
+  },
   "features": {
     "heading": "以隐私为先的创新基础设施",
     "subheading": "我们的平台将安全加密技术与AI驱动的协作工具相结合，让变革者能够在不妥协隐私的情况下发挥力量。",
@@ -84,5 +90,31 @@
       "title": "演进模板",
       "description": "在保持安全和隐私的同时扩展和调整成功的项目模式。"
     }
-  }
+  },
+  "projects": {
+    "heading": "活跃协作项目",
+    "subheading": "加入现有项目或提出新倡议，共同应对紧迫的全球挑战。",
+    "viewAll": "查看所有项目",
+    "participants": "{{count}} 名参与者",
+    "progress": "进度",
+    "learnMore": "了解更多"
+  },
+  "dashboard": {
+    "welcomeBack": "欢迎回来！",
+    "welcomeMessage": "欢迎回到您的安全协作仪表盘！",
+    "secureCollaboration": "您的安全协作中心",
+    "yourProjects": "您的项目",
+    "noProjects": "您尚未加入任何项目。浏览可用项目或创建新项目。",
+    "browseProjects": "浏览项目",
+    "networkActivity": "网络活动",
+    "seeLatestActivities": "查看您网络中的最新活动。",
+    "viewActivity": "查看活动",
+    "createProject": "创建项目"
+  },
+  "greetings": {
+    "morning": "早上好",
+    "afternoon": "下午好",
+    "evening": "晚上好"
+  },
+  "language": "语言"
 }

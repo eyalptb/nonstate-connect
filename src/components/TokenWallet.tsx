@@ -37,28 +37,28 @@ export const TokenWallet = () => {
     <Card className="w-full shadow-sm" key={`wallet-${currentLanguage}`}>
       <CardHeader>
         <CardTitle className="text-xl">
-          {t('wallet.title', 'CollabCoin Wallet', { ns: 'common' })}
+          {t('wallet.title')}
         </CardTitle>
         <CardDescription>
-          {t('wallet.description', 'Your tokenized incentives', { ns: 'common' })}
+          {t('wallet.description')}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col items-center justify-center py-8">
         <Coins className="h-12 w-12 text-yellow-500 mb-4" />
         <h3 className="text-lg font-medium mb-2">
-          {t('wallet.coins', 'CollabCoins', { ns: 'common' })}
+          {t('wallet.coins')}
         </h3>
         <div className="flex items-center mb-2">
           <Coins className="mr-2 h-6 w-6 text-yellow-500" />
           <span className="text-3xl font-bold">{tokenBalance}</span>
         </div>
         <p className="text-muted-foreground text-sm">
-          {t('wallet.earn', 'Earn through secure collaboration and spend on premium features', { ns: 'common' })}
+          {t('wallet.earn')}
         </p>
       </CardContent>
       <CardFooter className="flex justify-between border-t pt-4">
         <p className="text-xs text-muted-foreground">
-          {t('wallet.earn', 'Earn more by contributing to projects', { ns: 'common' })}
+          {t('wallet.earn')}
         </p>
       </CardFooter>
     </Card>

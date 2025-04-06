@@ -9,10 +9,10 @@ import { useTranslation } from "@/contexts/translation/TranslationContext";
 const JoinCta = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { t } = useTranslation(["common"]);
+  const { t, currentLanguage } = useTranslation(["common"]);
 
   return (
-    <section id="join" className="py-20 relative overflow-hidden">
+    <section id="join" className="py-20 relative overflow-hidden" key={`join-cta-${currentLanguage}`}>
       {/* Background decorative elements */}
       <div className="absolute inset-0 bg-gradient-network -z-10"></div>
       

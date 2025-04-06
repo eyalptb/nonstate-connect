@@ -13,6 +13,44 @@
   "create": "作成",
   "submit": "提出",
   "confirm": "確認",
+  "hero": {
+    "tagline": "プライバシーを優先したAIコラボレーション",
+    "title": {
+      "start": "安全な",
+      "highlight": "AI強化",
+      "end": "チェンジメーカーのためのコラボレーションプラットフォーム"
+    },
+    "description": "ParaCollabは科学者、環境活動家、教育者がデータをプライベートかつ安全に保ちながら影響力のあるプロジェクトで協力することを可能にします。",
+    "primaryCta": "コラボレーションを始める",
+    "secondaryCta": "機能を探る",
+    "stats": {
+      "count": "500",
+      "description": "チームがイノベーションを起こしながらデータを保護しています"
+    }
+  },
+  "joinCta": {
+    "heading": "ネットワークに参加する",
+    "subheading": "前向きな世界的変化のために働く志を同じくする組織や個人とつながりましょう。",
+    "benefits": {
+      "secure": {
+        "title": "安全なコラボレーション",
+        "description": "完全なプライバシーとデータセキュリティで共同作業"
+      },
+      "blockchain": {
+        "title": "ブロックチェーン検証",
+        "description": "すべての貢献は検証され、不変に記録されます"
+      },
+      "impact": {
+        "title": "世界的な影響",
+        "description": "世界規模で意味のある変化を推進します"
+      }
+    },
+    "buttons": {
+      "dashboard": "ダッシュボードへ",
+      "createAccount": "アカウント作成",
+      "signIn": "サインイン"
+    }
+  },
   "wallet": {
     "title": "CollabCoinウォレット",
     "description": "あなたのプライバシー保護されたインセンティブ",
@@ -52,5 +90,31 @@
       "title": "進化するブループリント",
       "description": "セキュリティとプライバシーを維持しながら、成功したプロジェクトテンプレートをスケールアップし適応させます。"
     }
-  }
+  },
+  "projects": {
+    "heading": "アクティブなコラボレーション",
+    "subheading": "既存のプロジェクトに参加するか、緊急のグローバルな課題に対処するための新しい取り組みを提案しましょう。",
+    "viewAll": "すべてのプロジェクトを見る",
+    "participants": "{{count}}人の参加者",
+    "progress": "進捗",
+    "learnMore": "詳細を見る"
+  },
+  "dashboard": {
+    "welcomeBack": "おかえりなさい！",
+    "welcomeMessage": "安全なコラボレーションダッシュボードへようこそ！",
+    "secureCollaboration": "あなたの安全なコラボレーションハブ",
+    "yourProjects": "あなたのプロジェクト",
+    "noProjects": "まだどのプロジェクトにも参加していません。利用可能なプロジェクトを閲覧するか、新しいプロジェクトを作成してください。",
+    "browseProjects": "プロジェクトを閲覧",
+    "networkActivity": "ネットワークアクティビティ",
+    "seeLatestActivities": "あなたのネットワークからの最新アクティビティを確認してください。",
+    "viewActivity": "アクティビティを見る",
+    "createProject": "プロジェクト作成"
+  },
+  "greetings": {
+    "morning": "おはようございます",
+    "afternoon": "こんにちは",
+    "evening": "こんばんは"
+  },
+  "language": "言語"
 }

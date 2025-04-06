@@ -55,7 +55,13 @@
     "title": "CollabCoin Wallet",
     "description": "Your tokenized incentives",
     "coins": "CollabCoins",
-    "earn": "Earn through collaboration and spend on premium features"
+    "earn": "Earn through secure collaboration and spend on premium features"
+  },
+  "privacy": {
+    "title": "Privacy First",
+    "description": "Your data stays yours",
+    "encrypted": "End-to-end encrypted",
+    "control": "Complete control"
   },
   "features": {
     "heading": "Privacy-Focused Infrastructure for Innovation",
@@ -85,6 +91,14 @@
       "description": "Scale and adapt successful project templates while maintaining security and privacy."
     }
   },
+  "projects": {
+    "heading": "Active Collaborations",
+    "subheading": "Join existing projects or propose new initiatives to address pressing global challenges.",
+    "viewAll": "View All Projects",
+    "participants": "{{count}} participants",
+    "progress": "Progress",
+    "learnMore": "Learn More"
+  },
   "dashboard": {
     "welcomeBack": "Welcome back!",
     "welcomeMessage": "Welcome back to your secure collaboration dashboard!",
@@ -101,5 +115,6 @@
     "morning": "Good Morning",
     "afternoon": "Good Afternoon",
     "evening": "Good Evening"
-  }
+  },
+  "language": "Language"
 }

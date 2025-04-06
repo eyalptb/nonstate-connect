@@ -57,6 +57,12 @@
     "coins": "CollabCoins",
     "earn": "Ganhe através de colaboração segura e gaste em recursos premium"
   },
+  "privacy": {
+    "title": "Privacidade em Primeiro Lugar",
+    "description": "Seus dados permanecem seus",
+    "encrypted": "Criptografado de ponta a ponta",
+    "control": "Controle completo"
+  },
   "features": {
     "heading": "Infraestrutura com Foco em Privacidade para Inovação",
     "subheading": "Nossa plataforma combina tecnologia de criptografia segura com ferramentas de colaboração impulsionadas por IA para capacitar agentes de mudança sem comprometer a privacidade.",
@@ -84,5 +90,31 @@
       "title": "Modelos Evolutivos",
       "description": "Escale e adapte modelos de projetos bem-sucedidos mantendo segurança e privacidade."
     }
-  }
+  },
+  "projects": {
+    "heading": "Colaborações Ativas",
+    "subheading": "Participe de projetos existentes ou proponha novas iniciativas para enfrentar desafios globais urgentes.",
+    "viewAll": "Ver Todos os Projetos",
+    "participants": "{{count}} participantes",
+    "progress": "Progresso",
+    "learnMore": "Saiba Mais"
+  },
+  "dashboard": {
+    "welcomeBack": "Bem-vindo de volta!",
+    "welcomeMessage": "Bem-vindo de volta ao seu painel de colaboração segura!",
+    "secureCollaboration": "Seu hub de colaboração segura",
+    "yourProjects": "Seus Projetos",
+    "noProjects": "Você ainda não se juntou a nenhum projeto. Navegue pelos projetos disponíveis ou crie um novo.",
+    "browseProjects": "Navegar por Projetos",
+    "networkActivity": "Atividade da Rede",
+    "seeLatestActivities": "Veja as últimas atividades da sua rede.",
+    "viewActivity": "Ver Atividade",
+    "createProject": "Criar Projeto"
+  },
+  "greetings": {
+    "morning": "Bom Dia",
+    "afternoon": "Boa Tarde",
+    "evening": "Boa Noite"
+  },
+  "language": "Idioma"
 }

@@ -13,6 +13,44 @@
   "create": "Créer",
   "submit": "Soumettre",
   "confirm": "Confirmer",
+  "hero": {
+    "tagline": "Collaboration IA axée sur la confidentialité",
+    "title": {
+      "start": "Plateforme de collaboration",
+      "highlight": "améliorée par l'IA",
+      "end": "sécurisée pour les acteurs du changement"
+    },
+    "description": "ParaCollab permet aux scientifiques, aux écologistes et aux éducateurs de collaborer sur des projets à fort impact tout en gardant leurs données privées et sécurisées.",
+    "primaryCta": "Commencer à collaborer",
+    "secondaryCta": "Explorer les fonctionnalités",
+    "stats": {
+      "count": "500",
+      "description": "équipes protégeant leurs données tout en innovant"
+    }
+  },
+  "joinCta": {
+    "heading": "Rejoindre le réseau",
+    "subheading": "Connectez-vous avec des organisations et des individus partageant les mêmes idées et travaillant pour un changement mondial positif.",
+    "benefits": {
+      "secure": {
+        "title": "Collaboration sécurisée",
+        "description": "Travaillez ensemble avec une confidentialité et une sécurité des données complètes"
+      },
+      "blockchain": {
+        "title": "Vérifié par blockchain",
+        "description": "Toutes les contributions sont vérifiées et enregistrées de manière immuable"
+      },
+      "impact": {
+        "title": "Impact mondial",
+        "description": "Conduire un changement significatif à l'échelle mondiale"
+      }
+    },
+    "buttons": {
+      "dashboard": "Aller au tableau de bord",
+      "createAccount": "Créer un compte",
+      "signIn": "Se connecter"
+    }
+  },
   "wallet": {
     "title": "Portefeuille CollabCoin",
     "description": "Vos incitations sécurisées par la confidentialité",
@@ -52,5 +90,31 @@
       "title": "Plans évolutifs",
       "description": "Adaptez des modèles de projets réussis tout en maintenant la sécurité et la confidentialité."
     }
-  }
+  },
+  "projects": {
+    "heading": "Collaborations actives",
+    "subheading": "Rejoignez des projets existants ou proposez de nouvelles initiatives pour relever les défis mondiaux pressants.",
+    "viewAll": "Voir tous les projets",
+    "participants": "{{count}} participants",
+    "progress": "Progression",
+    "learnMore": "En savoir plus"
+  },
+  "dashboard": {
+    "welcomeBack": "Bon retour!",
+    "welcomeMessage": "Bienvenue sur votre tableau de bord de collaboration sécurisé!",
+    "secureCollaboration": "Votre hub de collaboration sécurisé",
+    "yourProjects": "Vos projets",
+    "noProjects": "Vous n'avez encore rejoint aucun projet. Parcourez les projets disponibles ou créez-en un nouveau.",
+    "browseProjects": "Parcourir les projets",
+    "networkActivity": "Activité du réseau",
+    "seeLatestActivities": "Voir les dernières activités de votre réseau.",
+    "viewActivity": "Voir l'activité",
+    "createProject": "Créer un projet"
+  },
+  "greetings": {
+    "morning": "Bonjour",
+    "afternoon": "Bon après-midi",
+    "evening": "Bonsoir"
+  },
+  "language": "Langue"
 }
