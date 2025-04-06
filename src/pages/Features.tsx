@@ -20,67 +20,67 @@ import { useTranslation } from "@/contexts/translation/TranslationContext";
 const Features = () => {
   const { t, currentLanguage } = useTranslation(['common', 'navigation']);
 
-  // Feature categories using direct translation calls
+  // Define feature categories directly with text instead of translation keys
   const featureCategories = [
     {
       id: "security",
-      name: t("features.categories.security"),
+      name: "Security",
       features: [
         {
-          title: t("features.security.encryption.title"),
-          description: t("features.security.encryption.description"),
+          title: "End-to-End Encryption",
+          description: "All data is encrypted end-to-end, ensuring only authorized participants can access sensitive information.",
           icon: <Lock className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: t("features.security.identity.title"),
-          description: t("features.security.identity.description"),
+          title: "Identity Verification",
+          description: "Multi-factor authentication and blockchain-based identity verification protect against unauthorized access.",
           icon: <Shield className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         }
       ]
     },
     {
       id: "collaboration",
-      name: t("features.categories.collaboration"),
+      name: "Collaboration",
       features: [
         {
-          title: t("features.collaboration.global.title"),
-          description: t("features.collaboration.global.description"),
+          title: "Global Network",
+          description: "Connect with partners, researchers, and organizations worldwide to amplify your impact.",
           icon: <Globe className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: t("features.collaboration.community.title"),
-          description: t("features.collaboration.community.description"),
+          title: "Community Building",
+          description: "Create and join communities of practice to share knowledge and resources.",
           icon: <Users className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: t("features.collaboration.messaging.title"),
-          description: t("features.collaboration.messaging.description"),
+          title: "Secure Messaging",
+          description: "Communicate with team members through encrypted channels that protect sensitive discussions.",
           icon: <MessageSquareText className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         }
       ]
     },
     {
       id: "infrastructure",
-      name: t("features.categories.infrastructure"),
+      name: "Infrastructure",
       features: [
         {
-          title: t("features.infrastructure.decentralized.title"),
-          description: t("features.infrastructure.decentralized.description"),
+          title: "Decentralized Architecture",
+          description: "Built on blockchain technology to ensure reliability, transparency, and resistance to censorship.",
           icon: <Network className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: t("features.infrastructure.token.title"),
-          description: t("features.infrastructure.token.description"),
+          title: "Token Economy",
+          description: "Incentivize participation and contributions through a fair and transparent token system.",
           icon: <Wallet className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: t("features.infrastructure.governance.title"),
-          description: t("features.infrastructure.governance.description"),
+          title: "Democratic Governance",
+          description: "Platform decisions are made through transparent voting processes by the community.",
           icon: <Vote className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         },
         {
-          title: t("features.infrastructure.integration.title"),
-          description: t("features.infrastructure.integration.description"),
+          title: "Open Integration",
+          description: "Connect with existing tools and platforms through our comprehensive API and plugin system.",
           icon: <Puzzle className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />
         }
       ]
@@ -92,8 +92,8 @@ const Features = () => {
     <div className="py-8 md:py-12" key={`features-page-${currentLanguage}`}>
       <Container>
         <PageHeader 
-          title={t("features.pageTitle")}
-          description={t("features.pageDescription")}
+          title="Platform Features"
+          description="Discover how our privacy-first collaboration platform empowers impactful projects"
         />
         
         <Tabs defaultValue="security" className="w-full mt-8">
@@ -127,12 +127,12 @@ const Features = () => {
         </Tabs>
         
         <div className="mt-16 bg-muted/50 p-6 rounded-lg">
-          <h3 className="text-xl font-bold mb-4">{t("features.why.title")}</h3>
+          <h3 className="text-xl font-bold mb-4">Why Choose Our Platform?</h3>
           <p className="text-foreground/70 mb-4">
-            {t("features.why.description1")}
+            Our platform combines robust privacy features with powerful collaboration tools, allowing you to work on sensitive projects without compromising security.
           </p>
           <p className="text-foreground/70">
-            {t("features.why.description2")}
+            Whether you're a researcher sharing sensitive data, an activist coordinating efforts, or an organization managing confidential projects, our platform ensures your work remains secure while enabling effective collaboration.
           </p>
         </div>
       </Container>

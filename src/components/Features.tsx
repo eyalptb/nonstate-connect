@@ -4,39 +4,39 @@ import { Shield, Lock, Brain, Fingerprint, Layers, Sparkles, FileCode } from "lu
 import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 const Features = () => {
-  const { t, currentLanguage } = useTranslation(['common']);
+  const { currentLanguage } = useTranslation(['common']);
 
-  // Define features array with proper translation keys
+  // Define features array with direct text
   const features = [
     {
       icon: <Lock className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-      title: t("features.privacy.title"),
-      description: t("features.privacy.description")
+      title: "End-to-End Privacy",
+      description: "Complete encryption ensures your sensitive data remains private throughout the collaboration process."
     },
     {
       icon: <Brain className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-      title: t("features.ai.title"),
-      description: t("features.ai.description")
+      title: "AI Collaboration Agents",
+      description: "AI assistants that enhance your team's work without access to sensitive content."
     },
     {
       icon: <Layers className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-      title: t("features.zones.title"),
-      description: t("features.zones.description")
+      title: "Contribution Zones",
+      description: "Compartmentalized project spaces that keep sensitive data separate while enabling seamless collaboration."
     },
     {
       icon: <Fingerprint className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-      title: t("features.dashboard.title"),
-      description: t("features.dashboard.description")
+      title: "Privacy Dashboard",
+      description: "Complete transparency and control over your data and who can access it."
     },
     {
       icon: <Sparkles className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-      title: t("features.simulator.title"),
-      description: t("features.simulator.description")
+      title: "Impact Simulator",
+      description: "Predict the outcomes of your projects, from environmental impact to social change."
     },
     {
       icon: <FileCode className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-lg" />,
-      title: t("features.blueprints.title"),
-      description: t("features.blueprints.description")
+      title: "Evolving Blueprints",
+      description: "Scale and adapt successful project templates while maintaining security and privacy."
     }
   ];
 
@@ -45,10 +45,10 @@ const Features = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            {t("features.heading")}
+            Privacy-Focused Infrastructure for Innovation
           </h2>
           <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-            {t("features.subheading")}
+            Our platform combines secure encryption technology with AI-powered collaboration tools to empower changemakers without compromising privacy.
           </p>
         </div>
         

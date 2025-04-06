@@ -6,37 +6,37 @@ import { Lightbulb, Shield, Users, Globe, Building, Leaf } from "lucide-react";
 import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 const UseCases = () => {
-  const { t, currentLanguage } = useTranslation(['common', 'navigation']);
+  const { currentLanguage } = useTranslation(['common', 'navigation']);
 
   const useCasesList = [
     {
-      title: t("useCases.ngo.title"),
-      description: t("useCases.ngo.description"),
+      title: "International NGOs",
+      description: "Coordinate global teams and protect sensitive information about at-risk populations while enabling effective cross-border collaboration.",
       icon: <Globe className="h-12 w-12 text-primary" />
     },
     {
-      title: t("useCases.humanRights.title"),
-      description: t("useCases.humanRights.description"),
+      title: "Human Rights Organizations",
+      description: "Safely document and share evidence of human rights violations while protecting the identities of victims and witnesses.",
       icon: <Shield className="h-12 w-12 text-primary" />
     },
     {
-      title: t("useCases.environmental.title"),
-      description: t("useCases.environmental.description"),
+      title: "Environmental Initiatives",
+      description: "Collaborate on conservation efforts, climate research, and sustainability projects with international partners using secure data sharing.",
       icon: <Leaf className="h-12 w-12 text-primary" />
     },
     {
-      title: t("useCases.corporate.title"),
-      description: t("useCases.corporate.description"),
+      title: "Corporate Social Responsibility",
+      description: "Manage sensitive CSR initiatives, track impact metrics, and coordinate with external partners while maintaining data sovereignty.",
       icon: <Building className="h-12 w-12 text-primary" />
     },
     {
-      title: t("useCases.grassroots.title"),
-      description: t("useCases.grassroots.description"),
+      title: "Grassroots Movements",
+      description: "Organize community initiatives and advocacy campaigns with enhanced privacy protections for volunteers and participants.",
       icon: <Users className="h-12 w-12 text-primary" />
     },
     {
-      title: t("useCases.research.title"),
-      description: t("useCases.research.description"),
+      title: "Research Collaborations",
+      description: "Share sensitive research data, methodologies, and findings across institutions while maintaining intellectual property protections.",
       icon: <Lightbulb className="h-12 w-12 text-primary" />
     }
   ];
@@ -44,8 +44,8 @@ const UseCases = () => {
   return (
     <div className="container mx-auto py-12 px-4" key={`usecases-${currentLanguage}`}>
       <PageHeader
-        title={t("useCases.pageTitle")}
-        description={t("useCases.pageDescription")}
+        title="Platform Use Cases"
+        description="Discover how organizations around the world are using our platform to enable secure collaboration"
       />
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
