@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Coins } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -7,10 +7,10 @@ import { api } from '@/services/apiClient';
 import { supabase } from '@/integrations/supabase/client';
 
 export const TokenWallet = () => {
-  const { t } = useTranslation(['common']);
-  const [tokenBalance, setTokenBalance] = useState(0);
+  const { t, i18n } = useTranslation(["common"]);
+  const [tokenBalance, setTokenBalance] = React.useState(0);
   
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchTokenBalance = async () => {
       try {
         // Try to get the current user session
@@ -34,7 +34,7 @@ export const TokenWallet = () => {
   }, []);
   
   return (
-    <Card className="w-full shadow-sm">
+    <Card className="w-full shadow-sm" key={`wallet-${i18n.language}`}>
       <CardHeader>
         <CardTitle className="text-xl">
           {t("wallet.title", "CollabCoin Wallet")}
