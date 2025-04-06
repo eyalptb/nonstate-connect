@@ -31,12 +31,14 @@ export const addComponentTranslations = (
     if (language === 'ru' && learnTranslations.ru) {
       console.log(`Adding learn translations for ${language}`, learnTranslations[language]);
       // For Russian, ensure we're explicitly adding the learn translations with the correct structure
-      return addTranslations(language, namespace, { learn: learnTranslations[language].learn });
+      const learnData = { learn: learnTranslations[language].learn };
+      return addTranslations(language, namespace, learnData);
     }
     
     // For all other languages, use standard approach but with the correct structure
     if (translations.learn) {
-      return addTranslations(language, namespace, { learn: translations.learn });
+      const learnData = { learn: translations.learn };
+      return addTranslations(language, namespace, learnData);
     } else {
       console.error(`Malformed learn translations for ${language}`);
       return false;
