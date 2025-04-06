@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from "react-i18next";
 import { GuidesList } from "./GuidesList";
@@ -9,6 +9,21 @@ import i18n from '@/i18n';
 
 export const LearnTabs = () => {
   const { t } = useTranslation(['common']);
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
+
+  // Listen for language changes to force re-render
+  useEffect(() => {
+    const handleLanguageChanged = (lng: string) => {
+      console.log(`LearnTabs: Language changed to ${lng}, updating component`);
+      setCurrentLanguage(lng);
+    };
+    
+    i18n.on('languageChanged', handleLanguageChanged);
+    
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
+  }, []);
 
   // Get tab labels with fallbacks
   const guidesLabel = t("learn.tabs.guides", "Guides");
@@ -24,15 +39,15 @@ export const LearnTabs = () => {
       </TabsList>
       
       <TabsContent value="guides" className="space-y-6">
-        <GuidesList key={`guides-${i18n.language}`} />
+        <GuidesList key={`guides-${currentLanguage}`} />
       </TabsContent>
       
       <TabsContent value="videos" className="space-y-6">
-        <VideosList key={`videos-${i18n.language}`} />
+        <VideosList key={`videos-${currentLanguage}`} />
       </TabsContent>
       
       <TabsContent value="articles" className="space-y-6">
-        <ArticlesList key={`articles-${i18n.language}`} />
+        <ArticlesList key={`articles-${currentLanguage}`} />
       </TabsContent>
     </Tabs>
   );
