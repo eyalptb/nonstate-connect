@@ -6,6 +6,7 @@ import i18n from './i18n'
 import { TranslationProvider } from './contexts/translation/TranslationContext'
 import { NotificationProvider } from './contexts/notification/NotificationContext'
 import { Toaster } from 'sonner'
+import { AuthProvider } from './contexts/auth'
 
 // Get the root element
 const rootElement = document.getElementById("root");
@@ -21,10 +22,12 @@ const renderApp = () => {
   document.documentElement.lang = i18n.language;
   root.render(
     <TranslationProvider>
-      <NotificationProvider>
-        <App />
-        <Toaster />
-      </NotificationProvider>
+      <AuthProvider>
+        <NotificationProvider>
+          <App />
+          <Toaster />
+        </NotificationProvider>
+      </AuthProvider>
     </TranslationProvider>
   );
 };
