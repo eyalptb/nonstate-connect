@@ -29,22 +29,22 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
       document.documentElement.lang = lng;
       console.log(`Language changed to: ${lng}`);
       
-      // Show toast notification when language changes (only here, not in the selector)
+      // Language display names
+      const languages: Record<string, string> = {
+        en: 'English',
+        fr: 'Français',
+        de: 'Deutsch',
+        zh: '中文',
+        pt: 'Português',
+        ar: 'العربية',
+        hi: 'हिन्दी',
+        ja: '日本語',
+        ru: 'Русский',
+        he: 'עברית'
+      };
+      
+      // Show toast notification when language changes (only here, not in the selector or elsewhere)
       toast.success(`Language changed to ${languages[lng] || lng}`);
-    };
-
-    // Language display names
-    const languages: Record<string, string> = {
-      en: 'English',
-      fr: 'Français',
-      de: 'Deutsch',
-      zh: '中文',
-      pt: 'Português',
-      ar: 'العربية',
-      hi: 'हिन्दी',
-      ja: '日本語',
-      ru: 'Русский',
-      he: 'עברית'
     };
     
     // Set initial language

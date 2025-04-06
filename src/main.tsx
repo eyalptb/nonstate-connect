@@ -32,7 +32,7 @@ const renderApp = () => {
       <TranslationProvider>
         <NotificationProvider>
           <App />
-          <Toaster />
+          <Toaster position="top-right" richColors closeButton />
         </NotificationProvider>
       </TranslationProvider>
     );
