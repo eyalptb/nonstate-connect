@@ -7,6 +7,7 @@ export type User = {
   name?: string;
   email?: string;
   username?: string;
+  avatar_url?: string;
 };
 
 // Updated context with non-null user id
@@ -14,22 +15,11 @@ export type AuthContextType = {
   loading: boolean;
   user: User | null;
   isAdmin: boolean;
-  signIn: (credentials: { identifier: string; password: string }) => Promise<{ error: Error | null }>;
-  signUp: (data: { email: string; password: string; username?: string }) => Promise<{ error: Error | null }>;
-  signInWithGoogle: () => Promise<void>;
-  signInWithApple: () => Promise<void>;
-  signOut: () => Promise<{ error: Error | null }>;
-  checkUsernameAvailability: (username: string) => Promise<boolean>;
+  signInWithEmail: (email: string, password: string) => Promise<{ success: boolean; data?: any; error?: any }>;
+  signUpWithEmail: (email: string, password: string) => Promise<{ success: boolean; data?: any; error?: any }>;
+  signOut: () => Promise<{ success: boolean; error?: any }>;
+  resetPassword: (email: string) => Promise<{ success: boolean; error?: any }>;
+  updateProfile: (updates: Partial<User>) => Promise<{ success: boolean; error?: any }>;
 };
 
-export const AuthContext = createContext<AuthContextType>({
-  loading: false,
-  user: null,
-  isAdmin: false,
-  signIn: async () => ({ error: null }),
-  signUp: async () => ({ error: null }),
-  signInWithGoogle: async () => {},
-  signInWithApple: async () => {},
-  signOut: async () => ({ error: null }),
-  checkUsernameAvailability: async () => false
-});
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);

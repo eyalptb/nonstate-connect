@@ -78,11 +78,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Check if the user has admin role
   const checkAdminRole = async (userId: string) => {
     try {
+      // Using profiles table to check for admin role instead of user_roles
       const { data, error } = await supabase
-        .from('user_roles')
+        .from('profiles')
         .select('role')
-        .eq('user_id', userId)
-        .eq('role', 'admin')
+        .eq('id', userId)
         .maybeSingle();
         
       if (error) {
@@ -90,7 +90,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
       
-      setIsAdmin(!!data);
+      setIsAdmin(data?.role === 'admin');
     } catch (error) {
       console.error("Error checking admin role:", error);
     }
@@ -200,7 +200,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   // Context value
-  const value = {
+  const value: AuthContextType = {
     user,
     isAdmin,
     loading,
