@@ -5,7 +5,7 @@ import { NavLinks, MainNavItem } from "./NavLinks";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/auth";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 interface MobileMenuProps {
   navItems: MainNavItem[];

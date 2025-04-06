@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 export interface MainNavItem {
   translationKey: string;
