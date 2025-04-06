@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import i18n from '@/i18n';
 import { useTranslation as useReactI18next } from 'react-i18next';
 import type { TFunction } from 'i18next';
+import { toast } from 'sonner';
 
 type TranslationContextType = {
   currentLanguage: string;
@@ -16,6 +17,8 @@ const TranslationContext = createContext<TranslationContextType | undefined>(und
 
 export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
+  const [isChangingLanguage, setIsChangingLanguage] = useState(false);
+  
   // Use all commonly needed namespaces by default to ensure they're always loaded
   const { t, i18n: i18nInstance, ready } = useReactI18next(['common', 'navigation', 'auth', 'messaging', 'governance']);
 
@@ -50,18 +53,35 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
   // Function to change language
   const changeLanguage = async (lang: string) => {
     try {
+      // Prevent multiple language changes at once
+      if (isChangingLanguage) {
+        console.log('Language change already in progress, skipping');
+        return;
+      }
+      
       // Only change language if it's different from current
       if (lang !== currentLanguage) {
+        setIsChangingLanguage(true);
         console.log(`Changing language from ${currentLanguage} to ${lang}`);
+        
+        // Change language
         await i18n.changeLanguage(lang);
         
         // Force reload resources for the current language
         await i18n.reloadResources([lang], ['common', 'navigation', 'auth', 'messaging', 'governance']);
         
         localStorage.setItem("i18nextLng", lang);
+        
+        // Add a small delay to ensure resources are loaded
+        setTimeout(() => {
+          console.log('Language change complete, resources loaded');
+          setIsChangingLanguage(false);
+        }, 500);
       }
     } catch (error) {
       console.error('Error changing language:', error);
+      setIsChangingLanguage(false);
+      toast.error('Failed to change language. Please try again.');
     }
   };
 

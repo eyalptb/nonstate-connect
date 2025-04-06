@@ -8,6 +8,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 declare global {
   interface Window {
     reloadTranslations: (language: string) => Promise<boolean>;
+    i18n: typeof i18n; // Make i18n available globally for debugging
   }
 }
 
@@ -30,14 +31,17 @@ i18n
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json',
       requestOptions: {
-        cache: 'no-cache'
+        // Disable cache to ensure fresh translations during development
+        cache: 'no-store',
+        credentials: 'same-origin',
+        mode: 'cors'
       }
     },
     
     // Allow keys to be phrases having `:`, `.` inside
     keySeparator: false,
     
-    // Debug mode for development - set to true to help troubleshoot
+    // Debug mode for development
     debug: true,
     
     // Namespaces to load on init - ensuring all needed namespaces are here
@@ -53,13 +57,23 @@ i18n
       useSuspense: false, // Do not use suspense - simplifies usage
       bindI18n: 'languageChanged loaded', // Events that trigger a re-render
       bindI18nStore: 'added removed', // Store events that trigger a re-render
+      transEmptyNodeValue: '', // Use empty string for empty nodes
     },
     
     // Ensure resources are loaded before app starts
     initImmediate: false,
     
     // Load all namespaces by default
-    load: 'all'
+    load: 'all',
+    
+    // Don't use nested objects
+    nsSeparator: ':',
+    
+    // Retry on failed resource loading
+    retry: 5,
+    
+    // Enable fallback to other languages
+    fallbackNS: 'common'
   });
 
 // Add debug logging
@@ -67,6 +81,10 @@ i18n.on('initialized', () => {
   console.log('i18n initialized with language:', i18n.language);
   console.log('Available namespaces:', i18n.options.ns);
   console.log('Supported languages:', i18n.options.supportedLngs);
+  
+  // Log the loaded resources for the current language
+  const currentResources = i18n.getResourceBundle(i18n.language, 'common');
+  console.log(`Initial resources for ${i18n.language}:`, currentResources);
 });
 
 i18n.on('loaded', (loaded) => {
@@ -78,12 +96,16 @@ i18n.on('languageChanged', (lng) => {
   console.log(`Language changed to ${lng}, updating document.documentElement.lang`);
   
   // Log currently loaded resources for debugging
-  const loadedResources = i18n.store?.data || {};
-  console.log(`Loaded resources for ${lng}:`, loadedResources[lng]);
+  const loadedResources = i18n.getResourceBundle(lng, 'common');
+  console.log(`Loaded resources for ${lng}:`, loadedResources);
   
   // Reload resources for the current language
   i18n.reloadResources([lng], ['common', 'navigation', 'messaging', 'auth', 'governance'])
-    .then(() => console.log(`Successfully reloaded resources for ${lng}`))
+    .then(() => {
+      console.log(`Successfully reloaded resources for ${lng}`);
+      // Force a refresh of translations
+      document.dispatchEvent(new Event('i18n-resources-loaded'));
+    })
     .catch((error) => console.error(`Failed to reload resources for ${lng}:`, error));
 });
 
@@ -92,6 +114,8 @@ export const reloadTranslations = async (language: string) => {
   try {
     await i18n.reloadResources(language, ['common', 'navigation', 'auth', 'messaging', 'governance']);
     console.log(`Successfully reloaded translations for ${language}`);
+    // Force a refresh of translations
+    document.dispatchEvent(new Event('i18n-resources-loaded'));
     return true;
   } catch (error) {
     console.error(`Failed to reload translations for ${language}:`, error);
@@ -102,6 +126,7 @@ export const reloadTranslations = async (language: string) => {
 // Make the reloadTranslations function available globally for debugging
 if (typeof window !== 'undefined') {
   window.reloadTranslations = reloadTranslations;
+  window.i18n = i18n; // Make i18n available globally for debugging
 }
 
 export default i18n;
