@@ -1,3 +1,4 @@
+
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import HttpBackend from 'i18next-http-backend';
@@ -50,9 +51,16 @@ const addInMemoryTranslations = (language: string) => {
     i18n.addResourceBundle(language, 'common', backendTranslations[language], true, true);
   }
   
-  // Add learn translations
+  // Add learn translations - ensure these are added for the learn page
   if (learnTranslations[language]) {
+    console.log(`Adding learn translations for ${language}`, learnTranslations[language]);
     i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
+  } else {
+    console.warn(`No learn translations found for ${language}, falling back to English`);
+    // Fallback to English translations if current language isn't available
+    if (learnTranslations['en']) {
+      i18n.addResourceBundle(language, 'common', learnTranslations['en'], true, true);
+    }
   }
 };
 

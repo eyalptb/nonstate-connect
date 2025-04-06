@@ -8,11 +8,10 @@ import { loadAllLearnTranslations } from "@/utils/translationLoader";
 import i18n from '@/i18n';
 
 const Learn = () => {
-  const { t, i18n: i18nInstance } = useTranslation(['common']);
+  const { t } = useTranslation(['common']);
   const [translationsLoaded, setTranslationsLoaded] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
-  
-  // Load learn page translations on mount and when language changes
+
+  // Load learn page translations on mount
   useEffect(() => {
     console.log("Loading learn translations for language:", i18n.language);
     
@@ -20,25 +19,19 @@ const Learn = () => {
       try {
         await loadAllLearnTranslations();
         console.log("Learn translations loaded successfully");
-        
-        // Force a refresh to ensure translations are applied
         setTranslationsLoaded(true);
-        setCurrentLanguage(i18n.language);
       } catch (error) {
         console.error("Failed to load learn translations:", error);
       }
     };
     
     loadTranslations();
-    
-    // Set up language change listener
+  }, []);
+
+  // Re-load translations when language changes
+  useEffect(() => {
     const handleLanguageChanged = (lng: string) => {
       console.log(`Language changed to ${lng}, reloading learn translations`);
-      
-      // Force component re-render with new language
-      setCurrentLanguage(lng);
-      
-      // Reload translations for the new language
       loadAllLearnTranslations();
     };
     
@@ -57,10 +50,10 @@ const Learn = () => {
       />
       
       <div className="mt-12">
-        <LearnTabs key={`learn-tabs-${currentLanguage}`} />
+        <LearnTabs />
       </div>
       
-      <NewsletterSignup key={`newsletter-${currentLanguage}`} />
+      <NewsletterSignup />
     </div>
   );
 };
