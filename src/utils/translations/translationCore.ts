@@ -19,21 +19,21 @@ export const addComponentTranslations = (
   const translations = translationResources[componentType][language] || translationResources[componentType].en;
   
   if (!translations) {
-    console.error(`No translations found for ${componentType}/${language}`);
+    console.error(`[addComponentTranslations] No translations found for ${componentType}/${language}`);
     return false;
   }
   
-  console.log(`Adding translations for ${componentType}/${language}`, translations);
+  console.log(`[addComponentTranslations] Adding translations for ${componentType}/${language}`, translations);
   
   // For Learn component, we need to handle the nested structure differently
   if (componentType === 'learn') {
     // Add the entire nested object structure for learn
     try {
-      i18n.addResourceBundle(language, namespace, { learn: translations }, true, true);
-      console.log(`Successfully added learn translations for ${language}`);
+      i18n.addResourceBundle(language, namespace, { learn: translations.learn }, true, true);
+      console.log(`[addComponentTranslations] Successfully added learn translations for ${language}`);
       return true;
     } catch (error) {
-      console.error(`Failed to add learn translations for ${language}:`, error);
+      console.error(`[addComponentTranslations] Failed to add learn translations for ${language}:`, error);
       return false;
     }
   }

@@ -11,9 +11,23 @@ const Learn = () => {
 
   // Load learn page translations on mount and language changes
   useEffect(() => {
-    console.log(`Loading Learn page translations for language: ${i18n.language}`);
+    console.log(`[Learn] Loading Learn page translations for language: ${i18n.language}`);
     loadAllLearnTranslations();
-  }, [i18n.language]); // Re-run when language changes
+    
+    // Debug: Check if translations exist after loading
+    setTimeout(() => {
+      const titleTranslation = t("learn.title", "Learning Resources");
+      console.log(`[Learn] Current translation for learn.title: "${titleTranslation}"`);
+      console.log(`[Learn] Current language: ${i18n.language}`);
+      
+      // Check the full resource bundle
+      const bundle = i18n.getResourceBundle(i18n.language, 'common');
+      console.log(`[Learn] Has learn namespace:`, bundle && bundle.learn ? 'Yes' : 'No');
+      if (bundle && bundle.learn) {
+        console.log(`[Learn] learn structure:`, bundle.learn);
+      }
+    }, 500);
+  }, [i18n.language, t]); // Re-run when language changes
 
   return (
     <div className="container mx-auto py-12 px-4" key={`learn-page-${i18n.language}`}>

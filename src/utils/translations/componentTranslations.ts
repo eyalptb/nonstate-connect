@@ -79,28 +79,28 @@ export const loadAllUseCasesTranslations = () => {
 // Learn translations
 export const addLearnTranslations = (language: string, namespace: string = 'common') => {
   if (!learnTranslations[language]) {
-    console.warn(`No learn translations found for ${language}, falling back to English`);
+    console.warn(`[addLearnTranslations] No learn translations found for ${language}, falling back to English`);
     // Try to add English translations as fallback
     if (learnTranslations['en']) {
-      return addTranslations(language, namespace, { learn: learnTranslations['en'].learn });
+      return addTranslations(language, namespace, { learn: learnTranslations['en'] });
     }
     return false;
   }
   
-  console.log(`Adding learn translations for ${language}:`, learnTranslations[language]);
-  return addTranslations(language, namespace, { learn: learnTranslations[language].learn });
+  console.log(`[addLearnTranslations] Adding learn translations for ${language}:`, learnTranslations[language]);
+  return addTranslations(language, namespace, { learn: learnTranslations[language] });
 };
 
 export const loadAllLearnTranslations = () => {
   const supportedLanguages = getSupportedLanguages();
-  console.log(`Loading learn translations for languages:`, supportedLanguages);
+  console.log(`[loadAllLearnTranslations] Loading learn translations for languages:`, supportedLanguages);
   
   supportedLanguages.forEach(lang => {
     const success = addLearnTranslations(lang);
     if (success) {
-      console.log(`Successfully loaded learn translations for ${lang}`);
+      console.log(`[loadAllLearnTranslations] Successfully loaded learn translations for ${lang}`);
     } else {
-      console.warn(`Failed to load learn translations for ${lang}`);
+      console.warn(`[loadAllLearnTranslations] Failed to load learn translations for ${lang}`);
     }
   });
   

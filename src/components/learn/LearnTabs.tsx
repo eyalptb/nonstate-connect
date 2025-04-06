@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from "react-i18next";
 import { GuidesList } from "./GuidesList";
@@ -8,9 +8,15 @@ import { ArticlesList } from "./ArticlesList";
 
 export const LearnTabs = () => {
   const { t, i18n } = useTranslation(['common']);
+  
+  useEffect(() => {
+    // Debug translations on component mount and language change
+    console.log(`[LearnTabs] Current language: ${i18n.language}`);
+    console.log(`[LearnTabs] Translation for tabs.guides: "${t("learn.tabs.guides", "Guides")}"`);
+  }, [i18n.language, t]);
 
   return (
-    <Tabs defaultValue="guides">
+    <Tabs defaultValue="guides" key={`learn-tabs-container-${i18n.language}`}>
       <TabsList className="grid w-full grid-cols-3 mb-8">
         <TabsTrigger value="guides">{t("learn.tabs.guides", "Guides")}</TabsTrigger>
         <TabsTrigger value="videos">{t("learn.tabs.videos", "Videos")}</TabsTrigger>
