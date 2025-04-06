@@ -41,35 +41,34 @@ export function ProposalList({ status }: ProposalListProps) {
     });
   }, [proposals, searchQuery, categoryFilter]);
 
-  const handleVote = async (proposalId: string, voteFor: boolean) => {
+  const handleVote = async (proposalId: string, voteFor: boolean, amount: number): Promise<boolean> => {
     if (balance <= 0) {
       toast({
         title: "Cannot vote",
         description: "You need CollabCoins to vote on proposals",
         variant: "destructive"
       });
-      return;
+      return false;
     }
     
     setVotingProposalId(proposalId);
     setVotingFor(voteFor);
-  };
-
-  const submitVote = async (proposalId: string) => {
+    
     try {
       const success = await spendTokens(
-        votingAmount,
+        amount,
         `Vote on proposal: ${proposals.find(p => p.id === proposalId)?.title.substring(0, 20)}...`
       );
       
       if (success) {
         toast({
           title: "Vote submitted",
-          description: `You successfully voted ${votingFor ? "for" : "against"} the proposal`,
+          description: `You successfully voted ${voteFor ? "for" : "against"} the proposal`,
         });
       }
       
       setVotingProposalId(null);
+      return success;
     } catch (error) {
       console.error("Error voting:", error);
       toast({
@@ -77,6 +76,8 @@ export function ProposalList({ status }: ProposalListProps) {
         description: "Failed to submit your vote",
         variant: "destructive"
       });
+      setVotingProposalId(null);
+      return false;
     }
   };
 

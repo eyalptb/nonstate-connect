@@ -12,25 +12,29 @@ import { useNotifications } from "@/contexts/notification/NotificationContext";
 import { useEffect, useRef } from "react";
 import BackendStatus from "@/components/BackendStatus";
 import { Leaf } from 'lucide-react';
+import { Activity } from "@/types/activity";
 
-const mockActivities = [
+const mockActivities: Activity[] = [
   {
     id: '1',
     type: 'task_completed' as const,
     timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-    target: { name: 'Project Research Task' }
+    target: { id: 'task-1', name: 'Project Research Task' },
+    userId: 'user-1'
   },
   {
     id: '2',
     type: 'proposal_voted' as const,
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
-    target: { name: 'Community Governance Proposal #12' }
+    target: { id: 'proposal-12', name: 'Community Governance Proposal #12' },
+    userId: 'user-1'
   },
   {
     id: '3',
     type: 'project_joined' as const,
     timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-    target: { name: 'Sustainable Development Initiative' }
+    target: { id: 'project-1', name: 'Sustainable Development Initiative' },
+    userId: 'user-1'
   }
 ];
 
