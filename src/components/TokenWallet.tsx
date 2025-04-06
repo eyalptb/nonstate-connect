@@ -5,12 +5,20 @@ import { Coins } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { api } from '@/services/apiClient';
 import { supabase } from '@/integrations/supabase/client';
+import { loadAllWalletTranslations } from '@/utils/translationLoader';
 
 export const TokenWallet = () => {
   const { t, i18n } = useTranslation(["common"]);
   const [tokenBalance, setTokenBalance] = React.useState(0);
+  const [translationsLoaded, setTranslationsLoaded] = React.useState(false);
   
+  // Load wallet translations when the component mounts
   React.useEffect(() => {
+    // First, load all wallet translations
+    loadAllWalletTranslations();
+    setTranslationsLoaded(true);
+    
+    // Then, fetch the token balance
     const fetchTokenBalance = async () => {
       try {
         // Try to get the current user session
@@ -32,6 +40,12 @@ export const TokenWallet = () => {
 
     fetchTokenBalance();
   }, []);
+  
+  // Also reload translations when language changes
+  React.useEffect(() => {
+    // Make sure translations for the current language are loaded
+    loadAllWalletTranslations();
+  }, [i18n.language]);
   
   return (
     <Card className="w-full shadow-sm" key={`wallet-${i18n.language}`}>

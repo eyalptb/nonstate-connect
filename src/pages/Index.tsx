@@ -7,16 +7,20 @@ import JoinCta from "@/components/JoinCta";
 import TokenWallet from "@/components/TokenWallet";
 import { useTranslation } from "react-i18next";
 import i18n from '@/i18n';
+import { loadAllWalletTranslations } from "@/utils/translationLoader";
 
 const Index = () => {
   const { t } = useTranslation(["common"]);
   
-  // Ensure wallet translation namespace is loaded
+  // Ensure translations are loaded
   useEffect(() => {
     // Make sure the 'common' namespace is loaded
     if (!i18n.hasResourceBundle(i18n.language, 'common')) {
       i18n.loadNamespaces('common');
     }
+    
+    // Load wallet translations
+    loadAllWalletTranslations();
   }, []);
   
   return (
