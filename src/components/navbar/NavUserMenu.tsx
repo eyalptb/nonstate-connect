@@ -98,7 +98,7 @@ export function NavUserMenu() {
               <Link to="/settings">
                 <Settings className="mr-2 h-4 w-4" />
                 <span>{t("settings", { ns: "navigation" })}</span>
-              </DropdownMenuItem>
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
