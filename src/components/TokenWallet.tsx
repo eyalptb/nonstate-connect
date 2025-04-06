@@ -33,46 +33,32 @@ export const TokenWallet = () => {
     fetchTokenBalance();
   }, []);
   
-  // Get translations directly - This ensures they're evaluated on every render
-  const walletTitle = t("wallet.title", "CollabCoin Wallet");
-  const walletDescription = t("wallet.description", "Your tokenized incentives");
-  const walletCoins = t("wallet.coins", "CollabCoins");
-  const walletEarn = t("wallet.earn", "Earn through secure collaboration and spend on premium features");
-  
-  console.log("TokenWallet Translation Values:", {
-    walletTitle,
-    walletDescription,
-    walletCoins,
-    walletEarn,
-    currentLang: t("language_code", "en")
-  });
-  
   return (
     <Card className="w-full shadow-sm">
       <CardHeader>
         <CardTitle className="text-xl">
-          {walletTitle}
+          {t("wallet.title", "CollabCoin Wallet")}
         </CardTitle>
         <CardDescription>
-          {walletDescription}
+          {t("wallet.description", "Your tokenized incentives")}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col items-center justify-center py-8">
         <Coins className="h-12 w-12 text-yellow-500 mb-4" />
         <h3 className="text-lg font-medium mb-2">
-          {walletCoins}
+          {t("wallet.coins", "CollabCoins")}
         </h3>
         <div className="flex items-center mb-2">
           <Coins className="mr-2 h-6 w-6 text-yellow-500" />
           <span className="text-3xl font-bold">{tokenBalance}</span>
         </div>
         <p className="text-muted-foreground text-sm">
-          {walletEarn}
+          {t("wallet.earn", "Earn through secure collaboration and spend on premium features")}
         </p>
       </CardContent>
       <CardFooter className="flex justify-between border-t pt-4">
         <p className="text-xs text-muted-foreground">
-          {walletEarn}
+          {t("wallet.earn", "Earn through secure collaboration and spend on premium features")}
         </p>
       </CardFooter>
     </Card>
