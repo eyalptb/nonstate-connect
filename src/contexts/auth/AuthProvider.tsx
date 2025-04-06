@@ -1,4 +1,5 @@
-import React, { createContext, useEffect, useState } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { AuthContext } from './types';
 import type { User, AuthContextType } from './types';
 import { useAuthMethods } from './useAuthMethods';
@@ -16,10 +17,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { 
     signIn, 
     signUp, 
-    signOut,
+    signOut: authMethodsSignOut,
     signInWithGoogle,
     signInWithApple,
-    checkUsernameAvailability
+    checkUsernameAvailability,
+    loading: authMethodsLoading
   } = useAuthMethods();
   
   // Get current user function
@@ -39,7 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .from('profiles')
         .select('username, role')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
       
       if (profileError && profileError.code !== 'PGRST116') {
         console.error("Error fetching profile:", profileError);
@@ -188,13 +190,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   
   // Create a wrapper for signOut to match expected return type
   const handleSignOut = async () => {
-    const result = await signOut();
+    const result = await authMethodsSignOut();
     return { success: !result.error, error: result.error };
   };
   
   const authContext: AuthContextType = {
     user,
-    loading,
+    loading: loading || authMethodsLoading,
     isAdmin,
     signInWithEmail,
     signUpWithEmail,
