@@ -76,50 +76,23 @@ export const loadAllUseCasesTranslations = () => {
   loadAllComponentTranslations('useCases');
 };
 
-// Learn translations - implemented correctly to handle the flat structure required by i18next
+// Learn translations - explicitly adding them directly to ensure they work
 export const addLearnTranslations = (language: string, namespace: string = 'common') => {
-  if (!learnTranslations[language]) {
-    console.warn(`[addLearnTranslations] No learn translations found for ${language}, falling back to English`);
-    // Try to add English translations as fallback
-    if (learnTranslations['en']) {
-      console.log(`[addLearnTranslations] Adding English learn translations as fallback for ${language}`);
-      return i18n.addResourceBundle(language, namespace, learnTranslations['en'], true, true);
-    }
+  // Get the translations for the specified language or fallback to English
+  const translations = learnTranslations[language] || learnTranslations['en'];
+  
+  if (!translations) {
     return false;
   }
   
-  console.log(`[addLearnTranslations] Adding learn translations for ${language}:`, learnTranslations[language]);
-  
-  // Direct use of i18n.addResourceBundle to ensure the structure is preserved
-  return i18n.addResourceBundle(language, namespace, learnTranslations[language], true, true);
+  // Add the translations directly to i18n
+  return i18n.addResourceBundle(language, namespace, translations, true, true);
 };
 
 export const loadAllLearnTranslations = () => {
   const supportedLanguages = getSupportedLanguages();
-  console.log(`[loadAllLearnTranslations] Loading learn translations for languages:`, supportedLanguages);
   
   supportedLanguages.forEach(lang => {
-    const success = addLearnTranslations(lang);
-    if (success) {
-      console.log(`[loadAllLearnTranslations] Successfully loaded learn translations for ${lang}`);
-    } else {
-      console.warn(`[loadAllLearnTranslations] Failed to load learn translations for ${lang}`);
-    }
+    addLearnTranslations(lang);
   });
-  
-  // Force a check to see if translations were added correctly
-  setTimeout(() => {
-    supportedLanguages.forEach(lang => {
-      const bundle = i18n.getResourceBundle(lang, 'common');
-      const hasLearnTranslations = bundle && bundle.learn && Object.keys(bundle.learn).length > 0;
-      if (!hasLearnTranslations) {
-        console.error(`[loadAllLearnTranslations] Learn translations missing for ${lang} after loading!`);
-        // Try again one more time
-        addLearnTranslations(lang);
-      }
-    });
-  }, 100);
-  
-  // Dispatch event to notify that translations are loaded
-  document.dispatchEvent(new Event('i18n-resources-loaded'));
 };
