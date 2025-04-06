@@ -56,23 +56,30 @@ i18n
     },
     
     // Ensure resources are loaded before app starts
-    initImmediate: false
+    initImmediate: false,
+    
+    // Load all namespaces by default
+    load: 'all'
   });
 
 // Add debug logging
 i18n.on('initialized', () => {
   console.log('i18n initialized with language:', i18n.language);
   console.log('Available namespaces:', i18n.options.ns);
+  console.log('Supported languages:', i18n.options.supportedLngs);
 });
 
 i18n.on('loaded', (loaded) => {
   console.log('i18n resources loaded:', loaded);
 });
 
-// Update HTML lang attribute when language changes
 i18n.on('languageChanged', (lng) => {
   document.documentElement.lang = lng;
   console.log(`Language changed to ${lng}, updating document.documentElement.lang`);
+  
+  // Log currently loaded resources for debugging
+  const loadedResources = i18n.store?.data || {};
+  console.log(`Loaded resources for ${lng}:`, loadedResources[lng]);
   
   // Reload resources for the current language
   i18n.reloadResources([lng], ['common', 'navigation', 'messaging', 'auth', 'governance'])

@@ -54,6 +54,10 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
       if (lang !== currentLanguage) {
         console.log(`Changing language from ${currentLanguage} to ${lang}`);
         await i18n.changeLanguage(lang);
+        
+        // Force reload resources for the current language
+        await i18n.reloadResources([lang], ['common', 'navigation', 'auth', 'messaging', 'governance']);
+        
         localStorage.setItem("i18nextLng", lang);
       }
     } catch (error) {

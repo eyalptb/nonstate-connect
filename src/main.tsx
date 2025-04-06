@@ -41,8 +41,11 @@ const renderApp = () => {
 
 // Initialize i18n and then render
 if (i18n.isInitialized) {
+  console.log('i18n is already initialized, rendering app');
   renderApp();
 } else {
+  console.log('Waiting for i18n to initialize...');
+  
   // Set a timeout in case initialization takes too long
   const timeoutId = setTimeout(() => {
     console.warn('i18n initialization timed out, rendering anyway');

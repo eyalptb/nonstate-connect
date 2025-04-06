@@ -8,10 +8,10 @@ import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 const Index = () => {
   // Use multiple namespaces to ensure all text gets translated
-  const { t } = useTranslation(["common", "navigation"]);
+  const { t, currentLanguage } = useTranslation(["common", "navigation"]);
   
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen" key={`home-page-${currentLanguage}`}>
       <main className="flex-grow">
         <Hero />
         <div className="container mx-auto px-4 py-12 mt-20">
