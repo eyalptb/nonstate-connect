@@ -28,6 +28,9 @@ export const addFeaturePageTranslations = (language: string, namespace: string =
 export const addUseCasesTranslations = (language: string, namespace: string = 'common') => 
   addComponentTranslations(language, 'useCases', namespace);
 
+export const addLearnTranslations = (language: string, namespace: string = 'common') => 
+  addComponentTranslations(language, 'learn', namespace);
+
 // Component-specific load all translations functions
 export const loadAllWalletTranslations = () => loadAllComponentTranslations('wallet');
 export const loadAllFeatureTranslations = () => loadAllComponentTranslations('feature');
@@ -37,3 +40,4 @@ export const loadAllFooterTranslations = () => loadAllComponentTranslations('foo
 export const loadAllBackendTranslations = () => loadAllComponentTranslations('backend');
 export const loadAllFeaturePageTranslations = () => loadAllComponentTranslations('featurePage');
 export const loadAllUseCasesTranslations = () => loadAllComponentTranslations('useCases');
+export const loadAllLearnTranslations = () => loadAllComponentTranslations('learn');

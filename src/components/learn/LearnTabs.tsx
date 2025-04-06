@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { GuidesList } from "./GuidesList";
 import { VideosList } from "./VideosList";
 import { ArticlesList } from "./ArticlesList";
+import i18n from '@/i18n';
 
 export const LearnTabs = () => {
   const { t } = useTranslation(['common']);
@@ -23,15 +24,15 @@ export const LearnTabs = () => {
       </TabsList>
       
       <TabsContent value="guides" className="space-y-6">
-        <GuidesList />
+        <GuidesList key={`guides-${i18n.language}`} />
       </TabsContent>
       
       <TabsContent value="videos" className="space-y-6">
-        <VideosList />
+        <VideosList key={`videos-${i18n.language}`} />
       </TabsContent>
       
       <TabsContent value="articles" className="space-y-6">
-        <ArticlesList />
+        <ArticlesList key={`articles-${i18n.language}`} />
       </TabsContent>
     </Tabs>
   );

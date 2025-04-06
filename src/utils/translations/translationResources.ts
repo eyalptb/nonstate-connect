@@ -7,6 +7,7 @@ import { footerTranslations } from './footerTranslations';
 import { backendTranslations } from './backendTranslations';
 import { featurePageTranslations } from './featurePageTranslations';
 import { useCasesTranslations } from './useCasesTranslations';
+import { learnTranslations } from './learnTranslations';
 
 /**
  * Type for component translation resources
@@ -25,7 +26,8 @@ export const translationResources: TranslationResources = {
   footer: footerTranslations,
   backend: backendTranslations,
   featurePage: featurePageTranslations,
-  useCases: useCasesTranslations
+  useCases: useCasesTranslations,
+  learn: learnTranslations
 };
 
 /**

@@ -14,6 +14,7 @@ import {
   addBackendTranslations, 
   addFeaturePageTranslations, 
   addUseCasesTranslations,
+  addLearnTranslations,
   loadAllWalletTranslations, 
   loadAllFeatureTranslations, 
   loadAllJoinCtaTranslations, 
@@ -21,7 +22,8 @@ import {
   loadAllFooterTranslations, 
   loadAllBackendTranslations, 
   loadAllFeaturePageTranslations,
-  loadAllUseCasesTranslations
+  loadAllUseCasesTranslations,
+  loadAllLearnTranslations
 } from './translations/componentTranslations';
 
 // Export everything for backward compatibility
@@ -44,6 +46,7 @@ export {
   addBackendTranslations,
   addFeaturePageTranslations,
   addUseCasesTranslations,
+  addLearnTranslations,
   
   // Component-specific load all functions
   loadAllWalletTranslations,
@@ -53,7 +56,8 @@ export {
   loadAllFooterTranslations,
   loadAllBackendTranslations,
   loadAllFeaturePageTranslations,
-  loadAllUseCasesTranslations
+  loadAllUseCasesTranslations,
+  loadAllLearnTranslations
 };
 
 // Export as default for convenience
@@ -70,6 +74,7 @@ export default {
   addBackendTranslations,
   addFeaturePageTranslations,
   addUseCasesTranslations,
+  addLearnTranslations,
   loadAllWalletTranslations,
   loadAllFeatureTranslations,
   loadAllJoinCtaTranslations,
@@ -77,5 +82,6 @@ export default {
   loadAllFooterTranslations,
   loadAllBackendTranslations,
   loadAllFeaturePageTranslations,
-  loadAllUseCasesTranslations
+  loadAllUseCasesTranslations,
+  loadAllLearnTranslations
 };
