@@ -58,6 +58,62 @@ export const addWalletTranslations = (language: string) => {
       "wallet.earn": "Verdienen Sie durch sichere Zusammenarbeit und geben Sie für Premium-Funktionen aus",
       "wallet.section_title": "CollabCoin Wallet",
       "wallet.section_description": "Ihre tokenisierten Anreize"
+    },
+    ja: {
+      "wallet.title": "CollabCoinウォレット",
+      "wallet.description": "あなたのトークン化されたインセンティブ",
+      "wallet.coins": "CollabCoins",
+      "wallet.earn": "安全なコラボレーションを通じて獲得し、プレミアム機能に使用",
+      "wallet.section_title": "CollabCoinウォレット",
+      "wallet.section_description": "あなたのトークン化されたインセンティブ"
+    },
+    zh: {
+      "wallet.title": "CollabCoin 钱包",
+      "wallet.description": "您的代币激励",
+      "wallet.coins": "CollabCoin 币",
+      "wallet.earn": "通过安全协作赚取并用于高级功能",
+      "wallet.section_title": "CollabCoin 钱包",
+      "wallet.section_description": "您的代币激励"
+    },
+    ar: {
+      "wallet.title": "محفظة CollabCoin",
+      "wallet.description": "حوافزك المؤمنة بالخصوصية",
+      "wallet.coins": "CollabCoins",
+      "wallet.earn": "اكسب من خلال التعاون الآمن وأنفق على الميزات المتميزة",
+      "wallet.section_title": "محفظة CollabCoin",
+      "wallet.section_description": "حوافزك المؤمنة بالخصوصية"
+    },
+    he: {
+      "wallet.title": "ארנק CollabCoin",
+      "wallet.description": "התמריצים המאובטחים שלך",
+      "wallet.coins": "CollabCoins",
+      "wallet.earn": "הרוויחו באמצעות שיתוף פעולה מאובטח והשקיעו בתכונות פרימיום",
+      "wallet.section_title": "ארנק CollabCoin",
+      "wallet.section_description": "התמריצים המאובטחים שלך"
+    },
+    hi: {
+      "wallet.title": "CollabCoin वॉलेट",
+      "wallet.description": "आपके गोपनीयता-सुरक्षित प्रोत्साहन",
+      "wallet.coins": "CollabCoins",
+      "wallet.earn": "सुरक्षित सहयोग के माध्यम से कमाएं और प्रीमियम सुविधाओं पर खर्च करें",
+      "wallet.section_title": "CollabCoin वॉलेट",
+      "wallet.section_description": "आपके गोपनीयता-सुरक्षित प्रोत्साहन"
+    },
+    bn: {
+      "wallet.title": "CollabCoin ওয়ালেট",
+      "wallet.description": "আপনার টোকেনাইজড ইনসেন্টিভ",
+      "wallet.coins": "CollabCoins",
+      "wallet.earn": "নিরাপদ সহযোগিতার মাধ্যমে উপার্জন করুন এবং প্রিমিয়াম বৈশিষ্ট্যগুলিতে ব্যয় করুন",
+      "wallet.section_title": "CollabCoin ওয়ালেট",
+      "wallet.section_description": "আপনার টোকেনাইজড ইনসেন্টিভ"
+    },
+    pt: {
+      "wallet.title": "Carteira CollabCoin",
+      "wallet.description": "Seus incentivos tokenizados",
+      "wallet.coins": "CollabCoins",
+      "wallet.earn": "Ganhe através de colaboração segura e gaste em recursos premium",
+      "wallet.section_title": "Carteira CollabCoin",
+      "wallet.section_description": "Seus incentivos tokenizados"
     }
     // Add more languages as needed
   };
@@ -73,7 +129,7 @@ export const addWalletTranslations = (language: string) => {
  * Load wallet translations for all supported languages
  */
 export const loadAllWalletTranslations = () => {
-  const supportedLanguages = i18n.options.supportedLngs || ['en', 'fr', 'de', 'ru', 'zh', 'ar', 'he', 'hi', 'bn', 'pt', 'ja'];
+  const supportedLanguages = i18n.options.supportedLngs || ['en', 'fr', 'de', 'es', 'ar', 'bn', 'hi', 'ja', 'pt', 'ru', 'zh', 'he'];
   
   // Filter out 'cimode' and other special language codes
   const actualLanguages = supportedLanguages.filter(
@@ -87,3 +143,4 @@ export const loadAllWalletTranslations = () => {
     addWalletTranslations(lang);
   });
 };
+
