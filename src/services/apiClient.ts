@@ -36,7 +36,7 @@ export const api = {
       // Special case for auth session
       if (path === 'auth/session') {
         const { data, error } = await supabase.auth.getSession();
-        // Return the response as AuthSessionResponse type specifically for this endpoint
+        // Return the response with proper casting
         return { data: data as unknown as T, error };
       }
 
@@ -77,7 +77,7 @@ export const api = {
         // Build query
         let queryBuilder = supabase.from(tableName as any).select('*');
         
-        // Apply filters one by one
+        // Apply simple filters
         for (const [key, value] of Object.entries(queryObj)) {
           queryBuilder = queryBuilder.eq(key, value);
         }
@@ -92,7 +92,7 @@ export const api = {
     }
   },
   
-  // POST method
+  // POST method - simplified
   post: async <T = any>(path: string, data: any): Promise<ApiResponse<T>> => {
     try {
       if (!isValidTable(path)) {
@@ -114,7 +114,7 @@ export const api = {
     }
   },
   
-  // PUT method
+  // PUT method - simplified
   put: async <T = any>(path: string, data: any): Promise<ApiResponse<T>> => {
     try {
       const parts = path.split('/');
@@ -141,7 +141,7 @@ export const api = {
     }
   },
   
-  // DELETE method
+  // DELETE method - simplified
   delete: async <T = any>(path: string): Promise<ApiResponse<T>> => {
     try {
       const parts = path.split('/');
