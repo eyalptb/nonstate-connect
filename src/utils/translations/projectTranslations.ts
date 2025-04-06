@@ -29,7 +29,13 @@ export const projectTranslations: Record<string, Record<string, string>> = {
     "projects.learn_more": "En Savoir Plus",
     "projects.categories.climate": "Climat",
     "projects.categories.governance": "Gouvernance",
-    "projects.categories.sustainability": "Durabilité"
+    "projects.categories.sustainability": "Durabilité",
+    "projects.project_titles.0": "Coalition d'action mondiale pour le climat",
+    "projects.project_titles.1": "Initiative de gouvernance ouverte",
+    "projects.project_titles.2": "Alliance pour une chaîne d'approvisionnement durable",
+    "projects.project_descriptions.0": "Coordination des initiatives climatiques mondiales entre les ONG environnementales et les groupes communautaires.",
+    "projects.project_descriptions.1": "Développement d'outils et de méthodologies pour accroître la transparence et la responsabilité des gouvernements.",
+    "projects.project_descriptions.2": "Création d'un suivi vérifiable de la chaîne d'approvisionnement pour l'approvisionnement éthique et la conformité à la durabilité."
   },
   de: {
     "projects.title": "Ausgewählte Projekte",
@@ -40,7 +46,13 @@ export const projectTranslations: Record<string, Record<string, string>> = {
     "projects.learn_more": "Mehr erfahren",
     "projects.categories.climate": "Klima",
     "projects.categories.governance": "Steuerung",
-    "projects.categories.sustainability": "Nachhaltigkeit"
+    "projects.categories.sustainability": "Nachhaltigkeit",
+    "projects.project_titles.0": "Globale Klimaschutz-Koalition",
+    "projects.project_titles.1": "Open-Governance-Initiative",
+    "projects.project_titles.2": "Allianz für nachhaltige Lieferketten",
+    "projects.project_descriptions.0": "Koordination weltweiter Klimainitiativen zwischen Umwelt-NGOs und Gemeinschaftsgruppen.",
+    "projects.project_descriptions.1": "Entwicklung von Werkzeugen und Methoden zur Steigerung der Transparenz und Rechenschaftspflicht von Regierungen.",
+    "projects.project_descriptions.2": "Erstellung einer nachprüfbaren Lieferkettenverfolgung für ethische Beschaffung und Nachhaltigkeitskonformität."
   },
   es: {
     "projects.title": "Proyectos Destacados",
@@ -51,56 +63,30 @@ export const projectTranslations: Record<string, Record<string, string>> = {
     "projects.learn_more": "Más Información",
     "projects.categories.climate": "Clima",
     "projects.categories.governance": "Gobernanza",
-    "projects.categories.sustainability": "Sostenibilidad"
+    "projects.categories.sustainability": "Sostenibilidad",
+    "projects.project_titles.0": "Coalición de Acción Climática Global",
+    "projects.project_titles.1": "Iniciativa de Gobernanza Abierta",
+    "projects.project_titles.2": "Alianza para Cadenas de Suministro Sostenibles",
+    "projects.project_descriptions.0": "Coordinación de iniciativas climáticas mundiales entre ONG ambientales y grupos comunitarios.",
+    "projects.project_descriptions.1": "Desarrollo de herramientas y metodologías para aumentar la transparencia y responsabilidad gubernamental.",
+    "projects.project_descriptions.2": "Creación de seguimiento verificable de la cadena de suministro para abastecimiento ético y cumplimiento de sostenibilidad."
   },
-  // Base translations for other languages
   ar: {
     "projects.title": "المشاريع المميزة",
     "projects.description": "استكشف المبادرات الحالية التي تحدث تأثيرًا في جميع أنحاء العالم",
     "projects.view_all": "عرض كافة المشاريع",
     "projects.participants": "{{count}} مشارك",
     "projects.progress": "التقدم",
-    "projects.learn_more": "معرفة المزيد"
-  },
-  ja: {
-    "projects.title": "注目のプロジェクト",
-    "projects.description": "世界中で影響を与えている現在のイニシアチブを探る",
-    "projects.view_all": "すべてのプロジェクトを見る",
-    "projects.participants": "{{count}} 参加者",
-    "projects.progress": "進捗",
-    "projects.learn_more": "詳細を見る"
-  },
-  zh: {
-    "projects.title": "精选项目",
-    "projects.description": "探索当前在全球产生影响的举措",
-    "projects.view_all": "查看所有项目",
-    "projects.participants": "{{count}} 参与者",
-    "projects.progress": "进度",
-    "projects.learn_more": "了解更多"
-  },
-  ru: {
-    "projects.title": "Избранные проекты",
-    "projects.description": "Изучите текущие инициативы, оказывающие влияние во всем мире",
-    "projects.view_all": "Посмотреть все проекты",
-    "projects.participants": "{{count}} участников",
-    "projects.progress": "Прогресс",
-    "projects.learn_more": "Узнать больше"
-  },
-  pt: {
-    "projects.title": "Projetos em Destaque",
-    "projects.description": "Explore iniciativas atuais que estão causando impacto em todo o mundo",
-    "projects.view_all": "Ver Todos os Projetos",
-    "projects.participants": "{{count}} Participantes",
-    "projects.progress": "Progresso",
-    "projects.learn_more": "Saiba Mais"
-  },
-  hi: {
-    "projects.title": "प्रमुख परियोजनाएं",
-    "projects.description": "दुनिया भर में प्रभाव डालने वाली वर्तमान पहलों का अन्वेषण करें",
-    "projects.view_all": "सभी परियोजनाएं देखें",
-    "projects.participants": "{{count}} प्रतिभागी",
-    "projects.progress": "प्रगति",
-    "projects.learn_more": "और जानें"
+    "projects.learn_more": "معرفة المزيد",
+    "projects.categories.climate": "المناخ",
+    "projects.categories.governance": "الحوكمة",
+    "projects.categories.sustainability": "الاستدامة",
+    "projects.project_titles.0": "ائتلاف العمل المناخي العالمي",
+    "projects.project_titles.1": "مبادرة الحوكمة المفتوحة",
+    "projects.project_titles.2": "تحالف سلسلة التوريد المستدامة",
+    "projects.project_descriptions.0": "تنسيق مبادرات المناخ العالمية بين المنظمات غير الحكومية البيئية والمجموعات المجتمعية.",
+    "projects.project_descriptions.1": "تطوير أدوات ومنهجيات لزيادة الشفافية والمساءلة الحكومية.",
+    "projects.project_descriptions.2": "إنشاء تتبع قابل للتحقق لسلسلة التوريد للمصادر الأخلاقية والامتثال للاستدامة."
   },
   bn: {
     "projects.title": "বৈশিষ্ট্যযুক্ত প্রকল্পগুলি",
@@ -108,7 +94,101 @@ export const projectTranslations: Record<string, Record<string, string>> = {
     "projects.view_all": "সমস্ত প্রকল্প দেখুন",
     "projects.participants": "{{count}} অংশগ্রহণকারী",
     "projects.progress": "অগ্রগতি",
-    "projects.learn_more": "আরও জানুন"
+    "projects.learn_more": "আরও জানুন",
+    "projects.categories.climate": "জলবায়ু",
+    "projects.categories.governance": "শাসন",
+    "projects.categories.sustainability": "টেকসই",
+    "projects.project_titles.0": "গ্লোবাল ক্লাইমেট অ্যাকশন কোয়ালিশন",
+    "projects.project_titles.1": "ওপেন গভর্নেন্স ইনিশিয়েটিভ",
+    "projects.project_titles.2": "টেকসই সাপ্লাই চেইন অ্যালায়েন্স",
+    "projects.project_descriptions.0": "পরিবেশগত এনজিও এবং কমিউনিটি গ্রুপগুলির মধ্যে বিশ্বব্যাপী জলবায়ু উদ্যোগগুলি সমন্বয় করা।",
+    "projects.project_descriptions.1": "সরকারি স্বচ্ছতা এবং জবাবদিহিতা বাড়ানোর জন্য টুল এবং পদ্ধতিগুলি বিকাশ করা।",
+    "projects.project_descriptions.2": "নৈতিক সোর্সিং এবং টেকসই সম্মতির জন্য যাচাইযোগ্য সাপ্লাই চেইন ট্র্যাকিং তৈরি করা।"
+  },
+  hi: {
+    "projects.title": "प्रमुख परियोजनाएं",
+    "projects.description": "दुनिया भर में प्रभाव डालने वाली वर्तमान पहलों का अन्वेषण करें",
+    "projects.view_all": "सभी परियोजनाएं देखें",
+    "projects.participants": "{{count}} प्रतिभागी",
+    "projects.progress": "प्रगति",
+    "projects.learn_more": "और जानें",
+    "projects.categories.climate": "जलवायु",
+    "projects.categories.governance": "शासन",
+    "projects.categories.sustainability": "स्थिरता",
+    "projects.project_titles.0": "वैश्विक जलवायु कार्रवाई गठबंधन",
+    "projects.project_titles.1": "खुला शासन पहल",
+    "projects.project_titles.2": "स्थायी आपूर्ति श्रृंखला गठबंधन",
+    "projects.project_descriptions.0": "पर्यावरण एनजीओ और सामुदायिक समूहों के बीच विश्वव्यापी जलवायु पहलों का समन्वय।",
+    "projects.project_descriptions.1": "सरकारी पारदर्शिता और जवाबदेही बढ़ाने के लिए उपकरण और पद्धतियों का विकास।",
+    "projects.project_descriptions.2": "नैतिक स्रोत और स्थिरता अनुपालन के लिए सत्यापन योग्य आपूर्ति श्रृंखला ट्रैकिंग बनाना।"
+  },
+  ja: {
+    "projects.title": "注目のプロジェクト",
+    "projects.description": "世界中で影響を与えている現在のイニシアチブを探る",
+    "projects.view_all": "すべてのプロジェクトを見る",
+    "projects.participants": "{{count}} 参加者",
+    "projects.progress": "進捗",
+    "projects.learn_more": "詳細を見る",
+    "projects.categories.climate": "気候",
+    "projects.categories.governance": "ガバナンス",
+    "projects.categories.sustainability": "持続可能性",
+    "projects.project_titles.0": "グローバル気候アクション連合",
+    "projects.project_titles.1": "オープンガバナンスイニシアチブ",
+    "projects.project_titles.2": "持続可能なサプライチェーン同盟",
+    "projects.project_descriptions.0": "環境NGOとコミュニティグループ間の世界的な気候イニシアチブの調整。",
+    "projects.project_descriptions.1": "政府の透明性と説明責任を高めるためのツールと方法論の開発。",
+    "projects.project_descriptions.2": "倫理的調達と持続可能性コンプライアンスのための検証可能なサプライチェーン追跡の作成。"
+  },
+  pt: {
+    "projects.title": "Projetos em Destaque",
+    "projects.description": "Explore iniciativas atuais que estão causando impacto em todo o mundo",
+    "projects.view_all": "Ver Todos os Projetos",
+    "projects.participants": "{{count}} Participantes",
+    "projects.progress": "Progresso",
+    "projects.learn_more": "Saiba Mais",
+    "projects.categories.climate": "Clima",
+    "projects.categories.governance": "Governança",
+    "projects.categories.sustainability": "Sustentabilidade",
+    "projects.project_titles.0": "Coalizão Global de Ação Climática",
+    "projects.project_titles.1": "Iniciativa de Governança Aberta",
+    "projects.project_titles.2": "Aliança de Cadeia de Suprimentos Sustentável",
+    "projects.project_descriptions.0": "Coordenando iniciativas climáticas mundiais entre ONGs ambientais e grupos comunitários.",
+    "projects.project_descriptions.1": "Desenvolvimento de ferramentas e metodologias para aumentar a transparência e responsabilidade governamental.",
+    "projects.project_descriptions.2": "Criação de rastreamento verificável da cadeia de suprimentos para abastecimento ético e conformidade com sustentabilidade."
+  },
+  ru: {
+    "projects.title": "Избранные проекты",
+    "projects.description": "Изучите текущие инициативы, оказывающие влияние во всем мире",
+    "projects.view_all": "Посмотреть все проекты",
+    "projects.participants": "{{count}} участников",
+    "projects.progress": "Прогресс",
+    "projects.learn_more": "Узнать больше",
+    "projects.categories.climate": "Климат",
+    "projects.categories.governance": "Управление",
+    "projects.categories.sustainability": "Устойчивое развитие",
+    "projects.project_titles.0": "Глобальная коалиция по климатическим действиям",
+    "projects.project_titles.1": "Инициатива открытого управления",
+    "projects.project_titles.2": "Альянс устойчивых цепочек поставок",
+    "projects.project_descriptions.0": "Координация всемирных климатических инициатив между экологическими НПО и общественными группами.",
+    "projects.project_descriptions.1": "Разработка инструментов и методологий для повышения прозрачности и подотчетности правительства.",
+    "projects.project_descriptions.2": "Создание проверяемого отслеживания цепочки поставок для этических источников и соответствия устойчивому развитию."
+  },
+  zh: {
+    "projects.title": "精选项目",
+    "projects.description": "探索当前在全球产生影响的举措",
+    "projects.view_all": "查看所有项目",
+    "projects.participants": "{{count}} 参与者",
+    "projects.progress": "进度",
+    "projects.learn_more": "了解更多",
+    "projects.categories.climate": "气候",
+    "projects.categories.governance": "治理",
+    "projects.categories.sustainability": "可持续性",
+    "projects.project_titles.0": "全球气候行动联盟",
+    "projects.project_titles.1": "开放治理倡议",
+    "projects.project_titles.2": "可持续供应链联盟",
+    "projects.project_descriptions.0": "协调环境非政府组织和社区团体之间的全球气候倡议。",
+    "projects.project_descriptions.1": "开发工具和方法来提高政府透明度和问责制。",
+    "projects.project_descriptions.2": "为道德采购和可持续性合规创建可验证的供应链跟踪。"
   },
   he: {
     "projects.title": "פרויקטים מובילים",
@@ -116,6 +196,15 @@ export const projectTranslations: Record<string, Record<string, string>> = {
     "projects.view_all": "צפה בכל הפרויקטים",
     "projects.participants": "{{count}} משתתפים",
     "projects.progress": "התקדמות",
-    "projects.learn_more": "למידע נוסף"
+    "projects.learn_more": "למידע נוסף",
+    "projects.categories.climate": "אקלים",
+    "projects.categories.governance": "ממשל",
+    "projects.categories.sustainability": "קיימות",
+    "projects.project_titles.0": "קואליציית פעולה גלובלית לאקלים",
+    "projects.project_titles.1": "יוזמת ממשל פתוח",
+    "projects.project_titles.2": "ברית שרשרת אספקה בת-קיימא",
+    "projects.project_descriptions.0": "תיאום יוזמות אקלים עולמיות בין ארגוני סביבה לא ממשלתיים וקבוצות קהילתיות.",
+    "projects.project_descriptions.1": "פיתוח כלים ומתודולוגיות להגברת השקיפות והאחריותיות הממשלתית.",
+    "projects.project_descriptions.2": "יצירת מעקב אמין אחר שרשרת האספקה למיקור אתי ועמידה בדרישות הקיימות."
   }
 };

@@ -1,4 +1,3 @@
-
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './components/theme-provider';
@@ -10,6 +9,7 @@ import { AuthProvider } from './contexts/auth/AuthProvider';
 import { ensureCriticalTranslations } from './utils/i18nVerification';
 import * as Pages from './pages';
 import './App.css';
+import I18nDebug from '@/pages/I18nDebug';
 
 function App() {
   // Ensure critical translations are loaded when the app starts
@@ -51,6 +51,7 @@ function App() {
                 <Route path="/contact-sales" element={<Pages.ContactSales />} />
                 <Route path="/auth/callback" element={<Pages.AuthCallback />} />
                 <Route path="*" element={<Pages.NotFound />} />
+                <Route path="/i18n-debug" element={<I18nDebug />} />
               </Routes>
             </div>
             <Footer />

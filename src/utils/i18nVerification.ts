@@ -2,127 +2,136 @@
 import i18n from '@/i18n';
 
 /**
- * Verifies that all required translation keys exist in a namespace
- * @param lang Language to check
- * @param namespace Namespace to check
- * @param requiredKeys Array of keys that must exist
- * @returns Object with verification results
+ * Interface for translation verification result
  */
-export function verifyTranslationKeys(
-  lang = i18n.language,
-  namespace = 'common',
-  requiredKeys: string[] = []
-) {
-  // Get the resource bundle
-  const bundle = i18n.getResourceBundle(lang, namespace);
-  
-  if (!bundle) {
-    console.error(`No resource bundle found for ${namespace} in ${lang}`);
-    return {
-      success: false,
-      message: `No resource bundle found for ${namespace} in ${lang}`,
-      missingKeys: requiredKeys,
-      missingCount: requiredKeys.length
-    };
-  }
-  
-  // Check if all required keys exist
-  const missingKeys = requiredKeys.filter(key => {
-    // Handle nested keys (e.g., "joinCta.benefits.secure.title")
-    if (key.includes('.')) {
-      let obj = bundle;
-      const parts = key.split('.');
-      
-      for (let i = 0; i < parts.length; i++) {
-        const part = parts[i];
-        if (!obj || typeof obj !== 'object' || !(part in obj)) {
-          return true; // Key is missing
-        }
-        obj = obj[part] as any;
-      }
-      
-      return false; // Key exists
-    }
-    
-    // Simple keys
-    return !(key in bundle);
-  });
-  
-  return {
-    success: missingKeys.length === 0,
-    message: missingKeys.length === 0 
-      ? `All required keys exist in ${namespace} for ${lang}` 
-      : `Missing ${missingKeys.length} keys in ${namespace} for ${lang}`,
-    missingKeys,
-    missingCount: missingKeys.length,
-    bundle
-  };
+interface TranslationVerificationResult {
+  success: boolean;
+  language: string;
+  namespace: string;
+  missingKeys: string[];
+  availableKeys: string[];
 }
 
 /**
- * Loads critical translation namespaces and verifies they contain required keys
+ * Verifies if all required translation keys exist in the specified language and namespace
+ * 
+ * @param language The language code to verify
+ * @param namespace The namespace to verify
+ * @param requiredKeys Array of keys that must exist
+ * @returns Object with verification results
  */
-export async function ensureCriticalTranslations() {
-  const currentLang = i18n.language;
-  console.log(`Ensuring critical translations for ${currentLang}`);
+export const verifyTranslationKeys = (
+  language: string, 
+  namespace = 'common',
+  requiredKeys: string[] = []
+): TranslationVerificationResult => {
+  // Get the resource bundle for the language and namespace
+  const bundle = i18n.getResourceBundle(language, namespace);
   
-  // Define required keys for common namespace
-  const commonKeys = [
-    'joinCta.heading',
-    'joinCta.subheading',
-    'joinCta.benefits.secure.title',
-    'joinCta.benefits.secure.description',
-    'joinCta.benefits.blockchain.title',
-    'joinCta.benefits.blockchain.description',
-    'joinCta.benefits.impact.title',
-    'joinCta.benefits.impact.description',
-    'joinCta.buttons.dashboard',
-    'joinCta.buttons.createAccount',
-    'joinCta.buttons.signIn'
-  ];
-  
-  // First, try to load the namespace
-  try {
-    await i18n.loadNamespaces(['common']);
-  } catch (error) {
-    console.error('Failed to load common namespace:', error);
+  if (!bundle) {
+    console.error(`No translation bundle found for ${language}/${namespace}`);
+    return {
+      success: false,
+      language,
+      namespace,
+      missingKeys: requiredKeys,
+      availableKeys: []
+    };
   }
   
-  // Verify the keys exist
-  const verificationResult = verifyTranslationKeys(currentLang, 'common', commonKeys);
-  
-  if (!verificationResult.success) {
-    console.error('Missing critical translation keys:', verificationResult.missingKeys);
-    
-    // Try to reload the namespace
-    try {
-      await i18n.reloadResources([currentLang], ['common']);
-      console.log(`Reloaded common namespace for ${currentLang}`);
+  // Flatten the bundle to handle nested keys
+  const flattenBundle = (obj: Record<string, any>, prefix = ''): Record<string, string> => {
+    return Object.keys(obj).reduce((acc: Record<string, string>, key: string) => {
+      const flatKey = prefix ? `${prefix}.${key}` : key;
       
-      // Verify again
-      const reverify = verifyTranslationKeys(currentLang, 'common', commonKeys);
-      if (!reverify.success) {
-        console.error('Still missing critical translation keys after reload:', reverify.missingKeys);
+      if (typeof obj[key] === 'object' && obj[key] !== null) {
+        Object.assign(acc, flattenBundle(obj[key], flatKey));
       } else {
-        console.log('All critical translation keys are now available');
+        acc[flatKey] = obj[key];
       }
-    } catch (error) {
-      console.error('Failed to reload common namespace:', error);
-    }
-  } else {
-    console.log('All critical translation keys are available');
+      
+      return acc;
+    }, {});
+  };
+  
+  const flatBundle = flattenBundle(bundle);
+  const availableKeys = Object.keys(flatBundle);
+  
+  // Check if all required keys exist
+  const missingKeys = requiredKeys.filter(key => !flatBundle[key]);
+  
+  const success = missingKeys.length === 0;
+  
+  if (!success) {
+    console.warn(`Missing translation keys in ${language}/${namespace}:`, missingKeys);
   }
   
-  return verificationResult;
-}
+  return {
+    success,
+    language,
+    namespace,
+    missingKeys,
+    availableKeys
+  };
+};
 
-// Make the functions available globally for debugging
-if (typeof window !== 'undefined') {
-  (window as any).verifyTranslationKeys = verifyTranslationKeys;
-  (window as any).ensureCriticalTranslations = ensureCriticalTranslations;
-}
+/**
+ * Verifies translations across all supported languages
+ * 
+ * @param namespace The namespace to verify
+ * @param requiredKeys Array of keys that must exist
+ * @returns Object mapping language codes to verification results
+ */
+export const verifyAllLanguages = (
+  namespace = 'common',
+  requiredKeys: string[] = []
+): Record<string, TranslationVerificationResult> => {
+  const supportedLanguages = i18n.options.supportedLngs || ['en'];
+  const results: Record<string, TranslationVerificationResult> = {};
+  
+  // Filter out special language codes
+  const languages = supportedLanguages.filter(
+    lang => lang !== 'cimode' && lang !== 'dev' && !lang.includes('-')
+  );
+  
+  // Verify each language
+  languages.forEach(language => {
+    results[language] = verifyTranslationKeys(language, namespace, requiredKeys);
+  });
+  
+  // Log summary
+  const missingByLanguage = Object.entries(results)
+    .filter(([_, result]) => !result.success)
+    .map(([lang, result]) => `${lang}: ${result.missingKeys.length} keys missing`);
+  
+  if (missingByLanguage.length > 0) {
+    console.warn(`Translation verification failed for some languages:`, missingByLanguage);
+  } else {
+    console.log(`All required translations verified successfully across ${languages.length} languages`);
+  }
+  
+  return results;
+};
+
+/**
+ * Creates a verification component that ensures translations are complete
+ * 
+ * @param namespace The namespace to verify
+ * @param requiredKeys Array of keys that must exist
+ * @returns A verification function that returns true if translations are complete
+ */
+export const createTranslationVerifier = (
+  namespace = 'common',
+  requiredKeys: string[] = []
+) => {
+  return (language: string = i18n.language): boolean => {
+    const result = verifyTranslationKeys(language, namespace, requiredKeys);
+    return result.success;
+  };
+};
 
 export default {
   verifyTranslationKeys,
-  ensureCriticalTranslations
+  verifyAllLanguages,
+  createTranslationVerifier
 };

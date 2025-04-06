@@ -10,7 +10,12 @@ export const walletTranslations: Record<string, Record<string, string>> = {
     "wallet.description": "Your tokenized incentives",
     "wallet.coins": "CollabCoins",
     "wallet.earn": "Earn through secure collaboration and spend on premium features",
-    "wallet.balance": "Balance"
+    "wallet.balance": "Balance",
+    "wallet.transactions": "Transactions",
+    "wallet.transaction_history": "Transaction History",
+    "wallet.no_transactions": "No transactions yet",
+    "wallet.send": "Send",
+    "wallet.receive": "Receive"
   },
   fr: {
     "wallet.section_title": "Portefeuille CollabCoin",
@@ -19,7 +24,12 @@ export const walletTranslations: Record<string, Record<string, string>> = {
     "wallet.description": "Vos incitations tokenisées",
     "wallet.coins": "CollabCoins",
     "wallet.earn": "Gagnez grâce à une collaboration sécurisée et dépensez pour des fonctionnalités premium",
-    "wallet.balance": "Solde"
+    "wallet.balance": "Solde",
+    "wallet.transactions": "Transactions",
+    "wallet.transaction_history": "Historique des transactions",
+    "wallet.no_transactions": "Pas encore de transactions",
+    "wallet.send": "Envoyer",
+    "wallet.receive": "Recevoir"
   },
   de: {
     "wallet.section_title": "CollabCoin Brieftasche",
@@ -28,7 +38,12 @@ export const walletTranslations: Record<string, Record<string, string>> = {
     "wallet.description": "Ihre tokenisierten Anreize",
     "wallet.coins": "CollabCoins",
     "wallet.earn": "Verdienen Sie durch sichere Zusammenarbeit und geben Sie für Premium-Funktionen aus",
-    "wallet.balance": "Guthaben"
+    "wallet.balance": "Guthaben",
+    "wallet.transactions": "Transaktionen",
+    "wallet.transaction_history": "Transaktionsverlauf",
+    "wallet.no_transactions": "Noch keine Transaktionen",
+    "wallet.send": "Senden",
+    "wallet.receive": "Empfangen"
   },
   es: {
     "wallet.section_title": "Monedero CollabCoin",
@@ -37,7 +52,12 @@ export const walletTranslations: Record<string, Record<string, string>> = {
     "wallet.description": "Sus incentivos tokenizados",
     "wallet.coins": "CollabCoins",
     "wallet.earn": "Gane a través de colaboración segura y gaste en funciones premium",
-    "wallet.balance": "Saldo"
+    "wallet.balance": "Saldo",
+    "wallet.transactions": "Transacciones",
+    "wallet.transaction_history": "Historial de transacciones",
+    "wallet.no_transactions": "Aún no hay transacciones",
+    "wallet.send": "Enviar",
+    "wallet.receive": "Recibir"
   },
   ar: {
     "wallet.section_title": "محفظة CollabCoin",
@@ -46,7 +66,12 @@ export const walletTranslations: Record<string, Record<string, string>> = {
     "wallet.description": "حوافزك الرقمية",
     "wallet.coins": "CollabCoins",
     "wallet.earn": "اكسب من خلال التعاون الآمن وأنفق على الميزات المتميزة",
-    "wallet.balance": "الرصيد"
+    "wallet.balance": "الرصيد",
+    "wallet.transactions": "المعاملات",
+    "wallet.transaction_history": "سجل المعاملات",
+    "wallet.no_transactions": "لا توجد معاملات حتى الآن",
+    "wallet.send": "إرسال",
+    "wallet.receive": "استلام"
   },
   bn: {
     "wallet.section_title": "CollabCoin ওয়ালেট",
@@ -55,7 +80,12 @@ export const walletTranslations: Record<string, Record<string, string>> = {
     "wallet.description": "আপনার টোকেনাইজড উদ্দীপনা",
     "wallet.coins": "CollabCoins",
     "wallet.earn": "সুরক্ষিত সহযোগিতার মাধ্যমে উপার্জন করুন এবং প্রিমিয়াম বৈশিষ্ট্যগুলিতে ব্যয় করুন",
-    "wallet.balance": "ব্যালেন্স"
+    "wallet.balance": "ব্যালেন্স",
+    "wallet.transactions": "লেনদেন",
+    "wallet.transaction_history": "লেনদেনের ইতিহাস",
+    "wallet.no_transactions": "এখনও কোন লেনদেন নেই",
+    "wallet.send": "পাঠান",
+    "wallet.receive": "গ্রহণ করুন"
   },
   hi: {
     "wallet.section_title": "CollabCoin वॉलेट",
@@ -64,7 +94,12 @@ export const walletTranslations: Record<string, Record<string, string>> = {
     "wallet.description": "आपके टोकनाइज्ड इंसेंटिव्स",
     "wallet.coins": "CollabCoins",
     "wallet.earn": "सुरक्षित सहयोग के माध्यम से कमाएं और प्रीमियम सुविधाओं पर खर्च करें",
-    "wallet.balance": "शेष राशि"
+    "wallet.balance": "शेष राशि",
+    "wallet.transactions": "लेन-देन",
+    "wallet.transaction_history": "लेन-देन का इतिहास",
+    "wallet.no_transactions": "अभी तक कोई लेन-देन नहीं",
+    "wallet.send": "भेजें",
+    "wallet.receive": "प्राप्त करें"
   },
   ja: {
     "wallet.section_title": "CollabCoinウォレット",
@@ -73,7 +108,12 @@ export const walletTranslations: Record<string, Record<string, string>> = {
     "wallet.description": "トークン化されたインセンティブ",
     "wallet.coins": "CollabCoins",
     "wallet.earn": "安全なコラボレーションを通じて獲得し、プレミアム機能に使用する",
-    "wallet.balance": "残高"
+    "wallet.balance": "残高",
+    "wallet.transactions": "取引履歴",
+    "wallet.transaction_history": "取引履歴",
+    "wallet.no_transactions": "まだ取引はありません",
+    "wallet.send": "送金",
+    "wallet.receive": "受け取り"
   },
   pt: {
     "wallet.section_title": "Carteira CollabCoin",
@@ -82,7 +122,12 @@ export const walletTranslations: Record<string, Record<string, string>> = {
     "wallet.description": "Seus incentivos tokenizados",
     "wallet.coins": "CollabCoins",
     "wallet.earn": "Ganhe através de colaboração segura e gaste em recursos premium",
-    "wallet.balance": "Saldo"
+    "wallet.balance": "Saldo",
+    "wallet.transactions": "Transações",
+    "wallet.transaction_history": "Histórico de Transações",
+    "wallet.no_transactions": "Ainda não há transações",
+    "wallet.send": "Enviar",
+    "wallet.receive": "Receber"
   },
   ru: {
     "wallet.section_title": "Кошелек CollabCoin",
@@ -91,7 +136,12 @@ export const walletTranslations: Record<string, Record<string, string>> = {
     "wallet.description": "Ваши токенизированные стимулы",
     "wallet.coins": "CollabCoins",
     "wallet.earn": "Зарабатывайте через безопасное сотрудничество и тратьте на премиум-функции",
-    "wallet.balance": "Баланс"
+    "wallet.balance": "Баланс",
+    "wallet.transactions": "Транзакции",
+    "wallet.transaction_history": "История транзакций",
+    "wallet.no_transactions": "Пока нет транзакций",
+    "wallet.send": "Отправить",
+    "wallet.receive": "Получить"
   },
   zh: {
     "wallet.section_title": "CollabCoin钱包",
@@ -100,7 +150,12 @@ export const walletTranslations: Record<string, Record<string, string>> = {
     "wallet.description": "您的代币化激励",
     "wallet.coins": "CollabCoins",
     "wallet.earn": "通过安全协作赚取并用于高级功能",
-    "wallet.balance": "余额"
+    "wallet.balance": "余额",
+    "wallet.transactions": "交易",
+    "wallet.transaction_history": "交易历史",
+    "wallet.no_transactions": "尚无交易",
+    "wallet.send": "发送",
+    "wallet.receive": "接收"
   },
   he: {
     "wallet.section_title": "ארנק CollabCoin",
@@ -109,6 +164,11 @@ export const walletTranslations: Record<string, Record<string, string>> = {
     "wallet.description": "התמריצים המבוססים על טוקנים שלך",
     "wallet.coins": "CollabCoins",
     "wallet.earn": "הרוויחו דרך שיתוף פעולה מאובטח והשקיעו במאפיינים מתקדמים",
-    "wallet.balance": "יתרה"
+    "wallet.balance": "יתרה",
+    "wallet.transactions": "עסקאות",
+    "wallet.transaction_history": "היסטוריית עסקאות",
+    "wallet.no_transactions": "אין עסקאות עדיין",
+    "wallet.send": "שלח",
+    "wallet.receive": "קבל"
   }
 };
