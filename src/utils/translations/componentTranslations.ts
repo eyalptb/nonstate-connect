@@ -76,44 +76,11 @@ export const loadAllUseCasesTranslations = () => {
   loadAllComponentTranslations('useCases');
 };
 
-// Learn translations
+// Learn translations - Fix the typing issue by directly using the component translations approach
 export const addLearnTranslations = (language: string, namespace: string = 'common') => {
-  if (!learnTranslations[language]) {
-    console.warn(`No learn translations found for ${language}, falling back to English`);
-    // Try to add English translations as fallback
-    if (learnTranslations['en']) {
-      return addTranslations(language, namespace, learnTranslations['en']);
-    }
-    return false;
-  }
-  
-  console.log(`Adding learn translations for ${language}:`, learnTranslations[language]);
-  return addTranslations(language, namespace, learnTranslations[language]);
+  return addComponentTranslations(language, 'learn', namespace);
 };
 
-export const loadAllLearnTranslations = async () => {
-  const currentLanguage = i18n.language;
-  console.log(`Loading learn translations for current language: ${currentLanguage}`);
-  
-  // First add translations for current language
-  addLearnTranslations(currentLanguage);
-  
-  // Then add for all supported languages in background
-  const supportedLanguages = getSupportedLanguages();
-  for (const lang of supportedLanguages) {
-    if (lang !== currentLanguage) {
-      addLearnTranslations(lang);
-    }
-  }
-  
-  // Force refresh translations and notify listeners
-  try {
-    await i18n.reloadResources(currentLanguage, ['common']);
-    document.dispatchEvent(new Event('i18n-resources-loaded'));
-    console.log(`Learn translations loaded and event dispatched`);
-    return true;
-  } catch (error) {
-    console.error(`Error reloading resources: ${error}`);
-    return false;
-  }
+export const loadAllLearnTranslations = () => {
+  loadAllComponentTranslations('learn');
 };

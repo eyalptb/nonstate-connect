@@ -13,7 +13,7 @@ const Learn = () => {
 
   // Load learn page translations on mount and language changes
   useEffect(() => {
-    console.log(`Setting up translations for language: ${i18n.language}`);
+    console.log(`Loading Learn page translations for language: ${i18n.language}`);
     
     // Initial load of translations
     loadAllLearnTranslations();
