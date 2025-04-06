@@ -43,18 +43,13 @@ const addInMemoryTranslations = (language: string) => {
     i18n.addResourceBundle(language, 'common', backendTranslations[language], true, true);
   }
   
-  try {
-    if (learnTranslations[language]) {
-      console.log(`Adding learn translations for ${language}`, learnTranslations[language]);
-      i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
-    } else {
-      console.warn(`No learn translations found for ${language}, falling back to English`);
-      if (learnTranslations['en']) {
-        i18n.addResourceBundle(language, 'common', learnTranslations['en'], true, true);
-      }
-    }
-  } catch (error) {
-    console.error(`Error adding learn translations for ${language}:`, error);
+  // Add Learn translations
+  if (learnTranslations[language]) {
+    console.log(`Adding learn translations for ${language} during initialization`);
+    i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
+  } else if (learnTranslations['en']) {
+    console.log(`No learn translations for ${language}, adding English as fallback`);
+    i18n.addResourceBundle(language, 'common', learnTranslations['en'], true, true);
   }
 };
 
@@ -97,45 +92,64 @@ i18n.on('initialized', () => {
   console.log('Available namespaces:', i18n.options.ns);
   console.log('Supported languages:', i18n.options.supportedLngs);
   
+  // Add in-memory translations for current language
   addInMemoryTranslations(i18n.language);
   
+  // Verify learn translations were added correctly
   const currentResources = i18n.getResourceBundle(i18n.language, 'common');
   console.log(`Initial resources for ${i18n.language}:`, currentResources);
   
-  // Check if Learn translations are loaded
+  // Check if Learn translations are present
   const hasLearnTranslations = currentResources && 
     currentResources.learn && 
     Object.keys(currentResources.learn).length > 0;
   
-  console.log(`Has learn translations: ${hasLearnTranslations}`);
-  
   if (!hasLearnTranslations) {
-    console.warn('Learn translations not loaded during initialization, adding them explicitly');
-    try {
-      const learnResource = learnTranslations[i18n.language] || learnTranslations['en'];
-      if (learnResource) {
-        i18n.addResourceBundle(i18n.language, 'common', learnResource, true, true);
-        console.log('Learn translations added explicitly');
-      }
-    } catch (error) {
-      console.error('Failed to add learn translations explicitly:', error);
+    console.warn(`Learn translations not present after initialization, adding them explicitly`);
+    if (learnTranslations[i18n.language]) {
+      i18n.addResourceBundle(i18n.language, 'common', learnTranslations[i18n.language], true, true);
+    } else if (learnTranslations['en']) {
+      i18n.addResourceBundle(i18n.language, 'common', learnTranslations['en'], true, true);
     }
+  } else {
+    console.log(`Learn translations correctly loaded during initialization`);
   }
+  
+  // Notify listeners
+  document.dispatchEvent(new Event('i18n-resources-loaded'));
 });
 
 i18n.on('loaded', (loaded) => {
   console.log('i18n resources loaded:', loaded);
+  document.dispatchEvent(new Event('i18n-resources-loaded'));
 });
 
 i18n.on('languageChanged', (lng) => {
   document.documentElement.lang = lng;
   console.log(`Language changed to ${lng}, updating document.documentElement.lang`);
   
+  // Add in-memory translations for the new language
   addInMemoryTranslations(lng);
   
-  const loadedResources = i18n.getResourceBundle(lng, 'common');
-  console.log(`Loaded resources for ${lng}:`, loadedResources);
+  // Verify translations were added
+  const resources = i18n.getResourceBundle(lng, 'common');
+  console.log(`Resources for ${lng} after language change:`, resources);
   
+  // Verify Learn translations specifically
+  const hasLearnTranslations = resources && 
+    resources.learn && 
+    Object.keys(resources.learn).length > 0;
+    
+  if (!hasLearnTranslations) {
+    console.warn(`Learn translations missing after language change, adding them explicitly`);
+    if (learnTranslations[lng]) {
+      i18n.addResourceBundle(lng, 'common', learnTranslations[lng], true, true);
+    } else if (learnTranslations['en']) {
+      i18n.addResourceBundle(lng, 'common', learnTranslations['en'], true, true);
+    }
+  }
+  
+  // Reload resources to ensure everything is up-to-date
   i18n.reloadResources([lng], ['common', 'navigation', 'auth', 'messaging', 'governance'])
     .then(() => {
       console.log(`Successfully reloaded resources for ${lng}`);
@@ -149,24 +163,28 @@ export const reloadTranslations = async (language: string) => {
   try {
     console.log(`Reloading translations for ${language}`);
     
+    // Add in-memory translations for the language
     addInMemoryTranslations(language);
     
+    // Reload resources
     await i18n.reloadResources(language, ['common', 'navigation', 'auth', 'messaging', 'governance']);
     
+    // Verify translations were added correctly
     const resources = i18n.getResourceBundle(language, 'common');
     const hasLearnTranslations = resources && 
       resources.learn && 
       Object.keys(resources.learn).length > 0;
     
-    console.log(`After reload - Has learn translations: ${hasLearnTranslations}`);
-    
-    if (!hasLearnTranslations && learnTranslations[language]) {
-      i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
-      console.log('Learn translations added explicitly after reload');
+    if (!hasLearnTranslations) {
+      console.warn(`Learn translations missing after reload, adding them explicitly`);
+      if (learnTranslations[language]) {
+        i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
+      } else if (learnTranslations['en']) {
+        i18n.addResourceBundle(language, 'common', learnTranslations['en'], true, true);
+      }
     }
     
-    console.log(`Successfully reloaded translations for ${language}`);
-    
+    // Notify listeners
     document.dispatchEvent(new Event('i18n-resources-loaded'));
     return true;
   } catch (error) {

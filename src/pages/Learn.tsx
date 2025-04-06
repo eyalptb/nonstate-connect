@@ -9,52 +9,37 @@ import i18n from '@/i18n';
 
 const Learn = () => {
   const { t } = useTranslation(['common']);
-  const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
-  const [translationsLoaded, setTranslationsLoaded] = useState(false);
+  const [refresh, setRefresh] = useState(0); // Force re-render on language change
 
-  // Load learn page translations on mount
+  // Load learn page translations on mount and language changes
   useEffect(() => {
-    const initializeTranslations = async () => {
-      console.log("Initializing learn translations for language:", i18n.language);
-      try {
-        await loadAllLearnTranslations();
-        console.log("Learn translations loaded successfully");
-        setTranslationsLoaded(true);
-      } catch (error) {
-        console.error("Failed to load learn translations:", error);
-      }
-    };
+    console.log(`Setting up translations for language: ${i18n.language}`);
     
-    initializeTranslations();
-  }, []);
-
-  // Re-load translations when language changes
-  useEffect(() => {
-    const handleLanguageChanged = async (lng: string) => {
+    // Initial load of translations
+    loadAllLearnTranslations();
+    
+    // Set up language change handler
+    const handleLanguageChange = (lng: string) => {
       console.log(`Language changed to ${lng}, reloading learn translations`);
-      setCurrentLanguage(lng);
-      await loadAllLearnTranslations();
-      setTranslationsLoaded(true);
+      loadAllLearnTranslations();
+      setRefresh(prev => prev + 1); // Force re-render
     };
     
-    i18n.on('languageChanged', handleLanguageChanged);
+    // Listen for language changes
+    i18n.on('languageChanged', handleLanguageChange);
     
+    // Listen for when translations are loaded
+    const handleTranslationsLoaded = () => {
+      console.log("Translation resources loaded event detected");
+      setRefresh(prev => prev + 1); // Force re-render
+    };
+    
+    document.addEventListener('i18n-resources-loaded', handleTranslationsLoaded);
+    
+    // Cleanup
     return () => {
-      i18n.off('languageChanged', handleLanguageChanged);
-    };
-  }, []);
-
-  // Force re-render when language changes to update translations
-  useEffect(() => {
-    const forceUpdate = (e: Event) => {
-      console.log("i18n resources loaded event detected, forcing update");
-      setTranslationsLoaded(prev => !prev); // Toggle to force re-render
-    };
-    
-    document.addEventListener('i18n-resources-loaded', forceUpdate);
-    
-    return () => {
-      document.removeEventListener('i18n-resources-loaded', forceUpdate);
+      i18n.off('languageChanged', handleLanguageChange);
+      document.removeEventListener('i18n-resources-loaded', handleTranslationsLoaded);
     };
   }, []);
 
@@ -66,10 +51,10 @@ const Learn = () => {
       />
       
       <div className="mt-12">
-        <LearnTabs key={`learn-tabs-${currentLanguage}`} />
+        <LearnTabs key={`learn-tabs-${refresh}`} />
       </div>
       
-      <NewsletterSignup key={`newsletter-${currentLanguage}`} />
+      <NewsletterSignup key={`newsletter-${refresh}`} />
     </div>
   );
 };

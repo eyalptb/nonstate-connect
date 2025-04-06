@@ -78,25 +78,27 @@ export const loadAllUseCasesTranslations = () => {
 
 // Learn translations
 export const addLearnTranslations = (language: string, namespace: string = 'common') => {
-  return addComponentTranslations(language, 'learn', namespace);
+  if (!learnTranslations[language]) {
+    console.warn(`No learn translations found for ${language}, falling back to English`);
+    // Try to add English translations as fallback
+    if (learnTranslations['en']) {
+      return addTranslations(language, namespace, learnTranslations['en']);
+    }
+    return false;
+  }
+  
+  console.log(`Adding learn translations for ${language}:`, learnTranslations[language]);
+  return addTranslations(language, namespace, learnTranslations[language]);
 };
 
 export const loadAllLearnTranslations = async () => {
   const currentLanguage = i18n.language;
   console.log(`Loading learn translations for current language: ${currentLanguage}`);
   
-  // First load translations for current language
-  const success = addLearnTranslations(currentLanguage);
+  // First add translations for current language
+  addLearnTranslations(currentLanguage);
   
-  if (success) {
-    console.log(`Successfully loaded learn translations for ${currentLanguage}`);
-  } else {
-    console.warn(`Failed to load learn translations for ${currentLanguage}, falling back to English`);
-    // Fallback to English
-    addLearnTranslations('en');
-  }
-  
-  // Then load for all other languages in the background
+  // Then add for all supported languages in background
   const supportedLanguages = getSupportedLanguages();
   for (const lang of supportedLanguages) {
     if (lang !== currentLanguage) {
@@ -104,6 +106,14 @@ export const loadAllLearnTranslations = async () => {
     }
   }
   
-  // Force refresh translations
-  return i18n.reloadResources(currentLanguage, ['common']);
+  // Force refresh translations and notify listeners
+  try {
+    await i18n.reloadResources(currentLanguage, ['common']);
+    document.dispatchEvent(new Event('i18n-resources-loaded'));
+    console.log(`Learn translations loaded and event dispatched`);
+    return true;
+  } catch (error) {
+    console.error(`Error reloading resources: ${error}`);
+    return false;
+  }
 };
