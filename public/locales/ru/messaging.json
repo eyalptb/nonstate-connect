@@ -11,5 +11,6 @@
   "createConversation": "Создать беседу",
   "conversationWith": "Беседа с",
   "noMessages": "Сообщений пока нет",
-  "startMessaging": "Начните обмен защищенными сообщениями"
+  "startMessaging": "Начните обмен защищенными сообщениями",
+  "returnToHome": "Вернуться на главную"
 }

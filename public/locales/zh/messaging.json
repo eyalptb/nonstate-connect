@@ -11,5 +11,6 @@
   "createConversation": "创建对话",
   "conversationWith": "与以下人员的对话",
   "noMessages": "暂无消息",
-  "startMessaging": "开始交换安全消息"
+  "startMessaging": "开始交换安全消息",
+  "returnToHome": "返回首页"
 }

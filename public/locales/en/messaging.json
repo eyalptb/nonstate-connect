@@ -3,5 +3,14 @@
   "messagingTitle": "Messaging",
   "messagingUnavailable": "This feature is currently unavailable",
   "messagingDescription": "The messaging functionality is currently unavailable.",
-  "returnToHome": "Return to Home"
+  "returnToHome": "Return to Home",
+  "selectConversation": "Select a conversation",
+  "chooseConversation": "Choose an existing conversation or start a new one",
+  "newMessage": "New message",
+  "send": "Send",
+  "typeMessage": "Type your message...",
+  "createConversation": "Create conversation",
+  "conversationWith": "Conversation with",
+  "noMessages": "No messages yet",
+  "startMessaging": "Start exchanging secure messages"
 }

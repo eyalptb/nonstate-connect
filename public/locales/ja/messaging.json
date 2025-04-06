@@ -11,5 +11,6 @@
   "createConversation": "会話を作成",
   "conversationWith": "との会話",
   "noMessages": "まだメッセージはありません",
-  "startMessaging": "安全なメッセージのやり取りを始めましょう"
+  "startMessaging": "安全なメッセージのやり取りを始めましょう",
+  "returnToHome": "ホームに戻る"
 }

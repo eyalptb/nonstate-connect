@@ -11,5 +11,6 @@
   "createConversation": "Créer une conversation",
   "conversationWith": "Conversation avec",
   "noMessages": "Pas encore de messages",
-  "startMessaging": "Commencez à échanger des messages sécurisés"
+  "startMessaging": "Commencez à échanger des messages sécurisés",
+  "returnToHome": "Retourner à l'accueil"
 }

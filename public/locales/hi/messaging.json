@@ -11,5 +11,6 @@
   "createConversation": "वार्तालाप बनाएं",
   "conversationWith": "के साथ वार्तालाप",
   "noMessages": "अभी तक कोई संदेश नहीं",
-  "startMessaging": "सुरक्षित संदेश भेजना शुरू करें"
+  "startMessaging": "सुरक्षित संदेश भेजना शुरू करें",
+  "returnToHome": "होम पेज पर वापस जाएं"
 }
