@@ -33,8 +33,12 @@ const TranslationDebugger: React.FC<TranslationDebuggerProps> = ({
   const runTests = async () => {
     setLoading(true);
     const newResults = keys.map(key => {
-      const { translation, success } = testTranslation(key, namespace);
-      return { key, translation, success };
+      const result = testTranslation(key, namespace);
+      return { 
+        key, 
+        translation: result.message, 
+        success: result.success 
+      };
     });
     setResults(newResults);
     setLoading(false);
