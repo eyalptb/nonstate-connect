@@ -75,6 +75,16 @@ const useTranslationTester = () => {
       };
     }
     
+    // Check for learn-specific keys
+    if (key.startsWith('learn.') && (value === key || value === undefined)) {
+      console.error(`Learn translation missing for key ${key} in ${currentLang}`);
+      return { 
+        success: false, 
+        message: `Learn translation missing for key ${key} in ${currentLang}`,
+        key
+      };
+    }
+    
     return { 
       success: true, 
       message: `Translation found for key ${key} in ${currentLang}`,
@@ -125,6 +135,22 @@ const useTranslationTester = () => {
             useCasesResults.filter(r => !r.success).map(r => r.key));
         } else {
           console.log('All useCases translations successfully loaded');
+        }
+        
+        // Verify learn keys
+        const learnKeys = ['learn.title', 'learn.description', 'learn.tabs.guides'];
+        console.log(`Testing learn keys after reload for ${currentLang}:`);
+        const learnResults = learnKeys.map(key => {
+          const testResult = testTranslation(key, namespace);
+          console.log(`- ${key}: ${testResult.success ? 'OK' : 'MISSING'} (${testResult.value || 'no value'})`);
+          return testResult;
+        });
+        
+        if (learnResults.some(result => !result.success)) {
+          console.error('Some learn translations are still missing after reload:', 
+            learnResults.filter(r => !r.success).map(r => r.key));
+        } else {
+          console.log('All learn translations successfully loaded');
         }
         
         // Force a refresh by updating language to the same language
