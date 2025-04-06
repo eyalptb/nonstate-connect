@@ -13,21 +13,15 @@
   "create": "作成",
   "submit": "提出",
   "confirm": "確認",
-  "hero": {
-    "tagline": "プライバシーを優先したAIコラボレーション",
-    "title": {
-      "start": "安全な",
-      "highlight": "AI強化",
-      "end": "チェンジメーカーのためのコラボレーションプラットフォーム"
-    },
-    "description": "ParaCollabは科学者、環境活動家、教育者がデータをプライベートかつ安全に保ちながら影響力のあるプロジェクトで協力することを可能にします。",
-    "primaryCta": "コラボレーションを始める",
-    "secondaryCta": "機能を探る",
-    "stats": {
-      "count": "500",
-      "description": "チームがイノベーションを起こしながらデータを保護しています"
-    }
-  },
+  "hero.tagline": "プライバシーを優先したAIコラボレーション",
+  "hero.titleStart": "安全な",
+  "hero.titleHighlight": "AI強化",
+  "hero.titleEnd": "チェンジメーカーのためのコラボレーションプラットフォーム",
+  "hero.description": "ParaCollabは科学者、環境活動家、教育者がデータをプライベートかつ安全に保ちながら影響力のあるプロジェクトで協力することを可能にします。",
+  "hero.primaryCta": "コラボレーションを始める",
+  "hero.secondaryCta": "機能を探る",
+  "hero.stats.count": "500",
+  "hero.stats.description": "チームがイノベーションを起こしながらデータを保護しています",
   "joinCta": {
     "heading": "ネットワークに参加する",
     "subheading": "前向きな世界的変化のために働く志を同じくする組織や個人とつながりましょう。",

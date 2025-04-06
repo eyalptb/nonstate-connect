@@ -13,21 +13,15 @@
   "create": "Criar",
   "submit": "Enviar",
   "confirm": "Confirmar",
-  "hero": {
-    "tagline": "Colaboração com IA Focada em Privacidade",
-    "title": {
-      "start": "Colaboração",
-      "highlight": "Aprimorada por IA",
-      "end": "para Agentes de Mudança"
-    },
-    "description": "ParaCollab capacita cientistas, ambientalistas e educadores para colaborarem em projetos impactantes mantendo seus dados privados e seguros.",
-    "primaryCta": "Começar a Colaborar",
-    "secondaryCta": "Explorar Recursos",
-    "stats": {
-      "count": "500",
-      "description": "equipes protegendo seus dados enquanto inovam"
-    }
-  },
+  "hero.tagline": "Colaboração com IA Focada em Privacidade",
+  "hero.titleStart": "Plataforma de Colaboração",
+  "hero.titleHighlight": "Aprimorada por IA",
+  "hero.titleEnd": "Segura para Agentes de Mudança",
+  "hero.description": "ParaCollab capacita cientistas, ambientalistas e educadores para colaborarem em projetos impactantes mantendo seus dados privados e seguros.",
+  "hero.primaryCta": "Começar a Colaborar",
+  "hero.secondaryCta": "Explorar Recursos",
+  "hero.stats.count": "500",
+  "hero.stats.description": "equipes protegendo seus dados enquanto inovam",
   "joinCta": {
     "heading": "Junte-se à Rede",
     "subheading": "Conecte-se com organizações e indivíduos com ideias semelhantes trabalhando por mudanças globais positivas.",

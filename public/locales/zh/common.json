@@ -13,21 +13,15 @@
   "create": "创建",
   "submit": "提交",
   "confirm": "确认",
-  "hero": {
-    "tagline": "隐私优先的人工智能协作",
-    "title": {
-      "start": "安全",
-      "highlight": "AI增强",
-      "end": "变革者的协作平台"
-    },
-    "description": "ParaCollab为科学家、环保卫士和教育工作者提供支持，让他们能够在保护数据隐私的同时开展影响力项目合作。",
-    "primaryCta": "开始协作",
-    "secondaryCta": "探索功能",
-    "stats": {
-      "count": "500",
-      "description": "个团队在创新的同时保护着他们的数据"
-    }
-  },
+  "hero.tagline": "隐私优先的人工智能协作",
+  "hero.titleStart": "安全",
+  "hero.titleHighlight": "AI增强",
+  "hero.titleEnd": "变革者的协作平台",
+  "hero.description": "ParaCollab为科学家、环保卫士和教育工作者提供支持，让他们能够在保护数据隐私的同时开展影响力项目合作。",
+  "hero.primaryCta": "开始协作",
+  "hero.secondaryCta": "探索功能",
+  "hero.stats.count": "500",
+  "hero.stats.description": "个团队在创新的同时保护着他们的数据",
   "joinCta": {
     "heading": "加入网络",
     "subheading": "与志同道合的组织和个人连接，共同致力于积极的全球变革。",
