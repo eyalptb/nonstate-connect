@@ -126,6 +126,54 @@ export const addWalletTranslations = (language: string) => {
 };
 
 /**
+ * Adds feature translations for a specific language
+ */
+export const addFeatureTranslations = (language: string) => {
+  // Define feature translations for the specified language
+  const featureTranslations: Record<string, Record<string, string>> = {
+    en: {
+      "features.heading": "Privacy-Focused Infrastructure for Innovation",
+      "features.subheading": "Our platform combines secure encryption technology with AI-powered collaboration tools to empower changemakers without compromising privacy.",
+      "features.privacy.title": "Privacy-First Architecture",
+      "features.privacy.description": "End-to-end encryption secures your data across our platform. Your information remains private, even from us.",
+      "features.ai.title": "AI-Powered Collaboration",
+      "features.ai.description": "Our integrated AI tools help teams work together more effectively while maintaining complete data privacy.",
+      "features.zones.title": "Contribution Zones",
+      "features.zones.description": "Create specialized zones for different types of collaboration, from open innovation to highly secured environments.",
+      "features.dashboard.title": "Customized Dashboard",
+      "features.dashboard.description": "Personalize your workspace to track projects, monitor activity, and manage contributions in one place.",
+      "features.simulator.title": "Innovation Simulator",
+      "features.simulator.description": "Model potential outcomes and impacts of your projects before committing resources to implementation.",
+      "features.blueprint.title": "Blueprint Library",
+      "features.blueprint.description": "Access templates for common collaboration scenarios to jumpstart your projects and initiatives."
+    },
+    fr: {
+      "features.heading": "Infrastructure axée sur la confidentialité pour l'innovation",
+      "features.subheading": "Notre plateforme combine une technologie de cryptage sécurisée avec des outils de collaboration alimentés par l'IA pour permettre aux innovateurs sans compromettre la confidentialité.",
+      "features.privacy.title": "Architecture centrée sur la confidentialité",
+      "features.privacy.description": "Le chiffrement de bout en bout sécurise vos données sur notre plateforme. Vos informations restent privées, même pour nous.",
+      "features.ai.title": "Collaboration alimentée par l'IA",
+      "features.ai.description": "Nos outils d'IA intégrés aident les équipes à travailler ensemble plus efficacement tout en maintenant une confidentialité totale des données.",
+      "features.zones.title": "Zones de contribution",
+      "features.zones.description": "Créez des zones spécialisées pour différents types de collaboration, de l'innovation ouverte aux environnements hautement sécurisés.",
+      "features.dashboard.title": "Tableau de bord personnalisé",
+      "features.dashboard.description": "Personnalisez votre espace de travail pour suivre les projets, surveiller l'activité et gérer les contributions en un seul endroit.",
+      "features.simulator.title": "Simulateur d'innovation",
+      "features.simulator.description": "Modélisez les résultats et les impacts potentiels de vos projets avant d'engager des ressources pour la mise en œuvre.",
+      "features.blueprint.title": "Bibliothèque de plans",
+      "features.blueprint.description": "Accédez à des modèles pour des scénarios de collaboration courants pour démarrer vos projets et initiatives."
+    },
+    // Add more languages as needed
+  };
+
+  // Get translations for the requested language, fallback to English
+  const translations = featureTranslations[language] || featureTranslations.en;
+  
+  // Add translations to the i18n instance
+  return addTranslations(language, 'common', translations);
+};
+
+/**
  * Load wallet translations for all supported languages
  */
 export const loadAllWalletTranslations = () => {
@@ -144,3 +192,29 @@ export const loadAllWalletTranslations = () => {
   });
 };
 
+/**
+ * Load feature translations for all supported languages
+ */
+export const loadAllFeatureTranslations = () => {
+  const supportedLanguages = i18n.options.supportedLngs || ['en', 'fr', 'de', 'es', 'ar', 'bn', 'hi', 'ja', 'pt', 'ru', 'zh', 'he'];
+  
+  // Filter out 'cimode' and other special language codes
+  const actualLanguages = supportedLanguages.filter(
+    lang => lang !== 'cimode' && lang !== 'dev' && lang !== 'en-US'
+  );
+  
+  console.log('Loading feature translations for languages:', actualLanguages);
+  
+  // Add translations for each language
+  actualLanguages.forEach(lang => {
+    addFeatureTranslations(lang);
+  });
+};
+
+export default {
+  addTranslations,
+  addWalletTranslations,
+  addFeatureTranslations,
+  loadAllWalletTranslations,
+  loadAllFeatureTranslations
+};

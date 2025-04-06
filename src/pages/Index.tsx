@@ -7,7 +7,7 @@ import JoinCta from "@/components/JoinCta";
 import TokenWallet from "@/components/TokenWallet";
 import { useTranslation } from "react-i18next";
 import i18n from '@/i18n';
-import { loadAllWalletTranslations } from "@/utils/translationLoader";
+import { loadAllWalletTranslations, loadAllFeatureTranslations } from "@/utils/translationLoader";
 
 const Index = () => {
   const { t } = useTranslation(["common"]);
@@ -21,6 +21,9 @@ const Index = () => {
     
     // Load wallet translations
     loadAllWalletTranslations();
+    
+    // Load feature translations
+    loadAllFeatureTranslations();
   }, []);
   
   return (
