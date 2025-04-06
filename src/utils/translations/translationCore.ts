@@ -2,6 +2,7 @@
 import i18n from '@/i18n';
 import { ComponentType, translationResources } from './translationResources';
 import { addTranslations, getSupportedLanguages } from './translationHelpers';
+import { learnTranslations } from './learnTranslations';
 
 /**
  * Generic function to add translations for a specific language and component type
@@ -27,7 +28,19 @@ export const addComponentTranslations = (
   
   // Special handling for learn component to ensure proper structure
   if (componentType === 'learn') {
-    return addTranslations(language, namespace, { learn: translations.learn });
+    if (language === 'ru' && learnTranslations.ru) {
+      console.log(`Adding learn translations for ${language}`, learnTranslations[language]);
+      // For Russian, ensure we're explicitly adding the learn translations
+      return addTranslations(language, namespace, { learn: learnTranslations[language].learn });
+    }
+    
+    // For all other languages, use standard approach but with the correct structure
+    if (translations.learn) {
+      return addTranslations(language, namespace, { learn: translations.learn });
+    } else {
+      console.error(`Malformed learn translations for ${language}`);
+      return false;
+    }
   }
   
   // Add translations to the i18n instance
@@ -53,7 +66,36 @@ export const loadAllComponentTranslations = (
     return;
   }
   
-  // Add translations for each language
+  // Special handling for learn component
+  if (componentType === 'learn') {
+    supportedLanguages.forEach(lang => {
+      if (learnTranslations[lang]) {
+        console.log(`Adding learn translations for ${lang}`, learnTranslations[lang]);
+        i18n.addResourceBundle(
+          lang, 
+          namespace, 
+          { learn: learnTranslations[lang].learn }, 
+          true, // override existing
+          true  // deep merge
+        );
+      } else if (lang !== 'en') {
+        // Add English as fallback for missing languages
+        i18n.addResourceBundle(
+          lang, 
+          namespace, 
+          { learn: learnTranslations.en.learn }, 
+          true, 
+          false
+        );
+      }
+    });
+    
+    // Dispatch event to notify that translations are loaded
+    document.dispatchEvent(new Event('i18n-resources-loaded'));
+    return;
+  }
+  
+  // Standard handling for other components
   supportedLanguages.forEach(lang => {
     const success = addComponentTranslations(lang, componentType, namespace);
     if (success) {

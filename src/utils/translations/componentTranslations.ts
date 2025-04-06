@@ -40,23 +40,74 @@ export const loadAllFooterTranslations = () => loadAllComponentTranslations('foo
 export const loadAllBackendTranslations = () => loadAllComponentTranslations('backend');
 export const loadAllFeaturePageTranslations = () => loadAllComponentTranslations('featurePage');
 export const loadAllUseCasesTranslations = () => loadAllComponentTranslations('useCases');
-export const loadAllLearnTranslations = () => {
-  // Simple approach like other working pages
+
+// Special handling for learn translations due to structure differences
+export const loadAllLearnTranslations = async () => {
+  // First load using the standard approach
   loadAllComponentTranslations('learn');
   
-  // Ensure translations are directly added for the current language
-  const currentLang = i18n.language;
-  if (learnTranslations[currentLang]) {
-    console.log(`Adding learn translations directly for ${currentLang}`);
-    i18n.addResourceBundle(currentLang, 'common', { learn: learnTranslations[currentLang].learn }, true, true);
-  }
+  // Then ensure translations are directly added for ALL supported languages
+  const supportedLanguages = i18n.options.supportedLngs || ['en', 'fr', 'de', 'es', 'ar', 'bn', 'hi', 'ja', 'pt', 'ru', 'zh', 'he'];
+  const realLanguages = supportedLanguages.filter(lang => 
+    lang !== 'cimode' && lang !== 'dev' && lang !== 'en-US'
+  );
   
-  // Fallback to English if needed
-  if (currentLang !== 'en' && learnTranslations.en) {
-    console.log('Adding English learn translations as fallback');
-    i18n.addResourceBundle('en', 'common', { learn: learnTranslations.en.learn }, true, false);
-  }
+  // Process each language
+  realLanguages.forEach(lang => {
+    if (learnTranslations[lang]) {
+      console.log(`Adding learn translations for ${lang}`);
+      i18n.addResourceBundle(
+        lang, 
+        'common', 
+        { learn: learnTranslations[lang].learn }, 
+        true, // override existing
+        true  // deep merge
+      );
+      console.log(`Successfully loaded learn translations for ${lang}`);
+    } else if (lang !== 'en') {
+      // For languages without translations, add English as fallback
+      console.log(`No translations found for ${lang}, adding English as fallback`);
+      i18n.addResourceBundle(
+        lang, 
+        'common', 
+        { learn: learnTranslations.en.learn }, 
+        true, 
+        false // don't deep merge for fallbacks
+      );
+    }
+  });
   
   // Force refresh
   document.dispatchEvent(new Event('i18n-resources-loaded'));
+  
+  // Get the current language and check if Russian is special-cased
+  const currentLang = i18n.language;
+  if (currentLang === 'ru') {
+    console.log("Explicitly added learn translations for ru");
+    // Double-check Russian translations
+    if (learnTranslations.ru) {
+      i18n.addResourceBundle('ru', 'common', { learn: learnTranslations.ru.learn }, true, true);
+    } else {
+      // If Russian translations don't exist, create minimal ones
+      const minimalRuTranslations = {
+        learn: {
+          title: "Учебные ресурсы",
+          description: "Расширяйте свои знания с помощью руководств, учебных пособий и лучших практик",
+          tabs: {
+            guides: "Руководства",
+            videos: "Видео",
+            articles: "Статьи"
+          },
+          newsletter: {
+            title: "Подпишитесь на нашу рассылку",
+            description: "Получайте последние обновления и ресурсы на свою почту",
+            cta: "Подписаться сейчас"
+          }
+        }
+      };
+      i18n.addResourceBundle('ru', 'common', minimalRuTranslations, true, true);
+    }
+  }
+  
+  return true;
 };
