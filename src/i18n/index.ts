@@ -1,4 +1,3 @@
-
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import HttpBackend from 'i18next-http-backend';
@@ -11,7 +10,6 @@ import { footerTranslations } from '@/utils/translations/footerTranslations';
 import { backendTranslations } from '@/utils/translations/backendTranslations';
 import { learnTranslations } from '@/utils/translations/learnTranslations';
 
-// Define the window interface to include reloadTranslations property
 declare global {
   interface Window {
     reloadTranslations: (language: string) => Promise<boolean>;
@@ -19,124 +17,108 @@ declare global {
   }
 }
 
-// Helper to add in-memory translations
 const addInMemoryTranslations = (language: string) => {
-  // Add wallet translations
   if (walletTranslations[language]) {
     i18n.addResourceBundle(language, 'common', walletTranslations[language], true, true);
   }
   
-  // Add feature translations
   if (featureTranslations[language]) {
     i18n.addResourceBundle(language, 'common', featureTranslations[language], true, true);
   }
   
-  // Add joinCta translations
   if (joinCtaTranslations[language]) {
     i18n.addResourceBundle(language, 'common', joinCtaTranslations[language], true, true);
   }
   
-  // Add project translations
   if (projectTranslations[language]) {
     i18n.addResourceBundle(language, 'common', projectTranslations[language], true, true);
   }
   
-  // Add footer translations
   if (footerTranslations[language]) {
     i18n.addResourceBundle(language, 'common', footerTranslations[language], true, true);
   }
   
-  // Add backend translations
   if (backendTranslations[language]) {
     i18n.addResourceBundle(language, 'common', backendTranslations[language], true, true);
   }
   
-  // Add learn translations - ensure these are added for the learn page
-  if (learnTranslations[language]) {
-    console.log(`Adding learn translations for ${language}`, learnTranslations[language]);
-    i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
-  } else {
-    console.warn(`No learn translations found for ${language}, falling back to English`);
-    // Fallback to English translations if current language isn't available
-    if (learnTranslations['en']) {
-      i18n.addResourceBundle(language, 'common', learnTranslations['en'], true, true);
+  try {
+    if (learnTranslations[language]) {
+      console.log(`Adding learn translations for ${language}`, learnTranslations[language]);
+      i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
+    } else {
+      console.warn(`No learn translations found for ${language}, falling back to English`);
+      if (learnTranslations['en']) {
+        i18n.addResourceBundle(language, 'common', learnTranslations['en'], true, true);
+      }
     }
+  } catch (error) {
+    console.error(`Error adding learn translations for ${language}:`, error);
   }
 };
 
-// Initialize i18next with essential configurations
 i18n
-  .use(HttpBackend) // Load translations via http (from public/locales/)
-  .use(LanguageDetector) // Detect user language
-  .use(initReactI18next) // Initialize react-i18next
+  .use(HttpBackend)
+  .use(LanguageDetector)
+  .use(initReactI18next)
   .init({
-    // Default language
     fallbackLng: 'en',
-    
-    // Default namespace
     defaultNS: 'common',
-    
-    // Supported languages
     supportedLngs: ['en', 'fr', 'de', 'es', 'ar', 'bn', 'hi', 'ja', 'pt', 'ru', 'zh', 'he'],
-    
-    // Backend configuration to load translation files
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json',
       requestOptions: {
-        // Disable cache to ensure fresh translations during development
         cache: 'no-store',
         credentials: 'same-origin',
         mode: 'cors'
       }
     },
-    
-    // Allow keys to be phrases having `:`, `.` inside
     keySeparator: false,
-    
-    // Debug mode for development
     debug: true,
-    
-    // Namespaces to load on init - ensuring all needed namespaces are here
     ns: ['common', 'navigation', 'auth', 'messaging', 'governance'],
-    
-    // Interpolation options
     interpolation: {
-      escapeValue: false, // React already escapes values
+      escapeValue: false
     },
-    
-    // React options
     react: {
-      useSuspense: false, // Do not use suspense - simplifies usage
-      bindI18n: 'languageChanged loaded', // Events that trigger a re-render
-      bindI18nStore: 'added removed', // Store events that trigger a re-render
-      transEmptyNodeValue: '', // Use empty string for empty nodes
+      useSuspense: false,
+      bindI18n: 'languageChanged loaded',
+      bindI18nStore: 'added removed',
+      transEmptyNodeValue: ''
     },
-    
-    // Ensure resources are loaded before app starts
     initImmediate: false,
-    
-    // Load all namespaces by default
     load: 'all',
-    
-    // Don't use nested objects
     nsSeparator: ':',
-    
-    // Enable fallback to other languages
     fallbackNS: 'common'
   });
 
-// Add debug logging
 i18n.on('initialized', () => {
   console.log('i18n initialized with language:', i18n.language);
   console.log('Available namespaces:', i18n.options.ns);
   console.log('Supported languages:', i18n.options.supportedLngs);
   
-  // Add in-memory translations for current language
   addInMemoryTranslations(i18n.language);
   
-  // Log the loaded resources for the current language
   const currentResources = i18n.getResourceBundle(i18n.language, 'common');
   console.log(`Initial resources for ${i18n.language}:`, currentResources);
+  
+  const hasLearnTranslations = currentResources && 
+    currentResources.learn && 
+    Object.keys(currentResources.learn).length > 0;
+  
+  console.log(`Has learn translations: ${hasLearnTranslations}`);
+  
+  if (!hasLearnTranslations) {
+    console.warn('Learn translations not loaded during initialization, adding them explicitly');
+    try {
+      const learnResource = learnTranslations[i18n.language] || learnTranslations['en'];
+      if (learnResource) {
+        i18n.addResourceBundle(i18n.language, 'common', learnResource, true, true);
+        console.log('Learn translations added explicitly');
+      }
+    } catch (error) {
+      console.error('Failed to add learn translations explicitly:', error);
+    }
+  }
 });
 
 i18n.on('loaded', (loaded) => {
@@ -147,33 +129,41 @@ i18n.on('languageChanged', (lng) => {
   document.documentElement.lang = lng;
   console.log(`Language changed to ${lng}, updating document.documentElement.lang`);
   
-  // Add in-memory translations for new language
   addInMemoryTranslations(lng);
   
-  // Log currently loaded resources for debugging
   const loadedResources = i18n.getResourceBundle(lng, 'common');
   console.log(`Loaded resources for ${lng}:`, loadedResources);
   
-  // Reload resources for the current language
-  i18n.reloadResources([lng], ['common', 'navigation', 'messaging', 'auth', 'governance'])
+  i18n.reloadResources([lng], ['common', 'navigation', 'auth', 'messaging', 'governance'])
     .then(() => {
       console.log(`Successfully reloaded resources for ${lng}`);
-      // Force a refresh of translations
       document.dispatchEvent(new Event('i18n-resources-loaded'));
     })
     .catch((error) => console.error(`Failed to reload resources for ${lng}:`, error));
 });
 
-// Add the reloadTranslations function for explicit control
 export const reloadTranslations = async (language: string) => {
   try {
-    // Add in-memory translations first
+    console.log(`Reloading translations for ${language}`);
+    
     addInMemoryTranslations(language);
     
-    // Then reload from backend
     await i18n.reloadResources(language, ['common', 'navigation', 'auth', 'messaging', 'governance']);
+    
+    const resources = i18n.getResourceBundle(language, 'common');
+    const hasLearnTranslations = resources && 
+      resources.learn && 
+      Object.keys(resources.learn).length > 0;
+    
+    console.log(`After reload - Has learn translations: ${hasLearnTranslations}`);
+    
+    if (!hasLearnTranslations && learnTranslations[language]) {
+      i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
+      console.log('Learn translations added explicitly after reload');
+    }
+    
     console.log(`Successfully reloaded translations for ${language}`);
-    // Force a refresh of translations
+    
     document.dispatchEvent(new Event('i18n-resources-loaded'));
     return true;
   } catch (error) {
@@ -182,10 +172,9 @@ export const reloadTranslations = async (language: string) => {
   }
 };
 
-// Make the reloadTranslations function available globally for debugging
 if (typeof window !== 'undefined') {
   window.reloadTranslations = reloadTranslations;
-  window.i18n = i18n; // Make i18n available globally for debugging
+  window.i18n = i18n;
 }
 
 export default i18n;

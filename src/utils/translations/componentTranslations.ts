@@ -1,43 +1,131 @@
-
 import i18n from '@/i18n';
-import { addComponentTranslations, loadAllComponentTranslations } from './translationCore';
-import { learnTranslations } from './learnTranslations';
+import { addTranslations, getSupportedLanguages } from './translationHelpers';
+import { 
+  addComponentTranslations, 
+  loadAllComponentTranslations, 
+  loadTranslations 
+} from './translationCore';
+import { 
+  addWalletTranslations, 
+  addFeatureTranslations, 
+  addJoinCtaTranslations, 
+  addProjectTranslations, 
+  addFooterTranslations, 
+  addBackendTranslations, 
+  addFeaturePageTranslations, 
+  addUseCasesTranslations,
+  addLearnTranslations,
+  loadAllWalletTranslations, 
+  loadAllFeatureTranslations, 
+  loadAllJoinCtaTranslations, 
+  loadAllProjectTranslations, 
+  loadAllFooterTranslations, 
+  loadAllBackendTranslations, 
+  loadAllFeaturePageTranslations,
+  loadAllUseCasesTranslations,
+  loadAllLearnTranslations
+} from './componentTranslations';
 
-// Component-specific translations add functions
-export const addWalletTranslations = (language: string, namespace: string = 'common') => 
-  addComponentTranslations(language, 'wallet', namespace);
+// Wallet translations
+export const addWalletTranslations = (language: string, namespace: string = 'common') => {
+  return addComponentTranslations(language, 'wallet', namespace);
+};
 
-export const addFeatureTranslations = (language: string, namespace: string = 'common') => 
-  addComponentTranslations(language, 'feature', namespace);
+export const loadAllWalletTranslations = () => {
+  loadAllComponentTranslations('wallet');
+};
 
-export const addJoinCtaTranslations = (language: string, namespace: string = 'common') => 
-  addComponentTranslations(language, 'joinCta', namespace);
+// Feature translations
+export const addFeatureTranslations = (language: string, namespace: string = 'common') => {
+  return addComponentTranslations(language, 'feature', namespace);
+};
 
-export const addProjectTranslations = (language: string, namespace: string = 'common') => 
-  addComponentTranslations(language, 'project', namespace);
+export const loadAllFeatureTranslations = () => {
+  loadAllComponentTranslations('feature');
+};
 
-export const addFooterTranslations = (language: string, namespace: string = 'common') => 
-  addComponentTranslations(language, 'footer', namespace);
+// JoinCta translations
+export const addJoinCtaTranslations = (language: string, namespace: string = 'common') => {
+  return addComponentTranslations(language, 'joinCta', namespace);
+};
 
-export const addBackendTranslations = (language: string, namespace: string = 'common') => 
-  addComponentTranslations(language, 'backend', namespace);
+export const loadAllJoinCtaTranslations = () => {
+  loadAllComponentTranslations('joinCta');
+};
 
-export const addFeaturePageTranslations = (language: string, namespace: string = 'common') => 
-  addComponentTranslations(language, 'featurePage', namespace);
+// Project translations
+export const addProjectTranslations = (language: string, namespace: string = 'common') => {
+  return addComponentTranslations(language, 'project', namespace);
+};
 
-export const addUseCasesTranslations = (language: string, namespace: string = 'common') => 
-  addComponentTranslations(language, 'useCases', namespace);
+export const loadAllProjectTranslations = () => {
+  loadAllComponentTranslations('project');
+};
 
-export const addLearnTranslations = (language: string, namespace: string = 'common') => 
-  addComponentTranslations(language, 'learn', namespace);
+// Footer translations
+export const addFooterTranslations = (language: string, namespace: string = 'common') => {
+  return addComponentTranslations(language, 'footer', namespace);
+};
 
-// Component-specific load all translations functions
-export const loadAllWalletTranslations = () => loadAllComponentTranslations('wallet');
-export const loadAllFeatureTranslations = () => loadAllComponentTranslations('feature');
-export const loadAllJoinCtaTranslations = () => loadAllComponentTranslations('joinCta');
-export const loadAllProjectTranslations = () => loadAllComponentTranslations('project');
-export const loadAllFooterTranslations = () => loadAllComponentTranslations('footer');
-export const loadAllBackendTranslations = () => loadAllComponentTranslations('backend');
-export const loadAllFeaturePageTranslations = () => loadAllComponentTranslations('featurePage');
-export const loadAllUseCasesTranslations = () => loadAllComponentTranslations('useCases');
-export const loadAllLearnTranslations = () => loadAllComponentTranslations('learn');
+export const loadAllFooterTranslations = () => {
+  loadAllComponentTranslations('footer');
+};
+
+// Backend translations
+export const addBackendTranslations = (language: string, namespace: string = 'common') => {
+  return addComponentTranslations(language, 'backend', namespace);
+};
+
+export const loadAllBackendTranslations = () => {
+  loadAllComponentTranslations('backend');
+};
+
+// FeaturePage translations
+export const addFeaturePageTranslations = (language: string, namespace: string = 'common') => {
+  return addComponentTranslations(language, 'featurePage', namespace);
+};
+
+export const loadAllFeaturePageTranslations = () => {
+  loadAllComponentTranslations('featurePage');
+};
+
+// UseCases translations
+export const addUseCasesTranslations = (language: string, namespace: string = 'common') => {
+  return addComponentTranslations(language, 'useCases', namespace);
+};
+
+export const loadAllUseCasesTranslations = () => {
+  loadAllComponentTranslations('useCases');
+};
+
+// Learn translations
+export const addLearnTranslations = (language: string, namespace: string = 'common') => {
+  return addComponentTranslations(language, 'learn', namespace);
+};
+
+export const loadAllLearnTranslations = async () => {
+  const currentLanguage = i18n.language;
+  console.log(`Loading learn translations for current language: ${currentLanguage}`);
+  
+  // First load translations for current language
+  const success = addLearnTranslations(currentLanguage);
+  
+  if (success) {
+    console.log(`Successfully loaded learn translations for ${currentLanguage}`);
+  } else {
+    console.warn(`Failed to load learn translations for ${currentLanguage}, falling back to English`);
+    // Fallback to English
+    addLearnTranslations('en');
+  }
+  
+  // Then load for all other languages in the background
+  const supportedLanguages = getSupportedLanguages();
+  for (const lang of supportedLanguages) {
+    if (lang !== currentLanguage) {
+      addLearnTranslations(lang);
+    }
+  }
+  
+  // Force refresh translations
+  return i18n.reloadResources(currentLanguage, ['common']);
+};
