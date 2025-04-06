@@ -8,6 +8,18 @@ import { footerTranslations } from './translations/footerTranslations';
 import { backendTranslations } from './translations/backendTranslations';
 
 /**
+ * Map of all translation resources by namespace
+ */
+const translationResources = {
+  wallet: walletTranslations,
+  feature: featureTranslations,
+  joinCta: joinCtaTranslations,
+  project: projectTranslations,
+  footer: footerTranslations,
+  backend: backendTranslations
+};
+
+/**
  * Dynamically adds translations to the i18n instance
  * This works even for "read-only" translation files as it adds translations to the runtime
  */
@@ -28,150 +40,6 @@ export const addTranslations = (
 };
 
 /**
- * Adds wallet translations for a specific language
- */
-export const addWalletTranslations = (language: string) => {
-  // Get translations for the requested language, fallback to English
-  const translations = walletTranslations[language] || walletTranslations.en;
-  
-  // Add translations to the i18n instance
-  return addTranslations(language, 'common', translations);
-};
-
-/**
- * Adds feature translations for a specific language
- */
-export const addFeatureTranslations = (language: string) => {
-  // Get translations for the requested language, fallback to English
-  const translations = featureTranslations[language] || featureTranslations.en;
-  
-  // Add translations to the i18n instance
-  return addTranslations(language, 'common', translations);
-};
-
-/**
- * Adds JoinCta translations for a specific language
- */
-export const addJoinCtaTranslations = (language: string) => {
-  // Get translations for the requested language, fallback to English
-  const translations = joinCtaTranslations[language] || joinCtaTranslations.en;
-  
-  // Add translations to the i18n instance
-  return addTranslations(language, 'common', translations);
-};
-
-/**
- * Adds Project translations for a specific language
- */
-export const addProjectTranslations = (language: string) => {
-  // Get translations for the requested language, fallback to English
-  const translations = projectTranslations[language] || projectTranslations.en;
-  
-  // Add translations to the i18n instance
-  return addTranslations(language, 'common', translations);
-};
-
-/**
- * Adds Footer translations for a specific language
- */
-export const addFooterTranslations = (language: string) => {
-  // Get translations for the requested language, fallback to English
-  const translations = footerTranslations[language] || footerTranslations.en;
-  
-  // Add translations to the i18n instance
-  return addTranslations(language, 'common', translations);
-};
-
-/**
- * Adds Backend translations for a specific language
- */
-export const addBackendTranslations = (language: string) => {
-  // Get translations for the requested language, fallback to English
-  const translations = backendTranslations[language] || backendTranslations.en;
-  
-  // Add translations to the i18n instance
-  return addTranslations(language, 'common', translations);
-};
-
-/**
- * Load wallet translations for all supported languages
- */
-export const loadAllWalletTranslations = () => {
-  const supportedLanguages = getSupportedLanguages();
-  console.log('Loading wallet translations for languages:', supportedLanguages);
-  
-  // Add translations for each language
-  supportedLanguages.forEach(lang => {
-    addWalletTranslations(lang);
-  });
-};
-
-/**
- * Load feature translations for all supported languages
- */
-export const loadAllFeatureTranslations = () => {
-  const supportedLanguages = getSupportedLanguages();
-  console.log('Loading feature translations for languages:', supportedLanguages);
-  
-  // Add translations for each language
-  supportedLanguages.forEach(lang => {
-    addFeatureTranslations(lang);
-  });
-};
-
-/**
- * Load JoinCta translations for all supported languages
- */
-export const loadAllJoinCtaTranslations = () => {
-  const supportedLanguages = getSupportedLanguages();
-  console.log('Loading JoinCta translations for languages:', supportedLanguages);
-  
-  // Add translations for each language
-  supportedLanguages.forEach(lang => {
-    addJoinCtaTranslations(lang);
-  });
-};
-
-/**
- * Load Project translations for all supported languages
- */
-export const loadAllProjectTranslations = () => {
-  const supportedLanguages = getSupportedLanguages();
-  console.log('Loading Project translations for languages:', supportedLanguages);
-  
-  // Add translations for each language
-  supportedLanguages.forEach(lang => {
-    addProjectTranslations(lang);
-  });
-};
-
-/**
- * Load Footer translations for all supported languages
- */
-export const loadAllFooterTranslations = () => {
-  const supportedLanguages = getSupportedLanguages();
-  console.log('Loading Footer translations for languages:', supportedLanguages);
-  
-  // Add translations for each language
-  supportedLanguages.forEach(lang => {
-    addFooterTranslations(lang);
-  });
-};
-
-/**
- * Load Backend translations for all supported languages
- */
-export const loadAllBackendTranslations = () => {
-  const supportedLanguages = getSupportedLanguages();
-  console.log('Loading Backend translations for languages:', supportedLanguages);
-  
-  // Add translations for each language
-  supportedLanguages.forEach(lang => {
-    addBackendTranslations(lang);
-  });
-};
-
-/**
  * Helper to get supported languages excluding special codes
  */
 const getSupportedLanguages = () => {
@@ -183,6 +51,69 @@ const getSupportedLanguages = () => {
   );
 };
 
+/**
+ * Generic function to add translations for a specific language and component type
+ */
+const addComponentTranslations = (language: string, componentType: keyof typeof translationResources) => {
+  // Get translations for the requested language, fallback to English
+  const translations = translationResources[componentType][language] || translationResources[componentType].en;
+  
+  // Add translations to the i18n instance
+  return addTranslations(language, 'common', translations);
+};
+
+/**
+ * Generic function to load translations for all supported languages for a specific component
+ */
+const loadAllComponentTranslations = (componentType: keyof typeof translationResources) => {
+  const supportedLanguages = getSupportedLanguages();
+  console.log(`Loading ${componentType} translations for languages:`, supportedLanguages);
+  
+  // Add translations for each language
+  supportedLanguages.forEach(lang => {
+    addComponentTranslations(lang, componentType);
+  });
+};
+
+// Component-specific wrapper functions for backward compatibility
+export const addWalletTranslations = (language: string) => 
+  addComponentTranslations(language, 'wallet');
+
+export const addFeatureTranslations = (language: string) => 
+  addComponentTranslations(language, 'feature');
+
+export const addJoinCtaTranslations = (language: string) => 
+  addComponentTranslations(language, 'joinCta');
+
+export const addProjectTranslations = (language: string) => 
+  addComponentTranslations(language, 'project');
+
+export const addFooterTranslations = (language: string) => 
+  addComponentTranslations(language, 'footer');
+
+export const addBackendTranslations = (language: string) => 
+  addComponentTranslations(language, 'backend');
+
+// Load all translations functions for backward compatibility
+export const loadAllWalletTranslations = () => 
+  loadAllComponentTranslations('wallet');
+
+export const loadAllFeatureTranslations = () => 
+  loadAllComponentTranslations('feature');
+
+export const loadAllJoinCtaTranslations = () => 
+  loadAllComponentTranslations('joinCta');
+
+export const loadAllProjectTranslations = () => 
+  loadAllComponentTranslations('project');
+
+export const loadAllFooterTranslations = () => 
+  loadAllComponentTranslations('footer');
+
+export const loadAllBackendTranslations = () => 
+  loadAllComponentTranslations('backend');
+
+// Export public API
 export default {
   addTranslations,
   addWalletTranslations,
