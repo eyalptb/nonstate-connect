@@ -1,7 +1,7 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from 'sonner'; // Import directly from the sonner package
-import { useTranslation } from '@/contexts/translation/TranslationContext';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 
 export type NotificationType = 'info' | 'success' | 'warning' | 'error';
 
@@ -52,10 +52,9 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   };
 
   // Clear notifications on language change
-  const { currentLanguage } = useTranslation();
   useEffect(() => {
     // Keep notifications but re-display them with new language
-  }, [currentLanguage]);
+  }, [i18n.language]);
 
   return (
     <NotificationContext.Provider

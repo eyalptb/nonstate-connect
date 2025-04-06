@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { useTranslation } from '@/contexts/translation/TranslationContext';
+import { useTranslation } from 'react-i18next';
 import useTranslationTester from '@/hooks/useTranslationTester';
 import { verifyTranslationKeys } from '@/utils/i18nVerification';
+import i18n from '@/i18n';
 
 interface TranslationDebuggerProps {
   namespace?: string;
@@ -20,7 +21,7 @@ const TranslationDebugger: React.FC<TranslationDebuggerProps> = ({
     'joinCta.benefits.secure.description'
   ]
 }) => {
-  const { currentLanguage } = useTranslation();
+  const { t } = useTranslation();
   const { testTranslation, forceReloadNamespace } = useTranslationTester();
   const [results, setResults] = useState<{
     key: string;
@@ -48,10 +49,10 @@ const TranslationDebugger: React.FC<TranslationDebuggerProps> = ({
   useEffect(() => {
     runTests();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentLanguage, namespace]);
+  }, [i18n.language, namespace]);
 
   const successCount = results.filter(r => r.success).length;
-  const verificationResult = verifyTranslationKeys(currentLanguage, namespace, keys);
+  const verificationResult = verifyTranslationKeys(i18n.language, namespace, keys);
 
   return (
     <Card className="mb-4">
@@ -62,7 +63,7 @@ const TranslationDebugger: React.FC<TranslationDebuggerProps> = ({
             <Badge variant={successCount === keys.length ? "secondary" : "destructive"}>
               {successCount}/{keys.length} Keys Working
             </Badge>
-            <Badge variant="outline">{currentLanguage}</Badge>
+            <Badge variant="outline">{i18n.language}</Badge>
             <Badge variant="outline">{namespace}</Badge>
           </div>
         </div>

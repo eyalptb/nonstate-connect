@@ -9,15 +9,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useTranslation } from "@/contexts/translation/TranslationContext";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import i18n from "@/i18n";
 
 interface LanguageSelectorProps {
   variant?: "default" | "minimal";
 }
 
 export function LanguageSelector({ variant = "default" }: LanguageSelectorProps) {
-  const { t, i18n, currentLanguage, changeLanguage } = useTranslation();
+  const { t } = useTranslation();
 
   const languages = [
     { code: "en", name: "English" },
@@ -34,9 +35,9 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
 
   const handleLanguageChange = async (langCode: string) => {
     // Only show toast and change language if it's different from current
-    if (langCode !== currentLanguage) {
+    if (langCode !== i18n.language) {
       toast.promise(
-        changeLanguage(langCode),
+        i18n.changeLanguage(langCode),
         {
           loading: `Changing language to ${languages.find(l => l.code === langCode)?.name || langCode}...`,
           success: `Language changed to ${languages.find(l => l.code === langCode)?.name || langCode}`,
@@ -56,7 +57,7 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
         ) : (
           <Button variant="ghost" className="flex items-center gap-2 px-3">
             <GlobeIcon className="h-4 w-4" />
-            <span>{languages.find(lang => lang.code === currentLanguage)?.name || "Language"}</span>
+            <span>{languages.find(lang => lang.code === i18n.language)?.name || "Language"}</span>
             <ChevronDownIcon className="h-4 w-4" />
           </Button>
         )}
@@ -69,7 +70,7 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
             onClick={() => handleLanguageChange(lang.code)}
           >
             <span>{lang.name}</span>
-            {currentLanguage === lang.code && (
+            {i18n.language === lang.code && (
               <CheckIcon className="h-4 w-4" />
             )}
           </DropdownMenuItem>
@@ -78,7 +79,7 @@ export function LanguageSelector({ variant = "default" }: LanguageSelectorProps)
         <DropdownMenuItem 
           className="text-xs text-muted-foreground"
         >
-          {t("language", "Language")}: {currentLanguage}
+          {t("language", "Language")}: {i18n.language}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

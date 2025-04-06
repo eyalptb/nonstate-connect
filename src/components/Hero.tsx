@@ -1,14 +1,14 @@
 
 import { Button } from "@/components/ui/button";
 import { Shield, Brain, Lock } from "lucide-react";
-import { useTranslation } from "@/contexts/translation/TranslationContext";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
-  const { t, currentLanguage } = useTranslation(["common"]);
+  const { t, i18n } = useTranslation(["common"]);
 
   return (
-    <div className="relative overflow-hidden pt-24" key={`hero-${currentLanguage}`}>
+    <div className="relative overflow-hidden pt-24" key={`hero-${i18n.language}`}>
       {/* Decorative background elements */}
       <div className="absolute inset-0 bg-gradient-hero -z-10"></div>
       <div className="absolute inset-0 grid-pattern opacity-20 -z-10"></div>
@@ -18,26 +18,26 @@ const Hero = () => {
           <div className="flex-1 text-center lg:text-left">
             <div className="inline-flex items-center px-3 py-1 mb-6 rounded-full bg-primary/10 text-primary text-sm font-medium">
               <Shield className="w-4 h-4 mr-2" />
-              {t("hero.tagline")}
+              Privacy-First Collaboration
             </div>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              {t("hero.titleStart")} <span className="text-primary">{t("hero.titleHighlight")}</span> {t("hero.titleEnd")}
+              Secure <span className="text-primary">Collaboration</span> for Global Impact
             </h1>
             
             <p className="text-lg text-foreground/80 mb-8 max-w-2xl mx-auto lg:mx-0">
-              {t("hero.description")}
+              Our platform enables teams to collaborate on sensitive projects while maintaining complete control over their data and privacy.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button size="lg" className="font-semibold" asChild>
                 <Link to="/sign-up">
-                  {t("hero.primaryCta")}
+                  Get Started
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="font-semibold" asChild>
                 <Link to="/features">
-                  {t("hero.secondaryCta")}
+                  Explore Features
                 </Link>
               </Button>
             </div>
@@ -52,7 +52,7 @@ const Hero = () => {
                 ))}
               </div>
               <p className="text-sm text-foreground/70">
-                <span className="font-semibold">{t("hero.stats.count")}+</span> {t("hero.stats.description")}
+                <span className="font-semibold">1,000+</span> organizations using our platform
               </p>
             </div>
           </div>

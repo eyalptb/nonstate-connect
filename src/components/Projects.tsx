@@ -2,10 +2,10 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useTranslation } from "@/contexts/translation/TranslationContext";
+import { useTranslation } from "react-i18next";
 
 const Projects = () => {
-  const { t, currentLanguage } = useTranslation(["common"]);
+  const { t, i18n } = useTranslation(["common"]);
 
   const projects = [
     {
@@ -32,32 +32,32 @@ const Projects = () => {
   ];
 
   return (
-    <section id="projects" className="py-20" key={`projects-section-${currentLanguage}`}>
+    <section id="projects" className="py-20" key={`projects-section-${i18n.language}`}>
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
           <div>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              {t("projects.heading")}
+              Featured Projects
             </h2>
             <p className="text-lg text-foreground/70 max-w-2xl">
-              {t("projects.subheading")}
+              Explore current initiatives making an impact across the globe
             </p>
           </div>
           <Button className="mt-4 md:mt-0">
-            {t("projects.viewAll")}
+            View All Projects
           </Button>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project, index) => (
-            <Card key={`${index}-${currentLanguage}`} className="border hover:shadow-md transition-shadow">
+            <Card key={`${index}-${i18n.language}`} className="border hover:shadow-md transition-shadow">
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
                     {project.category}
                   </Badge>
                   <span className="text-sm text-foreground/60">
-                    {t("projects.participants", { count: project.participants })}
+                    {project.participants} Participants
                   </span>
                 </div>
                 <CardTitle className="mt-3 text-xl">{project.title}</CardTitle>
@@ -67,7 +67,7 @@ const Projects = () => {
                 
                 <div className="mt-6">
                   <div className="flex justify-between text-sm mb-1">
-                    <span>{t("projects.progress")}</span>
+                    <span>Progress</span>
                     <span className="font-medium">{project.progress}%</span>
                   </div>
                   <div className="w-full bg-muted rounded-full h-2">
@@ -80,7 +80,7 @@ const Projects = () => {
               </CardContent>
               <CardFooter>
                 <Button variant="outline" className="w-full">
-                  {t("projects.learnMore")}
+                  Learn More
                 </Button>
               </CardFooter>
             </Card>
