@@ -40,8 +40,8 @@ i18n
     // Debug mode for development
     debug: false, // Set to false to reduce console noise
     
-    // Namespaces to load on init
-    ns: ['common', 'navigation', 'auth', 'messaging'],
+    // Namespaces to load on init - adding 'governance' here
+    ns: ['common', 'navigation', 'auth', 'messaging', 'governance'],
     
     // Interpolation options
     interpolation: {
@@ -62,7 +62,7 @@ i18n.on('languageChanged', (lng) => {
   
   // Reload resources for the current language - don't log errors here
   // to prevent double notifications in the console
-  i18n.reloadResources([lng], ['common', 'navigation', 'messaging', 'auth'])
+  i18n.reloadResources([lng], ['common', 'navigation', 'messaging', 'auth', 'governance'])
     .catch(() => {
       // Silent catch to avoid duplicate error messages
     });
@@ -71,7 +71,7 @@ i18n.on('languageChanged', (lng) => {
 // Add the reloadTranslations function for explicit control
 export const reloadTranslations = async (language: string) => {
   try {
-    await i18n.reloadResources(language, ['common', 'navigation', 'auth', 'messaging']);
+    await i18n.reloadResources(language, ['common', 'navigation', 'auth', 'messaging', 'governance']);
     return true;
   } catch (error) {
     console.error(`Failed to reload translations for ${language}:`, error);

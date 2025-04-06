@@ -9,6 +9,7 @@ type TranslationContextType = {
   changeLanguage: (lang: string) => Promise<void>;
   t: TFunction;
   i18n: typeof i18n;
+  ready?: boolean;
 };
 
 const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
@@ -16,7 +17,7 @@ const TranslationContext = createContext<TranslationContextType | undefined>(und
 export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
   // Use common namespace by default to ensure it's always loaded
-  const { t, i18n: i18nInstance } = useReactI18next(['common', 'navigation', 'auth']);
+  const { t, i18n: i18nInstance, ready } = useReactI18next(['common', 'navigation', 'auth']);
 
   // Update language state when i18n language changes
   useEffect(() => {
@@ -32,7 +33,7 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
     i18n.on('languageChanged', handleLanguageChanged);
     
     // Initial load to ensure we have all base namespaces
-    i18n.loadNamespaces(['common', 'navigation', 'auth', 'messaging'], (err) => {
+    i18n.loadNamespaces(['common', 'navigation', 'auth', 'messaging', 'governance'], (err) => {
       if (err) console.error('Failed to load namespaces:', err);
     });
     
@@ -59,7 +60,8 @@ export const TranslationProvider: React.FC<{ children: React.ReactNode }> = ({ c
       currentLanguage, 
       changeLanguage,
       t,
-      i18n: i18nInstance
+      i18n: i18nInstance,
+      ready
     }}>
       {children}
     </TranslationContext.Provider>
@@ -75,11 +77,12 @@ export const useTranslation = (namespaces?: string | string[]) => {
   
   // If namespaces are provided, use them with the hook
   if (namespaces) {
-    const { t, i18n } = useReactI18next(namespaces);
+    const { t, i18n, ready } = useReactI18next(namespaces);
     return {
       ...context,
       t,
-      i18n
+      i18n,
+      ready  // Include ready flag to know if translations are loaded
     };
   }
   
