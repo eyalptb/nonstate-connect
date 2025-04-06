@@ -18,7 +18,7 @@ import {
 import { useTranslation } from "@/contexts/translation/TranslationContext";
 
 const Features = () => {
-  const { t, currentLanguage } = useTranslation(['common', 'navigation']);
+  const { currentLanguage } = useTranslation(['common', 'navigation']);
 
   // Define feature categories directly with text instead of translation keys
   const featureCategories = [
