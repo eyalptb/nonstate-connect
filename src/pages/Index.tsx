@@ -18,13 +18,28 @@ const Index = () => {
     const ensureTranslations = async () => {
       console.log('Ensuring translations are loaded for Index page');
       
-      // Test a few critical translations
+      // Load the common namespace to ensure wallet translations are available
+      await i18n.loadNamespaces('common');
+      
+      // Test critical wallet translations
       const walletTitle = testTranslation("wallet.title");
+      const walletDescription = testTranslation("wallet.description");
+      const walletCoins = testTranslation("wallet.coins");
+      const walletEarn = testTranslation("wallet.earn");
+      
+      // If any wallet translations failed, force reload the namespace
+      if (!walletTitle.success || !walletDescription.success || 
+          !walletCoins.success || !walletEarn.success) {
+        console.log('Critical wallet translations failed, forcing reload of common namespace');
+        await forceReloadNamespace('common');
+      }
+      
+      // Test other critical translations
       const joinHeading = testTranslation("joinCta.heading");
       const joinBenefitsSecureTitle = testTranslation("joinCta.benefits.secure.title");
       
-      // If any critical translations failed, force reload the namespace
-      if (!walletTitle.success || !joinHeading.success || !joinBenefitsSecureTitle.success) {
+      // If any other critical translations failed, force reload the namespace
+      if (!joinHeading.success || !joinBenefitsSecureTitle.success) {
         console.log('Critical translations failed, forcing reload of common namespace');
         await forceReloadNamespace('common');
       }
@@ -35,16 +50,20 @@ const Index = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [i18n.language]);
   
+  // Explicitly define the wallet section title and description
+  const walletSectionTitle = t("wallet.section_title", "CollabCoin Wallet");
+  const walletSectionDescription = t("wallet.section_description", "Your tokenized incentives");
+  
   return (
-    <div className="flex flex-col min-h-screen" key={`home-page-${i18n.language}`}>
+    <div className="flex flex-col min-h-screen">
       <main className="flex-grow">
         <Hero />
-        <div className="container mx-auto px-4 py-12 mt-20" key={`wallet-section-${i18n.language}`}>
+        <div className="container mx-auto px-4 py-12 mt-20">
           <h2 className="text-3xl font-bold text-center mb-8">
-            {t("wallet.section_title", "CollabCoin Wallet")}
+            {walletSectionTitle}
           </h2>
           <p className="text-center text-foreground/70 mb-8 max-w-lg mx-auto">
-            {t("wallet.section_description", "Your tokenized incentives")}
+            {walletSectionDescription}
           </p>
           <div className="max-w-2xl mx-auto">
             <TokenWallet />

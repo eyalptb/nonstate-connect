@@ -7,6 +7,7 @@ interface TestResult {
   success: boolean;
   message: string;
   key: string;
+  value?: string;
 }
 
 const useTranslationTester = () => {
@@ -15,7 +16,7 @@ const useTranslationTester = () => {
     // Get the current language
     const currentLang = i18n.language;
     
-    // Get the translation
+    // Get the translation bundle
     const translation = i18n.getResourceBundle(currentLang, namespace);
     
     if (!translation) {
@@ -63,8 +64,9 @@ const useTranslationTester = () => {
     
     return { 
       success: true, 
-      message: `Translation found for key ${key} in ${currentLang}: ${value}`,
-      key
+      message: `Translation found for key ${key} in ${currentLang}`,
+      key,
+      value
     };
   }, []);
   
@@ -76,12 +78,26 @@ const useTranslationTester = () => {
     try {
       await i18n.reloadResources([currentLang], [namespace]);
       console.log(`Successfully reloaded ${namespace} for ${currentLang}`);
+      
+      // Verify wallet keys specifically to ensure they're loaded
+      if (namespace === 'common') {
+        const walletKeys = ['wallet.title', 'wallet.description', 'wallet.coins', 'wallet.earn'];
+        const results = walletKeys.map(key => testTranslation(key, namespace));
+        
+        if (results.some(result => !result.success)) {
+          console.error('Some wallet translations are still missing after reload:', 
+            results.filter(r => !r.success).map(r => r.key));
+        } else {
+          console.log('All wallet translations successfully loaded');
+        }
+      }
+      
       return true;
     } catch (error) {
       console.error(`Failed to reload ${namespace} for ${currentLang}:`, error);
       return false;
     }
-  }, []);
+  }, [testTranslation]);
   
   // Verify a set of critical translation keys
   const verifyCriticalKeys = useCallback((criticalKeys: string[] = [], namespace = 'common') => {
