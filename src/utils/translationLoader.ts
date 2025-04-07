@@ -28,11 +28,7 @@ import {
   loadAllPricingTranslations
 } from './translations/componentTranslations';
 
-// Export component-specific load function for Learn
-export { 
-  loadAllLearnTranslations
-  // Removed the duplicate export of loadAllPricingTranslations
-};
+// Remove the first export block entirely as it's causing duplicate exports
 
 // Export everything for backward compatibility
 export { 
