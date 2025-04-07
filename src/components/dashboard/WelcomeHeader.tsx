@@ -9,6 +9,9 @@ interface WelcomeHeaderProps {
 
 export const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({ displayName }) => {
   const { getText } = useTranslationHelper();
+  
+  // Get only the first name if there are multiple words in the display name
+  const firstName = displayName.split(' ')[0];
 
   const getTimeBasedGreeting = () => {
     const hour = new Date().getHours();
@@ -22,12 +25,12 @@ export const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({ displayName }) => 
       <div className="flex items-center gap-4">
         <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
           <div className="h-14 w-14 rounded-full bg-primary/20 flex items-center justify-center text-xl font-medium text-primary">
-            {displayName.charAt(0).toUpperCase()}
+            {firstName.charAt(0).toUpperCase()}
           </div>
         </div>
         <div>
           <h1 className="text-2xl font-bold">
-            {getTimeBasedGreeting()}, {displayName}!
+            {getTimeBasedGreeting()}, {firstName}!
           </h1>
           <p className="text-muted-foreground">
             {getText('dashboard.subtitle', 'Your secure collaboration hub')}

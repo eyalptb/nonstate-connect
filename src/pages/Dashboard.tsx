@@ -79,7 +79,8 @@ const Dashboard = () => {
     }
   }, [user, addNotification, t]);
   
-  const displayName = user?.username || user?.email?.split('@')[0] || "Guest";
+  // Extract display name from user data, prioritizing username or email
+  const displayName = user?.name || user?.username || user?.email?.split('@')[0] || "Guest";
 
   return (
     <DashboardTranslationLoader>

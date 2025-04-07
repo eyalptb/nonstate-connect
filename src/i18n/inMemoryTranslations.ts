@@ -83,17 +83,19 @@ export const addInMemoryTranslations = (language: string) => {
     }
     
     // For dashboard translations - Fix type checking issue
-    if (dashboardTranslations[language] && typeof dashboardTranslations[language] === 'object' && 'dashboard' in dashboardTranslations[language]) {
-      const dashboardData = dashboardTranslations[language].dashboard;
-      if (dashboardData) {
-        console.log(`[inMemoryTranslations] Adding dashboard translations for ${language}:`, dashboardData);
-        safeAddResourceBundle(language, 'common', { dashboard: dashboardData });
+    if (dashboardTranslations[language] && typeof dashboardTranslations[language] === 'object') {
+      // Use type guard and explicit casting for safety
+      const dashboardObj = dashboardTranslations[language] as Record<string, any>;
+      if ('dashboard' in dashboardObj && dashboardObj.dashboard) {
+        console.log(`[inMemoryTranslations] Adding dashboard translations for ${language}:`, dashboardObj.dashboard);
+        safeAddResourceBundle(language, 'common', { dashboard: dashboardObj.dashboard });
       }
-    } else if (dashboardTranslations[fallbackLang] && typeof dashboardTranslations[fallbackLang] === 'object' && 'dashboard' in dashboardTranslations[fallbackLang]) {
-      const dashboardData = dashboardTranslations[fallbackLang].dashboard;
-      if (dashboardData) {
-        console.log(`[inMemoryTranslations] Adding fallback dashboard translations for ${language}:`, dashboardData);
-        safeAddResourceBundle(language, 'common', { dashboard: dashboardData });
+    } else if (dashboardTranslations[fallbackLang] && typeof dashboardTranslations[fallbackLang] === 'object') {
+      // Fallback to English with the same safety measures
+      const dashboardObj = dashboardTranslations[fallbackLang] as Record<string, any>;
+      if ('dashboard' in dashboardObj && dashboardObj.dashboard) {
+        console.log(`[inMemoryTranslations] Adding fallback dashboard translations for ${language}:`, dashboardObj.dashboard);
+        safeAddResourceBundle(language, 'common', { dashboard: dashboardObj.dashboard });
       }
     } else {
       console.warn(`[inMemoryTranslations] No dashboard translations found for ${language} or fallback`);
