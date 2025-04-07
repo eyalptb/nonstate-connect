@@ -44,7 +44,7 @@ export const addInMemoryTranslations = (language: string) => {
   const fallbackLang = 'en';
   
   try {
-    // Add each translation set safely
+    // Add each translation set safely with fallback to English if needed
     safeAddResourceBundle(language, 'common', walletTranslations[language] || walletTranslations[fallbackLang]);
     safeAddResourceBundle(language, 'common', featureTranslations[language] || featureTranslations[fallbackLang]);
     safeAddResourceBundle(language, 'common', joinCtaTranslations[language] || joinCtaTranslations[fallbackLang]);
@@ -56,20 +56,4 @@ export const addInMemoryTranslations = (language: string) => {
   } catch (error) {
     // Fail silently for stability
   }
-};
-
-/**
- * Adds learn translations with fallback to English if needed
- */
-export const addLearnTranslations = (language: string) => {
-  const translations = learnTranslations[language] || learnTranslations['en'];
-  return safeAddResourceBundle(language, 'common', translations);
-};
-
-/**
- * Adds pricing translations with fallback to English if needed
- */
-export const addPricingTranslations = (language: string) => {
-  const translations = pricingTranslations[language] || pricingTranslations['en'];
-  return safeAddResourceBundle(language, 'common', translations);
 };

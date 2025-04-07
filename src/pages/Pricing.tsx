@@ -1,22 +1,20 @@
 
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import i18n from '@/i18n';
 import { addPricingTranslations } from "@/utils/translationLoader";
+import i18n from '@/i18n';
 
-// Using the same approach as Learn component
 const Pricing = () => {
   const { t } = useTranslation(["common"]);
   
   // Load pricing translations when component mounts
   useEffect(() => {
-    // Add pricing translations without loops or complex handling
     addPricingTranslations(i18n.language);
   }, []);
   
