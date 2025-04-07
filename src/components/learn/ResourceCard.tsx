@@ -1,9 +1,8 @@
 
-import React, { memo } from "react";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { useTranslation } from "react-i18next";
 
 interface ResourceCardProps {
   title: string;
@@ -14,8 +13,7 @@ interface ResourceCardProps {
   id: string;
 }
 
-// Using memo to prevent unnecessary re-renders
-export const ResourceCard = memo(({ 
+export const ResourceCard = ({ 
   title, 
   description, 
   icon, 
@@ -23,13 +21,8 @@ export const ResourceCard = memo(({
   cta,
   id
 }: ResourceCardProps) => {
-  const { i18n } = useTranslation();
-  
-  // Create a unique identifier for this card that changes with language
-  const cardKey = `resource-${id}-${i18n.language}`;
-  
   return (
-    <Card className="border border-muted-foreground/20 hover:border-primary/20 transition-colors mb-4" key={cardKey}>
+    <Card className="border border-muted-foreground/20 hover:border-primary/20 transition-colors mb-4">
       <CardContent className="p-6">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="flex-1">
@@ -47,6 +40,4 @@ export const ResourceCard = memo(({
       </CardContent>
     </Card>
   );
-});
-
-ResourceCard.displayName = "ResourceCard";
+};
