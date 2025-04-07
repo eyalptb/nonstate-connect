@@ -61,12 +61,12 @@ export const addInMemoryTranslations = (language: string) => {
     const pricingData = pricingTranslations[language]?.pricing || pricingTranslations[fallbackLang]?.pricing;
     safeAddResourceBundle(language, 'common', { pricing: pricingData });
     
-    // For contactSales translations, properly format and add them
+    // For contactSales translations, directly add them from the properly structured object
     const contactSalesData = contactSalesTranslations[language] || contactSalesTranslations[fallbackLang];
     
     if (contactSalesData) {
-      console.log(`[inMemoryTranslations] Adding contactSales translations for ${language}`);
-      safeAddResourceBundle(language, 'common', { contactSales: contactSalesData });
+      console.log(`[inMemoryTranslations] Adding contactSales translations for ${language}:`, contactSalesData);
+      safeAddResourceBundle(language, 'common', contactSalesData);
       
       // Verify they were added correctly
       const bundle = i18n.getResourceBundle(language, 'common');
