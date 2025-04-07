@@ -1,4 +1,3 @@
-
 import i18n from '@/i18n';
 import { loadTranslations } from './translationCore';
 import { addTranslations } from './translationHelpers';

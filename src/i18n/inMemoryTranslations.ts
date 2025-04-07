@@ -1,4 +1,3 @@
-
 import i18n from 'i18next';
 import { walletTranslations } from '@/utils/translations/walletTranslations';
 import { featureTranslations } from '@/utils/translations/featureTranslations';
