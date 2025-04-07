@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { ArrowUpRight, MessageSquare, Vote, Users } from 'lucide-react';
@@ -14,16 +15,37 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity }) => {
   const lastTranslationRef = useRef<string>('');
   const translationAttempts = useRef<number>(0);
   const maxAttempts = 5;
+  const translationCacheKey = `activity_${activity.type}_${i18n.language}`;
 
   useEffect(() => {
     // Function to update the translated title
     const updateTranslation = () => {
+      // Try to get from sessionStorage first to prevent flickering
+      const cachedTranslation = sessionStorage.getItem(translationCacheKey);
+      if (cachedTranslation) {
+        console.log(`[ActivityItem] Using cached translation: ${cachedTranslation}`);
+        setTranslatedTitle(cachedTranslation);
+        lastTranslationRef.current = cachedTranslation;
+        return;
+      }
+      
       // Use full key path for dashboard translations
       const key = `dashboard.activity.types.${activity.type}`;
       const defaultText = `Activity on ${activity.target.name}`;
       
       // Log translation for debugging
       console.log(`[ActivityItem] Trying to translate key: ${key}, current language: ${i18n.language}`);
+      
+      // Check if dashboard translations exist in the resource bundle
+      const bundle = i18n.getResourceBundle(i18n.language, 'common');
+      const dashboardExists = bundle && 
+                              typeof bundle === 'object' && 
+                              'dashboard' in bundle && 
+                              bundle.dashboard && 
+                              typeof bundle.dashboard === 'object' && 
+                              'activity' in bundle.dashboard;
+                              
+      console.log(`[ActivityItem] Dashboard translations exist: ${dashboardExists}`);
       
       const translation = t(key, { name: activity.target.name, defaultValue: defaultText });
       console.log(`[ActivityItem] Translation result:`, translation);
@@ -32,9 +54,15 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity }) => {
       if (translation !== defaultText || translationAttempts.current >= maxAttempts) {
         setTranslatedTitle(translation);
         lastTranslationRef.current = translation;
+        
+        // Cache successful translations in sessionStorage
+        if (translation !== defaultText) {
+          sessionStorage.setItem(translationCacheKey, translation);
+        }
       } else if (lastTranslationRef.current) {
         // Keep the last valid translation if we're falling back and have a previous translation
         console.log(`[ActivityItem] Using cached translation: ${lastTranslationRef.current}`);
+        setTranslatedTitle(lastTranslationRef.current);
       } else {
         // If we don't have a previous translation, use what we have
         setTranslatedTitle(translation);
@@ -48,8 +76,10 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity }) => {
     updateTranslation();
     
     // Set up listener for when translations are loaded
-    const handleTranslationsLoaded = () => {
-      console.log(`[ActivityItem] Translations loaded event received, updating translation`);
+    const handleTranslationsLoaded = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      console.log(`[ActivityItem] Translations loaded event received:`, 
+        customEvent.detail ? customEvent.detail : 'No details');
       
       // Reset attempt counter
       translationAttempts.current = 0;
@@ -87,7 +117,7 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity }) => {
       i18n.off('languageChanged', handleLanguageChanged);
       clearTimeout(finalAttemptTimer);
     };
-  }, [activity, t, i18n]);
+  }, [activity, t, i18n, translationCacheKey]);
 
   const getActivityIcon = (type: Activity['type']) => {
     switch (type) {

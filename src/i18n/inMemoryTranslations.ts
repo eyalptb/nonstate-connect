@@ -82,67 +82,46 @@ export const addInMemoryTranslations = (language: string) => {
       console.warn(`[inMemoryTranslations] No contactSales translations found for ${language}, using fallback`);
     }
     
-    // For dashboard translations - fixed type handling
-    // Get dashboard translations, being more careful with type checking
-    let dashboardData = null;
+    // For dashboard translations - Fix type checking issue
     if (dashboardTranslations[language] && typeof dashboardTranslations[language] === 'object' && 'dashboard' in dashboardTranslations[language]) {
-      dashboardData = dashboardTranslations[language].dashboard;
+      const dashboardData = dashboardTranslations[language].dashboard;
+      if (dashboardData) {
+        console.log(`[inMemoryTranslations] Adding dashboard translations for ${language}:`, dashboardData);
+        safeAddResourceBundle(language, 'common', { dashboard: dashboardData });
+      }
     } else if (dashboardTranslations[fallbackLang] && typeof dashboardTranslations[fallbackLang] === 'object' && 'dashboard' in dashboardTranslations[fallbackLang]) {
-      dashboardData = dashboardTranslations[fallbackLang].dashboard;
-    }
-    
-    if (dashboardData) {
-      console.log(`[inMemoryTranslations] Adding dashboard translations for ${language}:`, dashboardData);
-      
-      // Add dashboard translations to the common namespace
-      const dashboardResult = safeAddResourceBundle(language, 'common', { dashboard: dashboardData });
-      
-      if (!dashboardResult) {
-        console.warn(`[inMemoryTranslations] Failed to add dashboard translations for ${language}, trying alternative method`);
-        
-        // Alternative method - add directly to i18n store as a fallback
-        try {
-          if (!i18n.store.data[language]) {
-            i18n.store.data[language] = {};
-          }
-          if (!i18n.store.data[language].common) {
-            i18n.store.data[language].common = {};
-          }
-          i18n.store.data[language].common.dashboard = dashboardData;
-          console.log(`[inMemoryTranslations] Added dashboard translations directly to i18n store for ${language}`);
-        } catch (innerError) {
-          console.error(`[inMemoryTranslations] Alternative method failed:`, innerError);
-        }
+      const dashboardData = dashboardTranslations[fallbackLang].dashboard;
+      if (dashboardData) {
+        console.log(`[inMemoryTranslations] Adding fallback dashboard translations for ${language}:`, dashboardData);
+        safeAddResourceBundle(language, 'common', { dashboard: dashboardData });
       }
     } else {
-      console.warn(`[inMemoryTranslations] No dashboard translations found for ${language}, using fallback`);
+      console.warn(`[inMemoryTranslations] No dashboard translations found for ${language} or fallback`);
     }
     
     // Force reload resources to ensure translations are immediately available
     i18n.reloadResources([language], ['common']).then(() => {
       console.log(`[inMemoryTranslations] Translations reloaded for ${language}`);
       
-      // Verify dashboard translations are loaded - using type assertion for safety
+      // Verify dashboard translations were loaded properly
       const loadedBundle = i18n.getResourceBundle(language, 'common');
-      
-      // Safely check if the bundle is an object and has dashboard property
       let dashboardLoaded = false;
-      let loadedDashboard = null;
       
       if (loadedBundle && typeof loadedBundle === 'object') {
         const bundleAsRecord = loadedBundle as Record<string, any>;
         if ('dashboard' in bundleAsRecord) {
           dashboardLoaded = true;
-          loadedDashboard = bundleAsRecord.dashboard;
+          console.log(`[inMemoryTranslations] Dashboard translations verified for ${language}:`, bundleAsRecord.dashboard);
         }
       }
       
-      console.log(`[inMemoryTranslations] Dashboard translations loaded: ${dashboardLoaded}`, 
-        dashboardLoaded ? loadedDashboard : 'Not found in bundle');
+      if (!dashboardLoaded) {
+        console.warn(`[inMemoryTranslations] Dashboard translations not found in loaded bundle for ${language}`);
+      }
       
       // Dispatch a custom event to notify components that translations have been loaded
       document.dispatchEvent(new CustomEvent('i18n-resources-loaded', { 
-        detail: { language }
+        detail: { language, source: 'inMemoryTranslations' }
       }));
     });
   } catch (error) {
