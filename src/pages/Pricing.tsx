@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,10 +8,12 @@ import { Check } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
 import i18n from '@/i18n';
-import { pricingTranslations } from "@/utils/translations/pricingTranslations";
+import { pricingTranslations, supportedLanguages } from "@/utils/translations/pricingTranslations";
+import { toast } from "@/components/ui/use-toast";
 
 const Pricing = () => {
   const { t } = useTranslation();
+  const [translationsLoaded, setTranslationsLoaded] = useState(false);
   
   // Load pricing translations when component mounts or language changes
   useEffect(() => {
@@ -29,6 +31,7 @@ const Pricing = () => {
         // Force reload resources
         i18n.reloadResources([i18n.language], ['common']).then(() => {
           console.log("Pricing: Translations reloaded");
+          setTranslationsLoaded(true);
         });
       }
     };
@@ -41,17 +44,25 @@ const Pricing = () => {
       loadPricingTranslations();
     };
     
+    // Listen for both the i18next language change and our custom event
     i18n.on('languageChanged', handleLanguageChanged);
+    document.addEventListener('i18n-resources-loaded', handleLanguageChanged);
     
     return () => {
       i18n.off('languageChanged', handleLanguageChanged);
+      document.removeEventListener('i18n-resources-loaded', handleLanguageChanged);
     };
   }, []);
   
   // Helper function to get translated text with fallback
-  const getText = (key, defaultText) => {
-    const translated = t(key);
-    return translated === key ? defaultText : translated;
+  const getText = (key: string, defaultText: string): string => {
+    try {
+      const translated = t(key);
+      return translated === key ? defaultText : translated;
+    } catch (error) {
+      console.error(`Error getting translation for ${key}:`, error);
+      return defaultText;
+    }
   };
   
   // Define feature arrays with type safety
@@ -59,7 +70,8 @@ const Pricing = () => {
     try {
       const features = t(key, { defaultValue: defaultFeatures, returnObjects: true });
       return Array.isArray(features) ? features : defaultFeatures;
-    } catch {
+    } catch (error) {
+      console.error(`Error getting features for ${key}:`, error);
       return defaultFeatures;
     }
   };
@@ -117,10 +129,23 @@ const Pricing = () => {
     try {
       const items = t(key, { defaultValue: defaultFaqItems, returnObjects: true });
       return Array.isArray(items) ? items : defaultFaqItems;
-    } catch {
+    } catch (error) {
+      console.error(`Error getting FAQ items for ${key}:`, error);
       return defaultFaqItems;
     }
   };
+
+  // Show fallback to English message for languages other than English and Russian
+  useEffect(() => {
+    const currentLang = i18n.language;
+    if (translationsLoaded && currentLang !== 'en' && currentLang !== 'ru') {
+      toast({
+        title: "Translation Notice",
+        description: `Using English translations for pricing content. Native ${currentLang.toUpperCase()} translations coming soon.`,
+        duration: 5000,
+      });
+    }
+  }, [translationsLoaded, i18n.language]);
 
   return (
     <div className="container mx-auto py-12 px-4">
@@ -138,6 +163,7 @@ const Pricing = () => {
             </TabsList>
           </div>
 
+          {/* Monthly Tabs Content */}
           <TabsContent value="monthly">
             <div className="grid md:grid-cols-3 gap-8">
               {/* Starter Plan */}
@@ -227,6 +253,7 @@ const Pricing = () => {
             </div>
           </TabsContent>
 
+          {/* Annual Tabs Content */}
           <TabsContent value="annually">
             <div className="grid md:grid-cols-3 gap-8">
               {/* Starter Plan Annual */}
@@ -324,6 +351,7 @@ const Pricing = () => {
         </Tabs>
       </div>
 
+      {/* FAQ Section */}
       <div className="mt-16 text-center">
         <h2 className="text-2xl font-bold mb-2">{getText('pricing.faq.title', 'Frequently Asked Questions')}</h2>
         <p className="text-muted-foreground mb-8">

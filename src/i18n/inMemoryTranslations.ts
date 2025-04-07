@@ -65,13 +65,14 @@ export const addInMemoryTranslations = (language: string) => {
       safeAddResourceBundle(language, 'common', { learn: learnData });
     }
     
-    // For pricing translations, access the nested pricing property
+    // For pricing translations, ensure we have them for all languages with fallback
     const pricingData = pricingTranslations[language]?.pricing || pricingTranslations[fallbackLang]?.pricing;
     if (pricingData) {
+      console.log(`[inMemoryTranslations] Adding pricing translations for ${language}`);
       safeAddResourceBundle(language, 'common', { pricing: pricingData });
     }
     
-    // For contactSales translations, directly add them from the properly structured object
+    // For contactSales translations
     const contactSalesData = contactSalesTranslations[language] || contactSalesTranslations[fallbackLang];
     if (contactSalesData) {
       console.log(`[inMemoryTranslations] Adding contactSales translations for ${language}`);
@@ -81,6 +82,11 @@ export const addInMemoryTranslations = (language: string) => {
     // Force reload resources to ensure translations are immediately available
     i18n.reloadResources([language], ['common']).then(() => {
       console.log(`[inMemoryTranslations] Resources reloaded for ${language}`);
+      
+      // Dispatch a custom event to notify components that translations have been loaded
+      document.dispatchEvent(new CustomEvent('i18n-resources-loaded', { 
+        detail: { language }
+      }));
     });
   } catch (error) {
     // Fail silently for stability
