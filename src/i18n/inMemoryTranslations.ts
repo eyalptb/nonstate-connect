@@ -84,10 +84,10 @@ export const addInMemoryTranslations = (language: string) => {
     
     // For dashboard translations - fixed type handling
     // Get dashboard translations, being more careful with type checking
-    let dashboardData;
-    if (dashboardTranslations[language] && 'dashboard' in dashboardTranslations[language]) {
+    let dashboardData = null;
+    if (dashboardTranslations[language] && typeof dashboardTranslations[language] === 'object' && 'dashboard' in dashboardTranslations[language]) {
       dashboardData = dashboardTranslations[language].dashboard;
-    } else if (dashboardTranslations[fallbackLang] && 'dashboard' in dashboardTranslations[fallbackLang]) {
+    } else if (dashboardTranslations[fallbackLang] && typeof dashboardTranslations[fallbackLang] === 'object' && 'dashboard' in dashboardTranslations[fallbackLang]) {
       dashboardData = dashboardTranslations[fallbackLang].dashboard;
     }
     
@@ -122,7 +122,7 @@ export const addInMemoryTranslations = (language: string) => {
     i18n.reloadResources([language], ['common']).then(() => {
       console.log(`[inMemoryTranslations] Translations reloaded for ${language}`);
       
-      // Verify dashboard translations are loaded - using optional chaining to avoid type errors
+      // Verify dashboard translations are loaded - using type assertion for safety
       const loadedBundle = i18n.getResourceBundle(language, 'common');
       
       // Safely check if the bundle is an object and has dashboard property
@@ -130,10 +130,11 @@ export const addInMemoryTranslations = (language: string) => {
       let loadedDashboard = null;
       
       if (loadedBundle && typeof loadedBundle === 'object') {
-        // Check if dashboard exists in the bundle
-        if ('dashboard' in loadedBundle) {
+        // Use type assertion to safely access the dashboard property
+        const bundleAsRecord = loadedBundle as Record<string, any>;
+        if ('dashboard' in bundleAsRecord) {
           dashboardLoaded = true;
-          loadedDashboard = (loadedBundle as Record<string, any>).dashboard;
+          loadedDashboard = bundleAsRecord.dashboard;
         }
       }
       
