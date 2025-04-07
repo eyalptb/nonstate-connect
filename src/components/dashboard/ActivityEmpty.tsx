@@ -1,13 +1,13 @@
 
 import React from 'react';
-import useTranslationHelper from '@/hooks/useTranslationHelper';
+import { useTranslation } from 'react-i18next';
 
 export const ActivityEmpty: React.FC = () => {
-  const { getText } = useTranslationHelper();
+  const { t } = useTranslation();
   
   return (
     <p className="text-sm text-muted-foreground">
-      {getText('dashboard.activity.noActivity', 'No recent activity')}
+      {t('dashboard.activity.noActivity', 'No recent activity')}
     </p>
   );
 };

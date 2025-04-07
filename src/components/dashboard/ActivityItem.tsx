@@ -3,14 +3,14 @@ import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { ArrowUpRight, MessageSquare, Vote, Users } from 'lucide-react';
 import { Activity } from '@/types/activity';
-import useTranslationHelper from '@/hooks/useTranslationHelper';
+import { useTranslation } from 'react-i18next';
 
 interface ActivityItemProps {
   activity: Activity;
 }
 
 export const ActivityItem: React.FC<ActivityItemProps> = ({ activity }) => {
-  const { getText } = useTranslationHelper();
+  const { t } = useTranslation();
 
   const getActivityIcon = (type: Activity['type']) => {
     switch (type) {
@@ -33,13 +33,13 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity }) => {
     
     switch (activity.type) {
       case 'proposal_voted':
-        return getText(key, 'Voted on {{name}}').replace('{{name}}', activity.target.name);
+        return t(key, 'Voted on {{name}}', { name: activity.target.name });
       case 'task_completed':
-        return getText(key, 'Completed {{name}}').replace('{{name}}', activity.target.name);
+        return t(key, 'Completed {{name}}', { name: activity.target.name });
       case 'message_received':
-        return getText(key, 'New message in {{name}}').replace('{{name}}', activity.target.name);
+        return t(key, 'New message in {{name}}', { name: activity.target.name });
       case 'project_joined':
-        return getText(key, 'Joined {{name}}').replace('{{name}}', activity.target.name);
+        return t(key, 'Joined {{name}}', { name: activity.target.name });
       default:
         return defaultText;
     }

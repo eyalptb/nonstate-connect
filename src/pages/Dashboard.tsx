@@ -4,16 +4,13 @@ import { useAuth } from "@/contexts/auth";
 import { useNotifications } from "@/contexts/notification/NotificationContext";
 import BackendStatus from "@/components/BackendStatus";
 import DashboardTranslationLoader from "@/components/dashboard/DashboardTranslationLoader";
-import useTranslationHelper from "@/hooks/useTranslationHelper";
 import { Activity } from "@/types/activity";
 import { WelcomeHeader } from "@/components/dashboard/WelcomeHeader";
 import { QuickAccessCards } from "@/components/dashboard/QuickAccessCards";
 import { GardenProjectsSection } from "@/components/dashboard/GardenProjectsSection";
 import { TokensAndActivities } from "@/components/dashboard/TokensAndActivities";
 import { ProjectsAndMarketplace } from "@/components/dashboard/ProjectsAndMarketplace";
-import { addInMemoryTranslations } from "@/i18n/inMemoryTranslations";
 import { useTranslation } from "react-i18next";
-import { loadAllDashboardTranslations } from "@/utils/translationLoader";
 
 const mockActivities: Activity[] = [
   {
@@ -42,29 +39,35 @@ const mockActivities: Activity[] = [
 const Dashboard = () => {
   const { user } = useAuth();
   const { addNotification } = useNotifications();
-  const { getText } = useTranslationHelper();
   const welcomeShownRef = useRef(false);
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   
-  // Ensure translations are loaded immediately when component mounts
+  // Log the translation status for debugging
   useEffect(() => {
-    loadAllDashboardTranslations();
-    addInMemoryTranslations(i18n.language);
-  }, [i18n.language]);
+    console.log("[Dashboard] Current language:", i18n.language);
+    console.log("[Dashboard] Is i18n initialized:", i18n.isInitialized);
+    
+    const dashboardTranslations = i18n.getResourceBundle(i18n.language, 'common')?.dashboard;
+    console.log("[Dashboard] Dashboard translations:", dashboardTranslations);
+  }, [i18n.language, i18n]);
   
   useEffect(() => {
     if (user && !welcomeShownRef.current) {
       welcomeShownRef.current = true;
       
+      const title = t('dashboard.welcomeNotification.title', 'Welcome Back!');
+      const message = t('dashboard.welcomeNotification.message', 'Welcome back to your secure collaboration dashboard!');
+      console.log("[Dashboard] Welcome notification:", { title, message });
+      
       addNotification({
         type: 'success',
-        title: getText('dashboard.welcomeNotification.title', 'Welcome Back!'),
-        message: getText('dashboard.welcomeNotification.message', 'Welcome back to your secure collaboration dashboard!'),
+        title,
+        message,
         autoClose: true,
         duration: 5000
       });
     }
-  }, [user, addNotification, getText]);
+  }, [user, addNotification, t]);
   
   const displayName = user?.username || user?.email?.split('@')[0] || "Guest";
 
