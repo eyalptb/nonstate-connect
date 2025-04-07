@@ -7,7 +7,7 @@ import { NewsletterSignup } from "@/components/learn/NewsletterSignup";
 import { loadAllLearnTranslations } from "@/utils/translationLoader";
 
 const Learn = () => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation(["common"]);
   
   // Load learn translations when component mounts
   useEffect(() => {
