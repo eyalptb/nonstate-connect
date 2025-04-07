@@ -22,6 +22,15 @@ export const debugLearnTranslations = () => {
     console.log('Source file structure:', Object.keys(learnTranslations[currentLang]));
     console.log('Source file learn keys:', 
       learnTranslations[currentLang].learn ? Object.keys(learnTranslations[currentLang].learn) : 'MISSING');
+    
+    // Add a deep check of the structure for the current language
+    if (learnTranslations[currentLang].learn) {
+      console.log('Source learn.tabs:', JSON.stringify(learnTranslations[currentLang].learn.tabs));
+      console.log('Source learn.guides:', Object.keys(learnTranslations[currentLang].learn.guides || {}));
+      console.log('Source learn.videos:', Object.keys(learnTranslations[currentLang].learn.videos || {}));
+      console.log('Source learn.articles:', Object.keys(learnTranslations[currentLang].learn.articles || {}));
+      console.log('Source learn.newsletter:', JSON.stringify(learnTranslations[currentLang].learn.newsletter));
+    }
   }
   
   // 2. Check if translations are loaded in i18n instance
@@ -33,6 +42,12 @@ export const debugLearnTranslations = () => {
     console.log('Bundle has learn key:', bundle.learn ? 'YES' : 'NO');
     if (bundle.learn) {
       console.log('Bundle learn keys:', Object.keys(bundle.learn));
+      
+      // Add deep check of loaded translations
+      console.log('Bundle learn.tabs:', JSON.stringify(bundle.learn.tabs));
+      console.log('Bundle learn.guides:', bundle.learn.guides ? Object.keys(bundle.learn.guides) : 'MISSING');
+      console.log('Bundle learn.videos:', bundle.learn.videos ? Object.keys(bundle.learn.videos) : 'MISSING');
+      console.log('Bundle learn.articles:', bundle.learn.articles ? Object.keys(bundle.learn.articles) : 'MISSING');
     }
   }
   
@@ -48,7 +63,10 @@ export const debugLearnTranslations = () => {
     'learn.description', 
     'learn.tabs.guides',
     'learn.tabs.videos',
-    'learn.tabs.articles'
+    'learn.tabs.articles',
+    'learn.guides.gettingStarted.title',
+    'learn.videos.platformOverview.title',
+    'learn.articles.futureOfCollaboration.title'
   ];
   
   testKeys.forEach(key => {
@@ -67,7 +85,7 @@ export const debugLearnTranslations = () => {
   
   // Try to manually add translations again
   if (learnTranslations[currentLang]) {
-    console.log('Adding learn translations explicitly...');
+    console.log('Adding learn translations explicitly with deep merge and NO overwrite...');
     i18n.addResourceBundle(
       currentLang, 
       'common', 
@@ -123,6 +141,7 @@ export const debugLearnTranslations = () => {
 
 /**
  * Force load learn translations for debugging purposes
+ * This function uses a more direct approach to ensure translations are loaded
  */
 export const forceLoadLearnTranslations = (language?: string) => {
   const lang = language || i18n.language;
@@ -130,32 +149,88 @@ export const forceLoadLearnTranslations = (language?: string) => {
   console.log(`Force loading learn translations for ${lang}`);
   
   if (learnTranslations[lang]) {
-    // First try with overwrite: false
-    console.log('Adding with overwrite: false, deep: true');
+    console.log(`Found learn translations for ${lang} in source files`);
+    
+    // First try with standard approach
+    console.log('First trying standard approach (deep merge, no overwrite)');
     i18n.addResourceBundle(lang, 'common', learnTranslations[lang], true, false);
     
     // Check if it worked
-    const bundle = i18n.getResourceBundle(lang, 'common');
-    if (bundle?.learn) {
-      console.log('Success! Learn translations loaded without overwrite');
-      return true;
-    }
+    let bundle = i18n.getResourceBundle(lang, 'common');
+    const hasLearnAfterStandard = !!(bundle?.learn && 
+                                    bundle.learn.tabs && 
+                                    bundle.learn.guides);
     
-    // Try again with overwrite: true as last resort
-    console.log('First attempt failed, trying with overwrite: true');
-    i18n.addResourceBundle(lang, 'common', learnTranslations[lang], true, true);
+    console.log(`After standard approach, translations exist: ${hasLearnAfterStandard ? 'YES' : 'NO'}`);
     
-    // Final check
-    const finalBundle = i18n.getResourceBundle(lang, 'common');
-    if (finalBundle?.learn) {
-      console.log('Success! Learn translations loaded with overwrite');
-      return true;
+    if (!hasLearnAfterStandard) {
+      // Try a more aggressive approach - direct assignment
+      console.log('Standard approach failed, trying direct assignment with overwrite: true');
+      
+      // Create a new object with just the learn translations to avoid overwriting other keys
+      const learnOnly = { learn: learnTranslations[lang].learn };
+      i18n.addResourceBundle(lang, 'common', learnOnly, true, true);
+      
+      bundle = i18n.getResourceBundle(lang, 'common');
+      const hasLearnAfterDirect = !!(bundle?.learn && 
+                                   bundle.learn.tabs && 
+                                   bundle.learn.guides);
+      
+      console.log(`After direct assignment, translations exist: ${hasLearnAfterDirect ? 'YES' : 'NO'}`);
+      
+      if (hasLearnAfterDirect) {
+        console.log('SUCCESS! Translations loaded with direct assignment');
+        return true;
+      } else {
+        // Last resort: manually construct the full path
+        console.log('Direct assignment failed, trying last resort method');
+        
+        // This should add the translations to the i18n instance
+        const patchedBundle = bundle || {};
+        patchedBundle.learn = learnTranslations[lang].learn;
+        
+        // Apply the patched bundle
+        i18n.addResourceBundle(lang, 'common', patchedBundle, false, true);
+        
+        // Final check
+        bundle = i18n.getResourceBundle(lang, 'common');
+        const hasLearnAfterManual = !!(bundle?.learn && 
+                                     bundle.learn.tabs && 
+                                     bundle.learn.guides);
+        
+        console.log(`After last resort method, translations exist: ${hasLearnAfterManual ? 'YES' : 'NO'}`);
+        
+        if (hasLearnAfterManual) {
+          console.log('SUCCESS! Translations loaded with last resort method');
+          return true;
+        } else {
+          console.error('FAILED! All methods to load translations have failed');
+          return false;
+        }
+      }
     } else {
-      console.error('Failed to load learn translations even with overwrite');
-      return false;
+      console.log('SUCCESS! Translations loaded with standard approach');
+      return true;
     }
   } else {
-    console.error(`No learn translations found for ${lang}`);
+    console.error(`ERROR: No learn translations found for ${lang} in source files`);
+    
+    // Try to load English as a fallback
+    if (lang !== 'en' && learnTranslations['en']) {
+      console.log('Attempting to load English translations as fallback');
+      
+      // Create a modified version with the current language but English content
+      const fallbackTrans = { learn: learnTranslations['en'].learn };
+      i18n.addResourceBundle(lang, 'common', fallbackTrans, true, true);
+      
+      // Check if it worked
+      const finalBundle = i18n.getResourceBundle(lang, 'common');
+      if (finalBundle?.learn) {
+        console.log('SUCCESS! English fallback translations loaded');
+        return true;
+      }
+    }
+    
     return false;
   }
 };
