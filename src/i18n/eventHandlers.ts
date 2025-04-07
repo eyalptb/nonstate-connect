@@ -1,6 +1,6 @@
 
 import i18n from 'i18next';
-import { addInMemoryTranslations, addLearnTranslations } from './inMemoryTranslations';
+import { addInMemoryTranslations, addLearnTranslations, addPricingTranslations } from './inMemoryTranslations';
 
 /**
  * Sets up all i18n event handlers
@@ -28,6 +28,18 @@ export const setupEventHandlers = () => {
       addLearnTranslations(i18n.language);
     } else {
       console.log(`[i18n] Learn translations correctly loaded during initialization`);
+    }
+    
+    // Check if Pricing translations are present
+    const hasPricingTranslations = currentResources && 
+      currentResources.pricing && 
+      Object.keys(currentResources.pricing).length > 0;
+    
+    if (!hasPricingTranslations) {
+      console.warn(`[i18n] Pricing translations not present after initialization, adding them explicitly`);
+      addPricingTranslations(i18n.language);
+    } else {
+      console.log(`[i18n] Pricing translations correctly loaded during initialization`);
     }
     
     // Notify listeners
@@ -62,6 +74,16 @@ export const setupEventHandlers = () => {
       addLearnTranslations(lng);
     }
     
+    // Verify Pricing translations specifically
+    const hasPricingTranslations = resources && 
+      resources.pricing && 
+      Object.keys(resources.pricing).length > 0;
+      
+    if (!hasPricingTranslations) {
+      console.warn(`[i18n] Pricing translations missing after language change, adding them explicitly`);
+      addPricingTranslations(lng);
+    }
+    
     // Reload resources to ensure everything is up-to-date
     i18n.reloadResources([lng], ['common'])
       .then(() => {
@@ -71,3 +93,4 @@ export const setupEventHandlers = () => {
       .catch((error) => console.error(`[i18n] Failed to reload resources for ${lng}:`, error));
   });
 };
+

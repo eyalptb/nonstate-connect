@@ -1,92 +1,119 @@
 
-import { addComponentTranslations, loadAllComponentTranslations } from './translationCore';
+import i18n from '@/i18n';
+import { loadTranslations } from './translationCore';
+import { addTranslations } from './translationHelpers';
+import { walletTranslations } from './walletTranslations';
+import { featureTranslations } from './featureTranslations';
+import { joinCtaTranslations } from './joinCtaTranslations';
+import { projectTranslations } from './projectTranslations';
+import { footerTranslations } from './footerTranslations';
+import { backendTranslations } from './backendTranslations';
+import { featurePageTranslations } from './featurePageTranslations';
+import { useCasesTranslations } from './useCasesTranslations';
+import { learnTranslations } from './learnTranslations';
+import { pricingTranslations } from './pricingTranslations';
 
-// Wallet Translations
-export const addWalletTranslations = (language: string, namespace: string = 'common') => {
-  return addComponentTranslations(language, 'wallet', namespace);
+// Wallet translations
+export const addWalletTranslations = (language = i18n.language) => 
+  addTranslations(language, 'common', walletTranslations[language] || walletTranslations.en);
+
+export const loadAllWalletTranslations = () => loadTranslations('wallet', { allLanguages: true });
+
+// Feature translations
+export const addFeatureTranslations = (language = i18n.language) => 
+  addTranslations(language, 'common', featureTranslations[language] || featureTranslations.en);
+
+export const loadAllFeatureTranslations = () => loadTranslations('feature', { allLanguages: true });
+
+// Join CTA translations
+export const addJoinCtaTranslations = (language = i18n.language) => 
+  addTranslations(language, 'common', joinCtaTranslations[language] || joinCtaTranslations.en);
+
+export const loadAllJoinCtaTranslations = () => loadTranslations('joinCta', { allLanguages: true });
+
+// Project translations
+export const addProjectTranslations = (language = i18n.language) => 
+  addTranslations(language, 'common', projectTranslations[language] || projectTranslations.en);
+
+export const loadAllProjectTranslations = () => loadTranslations('project', { allLanguages: true });
+
+// Footer translations
+export const addFooterTranslations = (language = i18n.language) => 
+  addTranslations(language, 'common', footerTranslations[language] || footerTranslations.en);
+
+export const loadAllFooterTranslations = () => loadTranslations('footer', { allLanguages: true });
+
+// Backend translations
+export const addBackendTranslations = (language = i18n.language) => 
+  addTranslations(language, 'common', backendTranslations[language] || backendTranslations.en);
+
+export const loadAllBackendTranslations = () => loadTranslations('backend', { allLanguages: true });
+
+// Feature page translations
+export const addFeaturePageTranslations = (language = i18n.language) => 
+  addTranslations(language, 'common', featurePageTranslations[language] || featurePageTranslations.en);
+
+export const loadAllFeaturePageTranslations = () => loadTranslations('featurePage', { allLanguages: true });
+
+// Use cases translations
+export const addUseCasesTranslations = (language = i18n.language) => 
+  addTranslations(language, 'common', useCasesTranslations[language] || useCasesTranslations.en);
+
+export const loadAllUseCasesTranslations = () => loadTranslations('useCases', { allLanguages: true });
+
+// Learn translations
+export const addLearnTranslations = (language = i18n.language) => 
+  addTranslations(language, 'common', learnTranslations[language] || learnTranslations.en);
+
+export const loadAllLearnTranslations = () => loadTranslations('learn', { allLanguages: true });
+
+// Pricing translations
+export const addPricingTranslations = (language = i18n.language) => {
+  console.log(`[addPricingTranslations] Called for language: ${language}`);
+  
+  // Get translations, fallback to English if needed
+  const translations = pricingTranslations[language] || pricingTranslations.en;
+  
+  if (!translations) {
+    console.error(`[addPricingTranslations] No pricing translations found for ${language} or en fallback`);
+    return false;
+  }
+  
+  console.log(`[addPricingTranslations] Using translations:`, translations);
+  
+  // Add translations directly to i18n
+  const success = addTranslations(language, 'common', translations);
+  
+  // Also try adding just the pricing part for extra safety
+  if (translations.pricing) {
+    console.log(`[addPricingTranslations] Also adding pricing-specific structure`);
+    const pricingOnly = { pricing: translations.pricing };
+    addTranslations(language, 'common', pricingOnly);
+  }
+  
+  return success;
 };
 
-export const loadAllWalletTranslations = (namespace: string = 'common') => {
-  loadAllComponentTranslations('wallet', namespace);
+export const loadAllPricingTranslations = () => {
+  console.log(`[loadAllPricingTranslations] Called`);
+  const result = loadTranslations('pricing', { allLanguages: true });
+  
+  // Verify pricing translations were loaded
+  setTimeout(() => {
+    const currentLanguage = i18n.language;
+    const resources = i18n.getResourceBundle(currentLanguage, 'common');
+    
+    console.log(`[loadAllPricingTranslations] Verifying pricing translations for ${currentLanguage}`);
+    const hasPricing = resources && resources.pricing && Object.keys(resources.pricing).length > 0;
+    
+    if (!hasPricing) {
+      console.warn(`[loadAllPricingTranslations] Pricing translations missing after load for ${currentLanguage}, adding them manually`);
+      addPricingTranslations(currentLanguage);
+    } else {
+      console.log(`[loadAllPricingTranslations] Pricing translations loaded successfully for ${currentLanguage}`);
+    }
+  }, 500);
+  
+  return result;
 };
 
-// Feature Translations
-export const addFeatureTranslations = (language: string, namespace: string = 'common') => {
-  return addComponentTranslations(language, 'feature', namespace);
-};
-
-export const loadAllFeatureTranslations = (namespace: string = 'common') => {
-  loadAllComponentTranslations('feature', namespace);
-};
-
-// Join CTA Translations
-export const addJoinCtaTranslations = (language: string, namespace: string = 'common') => {
-  return addComponentTranslations(language, 'joinCta', namespace);
-};
-
-export const loadAllJoinCtaTranslations = (namespace: string = 'common') => {
-  loadAllComponentTranslations('joinCta', namespace);
-};
-
-// Project Translations
-export const addProjectTranslations = (language: string, namespace: string = 'common') => {
-  return addComponentTranslations(language, 'project', namespace);
-};
-
-export const loadAllProjectTranslations = (namespace: string = 'common') => {
-  loadAllComponentTranslations('project', namespace);
-};
-
-// Footer Translations
-export const addFooterTranslations = (language: string, namespace: string = 'common') => {
-  return addComponentTranslations(language, 'footer', namespace);
-};
-
-export const loadAllFooterTranslations = (namespace: string = 'common') => {
-  loadAllComponentTranslations('footer', namespace);
-};
-
-// Backend Translations
-export const addBackendTranslations = (language: string, namespace: string = 'common') => {
-  return addComponentTranslations(language, 'backend', namespace);
-};
-
-export const loadAllBackendTranslations = (namespace: string = 'common') => {
-  loadAllComponentTranslations('backend', namespace);
-};
-
-// Feature Page Translations
-export const addFeaturePageTranslations = (language: string, namespace: string = 'common') => {
-  return addComponentTranslations(language, 'featurePage', namespace);
-};
-
-export const loadAllFeaturePageTranslations = (namespace: string = 'common') => {
-  loadAllComponentTranslations('featurePage', namespace);
-};
-
-// Use Cases Translations
-export const addUseCasesTranslations = (language: string, namespace: string = 'common') => {
-  return addComponentTranslations(language, 'useCases', namespace);
-};
-
-export const loadAllUseCasesTranslations = (namespace: string = 'common') => {
-  loadAllComponentTranslations('useCases', namespace);
-};
-
-// Learn Translations
-export const addLearnTranslations = (language: string, namespace: string = 'common') => {
-  return addComponentTranslations(language, 'learn', namespace);
-};
-
-export const loadAllLearnTranslations = (namespace: string = 'common') => {
-  loadAllComponentTranslations('learn', namespace);
-};
-
-// Pricing Translations
-export const addPricingTranslations = (language: string, namespace: string = 'common') => {
-  return addComponentTranslations(language, 'pricing', namespace);
-};
-
-export const loadAllPricingTranslations = (namespace: string = 'common') => {
-  loadAllComponentTranslations('pricing', namespace);
-};

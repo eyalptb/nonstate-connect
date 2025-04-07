@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from '@/i18n';
-import { loadAllPricingTranslations } from "@/utils/translationLoader";
+import { loadAllPricingTranslations, addPricingTranslations } from "@/utils/translationLoader";
 import usePricingDebug from "@/hooks/usePricingDebug";
 
 // Define feature list types for type safety
@@ -23,11 +24,20 @@ const Pricing = () => {
   // Load pricing translations when component mounts or language changes
   useEffect(() => {
     if (i18n.language) {
+      console.log(`[Pricing] Loading pricing translations for language: ${i18n.language}`);
       loadAllPricingTranslations();
-      console.log(`Loading pricing translations for language: ${i18n.language}`);
       
-      // Trigger debug for pricing translations
+      // Also try direct method as a fallback
       setTimeout(() => {
+        const resources = i18n.getResourceBundle(i18n.language, 'common');
+        const hasPricing = resources && resources.pricing && Object.keys(resources.pricing).length > 0;
+        
+        if (!hasPricing) {
+          console.log(`[Pricing] Still missing pricing translations, trying direct add`);
+          addPricingTranslations(i18n.language);
+        }
+        
+        // Trigger debug for pricing translations
         debugPricingTranslations();
       }, 1000);
     }
@@ -36,11 +46,15 @@ const Pricing = () => {
   // Helper function to get features as an array with proper typing
   const getFeatures = (key: string, defaultFeatures: string[]): string[] => {
     try {
+      console.log(`[Pricing] Getting features for ${key}, current language: ${i18n.language}`);
+      const resources = i18n.getResourceBundle(i18n.language, 'common');
+      console.log(`[Pricing] Resources:`, resources && resources.pricing ? 'Has pricing' : 'No pricing');
+      
       const features = t(key, { defaultValue: defaultFeatures, returnObjects: true });
-      console.log(`Features for ${key}:`, features);
+      console.log(`[Pricing] Features for ${key}:`, features);
       return Array.isArray(features) ? features : defaultFeatures;
     } catch (error) {
-      console.error(`Error getting features for ${key}:`, error);
+      console.error(`[Pricing] Error getting features for ${key}:`, error);
       return defaultFeatures;
     }
   };
@@ -49,10 +63,10 @@ const Pricing = () => {
   const getFaqItems = (key: string, defaultItems: FaqItem[]): FaqItem[] => {
     try {
       const items = t(key, { defaultValue: defaultItems, returnObjects: true });
-      console.log(`FAQ items for ${key}:`, items);
+      console.log(`[Pricing] FAQ items for ${key}:`, items);
       return Array.isArray(items) ? items : defaultItems;
     } catch (error) {
-      console.error(`Error getting FAQ items for ${key}:`, error);
+      console.error(`[Pricing] Error getting FAQ items for ${key}:`, error);
       return defaultItems;
     }
   };
@@ -341,3 +355,4 @@ const Pricing = () => {
 };
 
 export default Pricing;
+

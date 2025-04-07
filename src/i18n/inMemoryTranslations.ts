@@ -39,9 +39,29 @@ export const addInMemoryTranslations = (language: string) => {
     i18n.addResourceBundle(language, 'common', backendTranslations[language], true, true);
   }
   
-  // Add Pricing translations
+  // Add Pricing translations with extra debugging
   if (pricingTranslations[language]) {
+    console.log(`[i18n] Adding pricing translations for ${language}. Keys available:`, 
+      Object.keys(pricingTranslations[language]));
+    console.log(`[i18n] Pricing structure:`, pricingTranslations[language].pricing);
+    
+    // Add the entire object
     i18n.addResourceBundle(language, 'common', pricingTranslations[language], true, true);
+    
+    // Also try adding just the pricing part specifically to ensure it's there
+    const pricingOnly = { pricing: pricingTranslations[language].pricing };
+    i18n.addResourceBundle(language, 'common', pricingOnly, true, true);
+    
+    // Verify the translations were added correctly
+    const bundle = i18n.getResourceBundle(language, 'common');
+    console.log(`[i18n] After adding, pricing translations exist for ${language}:`, 
+      bundle && bundle.pricing ? "Yes" : "No");
+    
+    if (bundle && bundle.pricing) {
+      console.log(`[i18n] Loaded pricing keys:`, Object.keys(bundle.pricing));
+    }
+  } else {
+    console.warn(`[i18n] No pricing translations found for ${language}`);
   }
   
   // Add Learn translations directly during initialization
@@ -82,3 +102,38 @@ export const addLearnTranslations = (language: string) => {
     i18n.addResourceBundle(language, 'common', learnOnly, true, true);
   }
 };
+
+/**
+ * Adds pricing translations with fallback to English if needed
+ */
+export const addPricingTranslations = (language: string) => {
+  console.log(`[i18n] Explicitly adding pricing translations for ${language}`);
+  
+  if (pricingTranslations[language]) {
+    console.log(`[i18n] Found pricing translations for ${language}, adding them now`);
+    
+    // Create an object with just the pricing key
+    const pricingOnly = { pricing: pricingTranslations[language].pricing };
+    console.log(`[i18n] Adding pricing-only structure:`, pricingOnly);
+    
+    i18n.addResourceBundle(language, 'common', pricingOnly, true, true);
+    
+    // Verify
+    const bundle = i18n.getResourceBundle(language, 'common');
+    console.log(`[i18n] After explicit add, pricing exists:`, 
+      bundle && bundle.pricing ? "Yes" : "No");
+    
+    if (bundle && bundle.pricing) {
+      console.log(`[i18n] Pricing keys after explicit add:`, Object.keys(bundle.pricing));
+    }
+  } else if (pricingTranslations['en']) {
+    console.log(`[i18n] No pricing translations for ${language}, using English as fallback`);
+    
+    // Create an object with just the pricing key using English as fallback
+    const pricingOnly = { pricing: pricingTranslations['en'].pricing };
+    i18n.addResourceBundle(language, 'common', pricingOnly, true, true);
+  } else {
+    console.error(`[i18n] Could not find pricing translations for ${language} or English fallback`);
+  }
+};
+
