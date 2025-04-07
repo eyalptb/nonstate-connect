@@ -19,20 +19,24 @@ const successfullyLoadedTranslations = new Set<string>();
 const safeAddResourceBundle = (language: string, namespace: string, resources: any, deep: boolean = true) => {
   try {
     if (!resources) {
+      console.warn(`[inMemoryTranslations] No resources to add for ${language}:${namespace}`);
       return false;
     }
     
     // Skip adding if already added
     const resourceKey = `${language}:${namespace}`;
     if (successfullyLoadedTranslations.has(resourceKey)) {
+      console.log(`[inMemoryTranslations] Resources already loaded for ${resourceKey}`);
       return true;
     }
     
     i18n.addResourceBundle(language, namespace, resources, deep, true);
     successfullyLoadedTranslations.add(resourceKey);
+    console.log(`[inMemoryTranslations] Successfully added resources for ${resourceKey}`);
     
     return true;
   } catch (error) {
+    console.error(`[inMemoryTranslations] Error adding resources for ${language}:${namespace}`, error);
     return false;
   }
 };
@@ -45,6 +49,8 @@ export const addInMemoryTranslations = (language: string) => {
   const fallbackLang = 'en';
   
   try {
+    console.log(`[inMemoryTranslations] Adding translations for ${language}`);
+    
     // Add each translation set safely with fallback to English if needed
     safeAddResourceBundle(language, 'common', walletTranslations[language] || walletTranslations[fallbackLang]);
     safeAddResourceBundle(language, 'common', featureTranslations[language] || featureTranslations[fallbackLang]);
@@ -55,32 +61,27 @@ export const addInMemoryTranslations = (language: string) => {
     
     // For learn translations, access the nested learn property
     const learnData = learnTranslations[language]?.learn || learnTranslations[fallbackLang]?.learn;
-    safeAddResourceBundle(language, 'common', { learn: learnData });
+    if (learnData) {
+      safeAddResourceBundle(language, 'common', { learn: learnData });
+    }
     
     // For pricing translations, access the nested pricing property
     const pricingData = pricingTranslations[language]?.pricing || pricingTranslations[fallbackLang]?.pricing;
-    safeAddResourceBundle(language, 'common', { pricing: pricingData });
+    if (pricingData) {
+      safeAddResourceBundle(language, 'common', { pricing: pricingData });
+    }
     
     // For contactSales translations, directly add them from the properly structured object
     const contactSalesData = contactSalesTranslations[language] || contactSalesTranslations[fallbackLang];
-    
     if (contactSalesData) {
-      console.log(`[inMemoryTranslations] Adding contactSales translations for ${language}:`, contactSalesData);
+      console.log(`[inMemoryTranslations] Adding contactSales translations for ${language}`);
       safeAddResourceBundle(language, 'common', contactSalesData);
-      
-      // Verify they were added correctly
-      const bundle = i18n.getResourceBundle(language, 'common');
-      if (bundle && bundle.contactSales) {
-        console.log(`[inMemoryTranslations] Successfully added contactSales translations for ${language}`);
-      } else {
-        console.warn(`[inMemoryTranslations] Failed to add contactSales translations for ${language}`);
-      }
-    } else {
-      console.warn(`[inMemoryTranslations] No contactSales translations found for ${language}`);
     }
     
     // Force reload resources to ensure translations are immediately available
-    i18n.reloadResources([language], ['common']);
+    i18n.reloadResources([language], ['common']).then(() => {
+      console.log(`[inMemoryTranslations] Resources reloaded for ${language}`);
+    });
   } catch (error) {
     // Fail silently for stability
     console.error('[inMemoryTranslations] Error adding translations:', error);

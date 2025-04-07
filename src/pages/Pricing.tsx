@@ -7,16 +7,52 @@ import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
-import { addPricingTranslations } from "@/utils/translations/componentTranslations";
 import i18n from '@/i18n';
+import { pricingTranslations } from "@/utils/translations/pricingTranslations";
 
 const Pricing = () => {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation();
   
   // Load pricing translations when component mounts or language changes
   useEffect(() => {
-    addPricingTranslations(i18n.language);
-  }, [i18n.language]);
+    const loadPricingTranslations = () => {
+      console.log(`Pricing: Loading translations for ${i18n.language}`);
+      
+      // Get translations for current language or fall back to English
+      const translations = pricingTranslations[i18n.language] || pricingTranslations['en'];
+      
+      if (translations) {
+        // Add translations to i18n instance
+        i18n.addResourceBundle(i18n.language, 'common', translations, true, true);
+        console.log(`Pricing: Added translations for ${i18n.language}`);
+        
+        // Force reload resources
+        i18n.reloadResources([i18n.language], ['common']).then(() => {
+          console.log("Pricing: Translations reloaded");
+        });
+      }
+    };
+    
+    // Load translations immediately
+    loadPricingTranslations();
+    
+    // Set up listener for language changes
+    const handleLanguageChanged = () => {
+      loadPricingTranslations();
+    };
+    
+    i18n.on('languageChanged', handleLanguageChanged);
+    
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
+  }, []);
+  
+  // Helper function to get translated text with fallback
+  const getText = (key, defaultText) => {
+    const translated = t(key);
+    return translated === key ? defaultText : translated;
+  };
   
   // Define feature arrays with type safety
   const getFeatures = (key: string, defaultFeatures: string[]): string[] => {
@@ -89,16 +125,16 @@ const Pricing = () => {
   return (
     <div className="container mx-auto py-12 px-4">
       <PageHeader
-        title={t('pricing.title', 'Simple, Transparent Pricing')}
-        description={t('pricing.description', 'Choose the plan that\'s right for your organization')}
+        title={getText('pricing.title', 'Simple, Transparent Pricing')}
+        description={getText('pricing.description', 'Choose the plan that\'s right for your organization')}
       />
 
       <div className="mt-12">
         <Tabs defaultValue="monthly" className="w-full">
           <div className="flex justify-center mb-8">
             <TabsList>
-              <TabsTrigger value="monthly">{t('pricing.tabMonthly', 'Monthly')}</TabsTrigger>
-              <TabsTrigger value="annually">{t('pricing.tabAnnually', 'Annually (Save 20%)')}</TabsTrigger>
+              <TabsTrigger value="monthly">{getText('pricing.tabMonthly', 'Monthly')}</TabsTrigger>
+              <TabsTrigger value="annually">{getText('pricing.tabAnnually', 'Annually (Save 20%)')}</TabsTrigger>
             </TabsList>
           </div>
 
@@ -107,13 +143,13 @@ const Pricing = () => {
               {/* Starter Plan */}
               <Card className="border">
                 <CardHeader>
-                  <CardTitle>{t('pricing.plans.starter.title', 'Starter')}</CardTitle>
+                  <CardTitle>{getText('pricing.plans.starter.title', 'Starter')}</CardTitle>
                   <div className="mt-4">
-                    <span className="text-3xl font-bold">{t('pricing.plans.starter.price', '$29')}</span>
+                    <span className="text-3xl font-bold">{getText('pricing.plans.starter.price', '$29')}</span>
                     <span className="text-muted-foreground ml-1">/month</span>
                   </div>
                   <CardDescription className="mt-2">
-                    {t('pricing.plans.starter.description', 'For small teams and projects')}
+                    {getText('pricing.plans.starter.description', 'For small teams and projects')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -127,7 +163,7 @@ const Pricing = () => {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full">{t('pricing.cta.getStarted', 'Get Started')}</Button>
+                  <Button className="w-full">{getText('pricing.cta.getStarted', 'Get Started')}</Button>
                 </CardFooter>
               </Card>
 
@@ -135,15 +171,15 @@ const Pricing = () => {
               <Card className="border border-primary bg-primary/5">
                 <CardHeader>
                   <div className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full w-fit mb-2">
-                    {t('pricing.plans.professional.popular', 'Most Popular')}
+                    {getText('pricing.plans.professional.popular', 'Most Popular')}
                   </div>
-                  <CardTitle>{t('pricing.plans.professional.title', 'Professional')}</CardTitle>
+                  <CardTitle>{getText('pricing.plans.professional.title', 'Professional')}</CardTitle>
                   <div className="mt-4">
-                    <span className="text-3xl font-bold">{t('pricing.plans.professional.price', '$99')}</span>
+                    <span className="text-3xl font-bold">{getText('pricing.plans.professional.price', '$99')}</span>
                     <span className="text-muted-foreground ml-1">/month</span>
                   </div>
                   <CardDescription className="mt-2">
-                    {t('pricing.plans.professional.description', 'For growing organizations')}
+                    {getText('pricing.plans.professional.description', 'For growing organizations')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -157,19 +193,19 @@ const Pricing = () => {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full">{t('pricing.cta.getStarted', 'Get Started')}</Button>
+                  <Button className="w-full">{getText('pricing.cta.getStarted', 'Get Started')}</Button>
                 </CardFooter>
               </Card>
 
               {/* Enterprise Plan */}
               <Card className="border">
                 <CardHeader>
-                  <CardTitle>{t('pricing.plans.enterprise.title', 'Enterprise')}</CardTitle>
+                  <CardTitle>{getText('pricing.plans.enterprise.title', 'Enterprise')}</CardTitle>
                   <div className="mt-4">
-                    <span className="text-3xl font-bold">{t('pricing.plans.enterprise.price', 'Custom')}</span>
+                    <span className="text-3xl font-bold">{getText('pricing.plans.enterprise.price', 'Custom')}</span>
                   </div>
                   <CardDescription className="mt-2">
-                    {t('pricing.plans.enterprise.description', 'For large organizations with custom needs')}
+                    {getText('pricing.plans.enterprise.description', 'For large organizations with custom needs')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -184,7 +220,7 @@ const Pricing = () => {
                 </CardContent>
                 <CardFooter>
                   <Button className="w-full" variant="outline" asChild>
-                    <Link to="/contact-sales">{t('pricing.cta.contactSales', 'Contact Sales')}</Link>
+                    <Link to="/contact-sales">{getText('pricing.cta.contactSales', 'Contact Sales')}</Link>
                   </Button>
                 </CardFooter>
               </Card>
@@ -196,15 +232,15 @@ const Pricing = () => {
               {/* Starter Plan Annual */}
               <Card className="border">
                 <CardHeader>
-                  <CardTitle>{t('pricing.plans.starter.title', 'Starter')}</CardTitle>
+                  <CardTitle>{getText('pricing.plans.starter.title', 'Starter')}</CardTitle>
                   <div className="mt-4">
-                    <span className="text-3xl font-bold">{t('pricing.plans.starter.priceAnnual', '$23')}</span>
+                    <span className="text-3xl font-bold">{getText('pricing.plans.starter.priceAnnual', '$23')}</span>
                     <span className="text-muted-foreground ml-1">/month</span>
                   </div>
                   <CardDescription className="mt-2">
-                    {t('pricing.plans.starter.description', 'For small teams and projects')}
+                    {getText('pricing.plans.starter.description', 'For small teams and projects')}
                     <div className="text-primary font-medium mt-1">
-                      {t('pricing.plans.starter.annualBilling', 'Billed annually ($276)')}
+                      {getText('pricing.plans.starter.annualBilling', 'Billed annually ($276)')}
                     </div>
                   </CardDescription>
                 </CardHeader>
@@ -219,7 +255,7 @@ const Pricing = () => {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full">{t('pricing.cta.getStarted', 'Get Started')}</Button>
+                  <Button className="w-full">{getText('pricing.cta.getStarted', 'Get Started')}</Button>
                 </CardFooter>
               </Card>
 
@@ -227,17 +263,17 @@ const Pricing = () => {
               <Card className="border border-primary bg-primary/5">
                 <CardHeader>
                   <div className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full w-fit mb-2">
-                    {t('pricing.plans.professional.popular', 'Most Popular')}
+                    {getText('pricing.plans.professional.popular', 'Most Popular')}
                   </div>
-                  <CardTitle>{t('pricing.plans.professional.title', 'Professional')}</CardTitle>
+                  <CardTitle>{getText('pricing.plans.professional.title', 'Professional')}</CardTitle>
                   <div className="mt-4">
-                    <span className="text-3xl font-bold">{t('pricing.plans.professional.priceAnnual', '$79')}</span>
+                    <span className="text-3xl font-bold">{getText('pricing.plans.professional.priceAnnual', '$79')}</span>
                     <span className="text-muted-foreground ml-1">/month</span>
                   </div>
                   <CardDescription className="mt-2">
-                    {t('pricing.plans.professional.description', 'For growing organizations')}
+                    {getText('pricing.plans.professional.description', 'For growing organizations')}
                     <div className="text-primary font-medium mt-1">
-                      {t('pricing.plans.professional.annualBilling', 'Billed annually ($948)')}
+                      {getText('pricing.plans.professional.annualBilling', 'Billed annually ($948)')}
                     </div>
                   </CardDescription>
                 </CardHeader>
@@ -252,19 +288,19 @@ const Pricing = () => {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full">{t('pricing.cta.getStarted', 'Get Started')}</Button>
+                  <Button className="w-full">{getText('pricing.cta.getStarted', 'Get Started')}</Button>
                 </CardFooter>
               </Card>
 
               {/* Enterprise Plan Annual */}
               <Card className="border">
                 <CardHeader>
-                  <CardTitle>{t('pricing.plans.enterprise.title', 'Enterprise')}</CardTitle>
+                  <CardTitle>{getText('pricing.plans.enterprise.title', 'Enterprise')}</CardTitle>
                   <div className="mt-4">
-                    <span className="text-3xl font-bold">{t('pricing.plans.enterprise.price', 'Custom')}</span>
+                    <span className="text-3xl font-bold">{getText('pricing.plans.enterprise.price', 'Custom')}</span>
                   </div>
                   <CardDescription className="mt-2">
-                    {t('pricing.plans.enterprise.description', 'For large organizations with custom needs')}
+                    {getText('pricing.plans.enterprise.description', 'For large organizations with custom needs')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -279,7 +315,7 @@ const Pricing = () => {
                 </CardContent>
                 <CardFooter>
                   <Button className="w-full" variant="outline" asChild>
-                    <Link to="/contact-sales">{t('pricing.cta.contactSales', 'Contact Sales')}</Link>
+                    <Link to="/contact-sales">{getText('pricing.cta.contactSales', 'Contact Sales')}</Link>
                   </Button>
                 </CardFooter>
               </Card>
@@ -289,9 +325,9 @@ const Pricing = () => {
       </div>
 
       <div className="mt-16 text-center">
-        <h2 className="text-2xl font-bold mb-2">{t('pricing.faq.title', 'Frequently Asked Questions')}</h2>
+        <h2 className="text-2xl font-bold mb-2">{getText('pricing.faq.title', 'Frequently Asked Questions')}</h2>
         <p className="text-muted-foreground mb-8">
-          {t('pricing.faq.description', 'Got questions? We\'ve got answers.')}
+          {getText('pricing.faq.description', 'Got questions? We\'ve got answers.')}
         </p>
         <div className="grid md:grid-cols-2 gap-6 text-left max-w-4xl mx-auto">
           {getFaqItems('pricing.faq.questions').map((faq, i) => (

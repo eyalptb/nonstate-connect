@@ -6,16 +6,9 @@ import ru from './contactSales/ru';
 const supportedLanguages = ['en', 'ru'];
 
 // Create the translation structure
-const contactSalesTranslations: Record<string, any> = {};
-
-// Add translations for each language
-supportedLanguages.forEach(lang => {
-  // Wrap the translations in a contactSales object
-  contactSalesTranslations[lang] = { 
-    contactSales: lang === 'en' ? en : 
-                 lang === 'ru' ? ru : 
-                 en // fallback to English
-  };
-});
+const contactSalesTranslations: Record<string, any> = {
+  en: { contactSales: en },
+  ru: { contactSales: ru }
+};
 
 export { contactSalesTranslations };
