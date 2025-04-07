@@ -9,6 +9,7 @@ import { featurePageTranslations } from './featurePageTranslations';
 import { useCasesTranslations } from './useCasesTranslations';
 import { learnTranslations } from './learnTranslations';
 import { pricingTranslations } from './pricingTranslations';
+import { contactSalesTranslations } from './contactSalesTranslations';
 
 /**
  * Type for component translation resources
@@ -29,7 +30,8 @@ export const translationResources: TranslationResources = {
   featurePage: featurePageTranslations,
   useCases: useCasesTranslations,
   learn: learnTranslations,
-  pricing: pricingTranslations
+  pricing: pricingTranslations,
+  contactSales: contactSalesTranslations
 };
 
 /**

@@ -16,6 +16,7 @@ import {
   addUseCasesTranslations,
   addLearnTranslations,
   addPricingTranslations,
+  addContactSalesTranslations,
   loadAllWalletTranslations, 
   loadAllFeatureTranslations, 
   loadAllJoinCtaTranslations, 
@@ -25,7 +26,8 @@ import {
   loadAllFeaturePageTranslations,
   loadAllUseCasesTranslations,
   loadAllLearnTranslations,
-  loadAllPricingTranslations
+  loadAllPricingTranslations,
+  loadAllContactSalesTranslations
 } from './translations/componentTranslations';
 
 // Export everything in a single export block
@@ -50,6 +52,7 @@ export {
   addUseCasesTranslations,
   addLearnTranslations,
   addPricingTranslations,
+  addContactSalesTranslations,
   
   // Component-specific load all functions
   loadAllWalletTranslations,
@@ -61,5 +64,6 @@ export {
   loadAllFeaturePageTranslations,
   loadAllUseCasesTranslations,
   loadAllLearnTranslations,
-  loadAllPricingTranslations
+  loadAllPricingTranslations,
+  loadAllContactSalesTranslations
 };

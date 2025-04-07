@@ -12,6 +12,7 @@ import { featurePageTranslations } from './featurePageTranslations';
 import { useCasesTranslations } from './useCasesTranslations';
 import { learnTranslations } from './learnTranslations';
 import { pricingTranslations } from './pricingTranslations';
+import { contactSalesTranslations } from './contactSalesTranslations';
 
 // Helper to get translations with fallback
 const getTranslationsWithFallback = (
@@ -85,3 +86,11 @@ export const addPricingTranslations = (language = i18n.language) => {
 };
 
 export const loadAllPricingTranslations = () => loadTranslations('pricing', { allLanguages: true });
+
+// Contact Sales translations
+export const addContactSalesTranslations = (language = i18n.language) => {
+  const contactSalesData = getTranslationsWithFallback(contactSalesTranslations, language)?.contactSales || {};
+  return addTranslations(language, 'common', { contactSales: contactSalesData });
+};
+
+export const loadAllContactSalesTranslations = () => loadTranslations('contactSales', { allLanguages: true });

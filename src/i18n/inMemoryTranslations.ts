@@ -8,6 +8,7 @@ import { footerTranslations } from '@/utils/translations/footerTranslations';
 import { backendTranslations } from '@/utils/translations/backendTranslations';
 import { learnTranslations } from '@/utils/translations/learnTranslations';
 import { pricingTranslations } from '@/utils/translations/pricingTranslations';
+import { contactSalesTranslations } from '@/utils/translations/contactSalesTranslations';
 
 // Cache successful translations to avoid reprocessing
 const successfullyLoadedTranslations = new Set<string>();
@@ -59,6 +60,10 @@ export const addInMemoryTranslations = (language: string) => {
     // For pricing translations, access the nested pricing property
     const pricingData = pricingTranslations[language]?.pricing || pricingTranslations[fallbackLang]?.pricing;
     safeAddResourceBundle(language, 'common', { pricing: pricingData });
+    
+    // For contactSales translations, access the nested contactSales property
+    const contactSalesData = contactSalesTranslations[language]?.contactSales || contactSalesTranslations[fallbackLang]?.contactSales;
+    safeAddResourceBundle(language, 'common', { contactSales: contactSalesData });
   } catch (error) {
     // Fail silently for stability
   }
