@@ -82,18 +82,25 @@ export const addInMemoryTranslations = (language: string) => {
       console.warn(`[inMemoryTranslations] No contactSales translations found for ${language}, using fallback`);
     }
     
-    // For dashboard translations - priority handling to ensure they're correctly loaded
-    const dashboardData = dashboardTranslations[language]?.dashboard || dashboardTranslations[fallbackLang]?.dashboard;
+    // For dashboard translations - fixed type handling
+    // Get dashboard translations, being more careful with type checking
+    let dashboardData;
+    if (dashboardTranslations[language] && 'dashboard' in dashboardTranslations[language]) {
+      dashboardData = dashboardTranslations[language].dashboard;
+    } else if (dashboardTranslations[fallbackLang] && 'dashboard' in dashboardTranslations[fallbackLang]) {
+      dashboardData = dashboardTranslations[fallbackLang].dashboard;
+    }
+    
     if (dashboardData) {
       console.log(`[inMemoryTranslations] Adding dashboard translations for ${language}:`, dashboardData);
       
-      // Use a more direct approach for dashboard translations to ensure they're properly loaded
+      // Add dashboard translations to the common namespace
       const dashboardResult = safeAddResourceBundle(language, 'common', { dashboard: dashboardData });
       
       if (!dashboardResult) {
         console.warn(`[inMemoryTranslations] Failed to add dashboard translations for ${language}, trying alternative method`);
         
-        // Alternative method - add directly to i18n store
+        // Alternative method - add directly to i18n store as a fallback
         try {
           if (!i18n.store.data[language]) {
             i18n.store.data[language] = {};
@@ -115,9 +122,12 @@ export const addInMemoryTranslations = (language: string) => {
     i18n.reloadResources([language], ['common']).then(() => {
       console.log(`[inMemoryTranslations] Translations reloaded for ${language}`);
       
-      // Verify dashboard translations are loaded
-      const loadedDashboard = i18n.getResourceBundle(language, 'common')?.dashboard;
-      console.log(`[inMemoryTranslations] Dashboard translations after reload:`, loadedDashboard);
+      // Verify dashboard translations are loaded - using optional chaining to avoid type errors
+      const loadedDashboard = i18n.getResourceBundle(language, 'common');
+      console.log(`[inMemoryTranslations] Dashboard translations after reload:`, 
+        loadedDashboard && typeof loadedDashboard === 'object' && 'dashboard' in loadedDashboard 
+          ? loadedDashboard.dashboard 
+          : 'Not found');
       
       // Dispatch a custom event to notify components that translations have been loaded
       document.dispatchEvent(new CustomEvent('i18n-resources-loaded', { 
