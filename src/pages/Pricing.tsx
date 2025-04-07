@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,97 +8,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from '@/i18n';
-import { addPricingTranslations } from "@/utils/translations/componentTranslations";
-import usePricingDebug from "@/hooks/usePricingDebug";
+import { addPricingTranslations } from "@/utils/translationLoader";
 
-// Define feature list types for type safety
-type FeatureList = string[];
-type FaqItem = { question: string; answer: string };
-
+// Using the same approach as Learn component
 const Pricing = () => {
   const { t } = useTranslation(["common"]);
-  const [isTranslationsLoaded, setIsTranslationsLoaded] = useState(false);
-  const [loadAttemptCount, setLoadAttemptCount] = useState(0);
   
-  // Add debugging hook without changing functionality
-  const { debugPricingTranslations } = usePricingDebug();
-  
-  // Load pricing translations when component mounts - only once
+  // Load pricing translations when component mounts
   useEffect(() => {
-    // Strict limit on loading attempts
-    if (loadAttemptCount >= 1) {
-      console.log(`[Pricing] Maximum load attempts reached, using defaults`);
-      return;
-    }
-    
-    if (i18n.language) {
-      console.log(`[Pricing] Loading pricing translations for language: ${i18n.language} (first load)`);
-      
-      // Try to directly add pricing translations - not within an event listener
-      const success = addPricingTranslations(i18n.language);
-      setIsTranslationsLoaded(success);
-      setLoadAttemptCount(1); // Set to 1 to prevent further attempts
-    }
-  }, []); // Empty dependency array - run only once on mount
+    // Add pricing translations without loops or complex handling
+    addPricingTranslations(i18n.language);
+  }, []);
   
-  // Handle language changes only once
-  useEffect(() => {
-    const handleLanguageChange = (event: Event) => {
-      const customEvent = event as CustomEvent;
-      const lang = customEvent?.detail?.language || i18n.language;
-      const source = customEvent?.detail?.source || 'unknown';
-      
-      console.log(`[Pricing] Language changed event detected: ${lang} (source: ${source})`);
-      
-      // Avoid reacting to our own events by checking source
-      if (source === 'pricing') {
-        console.log(`[Pricing] Skipping our own event`);
-        return;
-      }
-      
-      // Strict limit on loading attempts per language change
-      if (loadAttemptCount >= 1) {
-        console.log(`[Pricing] Maximum load attempts reached for language change, using defaults`);
-        return;
-      }
-      
-      // Try to load translations for the new language
-      console.log(`[Pricing] Loading translations for new language: ${lang}`);
-      const success = addPricingTranslations(lang);
-      setIsTranslationsLoaded(success);
-      setLoadAttemptCount(1); // Set to 1 to prevent further attempts
-    };
-    
-    // Listen for language changes
-    document.addEventListener('i18n-resources-loaded', handleLanguageChange);
-    
-    return () => {
-      document.removeEventListener('i18n-resources-loaded', handleLanguageChange);
-    };
-  }, [loadAttemptCount]);
-
-  // Helper function to get features as an array with proper typing
+  // Define feature arrays with type safety
   const getFeatures = (key: string, defaultFeatures: string[]): string[] => {
     try {
       const features = t(key, { defaultValue: defaultFeatures, returnObjects: true });
       return Array.isArray(features) ? features : defaultFeatures;
-    } catch (error) {
+    } catch {
       return defaultFeatures;
     }
   };
 
-  // Helper function to get FAQ items as an array with proper typing
-  const getFaqItems = (key: string, defaultItems: FaqItem[]): FaqItem[] => {
-    try {
-      const items = t(key, { defaultValue: defaultItems, returnObjects: true });
-      return Array.isArray(items) ? items : defaultItems;
-    } catch (error) {
-      return defaultItems;
-    }
-  };
-
-  // Define default feature lists
-  const starterFeatures: FeatureList = [
+  // Default features that match the translations
+  const starterFeatures = [
     "Up to 5 team members", 
     "10 GB secure storage", 
     "Basic encryption", 
@@ -105,7 +39,7 @@ const Pricing = () => {
     "Email support"
   ];
 
-  const professionalFeatures: FeatureList = [
+  const professionalFeatures = [
     "Up to 20 team members", 
     "50 GB secure storage", 
     "Advanced encryption", 
@@ -115,7 +49,7 @@ const Pricing = () => {
     "API access"
   ];
 
-  const enterpriseFeatures: FeatureList = [
+  const enterpriseFeatures = [
     "Unlimited team members", 
     "Custom storage limits", 
     "Advanced security features", 
@@ -125,8 +59,8 @@ const Pricing = () => {
     "Compliance assistance"
   ];
 
-  // Define default FAQ items
-  const defaultFaqItems: FaqItem[] = [
+  // Default FAQ items
+  const defaultFaqItems = [
     {
       question: "Can I switch plans later?",
       answer: "Yes, you can upgrade or downgrade your plan at any time. Changes will take effect at the start of your next billing cycle."
@@ -145,29 +79,21 @@ const Pricing = () => {
     }
   ];
 
-  // Use a stable key to prevent re-renders
-  const stableKey = `pricing-${isTranslationsLoaded ? 'loaded' : 'loading'}-${i18n.language}`;
+  const getFaqItems = (key: string) => {
+    try {
+      const items = t(key, { defaultValue: defaultFaqItems, returnObjects: true });
+      return Array.isArray(items) ? items : defaultFaqItems;
+    } catch {
+      return defaultFaqItems;
+    }
+  };
 
   return (
-    <div className="container mx-auto py-12 px-4" key={stableKey}>
+    <div className="container mx-auto py-12 px-4">
       <PageHeader
         title={t('pricing.title', 'Simple, Transparent Pricing')}
         description={t('pricing.description', 'Choose the plan that\'s right for your organization')}
       />
-
-      {/* Add debug button in development environment */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="mb-4 text-center">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={debugPricingTranslations}
-            className="text-xs"
-          >
-            Debug Translations
-          </Button>
-        </div>
-      )}
 
       <div className="mt-12">
         <Tabs defaultValue="monthly" className="w-full">
@@ -370,7 +296,7 @@ const Pricing = () => {
           {t('pricing.faq.description', 'Got questions? We\'ve got answers.')}
         </p>
         <div className="grid md:grid-cols-2 gap-6 text-left max-w-4xl mx-auto">
-          {getFaqItems('pricing.faq.questions', defaultFaqItems).map((faq, i) => (
+          {getFaqItems('pricing.faq.questions').map((faq, i) => (
             <div key={`faq-${i}-${i18n.language}`} className="space-y-2">
               <h3 className="font-semibold">{faq.question}</h3>
               <p className="text-muted-foreground">{faq.answer}</p>
