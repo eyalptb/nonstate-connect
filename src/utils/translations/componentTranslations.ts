@@ -72,12 +72,12 @@ export const loadAllUseCasesTranslations = () => loadTranslations('useCases', { 
 
 // Learn translations 
 export const addLearnTranslations = (language = i18n.language) => 
-  addTranslations(language, 'common', getTranslationsWithFallback(learnTranslations, language));
+  addTranslations(language, 'common', getTranslationsWithFallback(learnTranslations, language)?.learn || {});
 
 export const loadAllLearnTranslations = () => loadTranslations('learn', { allLanguages: true });
 
 // Pricing translations
 export const addPricingTranslations = (language = i18n.language) => 
-  addTranslations(language, 'common', getTranslationsWithFallback(pricingTranslations, language));
+  addTranslations(language, 'common', getTranslationsWithFallback(pricingTranslations, language)?.pricing || {});
 
 export const loadAllPricingTranslations = () => loadTranslations('pricing', { allLanguages: true });

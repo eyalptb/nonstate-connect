@@ -51,8 +51,8 @@ export const addInMemoryTranslations = (language: string) => {
     safeAddResourceBundle(language, 'common', projectTranslations[language] || projectTranslations[fallbackLang]);
     safeAddResourceBundle(language, 'common', footerTranslations[language] || footerTranslations[fallbackLang]);
     safeAddResourceBundle(language, 'common', backendTranslations[language] || backendTranslations[fallbackLang]);
-    safeAddResourceBundle(language, 'common', learnTranslations[language] || learnTranslations[fallbackLang]);
-    safeAddResourceBundle(language, 'common', pricingTranslations[language] || pricingTranslations[fallbackLang]);
+    safeAddResourceBundle(language, 'common', learnTranslations[language]?.learn || learnTranslations[fallbackLang]?.learn);
+    safeAddResourceBundle(language, 'common', pricingTranslations[language]?.pricing || pricingTranslations[fallbackLang]?.pricing);
   } catch (error) {
     // Fail silently for stability
   }

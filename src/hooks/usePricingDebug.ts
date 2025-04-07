@@ -33,7 +33,7 @@ export const usePricingDebug = () => {
       console.log(`[PricingDebug] Current language: ${language}`);
       console.log(`[PricingDebug] Loaded namespaces: ${loadedNamespaces.join(', ')}`);
       
-      // NEW: Check if pricingTranslations contain data for current language
+      // Check if pricingTranslations contain data for current language
       console.log(`[PricingDebug] pricingTranslations has data for ${i18n.language}: ${!!pricingTranslations[i18n.language]}`);
       if (pricingTranslations[i18n.language]) {
         console.log(`[PricingDebug] pricingTranslations for ${i18n.language} structure:`, 
@@ -43,7 +43,7 @@ export const usePricingDebug = () => {
       // Check if translations were added in inMemoryTranslations.ts
       console.log(`[PricingDebug] Checking if pricing was added during initialization:`);
       const initialBundle = i18n.getResourceBundle(i18n.language, 'common');
-      console.log(`[PricingDebug] Initial bundle has pricing key: ${!!initialBundle?.pricing}`);
+      console.log(`[PricingDebug] Initial bundle has pricing directly: ${!!initialBundle?.pricing}`);
       
       // Check top-level pricing keys
       const topKeys = ['pricing.title', 'pricing.description', 'pricing.tabMonthly', 'pricing.tabAnnually'];
@@ -70,21 +70,7 @@ export const usePricingDebug = () => {
       // Check feature arrays specifically
       console.log('[PricingDebug] Testing feature arrays:');
       
-      // NEW: Directly check pricing translations in source
-      console.log('[PricingDebug] Direct check of source translations:');
-      const currentLang = i18n.language;
-      if (pricingTranslations[currentLang]?.pricing?.features) {
-        console.log(`[PricingDebug] Source pricing.features for ${currentLang} exists:`, 
-          pricingTranslations[currentLang].pricing.features);
-        
-        if (pricingTranslations[currentLang].pricing.features.starter) {
-          console.log(`[PricingDebug] Source starter features for ${currentLang}:`, 
-            pricingTranslations[currentLang].pricing.features.starter);
-          console.log(`[PricingDebug] Is source array? ${Array.isArray(pricingTranslations[currentLang].pricing.features.starter)}`);
-        }
-      }
-      
-      // Get raw feature arrays
+      // Get raw resources to check structure
       try {
         const rawResources = i18n.getResourceBundle(i18n.language, 'common');
         console.log('[PricingDebug] Raw resources:', rawResources);
@@ -131,7 +117,7 @@ export const usePricingDebug = () => {
         console.error('[PricingDebug] Error testing direct i18n.t for features:', error);
       }
       
-      // NEW: Test flattened keys to see if that's the issue
+      // Test flattened keys to see if that's the issue
       console.log('[PricingDebug] Testing flattened keys:');
       try {
         // Try with full flattened keys
@@ -153,16 +139,13 @@ export const usePricingDebug = () => {
         const reloadedResources = i18n.getResourceBundle(i18n.language, 'common');
         console.log('[PricingDebug] Resources after forced reload:', reloadedResources?.pricing ? 'Has pricing data' : 'No pricing data');
         
-        // Track if pricingTranslations were loaded
-        const isPricingLoaded = reloadedResources?.pricing && Object.keys(reloadedResources.pricing).length > 0;
-        
         // Compare what's loaded with what should be loaded
-        if (isPricingLoaded && pricingTranslations[i18n.language]) {
+        if (pricingTranslations[i18n.language]) {
           console.log('[PricingDebug] Comparing loaded translations with source:');
           
           // Compare top level keys
-          const loadedKeys = Object.keys(reloadedResources.pricing);
-          const sourceKeys = Object.keys(pricingTranslations[i18n.language].pricing);
+          const loadedKeys = Object.keys(reloadedResources?.pricing || {});
+          const sourceKeys = Object.keys(pricingTranslations[i18n.language]?.pricing || {});
           
           console.log(`[PricingDebug] Loaded pricing keys: ${loadedKeys.join(', ')}`);
           console.log(`[PricingDebug] Source pricing keys: ${sourceKeys.join(', ')}`);
@@ -173,6 +156,9 @@ export const usePricingDebug = () => {
             console.error(`[PricingDebug] Missing keys in loaded translations: ${missingKeys.join(', ')}`);
           }
         }
+        
+        // Determine if pricing translations are loaded
+        const isPricingLoaded = reloadedResources?.pricing && Object.keys(reloadedResources.pricing).length > 0;
         
         toast({
           title: "Debug info",
@@ -238,17 +224,12 @@ export const usePricingDebug = () => {
         }
       }
       
-      // NEW: Check if pricing translations are correctly defined in source files
+      // Check if pricing translations are correctly defined in source files
       console.log('[PricingDebug] Checking pricing translations source:');
       const currentLang = i18n.language;
       if (pricingTranslations[currentLang]) {
         console.log(`[PricingDebug] pricingTranslations for ${currentLang} exists`);
         console.log(`[PricingDebug] Structure:`, Object.keys(pricingTranslations[currentLang]));
-        
-        if (pricingTranslations[currentLang].pricing) {
-          console.log(`[PricingDebug] pricing key exists with keys:`, 
-            Object.keys(pricingTranslations[currentLang].pricing));
-        }
       } else {
         console.error(`[PricingDebug] No pricingTranslations found for ${currentLang}`);
       }

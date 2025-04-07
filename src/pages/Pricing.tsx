@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
-import { addPricingTranslations } from "@/utils/translationLoader";
+import { addPricingTranslations } from "@/utils/translations/componentTranslations";
 import i18n from '@/i18n';
 
 const Pricing = () => {

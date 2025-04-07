@@ -1,6 +1,6 @@
 
 import i18n from 'i18next';
-import { addInMemoryTranslations, addLearnTranslations } from './inMemoryTranslations';
+import { addInMemoryTranslations } from './inMemoryTranslations';
 
 /**
  * Utility to reload translations for a specific language
@@ -17,13 +17,11 @@ export const reloadTranslations = async (language: string) => {
     
     // Verify translations were added correctly
     const resources = i18n.getResourceBundle(language, 'common');
-    const hasLearnTranslations = resources && 
-      resources.learn && 
-      Object.keys(resources.learn).length > 0;
+    const hasTranslations = resources && Object.keys(resources).length > 0;
     
-    if (!hasLearnTranslations) {
-      console.warn(`[i18n] Learn translations missing after reload, adding them explicitly`);
-      addLearnTranslations(language);
+    if (!hasTranslations) {
+      console.warn(`[i18n] Translations missing after reload, adding them explicitly`);
+      addInMemoryTranslations(language);
     }
     
     // Notify listeners
