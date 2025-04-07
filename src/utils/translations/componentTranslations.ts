@@ -13,6 +13,7 @@ import { useCasesTranslations } from './useCasesTranslations';
 import { learnTranslations } from './learnTranslations';
 import { pricingTranslations } from './pricingTranslations';
 import { contactSalesTranslations, supportedLanguages } from './contactSalesTranslations';
+import { dashboardTranslations } from './dashboardTranslations';
 
 // Helper to get translations with fallback
 const getTranslationsWithFallback = (
@@ -129,6 +130,53 @@ export const loadAllContactSalesTranslations = () => {
   // Dispatch an event to notify that translations have been loaded
   document.dispatchEvent(new CustomEvent('i18n-resources-loaded', { 
     detail: { component: 'contactSales' } 
+  }));
+  
+  return true;
+};
+
+// Dashboard translations
+export const addDashboardTranslations = (language = i18n.language) => {
+  console.log(`Adding dashboard translations for ${language}`);
+  
+  // Get the translation data with proper fallback
+  const dashboardData = getTranslationsWithFallback(dashboardTranslations, language);
+  
+  if (!dashboardData || !dashboardData.dashboard) {
+    console.error(`No dashboard data found for ${language}`);
+    return false;
+  }
+  
+  // Add the translations to the i18n instance
+  const result = addTranslations(language, 'common', { dashboard: dashboardData.dashboard });
+  
+  // Force update resources to ensure they're loaded
+  if (result) {
+    i18n.reloadResources(language, ['common']);
+  }
+  
+  return result;
+};
+
+export const loadAllDashboardTranslations = () => {
+  console.log('Loading all Dashboard translations');
+  
+  // First add the translations for the current language to ensure immediate visibility
+  addDashboardTranslations(i18n.language);
+  
+  // Then add translations for all supported languages
+  supportedLanguages.forEach(lang => {
+    if (lang !== i18n.language) {
+      addDashboardTranslations(lang);
+    }
+  });
+  
+  // Force a reload of the current language's resources
+  i18n.reloadResources(i18n.language, ['common']);
+  
+  // Dispatch an event to notify that translations have been loaded
+  document.dispatchEvent(new CustomEvent('i18n-resources-loaded', { 
+    detail: { component: 'dashboard' } 
   }));
   
   return true;

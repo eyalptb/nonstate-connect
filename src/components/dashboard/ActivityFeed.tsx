@@ -5,6 +5,7 @@ import { Activity } from '@/types/activity';
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { ArrowUpRight, MessageSquare, Vote, Users } from 'lucide-react';
+import useTranslationHelper from '@/hooks/useTranslationHelper';
 
 interface ActivityFeedProps {
   activities: Activity[];
@@ -12,7 +13,8 @@ interface ActivityFeedProps {
 }
 
 export function ActivityFeed({ activities, maxItems = 5 }: ActivityFeedProps) {
-  const { t, i18n } = useTranslation(['common']);
+  const { i18n } = useTranslation();
+  const { getText } = useTranslationHelper();
   
   // Take only the most recent activities up to maxItems
   const recentActivities = activities.slice(0, maxItems);
@@ -33,24 +35,27 @@ export function ActivityFeed({ activities, maxItems = 5 }: ActivityFeedProps) {
   };
 
   const getActivityTitle = (activity: Activity) => {
+    const key = `dashboard.activity.types.${activity.type}`;
+    const defaultText = `Activity on ${activity.target.name}`;
+    
     switch (activity.type) {
       case 'proposal_voted':
-        return `Voted on ${activity.target.name}`;
+        return getText(key, 'Voted on {{name}}').replace('{{name}}', activity.target.name);
       case 'task_completed':
-        return `Completed ${activity.target.name}`;
+        return getText(key, 'Completed {{name}}').replace('{{name}}', activity.target.name);
       case 'message_received':
-        return `New message in ${activity.target.name}`;
+        return getText(key, 'New message in {{name}}').replace('{{name}}', activity.target.name);
       case 'project_joined':
-        return `Joined ${activity.target.name}`;
+        return getText(key, 'Joined {{name}}').replace('{{name}}', activity.target.name);
       default:
-        return `Activity on ${activity.target.name}`;
+        return defaultText;
     }
   };
 
   return (
     <Card className="h-full">
       <CardHeader className="pb-3">
-        <CardTitle>Recent Activity</CardTitle>
+        <CardTitle>{getText('dashboard.activity.recentTitle', 'Recent Activity')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {recentActivities.length > 0 ? (
@@ -68,12 +73,12 @@ export function ActivityFeed({ activities, maxItems = 5 }: ActivityFeedProps) {
             </div>
           ))
         ) : (
-          <p className="text-sm text-muted-foreground">No recent activity</p>
+          <p className="text-sm text-muted-foreground">{getText('dashboard.activity.noActivity', 'No recent activity')}</p>
         )}
         
         {activities.length > maxItems && (
           <button className="text-xs text-primary hover:underline w-full text-center mt-2">
-            View all activity
+            {getText('dashboard.activity.viewAll', 'View all activity')}
           </button>
         )}
       </CardContent>

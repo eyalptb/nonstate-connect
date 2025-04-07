@@ -9,6 +9,7 @@ import { backendTranslations } from '@/utils/translations/backendTranslations';
 import { learnTranslations } from '@/utils/translations/learnTranslations';
 import { pricingTranslations } from '@/utils/translations/pricingTranslations';
 import { contactSalesTranslations } from '@/utils/translations/contactSalesTranslations';
+import { dashboardTranslations } from '@/utils/translations/dashboardTranslations';
 
 // Cache successful translations to avoid reprocessing
 const successfullyLoadedTranslations = new Set<string>();
@@ -81,6 +82,15 @@ export const addInMemoryTranslations = (language: string) => {
       safeAddResourceBundle(language, 'common', { contactSales: contactSalesData });
     } else {
       console.warn(`[inMemoryTranslations] No contactSales translations found for ${language}, using fallback`);
+    }
+    
+    // For dashboard translations, ensure we have them for all languages with fallback
+    const dashboardData = dashboardTranslations[language]?.dashboard || dashboardTranslations[fallbackLang]?.dashboard;
+    if (dashboardData) {
+      console.log(`[inMemoryTranslations] Adding dashboard translations for ${language}`);
+      safeAddResourceBundle(language, 'common', { dashboard: dashboardData });
+    } else {
+      console.warn(`[inMemoryTranslations] No dashboard translations found for ${language}, using fallback`);
     }
     
     // Force reload resources to ensure translations are immediately available

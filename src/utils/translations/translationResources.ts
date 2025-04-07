@@ -10,6 +10,7 @@ import { useCasesTranslations } from './useCasesTranslations';
 import { learnTranslations } from './learnTranslations';
 import { pricingTranslations } from './pricingTranslations';
 import { contactSalesTranslations } from './contactSalesTranslations';
+import { dashboardTranslations } from './dashboardTranslations';
 
 /**
  * Type for component translation resources
@@ -31,7 +32,8 @@ export const translationResources: TranslationResources = {
   useCases: useCasesTranslations,
   learn: learnTranslations,
   pricing: pricingTranslations,
-  contactSales: contactSalesTranslations
+  contactSales: contactSalesTranslations,
+  dashboard: dashboardTranslations
 };
 
 /**
