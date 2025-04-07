@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import i18n from '@/i18n';
 import PricingTranslationLoader from "@/components/pricing/PricingTranslationLoader";
@@ -7,6 +7,7 @@ import PricingHeader from "@/components/pricing/PricingHeader";
 import PricingPlans from "@/components/pricing/PricingPlans";
 import PricingFAQ from "@/components/pricing/PricingFAQ";
 import useTranslationHelper from "@/hooks/useTranslationHelper";
+import { toast } from "@/components/ui/use-toast";
 
 const Pricing = () => {
   const { t } = useTranslation();
@@ -61,6 +62,33 @@ const Pricing = () => {
       answer: "Absolutely. We use end-to-end encryption and follow industry best practices for data security and privacy."
     }
   ];
+
+  // Debug translations when loaded
+  useEffect(() => {
+    if (translationsLoaded) {
+      console.log(`Pricing translations loaded for ${i18n.language}`);
+      
+      // Check if translations actually loaded
+      const resources = i18n.getResourceBundle(i18n.language, 'common');
+      const hasPricingTranslations = resources && resources.pricing;
+      
+      if (!hasPricingTranslations) {
+        console.error(`No pricing translations found for ${i18n.language} after loading`);
+        toast({
+          title: "Translation Issue",
+          description: `Could not load pricing translations for ${i18n.language}. Using English as fallback.`,
+          variant: "destructive"
+        });
+      } else {
+        console.log(`Successfully loaded pricing translations for ${i18n.language}`);
+      }
+    }
+  }, [translationsLoaded]);
+  
+  // Log current language
+  useEffect(() => {
+    console.log(`Current language in Pricing component: ${i18n.language}`);
+  }, [i18n.language]);
 
   return (
     <div className="container mx-auto py-12 px-4">
