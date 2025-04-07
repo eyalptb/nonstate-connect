@@ -1,5 +1,5 @@
 
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -24,6 +24,11 @@ export const ResourceCard = memo(({
   id
 }: ResourceCardProps) => {
   const { i18n } = useTranslation();
+  
+  // Log when this component renders to help with debugging
+  useEffect(() => {
+    console.log(`[ResourceCard] Rendering card with ID ${id} in language ${i18n.language}`);
+  }, [id, i18n.language]);
   
   // Create a unique key for this card that changes with language
   const cardKey = `resource-card-${id}-${i18n.language}`;

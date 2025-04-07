@@ -1,11 +1,28 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { BookOpen } from "lucide-react";
 import { ResourceCard } from "./ResourceCard";
+import { addLearnTranslationsDirectly } from "@/utils/translations/learnTranslations";
 
 export const GuidesList = () => {
   const { t, i18n } = useTranslation(['common']);
+  
+  // Ensure translations are loaded
+  useEffect(() => {
+    // Check if guide translations exist
+    const resources = i18n.getResourceBundle(i18n.language, 'common');
+    const hasGuides = resources && resources.learn && resources.learn.guides;
+    
+    if (!hasGuides) {
+      console.log(`[GuidesList] Guide translations missing, adding them for ${i18n.language}`);
+      addLearnTranslationsDirectly(i18n.language);
+      
+      // Check for specific keys
+      const hasGettingStarted = i18n.exists('learn.guides.gettingStarted.title', { ns: 'common' });
+      console.log(`[GuidesList] After adding, getting started exists: ${hasGettingStarted}`);
+    }
+  }, [i18n.language]);
 
   // Create guides array with unique IDs for each guide
   const guides = [
@@ -37,6 +54,10 @@ export const GuidesList = () => {
 
   // Create a unique key for this list that changes with language
   const listKey = `guides-list-${i18n.language}`;
+
+  // Log what's being rendered for debugging
+  console.log(`[GuidesList] Rendering guides in ${i18n.language}:`, 
+    guides.map(g => ({ id: g.id, title: g.title })));
 
   return (
     <div key={listKey}>

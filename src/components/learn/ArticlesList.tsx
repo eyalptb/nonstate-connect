@@ -1,11 +1,24 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { FileText } from "lucide-react";
 import { ResourceCard } from "./ResourceCard";
+import { addLearnTranslationsDirectly } from "@/utils/translations/learnTranslations";
 
 export const ArticlesList = () => {
   const { t, i18n } = useTranslation(['common']);
+  
+  // Ensure translations are loaded
+  useEffect(() => {
+    // Check if article translations exist
+    const resources = i18n.getResourceBundle(i18n.language, 'common');
+    const hasArticles = resources && resources.learn && resources.learn.articles;
+    
+    if (!hasArticles) {
+      console.log(`[ArticlesList] Article translations missing, adding them for ${i18n.language}`);
+      addLearnTranslationsDirectly(i18n.language);
+    }
+  }, [i18n.language]);
   
   const articles = [
     {
@@ -36,6 +49,10 @@ export const ArticlesList = () => {
 
   // Create a unique key for this list that changes with language
   const listKey = `articles-list-${i18n.language}`;
+
+  // Log what's being rendered for debugging
+  console.log(`[ArticlesList] Rendering articles in ${i18n.language}:`, 
+    articles.map(a => ({ id: a.id, title: a.title })));
 
   return (
     <div key={listKey}>

@@ -1,11 +1,24 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Video } from "lucide-react";
 import { ResourceCard } from "./ResourceCard";
+import { addLearnTranslationsDirectly } from "@/utils/translations/learnTranslations";
 
 export const VideosList = () => {
   const { t, i18n } = useTranslation(['common']);
+  
+  // Ensure translations are loaded
+  useEffect(() => {
+    // Check if video translations exist
+    const resources = i18n.getResourceBundle(i18n.language, 'common');
+    const hasVideos = resources && resources.learn && resources.learn.videos;
+    
+    if (!hasVideos) {
+      console.log(`[VideosList] Video translations missing, adding them for ${i18n.language}`);
+      addLearnTranslationsDirectly(i18n.language);
+    }
+  }, [i18n.language]);
 
   const videos = [
     {
@@ -36,6 +49,10 @@ export const VideosList = () => {
 
   // Create a unique key for this list that changes with language
   const listKey = `videos-list-${i18n.language}`;
+
+  // Log what's being rendered for debugging
+  console.log(`[VideosList] Rendering videos in ${i18n.language}:`, 
+    videos.map(v => ({ id: v.id, title: v.title })));
 
   return (
     <div key={listKey}>

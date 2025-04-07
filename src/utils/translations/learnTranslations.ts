@@ -10,6 +10,9 @@ export const addLearnTranslationsDirectly = (language: string) => {
     // Add the translations to the common namespace
     i18n.addResourceBundle(language, 'common', importedLearnTranslations[language], true, true);
     
+    // Force a reload of resources to ensure they're available
+    i18n.reloadResources([language], ['common']);
+    
     // Verify the translations were added correctly
     const bundle = i18n.getResourceBundle(language, 'common');
     const hasLearnSection = bundle && bundle.learn && Object.keys(bundle.learn).length > 0;
@@ -18,6 +21,8 @@ export const addLearnTranslationsDirectly = (language: string) => {
     
     if (hasLearnSection) {
       console.log(`[learnTranslations.ts] Found ${Object.keys(bundle.learn).length} keys in learn section`);
+    } else {
+      console.error(`[learnTranslations.ts] FAILED to add learn translations for ${language}`);
     }
     
     return hasLearnSection;
@@ -30,9 +35,24 @@ export const forceAddAllLearnTranslations = () => {
   const languages = Object.keys(importedLearnTranslations);
   console.log(`[learnTranslations.ts] Force adding learn translations for all languages: ${languages.join(', ')}`);
   
+  let allSuccess = true;
   for (const lang of languages) {
-    addLearnTranslationsDirectly(lang);
+    const success = addLearnTranslationsDirectly(lang);
+    if (!success) {
+      console.error(`[learnTranslations.ts] Failed to add translations for ${lang}`);
+      allSuccess = false;
+    }
   }
+  
+  // Ensure resources are reloaded after adding all translations
+  i18n.reloadResources();
+  
+  return allSuccess;
+};
+
+// Add a new function to get the translations for debugging
+export const getLearnTranslationForLanguage = (language: string) => {
+  return importedLearnTranslations[language] || null;
 };
 
 export const learnTranslations = importedLearnTranslations;
