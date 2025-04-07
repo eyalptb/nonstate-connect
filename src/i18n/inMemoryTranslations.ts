@@ -11,7 +11,10 @@ import { pricingTranslations } from '@/utils/translations/pricingTranslations';
 
 // Track which translations have already been processed to prevent infinite loops
 const processedTranslations = new Set<string>();
-const MAX_PROCESSING_TIME_MS = 3000; // 3 seconds max processing time
+const MAX_PROCESSING_TIME_MS = 60000; // 60 seconds max processing time before allowing retry
+
+// Cache successful translations to avoid reprocessing
+const successfullyLoadedTranslations = new Set<string>();
 
 /**
  * Safely adds a resource bundle with error handling
@@ -20,23 +23,43 @@ const safeAddResourceBundle = (language: string, namespace: string, resources: a
   try {
     if (!resources) {
       console.warn(`[i18n] No resources to add for ${language}/${namespace}`);
-      return;
+      return false;
     }
+    
+    // Skip adding if already added
+    const resourceKey = `${language}:${namespace}:${Object.keys(resources).join(',')}`;
+    if (successfullyLoadedTranslations.has(resourceKey)) {
+      console.log(`[i18n] Resources for ${language}/${namespace} already added, skipping`);
+      return true;
+    }
+    
     i18n.addResourceBundle(language, namespace, resources, deep, true);
+    
+    // Verify resources were added
+    const addedBundle = i18n.getResourceBundle(language, namespace);
+    const success = !!addedBundle;
+    
+    if (success) {
+      // Mark as successfully loaded to avoid duplicate loading
+      successfullyLoadedTranslations.add(resourceKey);
+    }
+    
+    return success;
   } catch (error) {
     console.error(`[i18n] Error adding resource bundle for ${language}/${namespace}:`, error);
+    return false;
   }
 };
 
 /**
- * Adds in-memory translations for the specified language
+ * Adds in-memory translations for the specified language with improved loop prevention
  */
 export const addInMemoryTranslations = (language: string) => {
   const key = `inmemory_${language}`;
   
   // Check if we've already processed this language recently to prevent loops
   if (processedTranslations.has(key)) {
-    console.log(`[i18n] Already added in-memory translations for ${language}, skipping to prevent loops`);
+    console.log(`[i18n] Already processing in-memory translations for ${language}, skipping to prevent loops`);
     return;
   }
   
@@ -61,14 +84,19 @@ export const addInMemoryTranslations = (language: string) => {
       { name: 'pricing', data: pricingTranslations[language] || pricingTranslations[fallbackLang] }
     ];
     
-    // Add each translation set safely
-    translationSets.forEach(set => {
-      if (set.data) {
-        safeAddResourceBundle(language, 'common', set.data);
+    // Add each translation set safely - wrap in try/catch for each one
+    for (const set of translationSets) {
+      try {
+        if (set.data) {
+          safeAddResourceBundle(language, 'common', set.data);
+        }
+      } catch (innerError) {
+        console.error(`[i18n] Error adding ${set.name} translations:`, innerError);
+        // Continue with next set instead of failing completely
       }
-    });
+    }
     
-    // Allow this language to be processed again after a delay
+    // Hard timeout to allow retry after a while
     setTimeout(() => {
       processedTranslations.delete(key);
     }, MAX_PROCESSING_TIME_MS);
@@ -81,67 +109,48 @@ export const addInMemoryTranslations = (language: string) => {
 };
 
 /**
- * Adds learn translations with fallback to English if needed
+ * Adds specified translations for a component with improved error handling
  */
-export const addLearnTranslations = (language: string) => {
-  const key = `learn_${language}`;
+const addComponentTranslations = (language: string, componentName: string, translations: any) => {
+  const key = `${componentName}_${language}`;
   
-  // Check if we've already processed this translation
+  // Check if we're already processing this
   if (processedTranslations.has(key)) {
-    console.log(`[i18n] Already added learn translations for ${language}, skipping to prevent loops`);
-    return;
+    console.log(`[i18n] Already processing ${componentName} translations for ${language}, skipping`);
+    return false;
   }
   
-  // Mark as processed
+  // Mark as being processed
   processedTranslations.add(key);
   
   try {
-    // Simplified logic - just add the translations directly
-    const translations = learnTranslations[language] || learnTranslations['en'];
-    if (translations) {
-      safeAddResourceBundle(language, 'common', translations);
-    }
+    const success = safeAddResourceBundle(language, 'common', translations);
     
-    // Allow processing again after delay
+    // Allow retry after timeout
     setTimeout(() => {
       processedTranslations.delete(key);
     }, MAX_PROCESSING_TIME_MS);
+    
+    return success;
   } catch (error) {
-    console.error(`[i18n] Error adding learn translations:`, error);
+    console.error(`[i18n] Error adding ${componentName} translations:`, error);
     processedTranslations.delete(key);
+    return false;
   }
+};
+
+/**
+ * Adds learn translations with fallback to English if needed
+ */
+export const addLearnTranslations = (language: string) => {
+  const translations = learnTranslations[language] || learnTranslations['en'];
+  return addComponentTranslations(language, 'learn', translations);
 };
 
 /**
  * Adds pricing translations with fallback to English if needed
  */
 export const addPricingTranslations = (language: string) => {
-  const key = `pricing_${language}`;
-  
-  // Check if we've already processed this translation
-  if (processedTranslations.has(key)) {
-    console.log(`[i18n] Already added pricing translations for ${language}, skipping to prevent loops`);
-    return;
-  }
-  
-  // Mark as processed
-  processedTranslations.add(key);
-  
-  try {
-    console.log(`[i18n] Adding pricing translations for ${language}`);
-    
-    // Simplified logic - just add the translations directly
-    const translations = pricingTranslations[language] || pricingTranslations['en'];
-    if (translations) {
-      safeAddResourceBundle(language, 'common', translations);
-    }
-    
-    // Allow processing again after delay
-    setTimeout(() => {
-      processedTranslations.delete(key);
-    }, MAX_PROCESSING_TIME_MS);
-  } catch (error) {
-    console.error(`[i18n] Error adding pricing translations:`, error);
-    processedTranslations.delete(key);
-  }
+  const translations = pricingTranslations[language] || pricingTranslations['en'];
+  return addComponentTranslations(language, 'pricing', translations);
 };

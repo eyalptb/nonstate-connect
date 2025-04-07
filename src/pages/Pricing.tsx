@@ -22,29 +22,50 @@ const Pricing = () => {
   // Add debugging hook without changing functionality
   const { debugPricingTranslations } = usePricingDebug();
   
-  // Load pricing translations when component mounts or language changes
+  // Load pricing translations when component mounts - only once
   useEffect(() => {
-    // Prevent too many loading attempts - maximum of 2 attempts per render
-    if (loadAttemptCount >= 2) {
-      console.log(`[Pricing] Maximum load attempts (${loadAttemptCount}) reached, using defaults`);
+    // Strict limit on loading attempts
+    if (loadAttemptCount >= 1) {
+      console.log(`[Pricing] Maximum load attempts reached, using defaults`);
       return;
     }
     
     if (i18n.language) {
-      console.log(`[Pricing] Loading pricing translations for language: ${i18n.language} (attempt ${loadAttemptCount + 1})`);
+      console.log(`[Pricing] Loading pricing translations for language: ${i18n.language} (first load)`);
       
-      // Try to directly add pricing translations
+      // Try to directly add pricing translations - not within an event listener
       const success = addPricingTranslations(i18n.language);
       setIsTranslationsLoaded(success);
-      setLoadAttemptCount(prev => prev + 1);
+      setLoadAttemptCount(1); // Set to 1 to prevent further attempts
     }
-  }, [i18n.language, loadAttemptCount]);
-
-  // Reset loading state when language changes
+  }, []); // Empty dependency array - run only once on mount
+  
+  // Handle language changes only once
   useEffect(() => {
-    const handleLanguageChange = () => {
-      setIsTranslationsLoaded(false);
-      setLoadAttemptCount(0);
+    const handleLanguageChange = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const lang = customEvent?.detail?.language || i18n.language;
+      const source = customEvent?.detail?.source || 'unknown';
+      
+      console.log(`[Pricing] Language changed event detected: ${lang} (source: ${source})`);
+      
+      // Avoid reacting to our own events by checking source
+      if (source === 'pricing') {
+        console.log(`[Pricing] Skipping our own event`);
+        return;
+      }
+      
+      // Strict limit on loading attempts per language change
+      if (loadAttemptCount >= 1) {
+        console.log(`[Pricing] Maximum load attempts reached for language change, using defaults`);
+        return;
+      }
+      
+      // Try to load translations for the new language
+      console.log(`[Pricing] Loading translations for new language: ${lang}`);
+      const success = addPricingTranslations(lang);
+      setIsTranslationsLoaded(success);
+      setLoadAttemptCount(1); // Set to 1 to prevent further attempts
     };
     
     // Listen for language changes
@@ -53,7 +74,7 @@ const Pricing = () => {
     return () => {
       document.removeEventListener('i18n-resources-loaded', handleLanguageChange);
     };
-  }, []);
+  }, [loadAttemptCount]);
 
   // Helper function to get features as an array with proper typing
   const getFeatures = (key: string, defaultFeatures: string[]): string[] => {
@@ -124,8 +145,8 @@ const Pricing = () => {
     }
   ];
 
-  // Use a stable key to prevent re-renders that could trigger more translation loading
-  const stableKey = `pricing-${i18n.language}`;
+  // Use a stable key to prevent re-renders
+  const stableKey = `pricing-${isTranslationsLoaded ? 'loaded' : 'loading'}-${i18n.language}`;
 
   return (
     <div className="container mx-auto py-12 px-4" key={stableKey}>
