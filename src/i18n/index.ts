@@ -1,4 +1,3 @@
-
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import HttpBackend from 'i18next-http-backend';
@@ -43,21 +42,10 @@ const addInMemoryTranslations = (language: string) => {
     i18n.addResourceBundle(language, 'common', backendTranslations[language], true, true);
   }
   
-  // Add Learn translations - with forced debug
+  // Add Learn translations directly from the module
   if (learnTranslations[language]) {
     console.log(`Adding learn translations for ${language} during initialization`);
-    
-    // CRITICAL: We need to add the translations in the exact format expected by i18next
-    const success = i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
-    console.log(`Learn translations add result: ${success ? 'Success' : 'Failed'}`);
-    
-    // Verify the translations were added
-    const bundle = i18n.getResourceBundle(language, 'common');
-    console.log(`Resource bundle after adding learn translations:`, 
-      bundle && bundle.learn ? 'Has learn section' : 'Missing learn section');
-  } else if (learnTranslations['en']) {
-    console.log(`No learn translations for ${language}, adding English as fallback`);
-    i18n.addResourceBundle(language, 'common', learnTranslations['en'], true, true);
+    i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
   }
 };
 

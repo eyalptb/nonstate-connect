@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { useTranslation } from "react-i18next";
 import { LearnTabs } from "@/components/learn/LearnTabs";
@@ -10,29 +10,22 @@ import { learnTranslations } from "@/utils/translations/learn/index";
 
 const Learn = () => {
   const { t, i18n } = useTranslation(['common']);
-  const [translationsLoaded, setTranslationsLoaded] = useState(false);
-
-  // Load learn page translations on mount
+  
+  // Load learn translations once on component mount
   useEffect(() => {
-    console.log("Learn page mounted, forcefully adding translations for current language:", i18n.language);
-    
-    // Get translations for current language or fall back to English
-    const translations = learnTranslations[i18n.language] || learnTranslations['en'];
-    
-    if (translations) {
-      // Add translations directly to i18n as a nested 'learn' object
+    // Force-add translations for all languages to ensure they're available
+    Object.keys(learnTranslations).forEach(lang => {
       i18n.addResourceBundle(
-        i18n.language, 
+        lang, 
         'common', 
-        { learn: translations }, 
+        learnTranslations[lang], 
         true,  // deep merge
         true   // overwrite
       );
-      
-      console.log(`Directly added learn translations for ${i18n.language}`);
-      setTranslationsLoaded(true);
-    }
-  }, [i18n.language]); // Re-run when language changes
+    });
+    
+    console.log("Learn page: Added translations for all languages");
+  }, []);
   
   return (
     <div className="container mx-auto py-12 px-4">
@@ -42,28 +35,21 @@ const Learn = () => {
           description={t("learn.description", "Expand your knowledge with guides, tutorials, and best practices")}
         />
         
-        {/* Debug language selector */}
-        <div className="debug-language-selector border border-dashed border-muted-foreground/50 p-4 rounded-md">
-          <h3 className="text-sm font-medium mb-2">Debug Language Selector</h3>
+        {/* Language selector for easy testing */}
+        <div className="border border-dashed border-muted-foreground/50 p-4 rounded-md">
+          <h3 className="text-sm font-medium mb-2">Language</h3>
           <LanguageSelector variant="minimal" />
           <div className="text-xs mt-2 text-muted-foreground">Current: {i18n.language}</div>
           
-          {/* Translation Status */}
-          <div className="text-xs mt-2 text-muted-foreground">
-            Translations: {translationsLoaded ? "Loaded" : "Loading..."}
-          </div>
-          
-          {/* Debug button to force reload */}
+          {/* Debug button to check translations */}
           <button 
             onClick={() => {
-              const translations = learnTranslations[i18n.language] || learnTranslations['en'];
-              i18n.addResourceBundle(i18n.language, 'common', { learn: translations }, true, true);
-              console.log("Manually reloaded learn translations");
-              setTranslationsLoaded(true);
+              const resources = i18n.getResourceBundle(i18n.language, 'common');
+              console.log("Learn translations for current language:", resources?.learn);
             }}
             className="text-xs mt-2 px-2 py-1 bg-primary/10 rounded hover:bg-primary/20"
           >
-            Force Reload Translations
+            Check Translations
           </button>
         </div>
       </div>
