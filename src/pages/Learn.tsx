@@ -11,8 +11,19 @@ const Learn = () => {
   
   // Load learn translations when component mounts
   useEffect(() => {
+    console.log(`[Learn] Component mounted with language: ${i18n.language}`);
+    console.log(`[Learn] Current i18n resources before loading:`, i18n.getResourceBundle(i18n.language, "common"));
+    
     loadAllLearnTranslations();
+    
+    console.log(`[Learn] Translations loaded, checking resources:`, i18n.getResourceBundle(i18n.language, "common"));
+    console.log(`[Learn] Sample translation test - learn.title:`, t("learn.title", "Learning Resources"));
   }, []);
+  
+  // Debug translations on render
+  console.log(`[Learn] Rendering with language: ${i18n.language}`);
+  console.log(`[Learn] learn.title translation:`, t("learn.title", "Learning Resources"));
+  console.log(`[Learn] learn.description translation:`, t("learn.description", "Expand your knowledge with guides, tutorials, and best practices"));
   
   return (
     <div className="container mx-auto py-12 px-4" key={`learn-${i18n.language}`}>

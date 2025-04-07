@@ -7,7 +7,13 @@ import { VideosList } from "./VideosList";
 import { ArticlesList } from "./ArticlesList";
 
 export const LearnTabs = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  
+  // Debug translations
+  console.log(`[LearnTabs] Current language: ${i18n.language}`);
+  console.log(`[LearnTabs] Guides tab translation:`, t("learn.tabs.guides", "Guides"));
+  console.log(`[LearnTabs] learn namespace exists:`, i18n.hasResourceBundle(i18n.language, "common") ? "Yes" : "No");
+  console.log(`[LearnTabs] Common bundle content:`, i18n.getResourceBundle(i18n.language, "common"));
   
   return (
     <Tabs defaultValue="guides">
