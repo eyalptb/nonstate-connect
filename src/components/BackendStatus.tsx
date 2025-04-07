@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { apiConfig, useCustomBackend, DIGITALOCEAN_API_URL } from '@/config/api';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import { supabase } from '@/integrations/supabase/client';
 
 const BackendStatus = () => {
   const { t, i18n } = useTranslation(['common']);
@@ -18,22 +19,35 @@ const BackendStatus = () => {
     setIsChecking(true);
     
     try {
-      // This is just a placeholder - you'd implement a real health check
-      // when your DigitalOcean backend is ready
-      const url = useCustomBackend 
-        ? `${DIGITALOCEAN_API_URL}/health`
-        : `${apiConfig.baseUrl}/rest/v1/health`;
-
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      if (useCustomBackend) {
+        // This is just a placeholder - you'd implement a real health check
+        // when your DigitalOcean backend is ready
+        const url = `${DIGITALOCEAN_API_URL}/health`;
+        
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        setIsConnected(response.ok);
+      } else {
+        // For Supabase, use a simple query to verify the connection
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('count')
+          .limit(1);
+        
+        setIsConnected(!error);
+        
+        if (error) {
+          console.error('Supabase connection check failed:', error);
+          throw error;
+        }
+      }
       
-      setIsConnected(response.ok);
-      
-      if (response.ok) {
+      if (isConnected) {
         toast.success(t("backend.connection_success", "Successfully connected to {{backend}} backend", { backend: backendType }));
       } else {
         toast.error(t("backend.connection_failure", "Failed to connect to {{backend}} backend", { backend: backendType }));
