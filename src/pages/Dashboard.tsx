@@ -49,7 +49,12 @@ const Dashboard = () => {
     
     const dashboardTranslations = i18n.getResourceBundle(i18n.language, 'common')?.dashboard;
     console.log("[Dashboard] Dashboard translations:", dashboardTranslations);
-  }, [i18n.language, i18n]);
+    
+    // Force a reload of resources to ensure translations are available
+    i18n.reloadResources([i18n.language], ['common']).then(() => {
+      console.log("[Dashboard] Resources reloaded");
+    });
+  }, [i18n]);
   
   useEffect(() => {
     if (user && !welcomeShownRef.current) {

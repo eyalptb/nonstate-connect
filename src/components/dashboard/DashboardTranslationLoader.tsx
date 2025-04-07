@@ -14,17 +14,21 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
 
   useEffect(() => {
     const loadTranslations = async () => {
-      // Load dashboard translations for all languages
-      await loadAllDashboardTranslations();
-      
-      // Also add in-memory translations for current language
-      addInMemoryTranslations(i18n.language);
-      
-      // Force reload resources to ensure translations are immediately available
-      await i18n.reloadResources([i18n.language], ['common']);
-      
-      setIsLoaded(true);
-      console.log("[DashboardTranslationLoader] Translations loaded for", i18n.language);
+      try {
+        // Load dashboard translations for all languages
+        await loadAllDashboardTranslations();
+        
+        // Also add in-memory translations for current language
+        addInMemoryTranslations(i18n.language);
+        
+        // Force reload resources to ensure translations are immediately available
+        await i18n.reloadResources([i18n.language], ['common']);
+        
+        setIsLoaded(true);
+        console.log("[DashboardTranslationLoader] Translations loaded for", i18n.language);
+      } catch (error) {
+        console.error("[DashboardTranslationLoader] Error loading translations:", error);
+      }
     };
     
     loadTranslations();
@@ -32,11 +36,15 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
     // Set up listener for language changes
     const handleLanguageChanged = async (lng: string) => {
       setIsLoaded(false);
-      await loadAllDashboardTranslations();
-      addInMemoryTranslations(lng);
-      await i18n.reloadResources([lng], ['common']);
-      setIsLoaded(true);
-      console.log("[DashboardTranslationLoader] Language changed to", lng);
+      try {
+        await loadAllDashboardTranslations();
+        addInMemoryTranslations(lng);
+        await i18n.reloadResources([lng], ['common']);
+        setIsLoaded(true);
+        console.log("[DashboardTranslationLoader] Language changed to", lng);
+      } catch (error) {
+        console.error("[DashboardTranslationLoader] Error handling language change:", error);
+      }
     };
     
     i18n.on('languageChanged', handleLanguageChanged);
