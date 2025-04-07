@@ -15,19 +15,29 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
   useEffect(() => {
     const loadTranslations = async () => {
       try {
-        // Load dashboard translations for all languages
-        await loadAllDashboardTranslations();
+        console.log("[DashboardTranslationLoader] Loading translations for", i18n.language);
         
-        // Also add in-memory translations for current language
+        // First add in-memory translations for current language to ensure immediate visibility
         addInMemoryTranslations(i18n.language);
+        
+        // Then load dashboard translations for all languages
+        await loadAllDashboardTranslations();
         
         // Force reload resources to ensure translations are immediately available
         await i18n.reloadResources([i18n.language], ['common']);
         
-        setIsLoaded(true);
-        console.log("[DashboardTranslationLoader] Translations loaded for", i18n.language);
+        // Add a small delay to ensure resources are fully processed
+        setTimeout(() => {
+          setIsLoaded(true);
+          console.log("[DashboardTranslationLoader] Translations loaded for", i18n.language);
+          
+          // Verify translation loading
+          const dashboardData = i18n.getResourceBundle(i18n.language, 'common')?.dashboard;
+          console.log(`[DashboardTranslationLoader] Dashboard translations loaded:`, dashboardData);
+        }, 100);
       } catch (error) {
         console.error("[DashboardTranslationLoader] Error loading translations:", error);
+        setIsLoaded(true); // Set to true anyway to show content
       }
     };
     
@@ -35,15 +45,31 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
     
     // Set up listener for language changes
     const handleLanguageChanged = async (lng: string) => {
+      console.log(`[DashboardTranslationLoader] Language changing to ${lng}, reloading translations`);
       setIsLoaded(false);
+      
       try {
-        await loadAllDashboardTranslations();
+        // Add in-memory translations first for immediate visibility
         addInMemoryTranslations(lng);
+        
+        // Then load all dashboard translations
+        await loadAllDashboardTranslations();
+        
+        // Force reload resources
         await i18n.reloadResources([lng], ['common']);
-        setIsLoaded(true);
-        console.log("[DashboardTranslationLoader] Language changed to", lng);
+        
+        // Add a small delay to ensure resources are fully processed
+        setTimeout(() => {
+          setIsLoaded(true);
+          console.log(`[DashboardTranslationLoader] Language changed to ${lng}, translations loaded`);
+          
+          // Verify translation loading
+          const dashboardData = i18n.getResourceBundle(lng, 'common')?.dashboard;
+          console.log(`[DashboardTranslationLoader] Dashboard translations after language change:`, dashboardData);
+        }, 100);
       } catch (error) {
         console.error("[DashboardTranslationLoader] Error handling language change:", error);
+        setIsLoaded(true); // Set to true anyway to show content
       }
     };
     
@@ -54,7 +80,7 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
     };
   }, [i18n]);
 
-  // Add debug output to help diagnose translation issues
+  // Debug output to help diagnose translation issues
   useEffect(() => {
     if (isLoaded) {
       const dashboardData = i18n.getResourceBundle(i18n.language, 'common')?.dashboard;
@@ -62,6 +88,8 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
     }
   }, [isLoaded, i18n.language, i18n]);
 
+  // Always render children even if translations aren't fully loaded
+  // This ensures the UI is visible even during translation loading
   return <>{children}</>;
 };
 

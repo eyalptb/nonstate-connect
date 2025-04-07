@@ -10,7 +10,7 @@ interface ActivityItemProps {
 }
 
 export const ActivityItem: React.FC<ActivityItemProps> = ({ activity }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const getActivityIcon = (type: Activity['type']) => {
     switch (type) {
@@ -28,21 +28,16 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity }) => {
   };
 
   const getActivityTitle = (activity: Activity) => {
+    // Use full key path for dashboard translations
     const key = `dashboard.activity.types.${activity.type}`;
     const defaultText = `Activity on ${activity.target.name}`;
     
-    switch (activity.type) {
-      case 'proposal_voted':
-        return t(key, 'Voted on {{name}}', { name: activity.target.name });
-      case 'task_completed':
-        return t(key, 'Completed {{name}}', { name: activity.target.name });
-      case 'message_received':
-        return t(key, 'New message in {{name}}', { name: activity.target.name });
-      case 'project_joined':
-        return t(key, 'Joined {{name}}', { name: activity.target.name });
-      default:
-        return defaultText;
-    }
+    // Log translation for debugging
+    console.log(`[ActivityItem] Trying to translate key: ${key}, current language: ${i18n.language}`);
+    const translation = t(key, { name: activity.target.name, defaultValue: defaultText });
+    console.log(`[ActivityItem] Translation result:`, translation);
+    
+    return translation;
   };
 
   return (

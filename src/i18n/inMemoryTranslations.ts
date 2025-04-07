@@ -33,7 +33,7 @@ const safeAddResourceBundle = (language: string, namespace: string, resources: a
     
     i18n.addResourceBundle(language, namespace, resources, deep, true);
     successfullyLoadedTranslations.add(resourceKey);
-    console.log(`[inMemoryTranslations] Successfully added resources for ${resourceKey}`);
+    console.log(`[inMemoryTranslations] Successfully added resources for ${resourceKey}`, resources);
     
     return true;
   } catch (error) {
@@ -82,11 +82,31 @@ export const addInMemoryTranslations = (language: string) => {
       console.warn(`[inMemoryTranslations] No contactSales translations found for ${language}, using fallback`);
     }
     
-    // For dashboard translations - add directly to ensure they're loaded
+    // For dashboard translations - priority handling to ensure they're correctly loaded
     const dashboardData = dashboardTranslations[language]?.dashboard || dashboardTranslations[fallbackLang]?.dashboard;
     if (dashboardData) {
-      console.log(`[inMemoryTranslations] Adding dashboard translations for ${language}`, dashboardData);
-      safeAddResourceBundle(language, 'common', { dashboard: dashboardData });
+      console.log(`[inMemoryTranslations] Adding dashboard translations for ${language}:`, dashboardData);
+      
+      // Use a more direct approach for dashboard translations to ensure they're properly loaded
+      const dashboardResult = safeAddResourceBundle(language, 'common', { dashboard: dashboardData });
+      
+      if (!dashboardResult) {
+        console.warn(`[inMemoryTranslations] Failed to add dashboard translations for ${language}, trying alternative method`);
+        
+        // Alternative method - add directly to i18n store
+        try {
+          if (!i18n.store.data[language]) {
+            i18n.store.data[language] = {};
+          }
+          if (!i18n.store.data[language].common) {
+            i18n.store.data[language].common = {};
+          }
+          i18n.store.data[language].common.dashboard = dashboardData;
+          console.log(`[inMemoryTranslations] Added dashboard translations directly to i18n store for ${language}`);
+        } catch (innerError) {
+          console.error(`[inMemoryTranslations] Alternative method failed:`, innerError);
+        }
+      }
     } else {
       console.warn(`[inMemoryTranslations] No dashboard translations found for ${language}, using fallback`);
     }
@@ -94,6 +114,10 @@ export const addInMemoryTranslations = (language: string) => {
     // Force reload resources to ensure translations are immediately available
     i18n.reloadResources([language], ['common']).then(() => {
       console.log(`[inMemoryTranslations] Translations reloaded for ${language}`);
+      
+      // Verify dashboard translations are loaded
+      const loadedDashboard = i18n.getResourceBundle(language, 'common')?.dashboard;
+      console.log(`[inMemoryTranslations] Dashboard translations after reload:`, loadedDashboard);
       
       // Dispatch a custom event to notify components that translations have been loaded
       document.dispatchEvent(new CustomEvent('i18n-resources-loaded', { 

@@ -42,24 +42,29 @@ const Dashboard = () => {
   const welcomeShownRef = useRef(false);
   const { t, i18n } = useTranslation();
   
-  // Log the translation status for debugging
+  // Log the translation status for debugging when component mounts
   useEffect(() => {
-    console.log("[Dashboard] Current language:", i18n.language);
+    console.log("[Dashboard] Initial render - Current language:", i18n.language);
     console.log("[Dashboard] Is i18n initialized:", i18n.isInitialized);
     
+    // Check if dashboard translations are loaded properly
     const dashboardTranslations = i18n.getResourceBundle(i18n.language, 'common')?.dashboard;
-    console.log("[Dashboard] Dashboard translations:", dashboardTranslations);
+    console.log("[Dashboard] Initial dashboard translations:", dashboardTranslations);
+  }, []);
+  
+  // Monitor for language changes
+  useEffect(() => {
+    console.log("[Dashboard] Language changed to:", i18n.language);
     
-    // Force a reload of resources to ensure translations are available
-    i18n.reloadResources([i18n.language], ['common']).then(() => {
-      console.log("[Dashboard] Resources reloaded");
-    });
-  }, [i18n]);
+    const dashboardTranslations = i18n.getResourceBundle(i18n.language, 'common')?.dashboard;
+    console.log("[Dashboard] Dashboard translations after language change:", dashboardTranslations);
+  }, [i18n.language]);
   
   useEffect(() => {
     if (user && !welcomeShownRef.current) {
       welcomeShownRef.current = true;
       
+      // Use t function with proper namespace and key path
       const title = t('dashboard.welcomeNotification.title', 'Welcome Back!');
       const message = t('dashboard.welcomeNotification.message', 'Welcome back to your secure collaboration dashboard!');
       console.log("[Dashboard] Welcome notification:", { title, message });
