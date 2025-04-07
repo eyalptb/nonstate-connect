@@ -19,7 +19,7 @@ interface PricingCardProps {
   description: string;
   features: string[];
   ctaText: string;
-  isPopular?: boolean;
+  isPopular?: string | boolean;
   isEnterprise?: boolean;
   annualBilling?: string;
   languageKey: string;
@@ -42,7 +42,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
       <CardHeader>
         {isPopular && (
           <div className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full w-fit mb-2">
-            {isPopular}
+            {typeof isPopular === 'string' ? isPopular : 'Most Popular'}
           </div>
         )}
         <CardTitle>{title}</CardTitle>
