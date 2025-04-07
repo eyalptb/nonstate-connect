@@ -70,6 +70,8 @@ export const addInMemoryTranslations = (language: string) => {
     if (pricingData) {
       console.log(`[inMemoryTranslations] Adding pricing translations for ${language}`);
       safeAddResourceBundle(language, 'common', { pricing: pricingData });
+    } else {
+      console.warn(`[inMemoryTranslations] No pricing translations found for ${language}, using fallback`);
     }
     
     // For contactSales translations

@@ -34,4 +34,7 @@ supportedLanguages.forEach(lang => {
   };
 });
 
+// Log all languages that have pricing translations for debugging
+console.log('Languages with pricing translations:', Object.keys(pricingTranslations));
+
 export { pricingTranslations, supportedLanguages };

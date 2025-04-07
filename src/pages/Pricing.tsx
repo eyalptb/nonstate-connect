@@ -19,7 +19,7 @@ const Pricing = () => {
     const loadPricingTranslations = () => {
       console.log(`Pricing: Loading translations for ${i18n.language}`);
       
-      // Get translations for current language - all languages now have proper fallbacks
+      // Get translations for current language with fallback to English
       const translations = pricingTranslations[i18n.language] || pricingTranslations['en'];
       
       if (translations) {
@@ -63,7 +63,7 @@ const Pricing = () => {
       return defaultText;
     }
   };
-  
+
   // Define feature arrays with type safety
   const getFeatures = (key: string, defaultFeatures: string[]): string[] => {
     try {
@@ -134,7 +134,7 @@ const Pricing = () => {
     }
   };
 
-  // Removed notification toast for languages other than English and Russian
+  // No fallback notification - removed as requested by user
 
   return (
     <div className="container mx-auto py-12 px-4">
@@ -182,7 +182,7 @@ const Pricing = () => {
                 </CardFooter>
               </Card>
 
-              {/* Pro Plan */}
+              {/* Professional Plan */}
               <Card className="border border-primary bg-primary/5">
                 <CardHeader>
                   <div className="bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full w-fit mb-2">
