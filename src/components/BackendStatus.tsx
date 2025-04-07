@@ -31,7 +31,14 @@ const BackendStatus = () => {
           },
         });
         
-        setIsConnected(response.ok);
+        const connectionSuccess = response.ok;
+        setIsConnected(connectionSuccess);
+        
+        if (connectionSuccess) {
+          toast.success(t("backend.connection_success", "Successfully connected to {{backend}} backend", { backend: backendType }));
+        } else {
+          toast.error(t("backend.connection_failure", "Failed to connect to {{backend}} backend", { backend: backendType }));
+        }
       } else {
         // For Supabase, use a simple query to verify the connection
         const { data, error } = await supabase
@@ -39,18 +46,15 @@ const BackendStatus = () => {
           .select('count')
           .limit(1);
         
-        setIsConnected(!error);
+        const connectionSuccess = !error;
+        setIsConnected(connectionSuccess);
         
         if (error) {
           console.error('Supabase connection check failed:', error);
-          throw error;
+          toast.error(t("backend.connection_failure", "Failed to connect to {{backend}} backend", { backend: backendType }));
+        } else {
+          toast.success(t("backend.connection_success", "Successfully connected to {{backend}} backend", { backend: backendType }));
         }
-      }
-      
-      if (isConnected) {
-        toast.success(t("backend.connection_success", "Successfully connected to {{backend}} backend", { backend: backendType }));
-      } else {
-        toast.error(t("backend.connection_failure", "Failed to connect to {{backend}} backend", { backend: backendType }));
       }
     } catch (error) {
       console.error('Connection check failed:', error);
