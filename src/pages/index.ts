@@ -21,3 +21,4 @@ export { default as ContactSales } from './ContactSales';
 export { default as AuthCallback } from './AuthCallback';
 export { default as NotFound } from './NotFound';
 export { default as ProposalDetail } from './ProposalDetail';
+export { default as SignIn } from './SignIn';

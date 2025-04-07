@@ -40,6 +40,7 @@ function App() {
                 <Route path="/pricing" element={<Pages.Pricing />} />
                 <Route path="/contact-sales" element={<Pages.ContactSales />} />
                 <Route path="/auth/callback" element={<Pages.AuthCallback />} />
+                <Route path="/sign-in" element={<Pages.SignIn />} />
                 <Route path="*" element={<Pages.NotFound />} />
               </Routes>
             </div>
