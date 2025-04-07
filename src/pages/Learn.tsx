@@ -18,9 +18,10 @@ const Learn = () => {
   
   // Function to check if translations are properly loaded
   const checkTranslationsLoaded = () => {
-    const bundle = i18n.getResourceBundle(i18n.language, "common");
-    const hasLearnTranslations = !!(bundle?.learn?.tabs);
-    return hasLearnTranslations;
+    // Check if the translations are returning non-default values
+    const testKey = "learn.tabs.guides";
+    const translation = t(testKey);
+    return translation !== testKey;
   };
   
   // Load learn translations when component mounts or language changes
@@ -28,7 +29,7 @@ const Learn = () => {
     const loadTranslations = async () => {
       console.log(`[Learn] Loading translations for language: ${i18n.language}`);
       
-      // Try to load translations
+      // Initial load attempt
       loadAllLearnTranslations();
       
       // Check if translations loaded successfully
@@ -38,24 +39,32 @@ const Learn = () => {
       if (!loaded) {
         console.log(`[Learn] Initial load failed, trying force load for ${i18n.language}`);
         const forceLoaded = forceLoadLearnTranslations();
-        loaded = checkTranslationsLoaded();
         
-        if (forceLoaded && loaded) {
-          console.log(`[Learn] Force load successful for ${i18n.language}`);
-        } else {
-          console.warn(`[Learn] Force load unsuccessful for ${i18n.language}`);
-        }
+        // Give a moment for translations to be applied before checking again
+        setTimeout(() => {
+          loaded = checkTranslationsLoaded();
+          setTranslationsLoaded(loaded);
+          
+          if (forceLoaded && loaded) {
+            console.log(`[Learn] Force load successful for ${i18n.language}`);
+          } else {
+            console.warn(`[Learn] Force load unsuccessful for ${i18n.language}`);
+          }
+          
+          // Run diagnostics
+          const results = debugLearnTranslations();
+          setDebugResults(results);
+        }, 100);
+      } else {
+        setTranslationsLoaded(true);
+        // Run diagnostics
+        const results = debugLearnTranslations();
+        setDebugResults(results);
       }
-      
-      setTranslationsLoaded(loaded);
-      
-      // Run debugger to log diagnostic info
-      const results = debugLearnTranslations();
-      setDebugResults(results);
     };
     
     loadTranslations();
-  }, [i18n.language]);
+  }, [i18n.language, t]);
   
   // Run diagnostics manually
   const runDebugger = () => {
@@ -94,7 +103,7 @@ const Learn = () => {
         icon: success ? <CheckCircleIcon className="h-4 w-4 text-green-500" /> : 
                        <AlertCircleIcon className="h-4 w-4 text-red-500" />
       });
-    }, 500);
+    }, 300);
   };
   
   return (

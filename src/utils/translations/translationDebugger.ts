@@ -153,7 +153,10 @@ export const forceLoadLearnTranslations = (language?: string) => {
     
     // First try with standard approach
     console.log('First trying standard approach (deep merge, no overwrite)');
-    i18n.addResourceBundle(lang, 'common', learnTranslations[lang], true, false);
+    
+    // Directly apply the learn property's content to avoid interference with other keys
+    const learnContent = { learn: learnTranslations[lang].learn };
+    i18n.addResourceBundle(lang, 'common', learnContent, true, true);
     
     // Check if it worked
     let bundle = i18n.getResourceBundle(lang, 'common');
@@ -169,6 +172,8 @@ export const forceLoadLearnTranslations = (language?: string) => {
       
       // Create a new object with just the learn translations to avoid overwriting other keys
       const learnOnly = { learn: learnTranslations[lang].learn };
+      
+      // Try using a different overwrite strategy
       i18n.addResourceBundle(lang, 'common', learnOnly, true, true);
       
       bundle = i18n.getResourceBundle(lang, 'common');
@@ -185,31 +190,46 @@ export const forceLoadLearnTranslations = (language?: string) => {
         // Last resort: manually construct the full path
         console.log('Direct assignment failed, trying last resort method');
         
-        // This should add the translations to the i18n instance
-        const patchedBundle = bundle || {};
-        patchedBundle.learn = learnTranslations[lang].learn;
-        
-        // Apply the patched bundle
-        i18n.addResourceBundle(lang, 'common', patchedBundle, false, true);
-        
-        // Final check
-        bundle = i18n.getResourceBundle(lang, 'common');
-        const hasLearnAfterManual = !!(bundle?.learn && 
-                                     bundle.learn.tabs && 
-                                     bundle.learn.guides);
-        
-        console.log(`After last resort method, translations exist: ${hasLearnAfterManual ? 'YES' : 'NO'}`);
-        
-        if (hasLearnAfterManual) {
-          console.log('SUCCESS! Translations loaded with last resort method');
-          return true;
-        } else {
-          console.error('FAILED! All methods to load translations have failed');
-          return false;
+        try {
+          // Manual deep merge approach
+          if (!bundle) bundle = {};
+          if (!bundle.learn) bundle.learn = {};
+          
+          // Copy all learn properties explicitly
+          Object.assign(bundle.learn, learnTranslations[lang].learn);
+          
+          // Re-apply the entire bundle
+          i18n.addResourceBundle(lang, 'common', bundle, false, true);
+          
+          // Final check
+          bundle = i18n.getResourceBundle(lang, 'common');
+          const hasLearnAfterManual = !!(bundle?.learn && 
+                                       bundle.learn.tabs && 
+                                       bundle.learn.guides);
+          
+          console.log(`After last resort method, translations exist: ${hasLearnAfterManual ? 'YES' : 'NO'}`);
+          
+          if (hasLearnAfterManual) {
+            console.log('SUCCESS! Translations loaded with last resort method');
+            
+            // Reset the i18n cache to force re-evaluation of translations
+            i18n.reloadResources([lang], ['common']);
+            
+            return true;
+          }
+        } catch (error) {
+          console.error('Error during manual merge:', error);
         }
+        
+        console.error('FAILED! All methods to load translations have failed');
+        return false;
       }
     } else {
       console.log('SUCCESS! Translations loaded with standard approach');
+      
+      // Reset the i18n cache to force re-evaluation of translations
+      i18n.reloadResources([lang], ['common']);
+      
       return true;
     }
   } else {
@@ -227,6 +247,10 @@ export const forceLoadLearnTranslations = (language?: string) => {
       const finalBundle = i18n.getResourceBundle(lang, 'common');
       if (finalBundle?.learn) {
         console.log('SUCCESS! English fallback translations loaded');
+        
+        // Reset the i18n cache to force re-evaluation of translations
+        i18n.reloadResources([lang], ['common']);
+        
         return true;
       }
     }
