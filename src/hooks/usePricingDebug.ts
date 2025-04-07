@@ -108,9 +108,17 @@ export const usePricingDebug = () => {
       try {
         console.log('[PricingDebug] Forcing reload of common namespace');
         await forceReloadNamespace('common');
+        
+        // Now check if pricing data exists after forced reload
+        const reloadedResources = i18n.getResourceBundle(i18n.language, 'common');
+        console.log('[PricingDebug] Resources after forced reload:', reloadedResources?.pricing ? 'Has pricing data' : 'No pricing data');
+        
+        // Track if pricingTranslations were loaded
+        const isPricingLoaded = reloadedResources?.pricing && Object.keys(reloadedResources.pricing).length > 0;
+        
         toast({
           title: "Debug info",
-          description: "Check console for pricing translation debug info",
+          description: `Pricing translations ${isPricingLoaded ? 'found' : 'NOT found'} for ${i18n.language}. Check console.`,
         });
       } catch (error) {
         console.error('[PricingDebug] Error reloading namespace:', error);
@@ -122,12 +130,24 @@ export const usePricingDebug = () => {
     // Run the debug
     runPricingDebug();
     
+    // Set up event listener for language changes
+    const handleLanguageChanged = () => {
+      console.log(`[PricingDebug] Language changed event detected: ${i18n.language}`);
+      runPricingDebug();
+    };
+    
+    // Add listener for language changes
+    document.addEventListener('i18n-resources-loaded', handleLanguageChanged);
+    
     // Set up interval to check periodically
     const intervalId = setInterval(() => {
       runPricingDebug();
     }, 5000);
     
-    return () => clearInterval(intervalId);
+    return () => {
+      clearInterval(intervalId);
+      document.removeEventListener('i18n-resources-loaded', handleLanguageChanged);
+    };
   }, [initialized, language, loadedNamespaces, loadedResources, testTranslation, forceReloadNamespace, verifyCriticalKeys]);
   
   return {
@@ -139,6 +159,26 @@ export const usePricingDebug = () => {
         .filter(key => key.startsWith('pricing.'));
       
       console.log('[PricingDebug] All pricing keys:', pricingKeys);
+      
+      // Check if resources contain pricing section
+      const rawResources = i18n.getResourceBundle(i18n.language, 'common');
+      console.log('[PricingDebug] Has pricing section:', rawResources && !!rawResources.pricing);
+      
+      if (rawResources && rawResources.pricing) {
+        console.log('[PricingDebug] Pricing structure:', Object.keys(rawResources.pricing));
+        
+        // Check for features specifically
+        if (rawResources.pricing.features) {
+          console.log('[PricingDebug] Features structure:', Object.keys(rawResources.pricing.features));
+          
+          // Check individual feature arrays
+          ['starter', 'professional', 'enterprise'].forEach(plan => {
+            const features = rawResources.pricing.features[plan];
+            console.log(`[PricingDebug] ${plan} features:`, features);
+            console.log(`[PricingDebug] ${plan} is array:`, Array.isArray(features));
+          });
+        }
+      }
       
       // Toast notification
       toast({
