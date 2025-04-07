@@ -43,8 +43,10 @@ export const useTranslationHelper = () => {
       // Try to get features using t function
       const featuresFromT = t(key, { returnObjects: true, defaultValue: [] });
       
-      if (Array.isArray(featuresFromT) && featuresFromT.length > 0) {
-        return featuresFromT;
+      // Make sure we only return string arrays
+      if (Array.isArray(featuresFromT) && featuresFromT.length > 0 && 
+          featuresFromT.every(item => typeof item === 'string')) {
+        return featuresFromT as string[];
       }
       
       // If that didn't work, try direct access to resources
@@ -59,8 +61,10 @@ export const useTranslationHelper = () => {
         currentObj = currentObj[part];
       }
       
-      if (Array.isArray(currentObj) && currentObj.length > 0) {
-        return currentObj;
+      // Validate that we got a string array
+      if (Array.isArray(currentObj) && currentObj.length > 0 && 
+          currentObj.every(item => typeof item === 'string')) {
+        return currentObj as string[];
       }
       
       // Fallback to English
@@ -72,8 +76,9 @@ export const useTranslationHelper = () => {
             currentObj = currentObj[part];
           }
           
-          if (Array.isArray(currentObj) && currentObj.length > 0) {
-            return currentObj;
+          if (Array.isArray(currentObj) && currentObj.length > 0 && 
+              currentObj.every(item => typeof item === 'string')) {
+            return currentObj as string[];
           }
         }
       }
@@ -92,8 +97,9 @@ export const useTranslationHelper = () => {
       // Try using t function first
       const items = t(key, { returnObjects: true, defaultValue: [] });
       
-      if (Array.isArray(items) && items.length > 0) {
-        return items;
+      if (Array.isArray(items) && items.length > 0 && 
+          items.every(item => typeof item === 'object' && 'question' in item && 'answer' in item)) {
+        return items as Array<{question: string, answer: string}>;
       }
       
       // Try direct resource access
@@ -107,8 +113,9 @@ export const useTranslationHelper = () => {
         currentObj = currentObj[part];
       }
       
-      if (Array.isArray(currentObj) && currentObj.length > 0) {
-        return currentObj;
+      if (Array.isArray(currentObj) && currentObj.length > 0 && 
+          currentObj.every(item => typeof item === 'object' && 'question' in item && 'answer' in item)) {
+        return currentObj as Array<{question: string, answer: string}>;
       }
       
       // Fallback to English
@@ -120,8 +127,9 @@ export const useTranslationHelper = () => {
             currentObj = currentObj[part];
           }
           
-          if (Array.isArray(currentObj) && currentObj.length > 0) {
-            return currentObj;
+          if (Array.isArray(currentObj) && currentObj.length > 0 && 
+              currentObj.every(item => typeof item === 'object' && 'question' in item && 'answer' in item)) {
+            return currentObj as Array<{question: string, answer: string}>;
           }
         }
       }
