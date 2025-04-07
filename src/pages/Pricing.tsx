@@ -52,14 +52,14 @@ const Pricing = () => {
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-3">
-                    {/* Use default value as array and map through it */}
-                    {(t('pricing.features.starter', ['Up to 5 team members', '10 GB secure storage', 'Basic encryption', 'Community access', 'Email support'], 
-                      { returnObjects: true }) as string[]).map((feature: string) => (
-                      <li key={feature} className="flex items-center">
-                        <Check className="mr-2 h-4 w-4 text-primary" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
+                    {/* Fix: Use the correct format for translating arrays */}
+                    {t('pricing.features.starter', ['Up to 5 team members', '10 GB secure storage', 'Basic encryption', 'Community access', 'Email support'], { returnObjects: true })
+                      .map((feature, index) => (
+                        <li key={`starter-feature-${index}`} className="flex items-center">
+                          <Check className="mr-2 h-4 w-4 text-primary" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
                   </ul>
                 </CardContent>
                 <CardFooter>
@@ -84,16 +84,17 @@ const Pricing = () => {
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-3">
-                    {/* Use default value as array and returnObjects option */}
-                    {(t('pricing.features.professional', 
+                    {/* Fix: Use the correct format for translating arrays */}
+                    {t('pricing.features.professional', 
                       ['Up to 20 team members', '50 GB secure storage', 'Advanced encryption', 'Governance features', 
                       'Verification tools', 'Priority support', 'API access'], 
-                      { returnObjects: true }) as string[]).map((feature: string) => (
-                      <li key={feature} className="flex items-center">
-                        <Check className="mr-2 h-4 w-4 text-primary" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
+                      { returnObjects: true })
+                      .map((feature, index) => (
+                        <li key={`pro-feature-${index}`} className="flex items-center">
+                          <Check className="mr-2 h-4 w-4 text-primary" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
                   </ul>
                 </CardContent>
                 <CardFooter>
@@ -114,16 +115,17 @@ const Pricing = () => {
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-3">
-                    {/* Use default value as array and returnObjects option */}
-                    {(t('pricing.features.enterprise', 
+                    {/* Fix: Use the correct format for translating arrays */}
+                    {t('pricing.features.enterprise', 
                       ['Unlimited team members', 'Custom storage limits', 'Advanced security features', 'Custom integrations', 
                       'On-premise deployment options', '24/7 dedicated support', 'Compliance assistance'], 
-                      { returnObjects: true }) as string[]).map((feature: string) => (
-                      <li key={feature} className="flex items-center">
-                        <Check className="mr-2 h-4 w-4 text-primary" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
+                      { returnObjects: true })
+                      .map((feature, index) => (
+                        <li key={`enterprise-feature-${index}`} className="flex items-center">
+                          <Check className="mr-2 h-4 w-4 text-primary" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
                   </ul>
                 </CardContent>
                 <CardFooter>
@@ -154,15 +156,16 @@ const Pricing = () => {
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-3">
-                    {/* Use default value as array and returnObjects option */}
-                    {(t('pricing.features.starter', 
+                    {/* Fix: Use the correct format for translating arrays */}
+                    {t('pricing.features.starter', 
                       ['Up to 5 team members', '10 GB secure storage', 'Basic encryption', 'Community access', 'Email support'], 
-                      { returnObjects: true }) as string[]).map((feature: string) => (
-                      <li key={feature} className="flex items-center">
-                        <Check className="mr-2 h-4 w-4 text-primary" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
+                      { returnObjects: true })
+                      .map((feature, index) => (
+                        <li key={`starter-annual-feature-${index}`} className="flex items-center">
+                          <Check className="mr-2 h-4 w-4 text-primary" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
                   </ul>
                 </CardContent>
                 <CardFooter>
@@ -190,16 +193,17 @@ const Pricing = () => {
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-3">
-                    {/* Use default value as array and returnObjects option */}
-                    {(t('pricing.features.professional', 
+                    {/* Fix: Use the correct format for translating arrays */}
+                    {t('pricing.features.professional', 
                       ['Up to 20 team members', '50 GB secure storage', 'Advanced encryption', 'Governance features', 
                       'Verification tools', 'Priority support', 'API access'], 
-                      { returnObjects: true }) as string[]).map((feature: string) => (
-                      <li key={feature} className="flex items-center">
-                        <Check className="mr-2 h-4 w-4 text-primary" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
+                      { returnObjects: true })
+                      .map((feature, index) => (
+                        <li key={`pro-annual-feature-${index}`} className="flex items-center">
+                          <Check className="mr-2 h-4 w-4 text-primary" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
                   </ul>
                 </CardContent>
                 <CardFooter>
@@ -220,16 +224,17 @@ const Pricing = () => {
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-3">
-                    {/* Use default value as array and returnObjects option */}
-                    {(t('pricing.features.enterprise', 
+                    {/* Fix: Use the correct format for translating arrays */}
+                    {t('pricing.features.enterprise', 
                       ['Unlimited team members', 'Custom storage limits', 'Advanced security features', 'Custom integrations', 
                       'On-premise deployment options', '24/7 dedicated support', 'Compliance assistance'], 
-                      { returnObjects: true }) as string[]).map((feature: string) => (
-                      <li key={feature} className="flex items-center">
-                        <Check className="mr-2 h-4 w-4 text-primary" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
+                      { returnObjects: true })
+                      .map((feature, index) => (
+                        <li key={`enterprise-annual-feature-${index}`} className="flex items-center">
+                          <Check className="mr-2 h-4 w-4 text-primary" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
                   </ul>
                 </CardContent>
                 <CardFooter>
@@ -249,8 +254,8 @@ const Pricing = () => {
           {t('pricing.faq.description', 'Got questions? We\'ve got answers.')}
         </p>
         <div className="grid md:grid-cols-2 gap-6 text-left max-w-4xl mx-auto">
-          {/* Use default value as array and returnObjects option */}
-          {(t('pricing.faq.questions', [
+          {/* Fix: Use the correct format for translating arrays of objects */}
+          {t('pricing.faq.questions', [
             {
               question: "Can I switch plans later?",
               answer: "Yes, you can upgrade or downgrade your plan at any time. Changes will take effect at the start of your next billing cycle."
@@ -267,12 +272,13 @@ const Pricing = () => {
               question: "Is my data secure?",
               answer: "Absolutely. We use end-to-end encryption and follow industry best practices for data security and privacy."
             }
-          ], { returnObjects: true }) as { question: string, answer: string }[]).map((faq, i) => (
-            <div key={i} className="space-y-2">
-              <h3 className="font-semibold">{faq.question}</h3>
-              <p className="text-muted-foreground">{faq.answer}</p>
-            </div>
-          ))}
+          ], { returnObjects: true })
+            .map((faq, i) => (
+              <div key={`faq-${i}`} className="space-y-2">
+                <h3 className="font-semibold">{faq.question}</h3>
+                <p className="text-muted-foreground">{faq.answer}</p>
+              </div>
+            ))}
         </div>
       </div>
     </div>

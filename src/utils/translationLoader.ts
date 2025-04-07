@@ -28,6 +28,12 @@ import {
   loadAllPricingTranslations
 } from './translations/componentTranslations';
 
+// Export component-specific load function for Learn
+export { 
+  loadAllLearnTranslations
+  // Removed the duplicate export of loadAllPricingTranslations
+};
+
 // Export everything for backward compatibility
 export { 
   // Helpers
