@@ -9,6 +9,7 @@ export const VideosList = () => {
 
   const videos = [
     {
+      id: "platform-overview",
       title: t("learn.videos.platformOverview.title", "Platform Overview"),
       description: t("learn.videos.platformOverview.description", "A visual walkthrough of our platform's key features and benefits."),
       icon: <Video className="h-5 w-5" />,
@@ -16,6 +17,7 @@ export const VideosList = () => {
       cta: t("learn.videos.platformOverview.cta", "Watch Video")
     },
     {
+      id: "security-deep-dive",
       title: t("learn.videos.securityDeepDive.title", "Security Deep Dive"),
       description: t("learn.videos.securityDeepDive.description", "Understanding the security architecture behind our platform."),
       icon: <Video className="h-5 w-5" />,
@@ -23,6 +25,7 @@ export const VideosList = () => {
       cta: t("learn.videos.securityDeepDive.cta", "Watch Video")
     },
     {
+      id: "governance-tutorial",
       title: t("learn.videos.governanceTutorial.title", "Governance Tutorial"),
       description: t("learn.videos.governanceTutorial.description", "How to participate in decentralized governance on our platform."),
       icon: <Video className="h-5 w-5" />,
@@ -31,11 +34,15 @@ export const VideosList = () => {
     }
   ];
 
+  // Create a unique key for this list that changes with language
+  const listKey = `videos-list-${i18n.language}`;
+
   return (
-    <>
-      {videos.map((video, i) => (
+    <div key={listKey}>
+      {videos.map((video) => (
         <ResourceCard
-          key={`video-${i}-${i18n.language}`}
+          key={`video-${video.id}-${i18n.language}`}
+          id={video.id}
           title={video.title}
           description={video.description}
           icon={video.icon}
@@ -43,6 +50,6 @@ export const VideosList = () => {
           cta={video.cta}
         />
       ))}
-    </>
+    </div>
   );
 };

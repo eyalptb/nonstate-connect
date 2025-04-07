@@ -9,6 +9,7 @@ export const ArticlesList = () => {
   
   const articles = [
     {
+      id: "future-of-collaboration",
       title: t("learn.articles.futureOfCollaboration.title", "The Future of Secure Collaboration"),
       description: t("learn.articles.futureOfCollaboration.description", "How privacy-preserving technologies are changing collaborative work."),
       icon: <FileText className="h-5 w-5" />,
@@ -16,6 +17,7 @@ export const ArticlesList = () => {
       cta: t("learn.articles.futureOfCollaboration.cta", "Read Article")
     },
     {
+      id: "blockchain-impact",
       title: t("learn.articles.blockchainImpact.title", "Blockchain for Impact Verification"),
       description: t("learn.articles.blockchainImpact.description", "Using blockchain to create verifiable records of impact."),
       icon: <FileText className="h-5 w-5" />,
@@ -23,6 +25,7 @@ export const ArticlesList = () => {
       cta: t("learn.articles.blockchainImpact.cta", "Read Article")
     },
     {
+      id: "privacy-transparency",
       title: t("learn.articles.privacyTransparency.title", "Privacy vs. Transparency"),
       description: t("learn.articles.privacyTransparency.description", "Balancing privacy and transparency in collaborative environments."),
       icon: <FileText className="h-5 w-5" />,
@@ -31,11 +34,15 @@ export const ArticlesList = () => {
     }
   ];
 
+  // Create a unique key for this list that changes with language
+  const listKey = `articles-list-${i18n.language}`;
+
   return (
-    <>
-      {articles.map((article, i) => (
+    <div key={listKey}>
+      {articles.map((article) => (
         <ResourceCard
-          key={`article-${i}-${i18n.language}`}
+          key={`article-${article.id}-${i18n.language}`}
+          id={article.id}
           title={article.title}
           description={article.description}
           icon={article.icon}
@@ -43,6 +50,6 @@ export const ArticlesList = () => {
           cta={article.cta}
         />
       ))}
-    </>
+    </div>
   );
 };

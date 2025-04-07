@@ -3,6 +3,7 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface ResourceCardProps {
   title: string;
@@ -10,6 +11,7 @@ interface ResourceCardProps {
   icon: React.ReactNode;
   metadata: string;
   cta: string;
+  id: string; // Add ID to help with unique keys
 }
 
 export const ResourceCard = ({ 
@@ -17,10 +19,16 @@ export const ResourceCard = ({
   description, 
   icon, 
   metadata, 
-  cta 
+  cta,
+  id
 }: ResourceCardProps) => {
+  const { i18n } = useTranslation();
+  
+  // Create a unique key for this card that changes with language
+  const cardKey = `resource-card-${id}-${i18n.language}`;
+  
   return (
-    <Card className="border border-muted-foreground/20 hover:border-primary/20 transition-colors">
+    <Card className="border border-muted-foreground/20 hover:border-primary/20 transition-colors" key={cardKey}>
       <CardContent className="p-6">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="flex-1">
