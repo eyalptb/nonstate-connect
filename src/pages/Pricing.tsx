@@ -21,19 +21,32 @@ const Pricing = () => {
   useEffect(() => {
     if (i18n.language) {
       loadAllPricingTranslations();
+      console.log(`Loading pricing translations for language: ${i18n.language}`);
     }
   }, [i18n.language]);
 
   // Helper function to get features as an array with proper typing
   const getFeatures = (key: string, defaultFeatures: string[]): string[] => {
-    const features = t(key, { defaultValue: defaultFeatures, returnObjects: true });
-    return Array.isArray(features) ? features : defaultFeatures;
+    try {
+      const features = t(key, { defaultValue: defaultFeatures, returnObjects: true });
+      console.log(`Features for ${key}:`, features);
+      return Array.isArray(features) ? features : defaultFeatures;
+    } catch (error) {
+      console.error(`Error getting features for ${key}:`, error);
+      return defaultFeatures;
+    }
   };
 
   // Helper function to get FAQ items as an array with proper typing
   const getFaqItems = (key: string, defaultItems: FaqItem[]): FaqItem[] => {
-    const items = t(key, { defaultValue: defaultItems, returnObjects: true });
-    return Array.isArray(items) ? items : defaultItems;
+    try {
+      const items = t(key, { defaultValue: defaultItems, returnObjects: true });
+      console.log(`FAQ items for ${key}:`, items);
+      return Array.isArray(items) ? items : defaultItems;
+    } catch (error) {
+      console.error(`Error getting FAQ items for ${key}:`, error);
+      return defaultItems;
+    }
   };
 
   // Define default feature lists

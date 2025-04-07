@@ -1,4 +1,3 @@
-
 import { addTranslations, getSupportedLanguages } from './translations/translationHelpers';
 import { 
   addComponentTranslations, 
@@ -28,9 +27,7 @@ import {
   loadAllPricingTranslations
 } from './translations/componentTranslations';
 
-// Removed the first export block as it was causing duplicate exports
-
-// Export everything for backward compatibility
+// Export everything in a single export block
 export { 
   // Helpers
   addTranslations,
