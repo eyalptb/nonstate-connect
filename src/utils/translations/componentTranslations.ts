@@ -1,7 +1,7 @@
 
 import { loadTranslations } from './translationCore';
 import i18n from '@/i18n';
-import { forceAddAllLearnTranslations, addLearnTranslationsDirectly } from './learnTranslations';
+import { learnTranslations } from './learnTranslations';
 
 // Specific loaders for each component type
 
@@ -61,68 +61,34 @@ export const addUseCasesTranslations = (language: string) =>
 export const loadAllUseCasesTranslations = () => 
   loadTranslations('useCases', { allLanguages: true });
 
-// Learn Translations
+// Learn Translations - Simplified version
 export const addLearnTranslations = (language: string) => {
-  console.log(`[componentTranslations] Adding learn translations for ${language}`);
+  console.log(`Adding learn translations for ${language}`);
   
-  // First, try to add translations directly for immediate availability
-  const directAddSuccess = addLearnTranslationsDirectly(language);
-  
-  if (directAddSuccess) {
-    console.log(`[componentTranslations] Direct add of learn translations for ${language} succeeded`);
-    
-    // Verify the translations were added
-    const resources = i18n.getResourceBundle(language, 'common');
-    if (resources && resources.learn) {
-      console.log(`[componentTranslations] Verified learn translations for ${language} with ${Object.keys(resources.learn).length} keys`);
-    }
-  } else {
-    console.warn(`[componentTranslations] Direct add of learn translations for ${language} failed, trying standard method`);
-    
-    // Try fallback to English if not current language
-    if (language !== 'en') {
-      console.log(`[componentTranslations] Trying English fallback`);
-      addLearnTranslationsDirectly('en');
-    }
+  // Add translations directly if available
+  if (learnTranslations[language]) {
+    i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
+    console.log(`Added learn translations for ${language}`);
+  } else if (learnTranslations['en']) {
+    // Fallback to English
+    console.log(`Falling back to English for learn translations`);
+    i18n.addResourceBundle(language, 'common', learnTranslations['en'], true, true);
   }
   
-  // Still load using the standard method as a backup
+  // Also load using standard method
   return loadTranslations('learn', { language });
 };
 
-export const loadAllLearnTranslations = async () => {
-  console.log('[componentTranslations] Loading all learn translations');
+export const loadAllLearnTranslations = () => {
+  console.log('Loading all learn translations');
   
-  // First, force add all translations directly for immediate availability
-  const directAddSuccess = forceAddAllLearnTranslations();
-  console.log(`[componentTranslations] Direct add of all learn translations ${directAddSuccess ? 'succeeded' : 'had some failures'}`);
+  // Add all available translations directly
+  Object.keys(learnTranslations).forEach(lang => {
+    if (learnTranslations[lang]) {
+      i18n.addResourceBundle(lang, 'common', learnTranslations[lang], true, true);
+    }
+  });
   
-  // Get current language
-  const currentLang = i18n.language;
-  console.log(`[componentTranslations] Current language: ${currentLang}`);
-  
-  // Ensure translations for current language are loaded
-  const currentLangSuccess = addLearnTranslationsDirectly(currentLang);
-  
-  if (!currentLangSuccess && currentLang !== 'en') {
-    console.log(`[componentTranslations] Falling back to English for learn translations`);
-    addLearnTranslationsDirectly('en');
-  }
-  
-  // Also load using standard method as backup
-  await loadTranslations('learn', { allLanguages: true });
-  
-  // Force a reload of resources for the current language
-  await i18n.reloadResources([currentLang], ['common']);
-  
-  // Verify translations were loaded properly
-  const resources = i18n.getResourceBundle(currentLang, 'common');
-  const hasLearnSection = resources && resources.learn && Object.keys(resources.learn).length > 0;
-  
-  console.log(`[componentTranslations] After all attempts, learn translations exist: ${hasLearnSection ? 'Yes' : 'No'}`);
-  if (hasLearnSection) {
-    console.log(`[componentTranslations] Learn keys available: ${Object.keys(resources.learn).length}`);
-  }
-  
-  return hasLearnSection;
+  // Also load using standard method
+  return loadTranslations('learn', { allLanguages: true });
 };
