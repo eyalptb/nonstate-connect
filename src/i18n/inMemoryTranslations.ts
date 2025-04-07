@@ -81,7 +81,7 @@ export const addInMemoryTranslations = (language: string) => {
     
     // Force reload resources to ensure translations are immediately available
     i18n.reloadResources([language], ['common']).then(() => {
-      console.log(`[inMemoryTranslations] Resources reloaded for ${language}`);
+      console.log(`[inMemoryTranslations] Translations reloaded for ${language}`);
       
       // Dispatch a custom event to notify components that translations have been loaded
       document.dispatchEvent(new CustomEvent('i18n-resources-loaded', { 

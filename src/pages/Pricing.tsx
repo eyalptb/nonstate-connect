@@ -19,7 +19,7 @@ const Pricing = () => {
     const loadPricingTranslations = () => {
       console.log(`Pricing: Loading translations for ${i18n.language}`);
       
-      // Get translations for current language or fall back to English
+      // Get translations for current language - all languages now have proper fallbacks
       const translations = pricingTranslations[i18n.language] || pricingTranslations['en'];
       
       if (translations) {

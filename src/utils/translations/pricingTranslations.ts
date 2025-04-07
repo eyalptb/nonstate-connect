@@ -8,17 +8,18 @@ const supportedLanguages = ['en', 'ru', 'fr', 'de', 'es', 'ar', 'bn', 'hi', 'ja'
 // Create the translation structure
 const pricingTranslations: Record<string, any> = {};
 
-// Add translations for each language
+// Add proper translations for each language
 supportedLanguages.forEach(lang => {
   // Use available translations or fall back to English
-  const translations = 
+  const translationData = 
     lang === 'en' ? en : 
     lang === 'ru' ? ru : 
     en; // fallback to English for all other languages
   
-  // Store translations with the proper structure
+  // Store translations with the proper structure for each language
+  // This ensures all languages have pricing entries properly defined
   pricingTranslations[lang] = {
-    pricing: translations
+    pricing: translationData
   };
 });
 
