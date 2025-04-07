@@ -14,15 +14,23 @@ export const LearnTabs = () => {
     const translation = t(key);
     return translation === key ? fallback : translation;
   };
-  
-  // Debug translations
+
+  // Debug info
   console.log(`[LearnTabs] Current language: ${i18n.language}`);
-  console.log(`[LearnTabs] Guides tab translation:`, getTranslation("learn.tabs.guides", "Guides"));
-  console.log(`[LearnTabs] learn namespace exists:`, i18n.hasResourceBundle(i18n.language, "common") ? "Yes" : "No");
-  console.log(`[LearnTabs] Common bundle content:`, i18n.getResourceBundle(i18n.language, "common"));
+  
+  const guidesLabel = getTranslation("learn.tabs.guides", "Guides");
+  console.log(`[LearnTabs] Guides tab translation:`, guidesLabel);
+  
+  // Check if translations are available
+  const hasNamespace = i18n.hasResourceBundle(i18n.language, "common");
+  console.log(`[LearnTabs] Common namespace exists:`, hasNamespace ? "Yes" : "No");
+  
+  // Get the current resource bundle for inspection
+  const bundle = i18n.getResourceBundle(i18n.language, "common");
+  console.log(`[LearnTabs] Common bundle content:`, bundle);
   
   return (
-    <Tabs defaultValue="guides">
+    <Tabs defaultValue="guides" className="mt-6">
       <TabsList className="grid w-full grid-cols-3 mb-8">
         <TabsTrigger value="guides">{getTranslation("learn.tabs.guides", "Guides")}</TabsTrigger>
         <TabsTrigger value="videos">{getTranslation("learn.tabs.videos", "Videos")}</TabsTrigger>

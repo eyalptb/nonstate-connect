@@ -4,11 +4,11 @@ import { PageHeader } from "@/components/ui/page-header";
 import { useTranslation } from "react-i18next";
 import { LearnTabs } from "@/components/learn/LearnTabs";
 import { NewsletterSignup } from "@/components/learn/NewsletterSignup";
-import { loadAllLearnTranslations } from "@/utils/translationLoader";
 import { debugLearnTranslations, forceLoadLearnTranslations } from "@/utils/translations/translationDebugger";
 import { Button } from "@/components/ui/button";
 import { BugIcon, RefreshCwIcon, CheckCircleIcon, AlertCircleIcon, Loader2Icon } from "lucide-react";
 import { toast } from "sonner";
+import { learnTranslations } from "@/utils/translations/learnTranslations";
 
 const Learn = () => {
   const { t, i18n } = useTranslation(["common"]);
@@ -18,12 +18,22 @@ const Learn = () => {
   
   // Function to check if translations are properly loaded
   const checkTranslationsLoaded = () => {
-    // Check if the translations are returning non-default values
-    const testKey = "learn.tabs.guides";
-    const translation = t(testKey);
-    const isDefault = translation === testKey;
-    console.log(`Testing key "${testKey}": ${isDefault ? 'MISSING' : 'FOUND'} (${translation})`);
-    return !isDefault;
+    // Check multiple critical keys to ensure translations are working
+    const testKeys = [
+      'learn.title',
+      'learn.tabs.guides',
+      'learn.guides.gettingStarted.title'
+    ];
+    
+    // Check if at least one key is properly translated
+    for (const key of testKeys) {
+      const translation = t(key);
+      if (translation !== key) {
+        return true;
+      }
+    }
+    
+    return false;
   };
   
   // Load learn translations when component mounts or language changes
@@ -32,45 +42,54 @@ const Learn = () => {
       setIsLoading(true);
       console.log(`[Learn] Loading translations for language: ${i18n.language}`);
       
-      // Initial load attempt
-      loadAllLearnTranslations();
+      // Try various approaches to load translations
       
-      // Give a moment for translations to be processed
-      setTimeout(() => {
-        // Check if translations loaded successfully
-        let loaded = checkTranslationsLoaded();
+      // 1. First check if we need to apply translations
+      if (!checkTranslationsLoaded()) {
+        console.log(`[Learn] Translations not loaded initially, trying direct load for ${i18n.language}`);
         
-        // If not loaded, try force loading
-        if (!loaded) {
-          console.log(`[Learn] Initial load failed, trying force load for ${i18n.language}`);
-          const forceLoaded = forceLoadLearnTranslations();
+        // 2. Apply translations directly from source
+        if (learnTranslations[i18n.language]) {
+          // Apply direct translations 
+          const success = forceLoadLearnTranslations(i18n.language);
           
-          // Give another moment for translations to be applied
-          setTimeout(() => {
-            loaded = checkTranslationsLoaded();
-            setTranslationsLoaded(loaded);
-            setIsLoading(false);
+          if (success) {
+            console.log(`[Learn] Direct translation load successful for ${i18n.language}`);
+            setTranslationsLoaded(true);
+          } else {
+            console.warn(`[Learn] Direct translation load unsuccessful for ${i18n.language}`);
+            setTranslationsLoaded(false);
             
-            if (forceLoaded && loaded) {
-              console.log(`[Learn] Force load successful for ${i18n.language}`);
-              toast.success("Translations loaded successfully");
-            } else {
-              console.warn(`[Learn] Force load unsuccessful for ${i18n.language}`);
-              toast.error("Failed to load translations");
+            // Try English fallback if needed
+            if (i18n.language !== 'en') {
+              const fallbackSuccess = forceLoadLearnTranslations('en');
+              
+              if (fallbackSuccess) {
+                console.log('[Learn] Fallback to English translations successful');
+                toast.info("Using English translations as fallback");
+              } else {
+                console.error('[Learn] Failed to load any translations');
+                toast.error("Failed to load translations");
+              }
             }
-            
-            // Run diagnostics
-            const results = debugLearnTranslations();
-            setDebugResults(results);
-          }, 300);
+          }
         } else {
-          setTranslationsLoaded(true);
-          setIsLoading(false);
-          // Run diagnostics
-          const results = debugLearnTranslations();
-          setDebugResults(results);
+          console.warn(`[Learn] No translations available for ${i18n.language}, trying English fallback`);
+          forceLoadLearnTranslations('en');
         }
-      }, 200);
+      } else {
+        console.log(`[Learn] Translations already loaded for ${i18n.language}`);
+        setTranslationsLoaded(true);
+      }
+      
+      // Run diagnostics in all cases
+      const results = debugLearnTranslations();
+      setDebugResults(results);
+      
+      // Final check if translations are loaded
+      const loaded = checkTranslationsLoaded();
+      setTranslationsLoaded(loaded);
+      setIsLoading(false);
     };
     
     loadTranslations();
@@ -78,33 +97,40 @@ const Learn = () => {
   
   // Run diagnostics manually
   const runDebugger = () => {
-    console.clear();
     setIsLoading(true);
-    const results = debugLearnTranslations();
-    setDebugResults(results);
-    
-    // Show a toast with results summary
-    const success = results.testResults.filter((r: any) => !r.isDefault).length;
-    const total = results.testResults.length;
+    console.log('[Learn] Running translation diagnostics...');
     
     setTimeout(() => {
+      const results = debugLearnTranslations();
+      setDebugResults(results);
+      
+      // Check if translations are loaded
+      const loaded = checkTranslationsLoaded();
+      setTranslationsLoaded(loaded);
       setIsLoading(false);
+      
+      // Show a toast with results summary
+      const success = results.testResults.filter((r: any) => !r.isDefault).length;
+      const total = results.testResults.length;
+      
       toast.message(`Diagnostics Results`, {
         description: `${success}/${total} translations loaded successfully`,
         icon: success === total ? <CheckCircleIcon className="h-4 w-4 text-green-500" /> : 
                                 <AlertCircleIcon className="h-4 w-4 text-yellow-500" />
       });
-    }, 300);
+    }, 500);
   };
   
   // Force load translations manually
-  const forceLoadTranslations = () => {
-    console.clear();
+  const forceReloadTranslations = () => {
     setIsLoading(true);
     console.log('Forcing translation load...');
-    const success = forceLoadLearnTranslations();
+    
+    // Apply translations directly
+    const success = forceLoadLearnTranslations(i18n.language);
     
     setTimeout(() => {
+      // Run diagnostics after force load
       const results = debugLearnTranslations();
       setDebugResults(results);
       
@@ -114,13 +140,20 @@ const Learn = () => {
       setIsLoading(false);
       
       // Show toast with results
-      toast.message(`Force Load ${success ? 'Successful' : 'Failed'}`, {
-        description: success ? "Translations have been loaded successfully" : 
-                              "Failed to load translations, check console for details",
-        icon: success ? <CheckCircleIcon className="h-4 w-4 text-green-500" /> : 
-                       <AlertCircleIcon className="h-4 w-4 text-red-500" />
-      });
-    }, 500);
+      if (success) {
+        toast.success("Translations loaded successfully");
+      } else if (i18n.language !== 'en') {
+        // Try fallback to English
+        const fallbackSuccess = forceLoadLearnTranslations('en');
+        if (fallbackSuccess) {
+          toast.info("Using English translations as fallback");
+        } else {
+          toast.error("Failed to load translations");
+        }
+      } else {
+        toast.error("Failed to load translations");
+      }
+    }, 800);
   };
   
   // If loading, show loading state
@@ -134,11 +167,15 @@ const Learn = () => {
     );
   }
   
+  // Get translations with fallbacks
+  const pageTitle = t('learn.title', 'Learning Resources');
+  const pageDescription = t('learn.description', 'Expand your knowledge with guides, tutorials, and best practices');
+  
   return (
     <div className="container mx-auto py-12 px-4" key={`learn-${i18n.language}`}>
       <PageHeader
-        title={t("learn.title", "Learning Resources")}
-        description={t("learn.description", "Expand your knowledge with guides, tutorials, and best practices")}
+        title={pageTitle}
+        description={pageDescription}
       />
       
       {/* Translation status indicator */}
@@ -148,7 +185,7 @@ const Learn = () => {
           <BugIcon className="h-4 w-4" />
           Run Diagnostics
         </Button>
-        <Button size="sm" variant="outline" onClick={forceLoadTranslations} className="flex items-center gap-2">
+        <Button size="sm" variant="outline" onClick={forceReloadTranslations} className="flex items-center gap-2">
           <RefreshCwIcon className="h-4 w-4" />
           Force Load
         </Button>
@@ -173,12 +210,18 @@ const Learn = () => {
               {debugResults.testResults.length}
             </li>
           </ul>
+          
+          {!translationsLoaded && (
+            <div className="mt-2 pt-2 border-t border-gray-200">
+              <p className="text-red-500 font-medium">Translations are not loading properly.</p>
+              <p>Try clicking the "Force Load" button or switch to another language.</p>
+            </div>
+          )}
         </div>
       )}
       
-      <div className="mt-8">
-        <LearnTabs />
-      </div>
+      {/* Main content */}
+      <LearnTabs />
       
       <NewsletterSignup />
     </div>

@@ -69,60 +69,18 @@ export const debugLearnTranslations = () => {
     'learn.articles.futureOfCollaboration.title'
   ];
   
+  const translationResults = [];
+  
   testKeys.forEach(key => {
     const translation = i18n.t(key);
     const isDefault = translation === key;
     console.log(`- ${key}: "${translation}"${isDefault ? ' (DEFAULT FALLBACK)' : ''}`);
+    translationResults.push({ key, translation, isDefault });
   });
   
   // 5. Check translation loading timing
   console.log('\n5. LOAD TIMING CHECK:');
   console.log('Testing explicit load of learn translations...');
-  
-  // Create a copy of original translations for comparison
-  const originalBundle = i18n.getResourceBundle(currentLang, 'common');
-  const originalLearn = originalBundle?.learn ? { ...originalBundle.learn } : null;
-  
-  // Try to manually add translations again
-  if (learnTranslations[currentLang]) {
-    console.log('Adding learn translations explicitly with deep merge and NO overwrite...');
-    i18n.addResourceBundle(
-      currentLang, 
-      'common', 
-      learnTranslations[currentLang], 
-      true,  // deep merge
-      false  // don't overwrite
-    );
-    
-    // Check if it made a difference
-    const updatedBundle = i18n.getResourceBundle(currentLang, 'common');
-    
-    if (!originalLearn && updatedBundle?.learn) {
-      console.log('SUCCESS: Learn translations were missing before and now exist');
-    } else if (originalLearn && !updatedBundle?.learn) {
-      console.log('ERROR: Learn translations existed before but are now missing');
-    } else if (originalLearn && updatedBundle?.learn) {
-      // Check if keys changed
-      const oldKeys = Object.keys(originalLearn).sort().join(',');
-      const newKeys = Object.keys(updatedBundle.learn).sort().join(',');
-      
-      if (oldKeys !== newKeys) {
-        console.log('CHANGED: Learn keys changed after explicit load');
-        console.log('- Before:', oldKeys);
-        console.log('- After:', newKeys);
-      } else {
-        console.log('NO CHANGE: Learn keys unchanged after explicit load');
-      }
-    }
-    
-    // Test translations again after explicit load
-    console.log('\nTranslation retrieval after explicit load:');
-    testKeys.forEach(key => {
-      const translation = i18n.t(key);
-      const isDefault = translation === key;
-      console.log(`- ${key}: "${translation}"${isDefault ? ' (DEFAULT FALLBACK)' : ''}`);
-    });
-  }
   
   console.log('====== DEBUG COMPLETE ======');
   
@@ -131,137 +89,57 @@ export const debugLearnTranslations = () => {
     hasSourceTranslations: !!learnTranslations[currentLang],
     bundleExists: !!bundle,
     learnKeyExists: !!(bundle && bundle.learn),
-    testResults: testKeys.map(key => ({
-      key,
-      value: i18n.t(key),
-      isDefault: i18n.t(key) === key
-    }))
+    testResults: translationResults
   };
 };
 
 /**
  * Force load learn translations for debugging purposes
- * This function tries multiple approaches to ensure translations are loaded
+ * This function directly applies translations to fix loading issues
  */
 export const forceLoadLearnTranslations = (language?: string) => {
   const lang = language || i18n.language;
   
   console.log(`Force loading learn translations for ${lang}`);
   
-  if (learnTranslations[lang]) {
+  if (!learnTranslations[lang]) {
+    console.error(`No learn translations found for ${lang}`);
+    return false;
+  }
+  
+  try {
     console.log(`Found learn translations for ${lang} in source files`);
     
-    try {
-      // Direct translation application with deep nested structure
-      if (learnTranslations[lang].learn) {
-        // Create a special focused object with just the learn key
-        const learnData = { 
-          learn: learnTranslations[lang].learn 
-        };
-        
-        console.log('Applying learn translations directly with overwrite enabled');
-        
-        // Add with deep merge and force overwrite
-        i18n.addResourceBundle(lang, 'common', learnData, true, true);
-        
-        // Verify it worked
-        const bundle = i18n.getResourceBundle(lang, 'common');
-        const hasLearn = !!(bundle?.learn && 
-                          bundle.learn.tabs && 
-                          bundle.learn.guides);
-        
-        if (hasLearn) {
-          console.log('SUCCESS! Translations loaded with direct application');
-          
-          // Force reload to ensure changes take effect
-          i18n.reloadResources([lang], ['common']);
-          
-          return true;
+    // Direct approach - add translations as flat keys
+    // This ensures they're properly accessible via t('learn.title') etc.
+    const flatKeys: Record<string, string> = {};
+    
+    // Helper function to flatten nested objects with dot notation
+    const flattenObject = (obj: any, prefix = '') => {
+      for (const key in obj) {
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+          flattenObject(obj[key], `${prefix}${key}.`);
         } else {
-          // If that didn't work, try the whole object
-          console.log('First attempt failed, trying with full nested object');
-          i18n.addResourceBundle(lang, 'common', learnTranslations[lang], true, true);
-          
-          // Verify again
-          const bundleRetry = i18n.getResourceBundle(lang, 'common');
-          const hasLearnRetry = !!(bundleRetry?.learn && 
-                                 bundleRetry.learn.tabs && 
-                                 bundleRetry.learn.guides);
-          
-          if (hasLearnRetry) {
-            console.log('SUCCESS! Translations loaded with full object application');
-            
-            // Force reload to ensure changes take effect
-            i18n.reloadResources([lang], ['common']);
-            
-            return true;
-          }
+          flatKeys[`${prefix}${key}`] = obj[key];
         }
       }
-      
-      // Last resort: try to directly set the learn key in the bundle
-      console.log('Previous attempts failed, trying direct bundle modification');
-      
-      // Get current bundle
-      let bundle = i18n.getResourceBundle(lang, 'common') || {};
-      
-      // Create a new bundle with our learn data
-      let newBundle = { ...bundle };
-      
-      // Ensure learn key exists
-      if (!newBundle.learn) {
-        newBundle.learn = {};
-      }
-      
-      // Copy all learn properties directly
-      if (learnTranslations[lang].learn) {
-        newBundle.learn = {
-          ...newBundle.learn,
-          ...learnTranslations[lang].learn
-        };
-        
-        // Force some critical keys to be available
-        if (learnTranslations[lang].learn.tabs) {
-          newBundle.learn.tabs = learnTranslations[lang].learn.tabs;
-        }
-        
-        // Replace the entire bundle
-        i18n.addResourceBundle(lang, 'common', newBundle, false, true);
-        
-        // Force reload to ensure changes take effect
-        i18n.reloadResources([lang], ['common']);
-        
-        console.log('SUCCESS! Applied translations through direct bundle modification');
-        return true;
-      }
-      
-    } catch (error) {
-      console.error('Error during learn translations loading:', error);
-    }
+    };
     
-    return false;
-  } else {
-    console.error(`ERROR: No learn translations found for ${lang} in source files`);
+    // Flatten the learn object
+    flattenObject(learnTranslations[lang].learn, 'learn.');
     
-    // Try to load English as a fallback
-    if (lang !== 'en' && learnTranslations['en']) {
-      console.log('Attempting to load English translations as fallback');
-      
-      try {
-        // Create a modified version with the current language but English content
-        const fallbackData = { learn: learnTranslations['en'].learn };
-        i18n.addResourceBundle(lang, 'common', fallbackData, true, true);
-        
-        // Force reload to ensure changes take effect
-        i18n.reloadResources([lang], ['common']);
-        
-        console.log('SUCCESS! English fallback translations loaded');
-        return true;
-      } catch (error) {
-        console.error('Error loading English fallback:', error);
-      }
-    }
+    // Add all flattened keys directly to i18n
+    console.log(`Adding ${Object.keys(flatKeys).length} flattened learn keys to i18n for ${lang}`);
+    i18n.addResources(lang, 'common', flatKeys);
     
+    // Verify by checking a few keys
+    const title = i18n.t('learn.title');
+    const tabsGuides = i18n.t('learn.tabs.guides');
+    console.log(`Verification: learn.title = "${title}", learn.tabs.guides = "${tabsGuides}"`);
+    
+    return title !== 'learn.title' && tabsGuides !== 'learn.tabs.guides';
+  } catch (error) {
+    console.error('Error loading translations:', error);
     return false;
   }
 };
