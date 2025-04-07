@@ -1,12 +1,18 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { useTranslation } from "react-i18next";
 import { LearnTabs } from "@/components/learn/LearnTabs";
 import { NewsletterSignup } from "@/components/learn/NewsletterSignup";
+import { loadAllLearnTranslations } from "@/utils/translationLoader";
 
 const Learn = () => {
   const { t } = useTranslation();
+  
+  // Load learn translations when component mounts
+  useEffect(() => {
+    loadAllLearnTranslations();
+  }, []);
   
   return (
     <div className="container mx-auto py-12 px-4">

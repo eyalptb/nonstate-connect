@@ -61,34 +61,28 @@ export const addUseCasesTranslations = (language: string) =>
 export const loadAllUseCasesTranslations = () => 
   loadTranslations('useCases', { allLanguages: true });
 
-// Learn Translations - Simplified version
+// Learn Translations - Simple direct approach
 export const addLearnTranslations = (language: string) => {
-  console.log(`Adding learn translations for ${language}`);
-  
-  // Add translations directly if available
+  // Add translations directly from our structured translations
   if (learnTranslations[language]) {
     i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
-    console.log(`Added learn translations for ${language}`);
   } else if (learnTranslations['en']) {
-    // Fallback to English
-    console.log(`Falling back to English for learn translations`);
+    // Fallback to English if current language not available
     i18n.addResourceBundle(language, 'common', learnTranslations['en'], true, true);
   }
   
-  // Also load using standard method
+  // Also load using standard method as a backup
   return loadTranslations('learn', { language });
 };
 
 export const loadAllLearnTranslations = () => {
-  console.log('Loading all learn translations');
-  
-  // Add all available translations directly
+  // Add translations for all languages directly
   Object.keys(learnTranslations).forEach(lang => {
     if (learnTranslations[lang]) {
       i18n.addResourceBundle(lang, 'common', learnTranslations[lang], true, true);
     }
   });
   
-  // Also load using standard method
+  // Also load using standard method as a backup
   return loadTranslations('learn', { allLanguages: true });
 };
