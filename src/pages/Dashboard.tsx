@@ -11,6 +11,9 @@ import { QuickAccessCards } from "@/components/dashboard/QuickAccessCards";
 import { GardenProjectsSection } from "@/components/dashboard/GardenProjectsSection";
 import { TokensAndActivities } from "@/components/dashboard/TokensAndActivities";
 import { ProjectsAndMarketplace } from "@/components/dashboard/ProjectsAndMarketplace";
+import { addInMemoryTranslations } from "@/i18n/inMemoryTranslations";
+import { useTranslation } from "react-i18next";
+import { loadAllDashboardTranslations } from "@/utils/translationLoader";
 
 const mockActivities: Activity[] = [
   {
@@ -41,6 +44,13 @@ const Dashboard = () => {
   const { addNotification } = useNotifications();
   const { getText } = useTranslationHelper();
   const welcomeShownRef = useRef(false);
+  const { i18n } = useTranslation();
+  
+  // Ensure translations are loaded immediately when component mounts
+  useEffect(() => {
+    loadAllDashboardTranslations();
+    addInMemoryTranslations(i18n.language);
+  }, [i18n.language]);
   
   useEffect(() => {
     if (user && !welcomeShownRef.current) {

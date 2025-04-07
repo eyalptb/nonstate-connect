@@ -66,28 +66,26 @@ export const addInMemoryTranslations = (language: string) => {
       safeAddResourceBundle(language, 'common', { learn: learnData });
     }
     
-    // For pricing translations, ensure we have them for all languages with fallback
+    // For pricing translations
     const pricingData = pricingTranslations[language]?.pricing || pricingTranslations[fallbackLang]?.pricing;
     if (pricingData) {
-      console.log(`[inMemoryTranslations] Adding pricing translations for ${language}`);
       safeAddResourceBundle(language, 'common', { pricing: pricingData });
     } else {
       console.warn(`[inMemoryTranslations] No pricing translations found for ${language}, using fallback`);
     }
     
-    // For contactSales translations, ensure we have them for all languages with fallback
+    // For contactSales translations
     const contactSalesData = contactSalesTranslations[language]?.contactSales || contactSalesTranslations[fallbackLang]?.contactSales;
     if (contactSalesData) {
-      console.log(`[inMemoryTranslations] Adding contactSales translations for ${language}`);
       safeAddResourceBundle(language, 'common', { contactSales: contactSalesData });
     } else {
       console.warn(`[inMemoryTranslations] No contactSales translations found for ${language}, using fallback`);
     }
     
-    // For dashboard translations, ensure we have them for all languages with fallback
+    // For dashboard translations - add directly to ensure they're loaded
     const dashboardData = dashboardTranslations[language]?.dashboard || dashboardTranslations[fallbackLang]?.dashboard;
     if (dashboardData) {
-      console.log(`[inMemoryTranslations] Adding dashboard translations for ${language}`);
+      console.log(`[inMemoryTranslations] Adding dashboard translations for ${language}`, dashboardData);
       safeAddResourceBundle(language, 'common', { dashboard: dashboardData });
     } else {
       console.warn(`[inMemoryTranslations] No dashboard translations found for ${language}, using fallback`);

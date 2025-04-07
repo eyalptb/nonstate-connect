@@ -139,20 +139,25 @@ export const loadAllContactSalesTranslations = () => {
 export const addDashboardTranslations = (language = i18n.language) => {
   console.log(`Adding dashboard translations for ${language}`);
   
-  // Get the translation data with proper fallback
+  // Get the dashboard data with fallback
   const dashboardData = getTranslationsWithFallback(dashboardTranslations, language);
   
+  // Check if we have the dashboard data
   if (!dashboardData || !dashboardData.dashboard) {
     console.error(`No dashboard data found for ${language}`);
     return false;
   }
   
-  // Add the translations to the i18n instance
+  // Add the translations with the dashboard key
   const result = addTranslations(language, 'common', { dashboard: dashboardData.dashboard });
   
-  // Force update resources to ensure they're loaded
+  // Force a reload of resources
   if (result) {
     i18n.reloadResources(language, ['common']);
+    
+    // Debug log to verify translations are loaded
+    console.log(`Dashboard translations added for ${language}:`, 
+      i18n.getResourceBundle(language, 'common')?.dashboard || 'None found');
   }
   
   return result;
@@ -161,18 +166,23 @@ export const addDashboardTranslations = (language = i18n.language) => {
 export const loadAllDashboardTranslations = () => {
   console.log('Loading all Dashboard translations');
   
-  // First add the translations for the current language to ensure immediate visibility
+  // Get all supported languages
+  const allLanguages = supportedLanguages;
+  
+  // First add the translations for the current language
   addDashboardTranslations(i18n.language);
   
-  // Then add translations for all supported languages
-  supportedLanguages.forEach(lang => {
+  // Then add translations for all other supported languages
+  allLanguages.forEach(lang => {
     if (lang !== i18n.language) {
       addDashboardTranslations(lang);
     }
   });
   
-  // Force a reload of the current language's resources
-  i18n.reloadResources(i18n.language, ['common']);
+  // Force a reload of current language resources
+  i18n.reloadResources(i18n.language, ['common']).then(() => {
+    console.log('Dashboard translations reloaded for:', i18n.language);
+  });
   
   // Dispatch an event to notify that translations have been loaded
   document.dispatchEvent(new CustomEvent('i18n-resources-loaded', { 
