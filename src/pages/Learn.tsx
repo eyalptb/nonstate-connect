@@ -7,7 +7,7 @@ import { NewsletterSignup } from "@/components/learn/NewsletterSignup";
 import { loadAllLearnTranslations } from "@/utils/translationLoader";
 
 const Learn = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   
   // Load learn translations when component mounts
   useEffect(() => {
@@ -15,7 +15,7 @@ const Learn = () => {
   }, []);
   
   return (
-    <div className="container mx-auto py-12 px-4">
+    <div className="container mx-auto py-12 px-4" key={`learn-${i18n.language}`}>
       <PageHeader
         title={t("learn.title", "Learning Resources")}
         description={t("learn.description", "Expand your knowledge with guides, tutorials, and best practices")}
