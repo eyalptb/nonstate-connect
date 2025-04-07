@@ -63,16 +63,33 @@ export const loadAllUseCasesTranslations = () =>
 // Learn Translations
 export const addLearnTranslations = (language: string) => {
   console.log(`[componentTranslations] Adding learn translations for ${language}`);
+  
+  // Get current translation data
+  const currentTranslations = i18n.getResourceBundle(language, 'common');
+  
+  // Check if we already have learn translations
+  if (currentTranslations && currentTranslations.learn) {
+    console.log(`[componentTranslations] Learn translations already exist for ${language}`);
+  }
+  
+  // Load the translations anyway to ensure they're up-to-date
   return loadTranslations('learn', { language });
 };
 
 export const loadAllLearnTranslations = async () => {
   console.log('[componentTranslations] Loading all learn translations');
-  // First load translations in a standard way
+  
+  // Get current language
+  const currentLang = i18n.language;
+  console.log(`[componentTranslations] Current language: ${currentLang}`);
+  
+  // Load translations for current language first
+  addLearnTranslations(currentLang);
+  
+  // Then load for all languages
   const result = loadTranslations('learn', { allLanguages: true });
   
   // Explicitly verify that the current language has learn translations
-  const currentLang = i18n.language;
   console.log(`[componentTranslations] Verifying learn translations for current language: ${currentLang}`);
   
   // Get the current resource bundle
@@ -91,6 +108,8 @@ export const loadAllLearnTranslations = async () => {
     } catch (error) {
       console.error(`[componentTranslations] Error reloading resources: ${error}`);
     }
+  } else {
+    console.log(`[componentTranslations] Learn translations verified for ${currentLang}`);
   }
   
   return result;

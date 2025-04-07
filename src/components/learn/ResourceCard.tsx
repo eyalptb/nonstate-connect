@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -14,7 +14,8 @@ interface ResourceCardProps {
   id: string; // Add ID to help with unique keys
 }
 
-export const ResourceCard = ({ 
+// Use memo to optimize rendering performance
+export const ResourceCard = memo(({ 
   title, 
   description, 
   icon, 
@@ -28,7 +29,7 @@ export const ResourceCard = ({
   const cardKey = `resource-card-${id}-${i18n.language}`;
   
   return (
-    <Card className="border border-muted-foreground/20 hover:border-primary/20 transition-colors" key={cardKey}>
+    <Card className="border border-muted-foreground/20 hover:border-primary/20 transition-colors mb-4" key={cardKey}>
       <CardContent className="p-6">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="flex-1">
@@ -46,4 +47,6 @@ export const ResourceCard = ({
       </CardContent>
     </Card>
   );
-};
+});
+
+ResourceCard.displayName = "ResourceCard";

@@ -5,17 +5,37 @@ import { useTranslation } from "react-i18next";
 import { LearnTabs } from "@/components/learn/LearnTabs";
 import { NewsletterSignup } from "@/components/learn/NewsletterSignup";
 import { loadAllLearnTranslations } from "@/utils/translationLoader";
+import i18n from "@/i18n";
 
 const Learn = () => {
   const { t, i18n } = useTranslation(['common']);
   
-  // Ensure learn translations are loaded when the component mounts
-  // and when language changes
+  // Ensure learn translations are loaded on mount and language change
   useEffect(() => {
     const loadTranslations = async () => {
       console.log('[Learn] Loading learn translations for language:', i18n.language);
-      await loadAllLearnTranslations();
-      console.log('[Learn] Learn translations loaded successfully');
+      
+      try {
+        // Add translations explicitly to ensure they're available
+        await loadAllLearnTranslations();
+        
+        // Force reload to ensure resources are available
+        // Wait a short time to ensure the translations are processed
+        setTimeout(() => {
+          // Verify learn translations were added correctly
+          const hasLearnSection = i18n.getResourceBundle(i18n.language, 'common')?.learn;
+          if (!hasLearnSection) {
+            console.warn('[Learn] Learn translations still missing after load, forcing refresh');
+            // Force a re-render by dispatching an event
+            document.dispatchEvent(new Event('i18n-resources-loaded'));
+          } else {
+            console.log('[Learn] Learn translations successfully loaded:', 
+              Object.keys(hasLearnSection).length, 'keys available');
+          }
+        }, 100);
+      } catch (error) {
+        console.error('[Learn] Error loading learn translations:', error);
+      }
     };
     
     loadTranslations();
