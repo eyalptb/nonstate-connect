@@ -25,7 +25,7 @@ export const addComponentTranslations = (
   
   console.log(`[addComponentTranslations] Adding translations for ${componentType}/${language}`, translations);
   
-  // Add translations to the i18n instance - handle as a unified object, not specifically for "learn"
+  // Add translations to the i18n instance
   return addTranslations(language, namespace, translations);
 };
 
@@ -40,21 +40,32 @@ export const loadAllComponentTranslations = (
   namespace: string = 'common'
 ): void => {
   const supportedLanguages = getSupportedLanguages();
-  console.log(`Loading ${componentType} translations for languages:`, supportedLanguages);
+  console.log(`[loadAllComponentTranslations] Loading ${componentType} translations for languages:`, supportedLanguages);
   
   // Check if translations exist for this component type
   if (!translationResources[componentType]) {
-    console.error(`No translations found for component type: ${componentType}`);
+    console.error(`[loadAllComponentTranslations] No translations found for component type: ${componentType}`);
     return;
   }
   
   // Add translations for each supported language
   supportedLanguages.forEach(lang => {
+    console.log(`[loadAllComponentTranslations] Loading ${componentType} translations for ${lang}`);
+    
+    const translationData = translationResources[componentType][lang];
+    console.log(`[loadAllComponentTranslations] Raw translation data for ${lang}:`, translationData);
+    
     const success = addComponentTranslations(lang, componentType, namespace);
+    
     if (success) {
-      console.log(`Successfully loaded ${componentType} translations for ${lang}`);
+      console.log(`[loadAllComponentTranslations] Successfully loaded ${componentType} translations for ${lang}`);
+      
+      // Verify translations were added correctly
+      const resources = i18n.getResourceBundle(lang, namespace);
+      console.log(`[loadAllComponentTranslations] Resulting resources for ${lang}/${namespace}:`, 
+        resources && componentType === 'contactSales' ? resources.contactSales : 'Not showing full resources');
     } else {
-      console.warn(`Failed to load ${componentType} translations for ${lang}`);
+      console.warn(`[loadAllComponentTranslations] Failed to load ${componentType} translations for ${lang}`);
     }
   });
   
@@ -78,6 +89,8 @@ export const loadTranslations = (
 ): boolean => {
   const { language, namespace = 'common', allLanguages = true } = options;
   
+  console.log(`[loadTranslations] Loading ${componentType} translations with options:`, { language, namespace, allLanguages });
+  
   try {
     if (allLanguages) {
       loadAllComponentTranslations(componentType, namespace);
@@ -89,7 +102,7 @@ export const loadTranslations = (
       return addComponentTranslations(i18n.language, componentType, namespace);
     }
   } catch (error) {
-    console.error(`Failed to load translations for ${componentType}:`, error);
+    console.error(`[loadTranslations] Failed to load translations for ${componentType}:`, error);
     return false;
   }
 };

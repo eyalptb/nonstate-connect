@@ -1,3 +1,4 @@
+
 import i18n from '@/i18n';
 import { loadTranslations } from './translationCore';
 import { addTranslations } from './translationHelpers';
@@ -86,10 +87,48 @@ export const addPricingTranslations = (language = i18n.language) => {
 
 export const loadAllPricingTranslations = () => loadTranslations('pricing', { allLanguages: true });
 
-// Contact Sales translations
+// Contact Sales translations - Fixed to properly load the contactSales namespace
 export const addContactSalesTranslations = (language = i18n.language) => {
+  console.log(`Adding contactSales translations for ${language}`);
+  
+  // Log available translations
+  console.log(`Available contactSales translations:`, Object.keys(contactSalesTranslations));
+  
+  // Get the translation data with proper fallback
   const contactSalesData = getTranslationsWithFallback(contactSalesTranslations, language)?.contactSales || {};
-  return addTranslations(language, 'common', { contactSales: contactSalesData });
+  
+  // Log what we're adding to help debug
+  console.log(`ContactSales data to add:`, contactSalesData);
+  
+  // Add the translations to the i18n instance
+  const result = addTranslations(language, 'common', { contactSales: contactSalesData });
+  
+  // Log the result
+  console.log(`Added contactSales translations for ${language}: ${result ? 'success' : 'failed'}`);
+  
+  return result;
 };
 
-export const loadAllContactSalesTranslations = () => loadTranslations('contactSales', { allLanguages: true });
+export const loadAllContactSalesTranslations = () => {
+  console.log('Loading all ContactSales translations');
+  
+  // Get all supported languages
+  const supportedLangs = i18n.options.supportedLngs || [];
+  
+  // Log available languages
+  console.log(`Supported languages:`, supportedLangs);
+  
+  // First add the translations for the current language to ensure immediate visibility
+  addContactSalesTranslations(i18n.language);
+  
+  // Then load all translations in the background
+  const result = loadTranslations('contactSales', { allLanguages: true });
+  
+  // Force a reload of the current language's resources to ensure they're loaded
+  i18n.reloadResources(i18n.language, ['common']);
+  
+  // Dispatch an event to notify that translations have been loaded
+  document.dispatchEvent(new Event('i18n-resources-loaded'));
+  
+  return result;
+};

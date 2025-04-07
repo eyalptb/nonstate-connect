@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,17 +10,53 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PhoneCall, Mail, MessageSquare, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
-import { loadAllContactSalesTranslations } from "@/utils/translationLoader";
+import { loadAllContactSalesTranslations, addContactSalesTranslations } from "@/utils/translationLoader";
+import { contactSalesTranslations } from "@/utils/translations/contactSalesTranslations";
 
 const ContactSales = () => {
   const { t, i18n } = useTranslation();
   const isEnglish = i18n.language === 'en' || i18n.language.startsWith('en-');
+  const [translationsLoaded, setTranslationsLoaded] = useState(false);
 
   useEffect(() => {
-    // Load contact sales translations when component mounts
+    console.log("ContactSales component mounted with language:", i18n.language);
+    
+    // First, add translations directly for the current language
+    const directAddResult = addContactSalesTranslations(i18n.language);
+    console.log(`Direct translation add result: ${directAddResult}`);
+    
+    // Then, load all translations in the background
     loadAllContactSalesTranslations();
-  }, []);
+    
+    // Check if translations are available for debugging
+    const resourceBundle = i18n.getResourceBundle(i18n.language, 'common');
+    console.log("Current resource bundle has contactSales:", resourceBundle && !!resourceBundle.contactSales);
+    
+    if (resourceBundle?.contactSales) {
+      console.log("Sample translation:", t("contactSales.title"));
+    }
+    
+    // Set up an event listener for when translations are loaded
+    const handleTranslationsLoaded = () => {
+      console.log("Translations loaded event received");
+      setTranslationsLoaded(prev => !prev); // Toggle to force a re-render
+    };
+    
+    document.addEventListener('i18n-resources-loaded', handleTranslationsLoaded);
+    
+    return () => {
+      document.removeEventListener('i18n-resources-loaded', handleTranslationsLoaded);
+    };
+  }, [i18n.language, t]);
+
+  // Access translations directly if needed for debugging
+  const directTranslation = isEnglish ? 
+    null : 
+    contactSalesTranslations[i18n.language]?.contactSales?.title || 
+    contactSalesTranslations.en.contactSales.title;
+  
+  console.log("Direct translation access:", directTranslation);
+  console.log("Translation via t function:", t("contactSales.title"));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
