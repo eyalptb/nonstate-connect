@@ -3,8 +3,8 @@ import i18n from '@/i18n';
 import { learnTranslations } from './learnTranslations';
 
 /**
- * Force load learn translations 
- * This function directly applies translations to fix loading issues
+ * Apply learn translations directly to ensure they're available
+ * This function directly flattens and applies translations
  */
 export const forceLoadLearnTranslations = (language?: string) => {
   const lang = language || i18n.language;
@@ -14,8 +14,7 @@ export const forceLoadLearnTranslations = (language?: string) => {
   }
   
   try {
-    // Direct approach - add translations as flat keys
-    // This ensures they're properly accessible via t('learn.title') etc.
+    // Flatten nested objects with dot notation for proper i18next access
     const flatKeys: Record<string, string> = {};
     
     // Helper function to flatten nested objects with dot notation

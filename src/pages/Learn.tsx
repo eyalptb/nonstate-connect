@@ -11,25 +11,16 @@ const Learn = () => {
   
   // Load learn translations when component mounts or language changes
   useEffect(() => {
-    const loadTranslations = async () => {
-      // Apply translations directly from source
-      if (i18n.language) {
-        forceLoadLearnTranslations(i18n.language);
-      }
-    };
-    
-    loadTranslations();
+    if (i18n.language) {
+      forceLoadLearnTranslations(i18n.language);
+    }
   }, [i18n.language]);
-  
-  // Get translations with fallbacks
-  const pageTitle = t('learn.title', 'Learning Resources');
-  const pageDescription = t('learn.description', 'Expand your knowledge with guides, tutorials, and best practices');
   
   return (
     <div className="container mx-auto py-12 px-4">
       <PageHeader
-        title={pageTitle}
-        description={pageDescription}
+        title={t('learn.title', 'Learning Resources')}
+        description={t('learn.description', 'Expand your knowledge with guides, tutorials, and best practices')}
       />
       
       <LearnTabs />
