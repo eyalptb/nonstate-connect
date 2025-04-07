@@ -15,6 +15,7 @@ declare global {
   interface Window {
     reloadTranslations: (language: string) => Promise<boolean>;
     i18n: typeof i18n; // Make i18n available globally for debugging
+    forceLoadLearnTranslations: (language?: string) => boolean; // Add for direct access
   }
 }
 
@@ -45,11 +46,19 @@ const addInMemoryTranslations = (language: string) => {
     i18n.addResourceBundle(language, 'common', backendTranslations[language], true, true);
   }
   
-  // Add Learn translations directly from the module
+  // Add Learn translations directly during initialization
   if (learnTranslations[language]) {
     console.log(`[i18n] Adding learn translations for ${language} during initialization`);
     console.log(`[i18n] Learn translations structure for ${language}:`, learnTranslations[language]);
+    
+    // First add the entire object
     i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
+    
+    // Then add just the learn part specifically to ensure it's there
+    if (learnTranslations[language].learn) {
+      const learnOnly = { learn: learnTranslations[language].learn };
+      i18n.addResourceBundle(language, 'common', learnOnly, true, true);
+    }
     
     // Verify the translations were added correctly
     const bundle = i18n.getResourceBundle(language, 'common');
@@ -58,6 +67,7 @@ const addInMemoryTranslations = (language: string) => {
   }
 };
 
+// Initialize i18n with our configuration
 i18n
   .use(HttpBackend)
   .use(LanguageDetector)
@@ -92,10 +102,10 @@ i18n
     fallbackNS: 'common'
   });
 
+// Set up event handlers
 i18n.on('initialized', () => {
   console.log('[i18n] Initialized with language:', i18n.language);
   console.log('[i18n] Available namespaces:', i18n.options.ns);
-  console.log('[i18n] Supported languages:', i18n.options.supportedLngs);
   
   // Add in-memory translations for current language
   addInMemoryTranslations(i18n.language);
@@ -113,10 +123,16 @@ i18n.on('initialized', () => {
     console.warn(`[i18n] Learn translations not present after initialization, adding them explicitly`);
     if (learnTranslations[i18n.language]) {
       console.log(`[i18n] Adding learn translations for ${i18n.language} manually after init`);
-      i18n.addResourceBundle(i18n.language, 'common', learnTranslations[i18n.language], true, true);
+      
+      // Create an object with just the learn key
+      const learnOnly = { learn: learnTranslations[i18n.language].learn };
+      i18n.addResourceBundle(i18n.language, 'common', learnOnly, true, true);
     } else if (learnTranslations['en']) {
       console.log(`[i18n] Adding English learn translations as fallback`);
-      i18n.addResourceBundle(i18n.language, 'common', learnTranslations['en'], true, true);
+      
+      // Create an object with just the learn key
+      const learnOnly = { learn: learnTranslations['en'].learn };
+      i18n.addResourceBundle(i18n.language, 'common', learnOnly, true, true);
     }
   } else {
     console.log(`[i18n] Learn translations correctly loaded during initialization`);
@@ -151,35 +167,29 @@ i18n.on('languageChanged', (lng) => {
     console.warn(`[i18n] Learn translations missing after language change, adding them explicitly`);
     if (learnTranslations[lng]) {
       console.log(`[i18n] Adding learn translations for ${lng} after language change`);
-      console.log(`[i18n] Learn translations structure to be added:`, learnTranslations[lng]);
-      i18n.addResourceBundle(lng, 'common', learnTranslations[lng], true, true);
       
-      // Verify they were added correctly
-      const updatedResources = i18n.getResourceBundle(lng, 'common');
-      console.log(`[i18n] Learn translations present after manual add:`, 
-        updatedResources && updatedResources.learn ? "Yes" : "No");
+      // Create an object with just the learn key
+      const learnOnly = { learn: learnTranslations[lng].learn };
+      i18n.addResourceBundle(lng, 'common', learnOnly, true, true);
     } else if (learnTranslations['en']) {
-      console.log(`[i18n] Adding English learn translations as fallback after language change`);
-      i18n.addResourceBundle(lng, 'common', learnTranslations['en'], true, true);
+      console.log(`[i18n] Adding English learn translations as fallback`);
+      
+      // Create an object with just the learn key
+      const learnOnly = { learn: learnTranslations['en'].learn };
+      i18n.addResourceBundle(lng, 'common', learnOnly, true, true);
     }
   }
   
   // Reload resources to ensure everything is up-to-date
-  i18n.reloadResources([lng], ['common', 'navigation', 'auth', 'messaging', 'governance'])
+  i18n.reloadResources([lng], ['common'])
     .then(() => {
       console.log(`[i18n] Successfully reloaded resources for ${lng}`);
-      
-      // Check if learn translations are present after reload
-      const reloadedBundle = i18n.getResourceBundle(lng, 'common');
-      console.log(`[i18n] Learn translations present after reload:`, 
-        reloadedBundle && reloadedBundle.learn ? "Yes" : "No");
-      
-      // Dispatch an event that components can listen for to know when to update
       document.dispatchEvent(new Event('i18n-resources-loaded'));
     })
     .catch((error) => console.error(`[i18n] Failed to reload resources for ${lng}:`, error));
 });
 
+// Expose reloadTranslations function for global use
 export const reloadTranslations = async (language: string) => {
   try {
     console.log(`[i18n] Reloading translations for ${language}`);
@@ -188,7 +198,7 @@ export const reloadTranslations = async (language: string) => {
     addInMemoryTranslations(language);
     
     // Reload resources
-    await i18n.reloadResources(language, ['common', 'navigation', 'auth', 'messaging', 'governance']);
+    await i18n.reloadResources(language, ['common']);
     
     // Verify translations were added correctly
     const resources = i18n.getResourceBundle(language, 'common');
@@ -200,15 +210,16 @@ export const reloadTranslations = async (language: string) => {
       console.warn(`[i18n] Learn translations missing after reload, adding them explicitly`);
       if (learnTranslations[language]) {
         console.log(`[i18n] Adding learn translations during reload for ${language}`);
-        i18n.addResourceBundle(language, 'common', learnTranslations[language], true, true);
         
-        // Verify once more
-        const finalCheck = i18n.getResourceBundle(language, 'common');
-        console.log(`[i18n] Final check - Learn translations present:`, 
-          finalCheck && finalCheck.learn ? "Yes" : "No");
+        // Create an object with just the learn key
+        const learnOnly = { learn: learnTranslations[language].learn };
+        i18n.addResourceBundle(language, 'common', learnOnly, true, true);
       } else if (learnTranslations['en']) {
-        console.log(`[i18n] Adding English learn translations as fallback during reload`);
-        i18n.addResourceBundle(language, 'common', learnTranslations['en'], true, true);
+        console.log(`[i18n] Adding English learn translations as fallback`);
+        
+        // Create an object with just the learn key
+        const learnOnly = { learn: learnTranslations['en'].learn };
+        i18n.addResourceBundle(language, 'common', learnOnly, true, true);
       }
     }
     
@@ -221,9 +232,14 @@ export const reloadTranslations = async (language: string) => {
   }
 };
 
+// Add the forceLoadLearnTranslations function from translationDebugger
+import { forceLoadLearnTranslations } from '@/utils/translations/translationDebugger';
+
+// Make functions available globally for debugging
 if (typeof window !== 'undefined') {
   window.reloadTranslations = reloadTranslations;
   window.i18n = i18n;
+  window.forceLoadLearnTranslations = forceLoadLearnTranslations;
 }
 
 export default i18n;
