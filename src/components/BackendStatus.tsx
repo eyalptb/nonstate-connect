@@ -52,7 +52,7 @@ const BackendStatus = () => {
           toast.error(t("backend.connection_failure", "Failed to connect to {{backend}} backend", { backend: backendType }));
         } else {
           setIsConnected(true);
-          toast.success(t("backend.connection_success", "Successfully connected to {{backend}} backend", { backend: backendType }));
+          // Success notification removed for Supabase connections
         }
       }
     } catch (error) {
