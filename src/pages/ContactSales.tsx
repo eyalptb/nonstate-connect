@@ -10,46 +10,70 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PhoneCall, Mail, MessageSquare, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { loadAllContactSalesTranslations } from "@/utils/translationLoader";
+import { addInMemoryTranslations } from '@/i18n/inMemoryTranslations';
 import { contactSalesTranslations } from "@/utils/translations/contactSalesTranslations";
+import useI18nInit from "@/hooks/useI18nInit";
 
 const ContactSales = () => {
   const { t, i18n } = useTranslation();
   const [translationsLoaded, setTranslationsLoaded] = useState(false);
+  const isI18nInitialized = useI18nInit();
 
   useEffect(() => {
+    if (!isI18nInitialized) return;
+    
     console.log("ContactSales component mounted with language:", i18n.language);
     
-    // Load all translations for contactSales
-    loadAllContactSalesTranslations();
+    // Force load translations for current language
+    addInMemoryTranslations(i18n.language);
     
-    // Check if translations are available for debugging
+    // Check if translations are available before attempting to use them
     const resourceBundle = i18n.getResourceBundle(i18n.language, 'common');
-    console.log("Current resource bundle has contactSales:", resourceBundle && !!resourceBundle.contactSales);
+    console.log("Resource bundle has contactSales:", resourceBundle && !!resourceBundle.contactSales);
     
-    // Set up an event listener for when translations are loaded
-    const handleTranslationsLoaded = () => {
-      console.log("Translations loaded event received");
-      setTranslationsLoaded(prev => !prev); // Toggle to force a re-render
+    if (resourceBundle?.contactSales) {
+      console.log("ContactSales keys:", Object.keys(resourceBundle.contactSales));
+      console.log("Form translation:", resourceBundle.contactSales.form?.lastName || "missing");
+    }
+    
+    // Try to reload translations to ensure they're available
+    i18n.reloadResources([i18n.language], ['common']).then(() => {
+      setTranslationsLoaded(prev => !prev);
+    });
+    
+    // Setup a listener for language changes
+    const handleLanguageChanged = () => {
+      console.log("Language changed to:", i18n.language);
+      addInMemoryTranslations(i18n.language);
+      i18n.reloadResources([i18n.language], ['common']).then(() => {
+        setTranslationsLoaded(prev => !prev);
+      });
     };
     
-    document.addEventListener('i18n-resources-loaded', handleTranslationsLoaded);
+    i18n.on('languageChanged', handleLanguageChanged);
     
     return () => {
-      document.removeEventListener('i18n-resources-loaded', handleTranslationsLoaded);
+      i18n.off('languageChanged', handleLanguageChanged);
     };
-  }, [i18n.language]);
+  }, [i18n, isI18nInitialized]);
+
+  // Function to safely get translations with fallback
+  const safeT = (key: string, defaultValue: string = "") => {
+    const value = t(key);
+    // If key equals value, translation is missing
+    return value === key ? defaultValue : value;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success(t("contactSales.successMessage"));
+    toast.success(safeT("contactSales.successMessage", "Your message has been sent! Our sales team will contact you shortly."));
   };
 
   return (
     <div className="container mx-auto py-12 px-4">
       <PageHeader
-        title={t("contactSales.title")}
-        description={t("contactSales.description")}
+        title={safeT("contactSales.title", "Contact Our Sales Team")}
+        description={safeT("contactSales.description", "Have questions about our enterprise solutions? Our team is ready to help.")}
       />
 
       <div className="grid md:grid-cols-3 gap-8 mt-12">
@@ -59,19 +83,19 @@ const ContactSales = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">{t("contactSales.form.firstName")}</Label>
+                    <Label htmlFor="firstName">{safeT("contactSales.form.firstName", "First Name")}</Label>
                     <Input 
                       id="firstName" 
-                      placeholder={t("contactSales.form.placeholders.firstName")} 
+                      placeholder={safeT("contactSales.form.placeholders.firstName", "Your first name")} 
                       required 
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">{t("contactSales.form.lastName")}</Label>
+                    <Label htmlFor="lastName">{safeT("contactSales.form.lastName", "Last Name")}</Label>
                     <Input 
                       id="lastName" 
-                      placeholder={t("contactSales.form.placeholders.lastName")} 
+                      placeholder={safeT("contactSales.form.placeholders.lastName", "Your last name")} 
                       required 
                     />
                   </div>
@@ -79,77 +103,77 @@ const ContactSales = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="email">{t("contactSales.form.email")}</Label>
+                    <Label htmlFor="email">{safeT("contactSales.form.email", "Email")}</Label>
                     <Input 
                       id="email" 
                       type="email" 
-                      placeholder={t("contactSales.form.placeholders.email")} 
+                      placeholder={safeT("contactSales.form.placeholders.email", "Your email address")} 
                       required 
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="phone">{t("contactSales.form.phone")}</Label>
+                    <Label htmlFor="phone">{safeT("contactSales.form.phone", "Phone Number")}</Label>
                     <Input 
                       id="phone" 
                       type="tel" 
-                      placeholder={t("contactSales.form.placeholders.phone")} 
+                      placeholder={safeT("contactSales.form.placeholders.phone", "Your phone number")} 
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="company">{t("contactSales.form.company")}</Label>
+                  <Label htmlFor="company">{safeT("contactSales.form.company", "Company")}</Label>
                   <Input 
                     id="company" 
-                    placeholder={t("contactSales.form.placeholders.company")} 
+                    placeholder={safeT("contactSales.form.placeholders.company", "Your organization name")} 
                     required 
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="employeeCount">{t("contactSales.form.employeeCount")}</Label>
+                  <Label htmlFor="employeeCount">{safeT("contactSales.form.employeeCount", "Number of Employees")}</Label>
                   <Select>
                     <SelectTrigger id="employeeCount">
-                      <SelectValue placeholder={t("contactSales.form.placeholders.employeeCount")} />
+                      <SelectValue placeholder={safeT("contactSales.form.placeholders.employeeCount", "Select company size")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1-10">{t("contactSales.form.options.employees.small")}</SelectItem>
-                      <SelectItem value="11-50">{t("contactSales.form.options.employees.medium")}</SelectItem>
-                      <SelectItem value="51-200">{t("contactSales.form.options.employees.large")}</SelectItem>
-                      <SelectItem value="201-500">{t("contactSales.form.options.employees.xlarge")}</SelectItem>
-                      <SelectItem value="501+">{t("contactSales.form.options.employees.enterprise")}</SelectItem>
+                      <SelectItem value="1-10">{safeT("contactSales.form.options.employees.small", "1-10 employees")}</SelectItem>
+                      <SelectItem value="11-50">{safeT("contactSales.form.options.employees.medium", "11-50 employees")}</SelectItem>
+                      <SelectItem value="51-200">{safeT("contactSales.form.options.employees.large", "51-200 employees")}</SelectItem>
+                      <SelectItem value="201-500">{safeT("contactSales.form.options.employees.xlarge", "201-500 employees")}</SelectItem>
+                      <SelectItem value="501+">{safeT("contactSales.form.options.employees.enterprise", "501+ employees")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="interest">{t("contactSales.form.interest")}</Label>
+                  <Label htmlFor="interest">{safeT("contactSales.form.interest", "What are you interested in?")}</Label>
                   <Select>
                     <SelectTrigger id="interest">
-                      <SelectValue placeholder={t("contactSales.form.placeholders.interest")} />
+                      <SelectValue placeholder={safeT("contactSales.form.placeholders.interest", "Select your interest")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="enterprise">{t("contactSales.form.options.interests.enterprise")}</SelectItem>
-                      <SelectItem value="security">{t("contactSales.form.options.interests.security")}</SelectItem>
-                      <SelectItem value="governance">{t("contactSales.form.options.interests.governance")}</SelectItem>
-                      <SelectItem value="custom">{t("contactSales.form.options.interests.custom")}</SelectItem>
-                      <SelectItem value="other">{t("contactSales.form.options.interests.other")}</SelectItem>
+                      <SelectItem value="enterprise">{safeT("contactSales.form.options.interests.enterprise", "Enterprise Solutions")}</SelectItem>
+                      <SelectItem value="security">{safeT("contactSales.form.options.interests.security", "Security Features")}</SelectItem>
+                      <SelectItem value="governance">{safeT("contactSales.form.options.interests.governance", "Governance Tools")}</SelectItem>
+                      <SelectItem value="custom">{safeT("contactSales.form.options.interests.custom", "Custom Integrations")}</SelectItem>
+                      <SelectItem value="other">{safeT("contactSales.form.options.interests.other", "Other")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="message">{t("contactSales.form.message")}</Label>
+                  <Label htmlFor="message">{safeT("contactSales.form.message", "Message")}</Label>
                   <Textarea 
                     id="message" 
-                    placeholder={t("contactSales.form.placeholders.message")} 
+                    placeholder={safeT("contactSales.form.placeholders.message", "Tell us about your needs and requirements")} 
                     rows={5}
                     required
                   />
                 </div>
 
-                <Button type="submit" className="w-full">{t("contactSales.form.submit")}</Button>
+                <Button type="submit" className="w-full">{safeT("contactSales.form.submit", "Submit Inquiry")}</Button>
               </form>
             </CardContent>
           </Card>
@@ -162,36 +186,36 @@ const ContactSales = () => {
                 <div className="flex items-start gap-4">
                   <PhoneCall className="h-5 w-5 text-primary mt-1" />
                   <div>
-                    <h3 className="font-medium">{t("contactSales.contact.call")}</h3>
-                    <p className="text-muted-foreground mt-1">{t("contactSales.contact.callDescription")}</p>
-                    <p className="mt-2">{t("contactSales.contact.phone")}</p>
+                    <h3 className="font-medium">{safeT("contactSales.contact.call", "Call us")}</h3>
+                    <p className="text-muted-foreground mt-1">{safeT("contactSales.contact.callDescription", "Speak directly with a sales specialist")}</p>
+                    <p className="mt-2">{safeT("contactSales.contact.phone", "+1 (555) 123-4567")}</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-4">
                   <Mail className="h-5 w-5 text-primary mt-1" />
                   <div>
-                    <h3 className="font-medium">{t("contactSales.contact.email")}</h3>
-                    <p className="text-muted-foreground mt-1">{t("contactSales.contact.emailDescription")}</p>
-                    <p className="mt-2">{t("contactSales.contact.emailAddress")}</p>
+                    <h3 className="font-medium">{safeT("contactSales.contact.email", "Email us")}</h3>
+                    <p className="text-muted-foreground mt-1">{safeT("contactSales.contact.emailDescription", "Send us an email anytime")}</p>
+                    <p className="mt-2">{safeT("contactSales.contact.emailAddress", "sales@paracollab.com")}</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-4">
                   <Clock className="h-5 w-5 text-primary mt-1" />
                   <div>
-                    <h3 className="font-medium">{t("contactSales.contact.hours")}</h3>
-                    <p className="text-muted-foreground mt-1">{t("contactSales.contact.hoursDescription")}</p>
-                    <p className="mt-2">{t("contactSales.contact.hoursDetails")}</p>
+                    <h3 className="font-medium">{safeT("contactSales.contact.hours", "Business Hours")}</h3>
+                    <p className="text-muted-foreground mt-1">{safeT("contactSales.contact.hoursDescription", "We're available")}</p>
+                    <p className="mt-2">{safeT("contactSales.contact.hoursDetails", "Monday - Friday: 9am - 5pm EST")}</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-4">
                   <MessageSquare className="h-5 w-5 text-primary mt-1" />
                   <div>
-                    <h3 className="font-medium">{t("contactSales.contact.chat")}</h3>
-                    <p className="text-muted-foreground mt-1">{t("contactSales.contact.chatDescription")}</p>
-                    <Button variant="outline" className="mt-2 w-full">{t("contactSales.contact.startChat")}</Button>
+                    <h3 className="font-medium">{safeT("contactSales.contact.chat", "Live Chat")}</h3>
+                    <p className="text-muted-foreground mt-1">{safeT("contactSales.contact.chatDescription", "Chat with our sales team")}</p>
+                    <Button variant="outline" className="mt-2 w-full">{safeT("contactSales.contact.startChat", "Start Chat")}</Button>
                   </div>
                 </div>
               </div>

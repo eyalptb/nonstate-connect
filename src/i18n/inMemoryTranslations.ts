@@ -62,8 +62,7 @@ export const addInMemoryTranslations = (language: string) => {
     safeAddResourceBundle(language, 'common', { pricing: pricingData });
     
     // For contactSales translations, properly format and add them
-    // This is the most important part for the current issue
-    const contactSalesData = contactSalesTranslations[language]?.contactSales || contactSalesTranslations[fallbackLang]?.contactSales;
+    const contactSalesData = contactSalesTranslations[language] || contactSalesTranslations[fallbackLang];
     
     if (contactSalesData) {
       console.log(`[inMemoryTranslations] Adding contactSales translations for ${language}`);
@@ -80,6 +79,8 @@ export const addInMemoryTranslations = (language: string) => {
       console.warn(`[inMemoryTranslations] No contactSales translations found for ${language}`);
     }
     
+    // Force reload resources to ensure translations are immediately available
+    i18n.reloadResources([language], ['common']);
   } catch (error) {
     // Fail silently for stability
     console.error('[inMemoryTranslations] Error adding translations:', error);
