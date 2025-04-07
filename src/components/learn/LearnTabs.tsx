@@ -38,13 +38,16 @@ export const LearnTabs = () => {
       // If we still don't have translations, use a direct approach
       if (!hasLearnSection && i18n.options.resources && i18n.options.resources[i18n.language]) {
         const translations = getLearnTranslationForLanguage(i18n.language) || 
-                            getLearnTranslationForLanguage('en');
+                             getLearnTranslationForLanguage('en');
         
         if (translations) {
-          i18n.options.resources[i18n.language].common = {
-            ...i18n.options.resources[i18n.language].common,
-            ...translations
-          };
+          // Use Object.assign for type safety
+          const currentResources = i18n.options.resources[i18n.language].common || {};
+          i18n.options.resources[i18n.language].common = Object.assign(
+            {},
+            currentResources,
+            translations
+          );
           console.log(`[LearnTabs] Applied emergency direct translation approach for ${i18n.language}`);
         }
       }

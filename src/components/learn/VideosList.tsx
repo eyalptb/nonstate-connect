@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { Video } from "lucide-react";
 import { ResourceCard } from "./ResourceCard";
@@ -8,8 +8,8 @@ import { addLearnTranslationsDirectly } from "@/utils/translations/learnTranslat
 export const VideosList = () => {
   const { t, i18n } = useTranslation();
   
-  // Ensure translations are loaded
-  useEffect(() => {
+  // Ensure translations are loaded on mount and language change
+  React.useEffect(() => {
     addLearnTranslationsDirectly(i18n.language);
   }, [i18n.language]);
 

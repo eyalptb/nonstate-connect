@@ -25,12 +25,17 @@ export const addLearnTranslationsDirectly = (language: string) => {
       } else {
         console.error(`[learnTranslations.ts] FAILED to verify learn translations for ${language} after adding`);
         
-        // Special emergency fix - add translations directly to the bundle
-        if (i18n.options.resources && i18n.options.resources[language] && importedLearnTranslations[language]) {
-          i18n.options.resources[language].common = {
-            ...i18n.options.resources[language].common,
-            ...importedLearnTranslations[language]
-          };
+        // Special emergency fix - add translations directly to the resources
+        if (i18n.options.resources && i18n.options.resources[language]) {
+          const currentResources = i18n.options.resources[language].common || {};
+          const learnTranslationsObj = importedLearnTranslations[language] || {};
+          
+          i18n.options.resources[language].common = Object.assign(
+            {}, 
+            currentResources, 
+            learnTranslationsObj
+          );
+          
           console.log(`[learnTranslations.ts] Emergency fix applied for ${language}`);
         }
       }
@@ -57,10 +62,14 @@ export const forceAddAllLearnTranslations = () => {
       
       // Apply emergency direct approach for persistent issues
       if (i18n.options.resources && i18n.options.resources[lang]) {
-        i18n.options.resources[lang].common = {
-          ...i18n.options.resources[lang].common,
-          ...importedLearnTranslations[lang]
-        };
+        const currentResources = i18n.options.resources[lang].common || {};
+        const learnTranslationsObj = importedLearnTranslations[lang] || {};
+        
+        i18n.options.resources[lang].common = Object.assign(
+          {},
+          currentResources,
+          learnTranslationsObj
+        );
       }
       
       // Verify translations were added

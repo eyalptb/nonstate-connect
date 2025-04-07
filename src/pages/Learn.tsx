@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { useTranslation } from "react-i18next";
 import { LearnTabs } from "@/components/learn/LearnTabs";
 import { NewsletterSignup } from "@/components/learn/NewsletterSignup";
-import { forceAddAllLearnTranslations } from "@/utils/translations/learnTranslations";
+import { forceAddAllLearnTranslations, addLearnTranslationsDirectly } from "@/utils/translations/learnTranslations";
 
 const Learn = () => {
   const { t, i18n } = useTranslation();
@@ -16,6 +16,9 @@ const Learn = () => {
     // Make sure ALL languages are loaded
     forceAddAllLearnTranslations();
     
+    // Explicitly add translations for current language
+    addLearnTranslationsDirectly(i18n.language);
+    
     // Create a function to check if translations exist
     const verifyTranslations = () => {
       const bundle = i18n.getResourceBundle(i18n.language, 'common');
@@ -24,6 +27,10 @@ const Learn = () => {
       console.log(`[Learn] Translation verification: ${hasLearnSection ? 'SUCCESS' : 'FAILED'}`);
       if (hasLearnSection) {
         console.log(`[Learn] Available keys: ${Object.keys(bundle.learn).join(', ')}`);
+      } else {
+        // One last emergency attempt if verification fails
+        console.log(`[Learn] Emergency application of translations for ${i18n.language}`);
+        addLearnTranslationsDirectly(i18n.language);
       }
     };
     
