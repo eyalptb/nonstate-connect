@@ -8,6 +8,7 @@ import { backendTranslations } from './backendTranslations';
 import { featurePageTranslations } from './featurePageTranslations';
 import { useCasesTranslations } from './useCasesTranslations';
 import { learnTranslations } from './learnTranslations';
+import { pricingTranslations } from './pricingTranslations';
 
 /**
  * Type for component translation resources
@@ -27,7 +28,8 @@ export const translationResources: TranslationResources = {
   backend: backendTranslations,
   featurePage: featurePageTranslations,
   useCases: useCasesTranslations,
-  learn: learnTranslations
+  learn: learnTranslations,
+  pricing: pricingTranslations
 };
 
 /**

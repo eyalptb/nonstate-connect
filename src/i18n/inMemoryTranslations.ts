@@ -7,6 +7,7 @@ import { projectTranslations } from '@/utils/translations/projectTranslations';
 import { footerTranslations } from '@/utils/translations/footerTranslations';
 import { backendTranslations } from '@/utils/translations/backendTranslations';
 import { learnTranslations } from '@/utils/translations/learnTranslations';
+import { pricingTranslations } from '@/utils/translations/pricingTranslations';
 
 /**
  * Adds in-memory translations for the specified language
@@ -36,6 +37,11 @@ export const addInMemoryTranslations = (language: string) => {
   
   if (backendTranslations[language]) {
     i18n.addResourceBundle(language, 'common', backendTranslations[language], true, true);
+  }
+  
+  // Add Pricing translations
+  if (pricingTranslations[language]) {
+    i18n.addResourceBundle(language, 'common', pricingTranslations[language], true, true);
   }
   
   // Add Learn translations directly during initialization
