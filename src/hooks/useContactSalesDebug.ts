@@ -62,7 +62,6 @@ export const useContactSalesDebug = () => {
         const isContactSalesLoaded = reloadedResources?.contactSales && Object.keys(reloadedResources.contactSales).length > 0;
         
         toast({
-          title: "Debug info",
           description: `ContactSales translations ${isContactSalesLoaded ? 'found' : 'NOT found'} for ${i18n.language}. Check console.`,
         });
       } catch (error) {
@@ -105,7 +104,6 @@ export const useContactSalesDebug = () => {
       
       // Toast notification
       toast({
-        title: "Debug info",
         description: `Found ${contactSalesKeys.length} contactSales translation keys. Check console.`,
       });
     }
