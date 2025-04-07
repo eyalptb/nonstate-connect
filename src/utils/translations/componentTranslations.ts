@@ -1,6 +1,7 @@
 
 import { loadTranslations } from './translationCore';
 import i18n from '@/i18n';
+import { forceAddAllLearnTranslations, addLearnTranslationsDirectly } from './learnTranslations';
 
 // Specific loaders for each component type
 
@@ -64,53 +65,40 @@ export const loadAllUseCasesTranslations = () =>
 export const addLearnTranslations = (language: string) => {
   console.log(`[componentTranslations] Adding learn translations for ${language}`);
   
-  // Get current translation data
-  const currentTranslations = i18n.getResourceBundle(language, 'common');
+  // Add translations directly first for immediate availability
+  const directAddSuccess = addLearnTranslationsDirectly(language);
   
-  // Check if we already have learn translations
-  if (currentTranslations && currentTranslations.learn) {
-    console.log(`[componentTranslations] Learn translations already exist for ${language}`);
+  if (directAddSuccess) {
+    console.log(`[componentTranslations] Direct add of learn translations for ${language} succeeded`);
+  } else {
+    console.warn(`[componentTranslations] Direct add of learn translations for ${language} failed`);
   }
   
-  // Load the translations anyway to ensure they're up-to-date
+  // Then also load using the standard method as a backup
   return loadTranslations('learn', { language });
 };
 
 export const loadAllLearnTranslations = async () => {
   console.log('[componentTranslations] Loading all learn translations');
   
+  // Force add all translations directly first
+  forceAddAllLearnTranslations();
+  
   // Get current language
   const currentLang = i18n.language;
   console.log(`[componentTranslations] Current language: ${currentLang}`);
   
-  // Load translations for current language first
-  addLearnTranslations(currentLang);
+  // Load translations for current language specifically
+  const directAddSuccess = addLearnTranslationsDirectly(currentLang);
   
-  // Then load for all languages
-  const result = loadTranslations('learn', { allLanguages: true });
-  
-  // Explicitly verify that the current language has learn translations
-  console.log(`[componentTranslations] Verifying learn translations for current language: ${currentLang}`);
-  
-  // Get the current resource bundle
-  const resources = i18n.getResourceBundle(currentLang, 'common');
-  const hasLearnTranslations = resources && resources.learn && Object.keys(resources.learn).length > 0;
-  
-  if (!hasLearnTranslations) {
-    console.warn(`[componentTranslations] Learn translations missing for ${currentLang}, forcing reload`);
-    // Force reload resources for the current language
-    try {
-      await i18n.reloadResources([currentLang], ['common']);
-      console.log(`[componentTranslations] Resources reloaded for ${currentLang}`);
-      
-      // Add learn translations explicitly
-      return loadTranslations('learn', { language: currentLang });
-    } catch (error) {
-      console.error(`[componentTranslations] Error reloading resources: ${error}`);
-    }
+  if (directAddSuccess) {
+    console.log(`[componentTranslations] Direct add of learn translations for ${currentLang} succeeded`);
   } else {
-    console.log(`[componentTranslations] Learn translations verified for ${currentLang}`);
+    console.warn(`[componentTranslations] Direct add of learn translations for ${currentLang} failed, trying standard method`);
+    // Try standard method as backup
+    await loadTranslations('learn', { language: currentLang });
   }
   
-  return result;
+  // Also load for all languages
+  return loadTranslations('learn', { allLanguages: true });
 };

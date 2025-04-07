@@ -7,8 +7,11 @@ import { Newspaper } from "lucide-react";
 export const NewsletterSignup = () => {
   const { t, i18n } = useTranslation(['common']);
 
+  // Create unique key based on language to force re-render on language change
+  const newsletterKey = `newsletter-${i18n.language}`;
+
   return (
-    <div className="mt-16 bg-muted/30 p-8 rounded-lg border" key={`newsletter-${i18n.language}`}>
+    <div className="mt-16 bg-muted/30 p-8 rounded-lg border" key={newsletterKey}>
       <div className="flex flex-col md:flex-row justify-between items-center gap-6">
         <div className="flex items-center gap-4">
           <Newspaper className="h-12 w-12 text-primary" />
