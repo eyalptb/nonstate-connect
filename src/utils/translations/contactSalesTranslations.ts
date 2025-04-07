@@ -10,13 +10,10 @@ const contactSalesTranslations: Record<string, any> = {};
 
 // Add translations for each language
 supportedLanguages.forEach(lang => {
-  const translations = lang === 'en' ? en : 
-                      lang === 'ru' ? ru : 
-                      en; // fallback to English
-  
-  // Store translations with the proper structure
   contactSalesTranslations[lang] = {
-    contactSales: translations
+    contactSales: lang === 'en' ? en : 
+                 lang === 'ru' ? ru : 
+                 en // fallback to English
   };
 });
 

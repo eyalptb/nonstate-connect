@@ -1,7 +1,7 @@
 
 import { useEffect } from 'react';
 import i18n from '@/i18n';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 import useTranslationDebug from './useTranslationDebug';
 import useTranslationTester from './useTranslationTester';
 import { contactSalesTranslations } from '@/utils/translations/contactSalesTranslations';
