@@ -1,59 +1,38 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { useTranslation } from "react-i18next";
 import { LearnTabs } from "@/components/learn/LearnTabs";
 import { NewsletterSignup } from "@/components/learn/NewsletterSignup";
-import { loadAllLearnTranslations } from "@/utils/translationLoader";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import i18n from "@/i18n";
+import { learnTranslations } from "@/utils/translations/learn/index";
 
 const Learn = () => {
   const { t, i18n } = useTranslation(['common']);
+  const [translationsLoaded, setTranslationsLoaded] = useState(false);
 
   // Load learn page translations on mount
   useEffect(() => {
-    console.log("Learn page mounted, loading translations...");
+    console.log("Learn page mounted, forcefully adding translations for current language:", i18n.language);
     
-    // Immediately load the learn translations
-    loadAllLearnTranslations();
+    // Get translations for current language or fall back to English
+    const translations = learnTranslations[i18n.language] || learnTranslations['en'];
     
-    // Check if translations are loaded
-    const bundle = i18n.getResourceBundle(i18n.language, 'common');
-    const hasLearnSection = bundle && bundle.learn;
-    console.log(`Translation bundle for ${i18n.language} has learn section:`, hasLearnSection ? 'YES' : 'NO');
-    
-    if (!hasLearnSection) {
-      console.log("Learn translations not found, forcing addition");
-      // This will immediately make the translations available in this render cycle
-      import('@/utils/translations/learn/index').then(module => {
-        const translations = module.learnTranslations[i18n.language] || module.learnTranslations['en'];
-        i18n.addResourceBundle(i18n.language, 'common', { learn: translations }, true, true);
-        console.log("Learn translations added directly:", translations);
-      });
-    }
-  }, []);
-  
-  // Listen for language changes
-  useEffect(() => {
-    const handleLanguageChanged = () => {
-      console.log(`Language changed to: ${i18n.language}, reloading learn translations`);
-      loadAllLearnTranslations();
+    if (translations) {
+      // Add translations directly to i18n as a nested 'learn' object
+      i18n.addResourceBundle(
+        i18n.language, 
+        'common', 
+        { learn: translations }, 
+        true,  // deep merge
+        true   // overwrite
+      );
       
-      // Force-add translations directly after language change
-      import('@/utils/translations/learn/index').then(module => {
-        const translations = module.learnTranslations[i18n.language] || module.learnTranslations['en'];
-        i18n.addResourceBundle(i18n.language, 'common', { learn: translations }, true, true);
-        console.log("Learn translations added directly after language change:", translations);
-      });
-    };
-    
-    i18n.on('languageChanged', handleLanguageChanged);
-    
-    return () => {
-      i18n.off('languageChanged', handleLanguageChanged);
-    };
-  }, []);
+      console.log(`Directly added learn translations for ${i18n.language}`);
+      setTranslationsLoaded(true);
+    }
+  }, [i18n.language]); // Re-run when language changes
   
   return (
     <div className="container mx-auto py-12 px-4">
@@ -68,6 +47,24 @@ const Learn = () => {
           <h3 className="text-sm font-medium mb-2">Debug Language Selector</h3>
           <LanguageSelector variant="minimal" />
           <div className="text-xs mt-2 text-muted-foreground">Current: {i18n.language}</div>
+          
+          {/* Translation Status */}
+          <div className="text-xs mt-2 text-muted-foreground">
+            Translations: {translationsLoaded ? "Loaded" : "Loading..."}
+          </div>
+          
+          {/* Debug button to force reload */}
+          <button 
+            onClick={() => {
+              const translations = learnTranslations[i18n.language] || learnTranslations['en'];
+              i18n.addResourceBundle(i18n.language, 'common', { learn: translations }, true, true);
+              console.log("Manually reloaded learn translations");
+              setTranslationsLoaded(true);
+            }}
+            className="text-xs mt-2 px-2 py-1 bg-primary/10 rounded hover:bg-primary/20"
+          >
+            Force Reload Translations
+          </button>
         </div>
       </div>
       

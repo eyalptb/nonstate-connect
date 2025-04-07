@@ -5,20 +5,29 @@ import { useTranslation } from "react-i18next";
 import { GuidesList } from "./GuidesList";
 import { VideosList } from "./VideosList";
 import { ArticlesList } from "./ArticlesList";
-import { loadAllLearnTranslations } from "@/utils/translationLoader";
+import { learnTranslations } from "@/utils/translations/learn/index";
 
 export const LearnTabs = () => {
   const { t, i18n } = useTranslation(['common']);
 
   // Ensure translations are loaded when the tabs component renders
   useEffect(() => {
-    console.log("LearnTabs mounted, ensuring translations are loaded");
-    loadAllLearnTranslations();
+    console.log("LearnTabs mounted for language:", i18n.language);
     
-    // Force reload the namespace for the current language to ensure fresh data
-    i18n.reloadResources([i18n.language], ['common']).then(() => {
-      console.log("Resources reloaded in LearnTabs");
-    });
+    // Direct approach: get translations for current language or fall back to English
+    const translations = learnTranslations[i18n.language] || learnTranslations['en'];
+    
+    if (translations) {
+      // Add translations directly
+      i18n.addResourceBundle(
+        i18n.language, 
+        'common', 
+        { learn: translations }, 
+        true,  // deep merge
+        true   // overwrite
+      );
+      console.log("LearnTabs: Directly added translations for", i18n.language);
+    }
   }, [i18n.language]);
 
   // Create unique key for each language to force re-render on language change

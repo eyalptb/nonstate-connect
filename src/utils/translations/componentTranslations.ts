@@ -2,7 +2,7 @@
 import i18n from '@/i18n';
 import { addTranslations, getSupportedLanguages } from './translationHelpers';
 import { addComponentTranslations, loadAllComponentTranslations, loadTranslations } from './translationCore';
-import { learnTranslations } from './learnTranslations';
+import { learnTranslations } from './learn/index';
 
 // Wallet translations
 export const addWalletTranslations = (language: string, namespace: string = 'common') => {
@@ -89,7 +89,6 @@ export const addLearnTranslations = (language: string, namespace: string = 'comm
   }
   
   // Add the translations directly to i18n as a nested 'learn' object
-  // This ensures the translations are available under the 'learn' namespace
   const result = i18n.addResourceBundle(
     language, 
     namespace, 
@@ -100,11 +99,7 @@ export const addLearnTranslations = (language: string, namespace: string = 'comm
   
   console.log(`Added learn translations for ${language}, result:`, result ? 'Success' : 'Failed');
   
-  // Log the current state of translations after adding
-  const bundle = i18n.getResourceBundle(language, namespace);
-  console.log(`Resource bundle after adding learn translations:`, 
-    bundle && bundle.learn ? 'Has learn section' : 'Missing learn section');
-  
+  // Return the result of adding the translations
   return result;
 };
 
@@ -112,25 +107,13 @@ export const loadAllLearnTranslations = () => {
   const supportedLanguages = getSupportedLanguages();
   console.log("Loading learn translations for languages:", supportedLanguages);
   
+  // Force load for the current language first
+  addLearnTranslations(i18n.language);
+  
+  // Then load for all supported languages
   supportedLanguages.forEach(lang => {
-    const success = addLearnTranslations(lang);
-    if (success) {
-      console.log(`Successfully loaded learn translations for ${lang}`);
-    } else {
-      console.warn(`Failed to load learn translations for ${lang}, trying fallback`);
-      // Try to add English translations as fallback
-      if (lang !== 'en') {
-        addLearnTranslations('en');
-      }
+    if (lang !== i18n.language) { // Skip the current language as we already loaded it
+      addLearnTranslations(lang);
     }
   });
-  
-  // Make sure current language has translations
-  const currentLang = i18n.language;
-  const bundle = i18n.getResourceBundle(currentLang, 'common');
-  
-  if (!bundle || !bundle.learn) {
-    console.warn(`Current language ${currentLang} still missing learn translations after loadAll, adding directly`);
-    addLearnTranslations(currentLang);
-  }
 };
