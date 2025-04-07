@@ -130,7 +130,6 @@ export const addInMemoryTranslations = (language: string) => {
       let loadedDashboard = null;
       
       if (loadedBundle && typeof loadedBundle === 'object') {
-        // Use type assertion to safely access the dashboard property
         const bundleAsRecord = loadedBundle as Record<string, any>;
         if ('dashboard' in bundleAsRecord) {
           dashboardLoaded = true;

@@ -1,5 +1,4 @@
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { ArrowUpRight, MessageSquare, Vote, Users } from 'lucide-react';
 import { Activity } from '@/types/activity';
@@ -12,6 +11,9 @@ interface ActivityItemProps {
 export const ActivityItem: React.FC<ActivityItemProps> = ({ activity }) => {
   const { t, i18n } = useTranslation();
   const [translatedTitle, setTranslatedTitle] = useState<string>('');
+  const lastTranslationRef = useRef<string>('');
+  const translationAttempts = useRef<number>(0);
+  const maxAttempts = 5;
 
   useEffect(() => {
     // Function to update the translated title
@@ -22,10 +24,24 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity }) => {
       
       // Log translation for debugging
       console.log(`[ActivityItem] Trying to translate key: ${key}, current language: ${i18n.language}`);
+      
       const translation = t(key, { name: activity.target.name, defaultValue: defaultText });
       console.log(`[ActivityItem] Translation result:`, translation);
       
-      setTranslatedTitle(translation);
+      // Only update if we have a real translation (not a fallback)
+      if (translation !== defaultText || translationAttempts.current >= maxAttempts) {
+        setTranslatedTitle(translation);
+        lastTranslationRef.current = translation;
+      } else if (lastTranslationRef.current) {
+        // Keep the last valid translation if we're falling back and have a previous translation
+        console.log(`[ActivityItem] Using cached translation: ${lastTranslationRef.current}`);
+      } else {
+        // If we don't have a previous translation, use what we have
+        setTranslatedTitle(translation);
+      }
+      
+      // Increment attempt counter
+      translationAttempts.current++;
     };
 
     // Update translation immediately
@@ -34,7 +50,12 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity }) => {
     // Set up listener for when translations are loaded
     const handleTranslationsLoaded = () => {
       console.log(`[ActivityItem] Translations loaded event received, updating translation`);
-      updateTranslation();
+      
+      // Reset attempt counter
+      translationAttempts.current = 0;
+      
+      // Add a small delay to ensure translations are fully processed
+      setTimeout(updateTranslation, 150);
     };
     
     // Listen for the custom event
@@ -44,15 +65,27 @@ export const ActivityItem: React.FC<ActivityItemProps> = ({ activity }) => {
     const handleLanguageChanged = () => {
       console.log(`[ActivityItem] Language changed to ${i18n.language}, updating translation`);
       
+      // Reset attempt counter
+      translationAttempts.current = 0;
+      
       // Add a small delay to ensure translations are loaded
-      setTimeout(updateTranslation, 100);
+      setTimeout(updateTranslation, 150);
     };
     
     i18n.on('languageChanged', handleLanguageChanged);
     
+    // Try once more after a delay to catch any late-loading translations
+    const finalAttemptTimer = setTimeout(() => {
+      if (translationAttempts.current < maxAttempts) {
+        console.log(`[ActivityItem] Making final translation attempt`);
+        updateTranslation();
+      }
+    }, 1000);
+    
     return () => {
       document.removeEventListener('i18n-resources-loaded', handleTranslationsLoaded);
       i18n.off('languageChanged', handleLanguageChanged);
+      clearTimeout(finalAttemptTimer);
     };
   }, [activity, t, i18n]);
 
