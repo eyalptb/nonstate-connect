@@ -131,7 +131,7 @@ const Pricing = () => {
                 <CardContent>
                   <ul className="space-y-3">
                     {getFeatures('pricing.features.starter', starterFeatures).map((feature, index) => (
-                      <li key={`starter-feature-${index}`} className="flex items-center">
+                      <li key={`starter-feature-${index}-${i18n.language}`} className="flex items-center">
                         <Check className="mr-2 h-4 w-4 text-primary" />
                         <span>{feature}</span>
                       </li>
@@ -161,7 +161,7 @@ const Pricing = () => {
                 <CardContent>
                   <ul className="space-y-3">
                     {getFeatures('pricing.features.professional', professionalFeatures).map((feature, index) => (
-                      <li key={`pro-feature-${index}`} className="flex items-center">
+                      <li key={`pro-feature-${index}-${i18n.language}`} className="flex items-center">
                         <Check className="mr-2 h-4 w-4 text-primary" />
                         <span>{feature}</span>
                       </li>
@@ -187,7 +187,7 @@ const Pricing = () => {
                 <CardContent>
                   <ul className="space-y-3">
                     {getFeatures('pricing.features.enterprise', enterpriseFeatures).map((feature, index) => (
-                      <li key={`enterprise-feature-${index}`} className="flex items-center">
+                      <li key={`enterprise-feature-${index}-${i18n.language}`} className="flex items-center">
                         <Check className="mr-2 h-4 w-4 text-primary" />
                         <span>{feature}</span>
                       </li>
@@ -223,7 +223,7 @@ const Pricing = () => {
                 <CardContent>
                   <ul className="space-y-3">
                     {getFeatures('pricing.features.starter', starterFeatures).map((feature, index) => (
-                      <li key={`starter-annual-feature-${index}`} className="flex items-center">
+                      <li key={`starter-annual-feature-${index}-${i18n.language}`} className="flex items-center">
                         <Check className="mr-2 h-4 w-4 text-primary" />
                         <span>{feature}</span>
                       </li>
@@ -256,7 +256,7 @@ const Pricing = () => {
                 <CardContent>
                   <ul className="space-y-3">
                     {getFeatures('pricing.features.professional', professionalFeatures).map((feature, index) => (
-                      <li key={`pro-annual-feature-${index}`} className="flex items-center">
+                      <li key={`pro-annual-feature-${index}-${i18n.language}`} className="flex items-center">
                         <Check className="mr-2 h-4 w-4 text-primary" />
                         <span>{feature}</span>
                       </li>
@@ -282,7 +282,7 @@ const Pricing = () => {
                 <CardContent>
                   <ul className="space-y-3">
                     {getFeatures('pricing.features.enterprise', enterpriseFeatures).map((feature, index) => (
-                      <li key={`enterprise-annual-feature-${index}`} className="flex items-center">
+                      <li key={`enterprise-annual-feature-${index}-${i18n.language}`} className="flex items-center">
                         <Check className="mr-2 h-4 w-4 text-primary" />
                         <span>{feature}</span>
                       </li>
@@ -307,7 +307,7 @@ const Pricing = () => {
         </p>
         <div className="grid md:grid-cols-2 gap-6 text-left max-w-4xl mx-auto">
           {getFaqItems('pricing.faq.questions', defaultFaqItems).map((faq, i) => (
-            <div key={`faq-${i}`} className="space-y-2">
+            <div key={`faq-${i}-${i18n.language}`} className="space-y-2">
               <h3 className="font-semibold">{faq.question}</h3>
               <p className="text-muted-foreground">{faq.answer}</p>
             </div>
