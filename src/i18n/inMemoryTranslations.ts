@@ -123,11 +123,22 @@ export const addInMemoryTranslations = (language: string) => {
       console.log(`[inMemoryTranslations] Translations reloaded for ${language}`);
       
       // Verify dashboard translations are loaded - using optional chaining to avoid type errors
-      const loadedDashboard = i18n.getResourceBundle(language, 'common');
-      console.log(`[inMemoryTranslations] Dashboard translations after reload:`, 
-        loadedDashboard && typeof loadedDashboard === 'object' && 'dashboard' in loadedDashboard 
-          ? loadedDashboard.dashboard 
-          : 'Not found');
+      const loadedBundle = i18n.getResourceBundle(language, 'common');
+      
+      // Safely check if the bundle is an object and has dashboard property
+      let dashboardLoaded = false;
+      let loadedDashboard = null;
+      
+      if (loadedBundle && typeof loadedBundle === 'object') {
+        // Check if dashboard exists in the bundle
+        if ('dashboard' in loadedBundle) {
+          dashboardLoaded = true;
+          loadedDashboard = (loadedBundle as Record<string, any>).dashboard;
+        }
+      }
+      
+      console.log(`[inMemoryTranslations] Dashboard translations loaded: ${dashboardLoaded}`, 
+        dashboardLoaded ? loadedDashboard : 'Not found in bundle');
       
       // Dispatch a custom event to notify components that translations have been loaded
       document.dispatchEvent(new CustomEvent('i18n-resources-loaded', { 
