@@ -61,9 +61,7 @@ export const useContactSalesDebug = () => {
         // Determine if contactSales translations are loaded
         const isContactSalesLoaded = reloadedResources?.contactSales && Object.keys(reloadedResources.contactSales).length > 0;
         
-        toast({
-          description: `ContactSales translations ${isContactSalesLoaded ? 'found' : 'NOT found'} for ${i18n.language}. Check console.`,
-        });
+        toast(`ContactSales translations ${isContactSalesLoaded ? 'found' : 'NOT found'} for ${i18n.language}. Check console.`);
       } catch (error) {
         console.error('[ContactSalesDebug] Error reloading namespace:', error);
       }
@@ -103,9 +101,7 @@ export const useContactSalesDebug = () => {
       console.log('[ContactSalesDebug] Has contactSales section:', rawResources && !!rawResources.contactSales);
       
       // Toast notification
-      toast({
-        description: `Found ${contactSalesKeys.length} contactSales translation keys. Check console.`,
-      });
+      toast(`Found ${contactSalesKeys.length} contactSales translation keys. Check console.`);
     }
   };
 };
