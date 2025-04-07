@@ -13,10 +13,10 @@ import i18n from '@/i18n';
 const Pricing = () => {
   const { t } = useTranslation(["common"]);
   
-  // Load pricing translations when component mounts
+  // Load pricing translations when component mounts or language changes
   useEffect(() => {
     addPricingTranslations(i18n.language);
-  }, []);
+  }, [i18n.language]);
   
   // Define feature arrays with type safety
   const getFeatures = (key: string, defaultFeatures: string[]): string[] => {

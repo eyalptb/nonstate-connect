@@ -71,13 +71,17 @@ export const addUseCasesTranslations = (language = i18n.language) =>
 export const loadAllUseCasesTranslations = () => loadTranslations('useCases', { allLanguages: true });
 
 // Learn translations 
-export const addLearnTranslations = (language = i18n.language) => 
-  addTranslations(language, 'common', getTranslationsWithFallback(learnTranslations, language)?.learn || {});
+export const addLearnTranslations = (language = i18n.language) => {
+  const learnData = getTranslationsWithFallback(learnTranslations, language)?.learn || {};
+  return addTranslations(language, 'common', { learn: learnData });
+};
 
 export const loadAllLearnTranslations = () => loadTranslations('learn', { allLanguages: true });
 
 // Pricing translations
-export const addPricingTranslations = (language = i18n.language) => 
-  addTranslations(language, 'common', getTranslationsWithFallback(pricingTranslations, language)?.pricing || {});
+export const addPricingTranslations = (language = i18n.language) => {
+  const pricingData = getTranslationsWithFallback(pricingTranslations, language)?.pricing || {};
+  return addTranslations(language, 'common', { pricing: pricingData });
+};
 
 export const loadAllPricingTranslations = () => loadTranslations('pricing', { allLanguages: true });
