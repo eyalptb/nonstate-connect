@@ -6,7 +6,7 @@ import { SignInTabs } from "@/components/auth/SignInTabs";
 import { SocialSignIn } from "@/components/auth/SocialSignIn";
 import { AuthDivider } from "@/components/auth/AuthDivider";
 import { AuthPageLayout } from "@/components/auth/AuthPageLayout";
-import { useTranslation } from "@/contexts/translation/TranslationContext";
+import { useTranslation } from "react-i18next";
 
 const SignIn = () => {
   const [activeTab, setActiveTab] = useState("signin");
