@@ -25,7 +25,25 @@ export const addComponentTranslations = (
   
   console.log(`[addComponentTranslations] Adding translations for ${componentType}/${language}`, translations);
   
-  // Add translations to the i18n instance
+  // For contactSales component, ensure proper structure
+  if (componentType === 'contactSales') {
+    let formattedTranslations;
+    
+    if ('contactSales' in translations) {
+      // Already properly structured
+      formattedTranslations = translations;
+    } else {
+      // Need to wrap in contactSales key
+      formattedTranslations = { contactSales: translations };
+    }
+    
+    console.log(`[addComponentTranslations] Formatted translations for ${componentType}/${language}:`, formattedTranslations);
+    
+    // Add translations to the i18n instance
+    return addTranslations(language, namespace, formattedTranslations);
+  }
+  
+  // Add translations to the i18n instance for other components
   return addTranslations(language, namespace, translations);
 };
 
@@ -55,6 +73,7 @@ export const loadAllComponentTranslations = (
     const translationData = translationResources[componentType][lang];
     console.log(`[loadAllComponentTranslations] Raw translation data for ${lang}:`, translationData);
     
+    // Use the addComponentTranslations function which now handles special cases
     const success = addComponentTranslations(lang, componentType, namespace);
     
     if (success) {
@@ -63,7 +82,7 @@ export const loadAllComponentTranslations = (
       // Verify translations were added correctly
       const resources = i18n.getResourceBundle(lang, namespace);
       console.log(`[loadAllComponentTranslations] Resulting resources for ${lang}/${namespace}:`, 
-        resources && componentType === 'contactSales' ? resources.contactSales : 'Not showing full resources');
+        resources ? `Has resources with keys: ${Object.keys(resources).join(', ')}` : 'No resources');
     } else {
       console.warn(`[loadAllComponentTranslations] Failed to load ${componentType} translations for ${lang}`);
     }

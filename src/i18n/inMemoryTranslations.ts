@@ -1,3 +1,4 @@
+
 import i18n from 'i18next';
 import { walletTranslations } from '@/utils/translations/walletTranslations';
 import { featureTranslations } from '@/utils/translations/featureTranslations';
@@ -60,10 +61,27 @@ export const addInMemoryTranslations = (language: string) => {
     const pricingData = pricingTranslations[language]?.pricing || pricingTranslations[fallbackLang]?.pricing;
     safeAddResourceBundle(language, 'common', { pricing: pricingData });
     
-    // For contactSales translations, access the nested contactSales property
+    // For contactSales translations, properly format and add them
+    // This is the most important part for the current issue
     const contactSalesData = contactSalesTranslations[language]?.contactSales || contactSalesTranslations[fallbackLang]?.contactSales;
-    safeAddResourceBundle(language, 'common', { contactSales: contactSalesData });
+    
+    if (contactSalesData) {
+      console.log(`[inMemoryTranslations] Adding contactSales translations for ${language}`);
+      safeAddResourceBundle(language, 'common', { contactSales: contactSalesData });
+      
+      // Verify they were added correctly
+      const bundle = i18n.getResourceBundle(language, 'common');
+      if (bundle && bundle.contactSales) {
+        console.log(`[inMemoryTranslations] Successfully added contactSales translations for ${language}`);
+      } else {
+        console.warn(`[inMemoryTranslations] Failed to add contactSales translations for ${language}`);
+      }
+    } else {
+      console.warn(`[inMemoryTranslations] No contactSales translations found for ${language}`);
+    }
+    
   } catch (error) {
     // Fail silently for stability
+    console.error('[inMemoryTranslations] Error adding translations:', error);
   }
 };

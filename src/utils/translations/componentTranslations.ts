@@ -1,4 +1,3 @@
-
 import i18n from '@/i18n';
 import { loadTranslations } from './translationCore';
 import { addTranslations } from './translationHelpers';
@@ -87,24 +86,34 @@ export const addPricingTranslations = (language = i18n.language) => {
 
 export const loadAllPricingTranslations = () => loadTranslations('pricing', { allLanguages: true });
 
-// Contact Sales translations - Fixed to properly load the contactSales namespace
+// Contact Sales translations
 export const addContactSalesTranslations = (language = i18n.language) => {
   console.log(`Adding contactSales translations for ${language}`);
   
   // Log available translations
-  console.log(`Available contactSales translations:`, Object.keys(contactSalesTranslations));
+  console.log(`Available contactSales translations languages:`, Object.keys(contactSalesTranslations));
   
   // Get the translation data with proper fallback
-  const contactSalesData = getTranslationsWithFallback(contactSalesTranslations, language)?.contactSales || {};
+  const contactSalesData = getTranslationsWithFallback(contactSalesTranslations, language);
+  
+  if (!contactSalesData || !contactSalesData.contactSales) {
+    console.error(`No contactSales data found for ${language}`);
+    return false;
+  }
   
   // Log what we're adding to help debug
-  console.log(`ContactSales data to add:`, contactSalesData);
+  console.log(`ContactSales data to add:`, contactSalesData.contactSales);
   
   // Add the translations to the i18n instance
-  const result = addTranslations(language, 'common', { contactSales: contactSalesData });
+  const result = addTranslations(language, 'common', { contactSales: contactSalesData.contactSales });
   
   // Log the result
   console.log(`Added contactSales translations for ${language}: ${result ? 'success' : 'failed'}`);
+  
+  // Force update resources to ensure they're loaded
+  if (result) {
+    i18n.reloadResources(language, ['common']);
+  }
   
   return result;
 };
@@ -113,7 +122,7 @@ export const loadAllContactSalesTranslations = () => {
   console.log('Loading all ContactSales translations');
   
   // Get all supported languages
-  const supportedLangs = i18n.options.supportedLngs || [];
+  const supportedLangs = getSupportedLanguages();
   
   // Log available languages
   console.log(`Supported languages:`, supportedLangs);
@@ -121,14 +130,22 @@ export const loadAllContactSalesTranslations = () => {
   // First add the translations for the current language to ensure immediate visibility
   addContactSalesTranslations(i18n.language);
   
-  // Then load all translations in the background
-  const result = loadTranslations('contactSales', { allLanguages: true });
+  // Then add translations for all supported languages
+  supportedLangs.forEach(lang => {
+    addContactSalesTranslations(lang);
+  });
   
-  // Force a reload of the current language's resources to ensure they're loaded
+  // Force a reload of the current language's resources
   i18n.reloadResources(i18n.language, ['common']);
   
   // Dispatch an event to notify that translations have been loaded
-  document.dispatchEvent(new Event('i18n-resources-loaded'));
+  document.dispatchEvent(new CustomEvent('i18n-resources-loaded', { 
+    detail: { component: 'contactSales' } 
+  }));
   
-  return result;
+  return true;
 };
+
+function getSupportedLanguages() {
+  return i18n.options.supportedLngs || [];
+}
