@@ -76,23 +76,61 @@ export const loadAllUseCasesTranslations = () => {
   loadAllComponentTranslations('useCases');
 };
 
-// Learn translations - explicitly adding them directly to ensure they work
+// Learn translations - more direct approach to fix the loading issue
 export const addLearnTranslations = (language: string, namespace: string = 'common') => {
+  console.log(`Adding learn translations for ${language}`);
+  
   // Get the translations for the specified language or fallback to English
   const translations = learnTranslations[language] || learnTranslations['en'];
   
   if (!translations) {
+    console.error(`No learn translations found for ${language} or fallback`);
     return false;
   }
   
-  // Add the translations directly to i18n
-  return i18n.addResourceBundle(language, namespace, translations, true, true);
+  // Add the translations directly to i18n as a nested 'learn' object
+  // This ensures the translations are available under the 'learn' namespace
+  const result = i18n.addResourceBundle(
+    language, 
+    namespace, 
+    { learn: translations }, 
+    true,  // deep merge
+    true   // overwrite
+  );
+  
+  console.log(`Added learn translations for ${language}, result:`, result ? 'Success' : 'Failed');
+  
+  // Log the current state of translations after adding
+  const bundle = i18n.getResourceBundle(language, namespace);
+  console.log(`Resource bundle after adding learn translations:`, 
+    bundle && bundle.learn ? 'Has learn section' : 'Missing learn section');
+  
+  return result;
 };
 
 export const loadAllLearnTranslations = () => {
   const supportedLanguages = getSupportedLanguages();
+  console.log("Loading learn translations for languages:", supportedLanguages);
   
   supportedLanguages.forEach(lang => {
-    addLearnTranslations(lang);
+    const success = addLearnTranslations(lang);
+    if (success) {
+      console.log(`Successfully loaded learn translations for ${lang}`);
+    } else {
+      console.warn(`Failed to load learn translations for ${lang}, trying fallback`);
+      // Try to add English translations as fallback
+      if (lang !== 'en') {
+        addLearnTranslations('en');
+      }
+    }
   });
+  
+  // Make sure current language has translations
+  const currentLang = i18n.language;
+  const bundle = i18n.getResourceBundle(currentLang, 'common');
+  
+  if (!bundle || !bundle.learn) {
+    console.warn(`Current language ${currentLang} still missing learn translations after loadAll, adding directly`);
+    addLearnTranslations(currentLang);
+  }
 };
