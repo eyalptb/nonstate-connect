@@ -1,3 +1,4 @@
+
 import i18n from '@/i18n';
 import { loadTranslations } from './translationCore';
 import { addTranslations } from './translationHelpers';
@@ -11,7 +12,7 @@ import { featurePageTranslations } from './featurePageTranslations';
 import { useCasesTranslations } from './useCasesTranslations';
 import { learnTranslations } from './learnTranslations';
 import { pricingTranslations } from './pricingTranslations';
-import { contactSalesTranslations } from './contactSalesTranslations';
+import { contactSalesTranslations, supportedLanguages } from './contactSalesTranslations';
 
 // Helper to get translations with fallback
 const getTranslationsWithFallback = (
@@ -90,9 +91,6 @@ export const loadAllPricingTranslations = () => loadTranslations('pricing', { al
 export const addContactSalesTranslations = (language = i18n.language) => {
   console.log(`Adding contactSales translations for ${language}`);
   
-  // Log available translations
-  console.log(`Available contactSales translations languages:`, Object.keys(contactSalesTranslations));
-  
   // Get the translation data with proper fallback
   const contactSalesData = getTranslationsWithFallback(contactSalesTranslations, language);
   
@@ -101,14 +99,8 @@ export const addContactSalesTranslations = (language = i18n.language) => {
     return false;
   }
   
-  // Log what we're adding to help debug
-  console.log(`ContactSales data to add:`, contactSalesData.contactSales);
-  
   // Add the translations to the i18n instance
   const result = addTranslations(language, 'common', { contactSales: contactSalesData.contactSales });
-  
-  // Log the result
-  console.log(`Added contactSales translations for ${language}: ${result ? 'success' : 'failed'}`);
   
   // Force update resources to ensure they're loaded
   if (result) {
@@ -121,18 +113,14 @@ export const addContactSalesTranslations = (language = i18n.language) => {
 export const loadAllContactSalesTranslations = () => {
   console.log('Loading all ContactSales translations');
   
-  // Get all supported languages
-  const supportedLangs = getSupportedLanguages();
-  
-  // Log available languages
-  console.log(`Supported languages:`, supportedLangs);
-  
   // First add the translations for the current language to ensure immediate visibility
   addContactSalesTranslations(i18n.language);
   
   // Then add translations for all supported languages
-  supportedLangs.forEach(lang => {
-    addContactSalesTranslations(lang);
+  supportedLanguages.forEach(lang => {
+    if (lang !== i18n.language) {
+      addContactSalesTranslations(lang);
+    }
   });
   
   // Force a reload of the current language's resources
@@ -146,6 +134,7 @@ export const loadAllContactSalesTranslations = () => {
   return true;
 };
 
+// Helper to get supported languages - moved to the translationHelpers.ts
 function getSupportedLanguages() {
-  return i18n.options.supportedLngs || [];
+  return i18n.options.supportedLngs || supportedLanguages;
 }

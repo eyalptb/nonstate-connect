@@ -9,59 +9,53 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PhoneCall, Mail, MessageSquare, Clock } from "lucide-react";
 import { toast } from "sonner";
-import { useTranslation } from "react-i18next";
 import i18n from '@/i18n';
-import { contactSalesTranslations } from '@/utils/translations/contactSalesTranslations';
+import useTranslationHelper from "@/hooks/useTranslationHelper";
 import useI18nInit from "@/hooks/useI18nInit";
+import ContactSalesTranslationLoader from "@/components/contactSales/ContactSalesTranslationLoader";
 
 const ContactSales = () => {
-  const { t } = useTranslation();
   const isI18nInitialized = useI18nInit();
-  const [loaded, setLoaded] = useState(false);
+  const [translationsLoaded, setTranslationsLoaded] = useState(false);
+  const { getText } = useTranslationHelper();
   
-  // Force load translations on component mount and language change
+  // Debug loaded state
   useEffect(() => {
-    if (!isI18nInitialized) return;
-    
-    console.log("ContactSales: Loading translations for", i18n.language);
-    
-    // Directly load the ContactSales translations into i18n
-    try {
-      // Get translations for current language or fall back to English
-      const translations = contactSalesTranslations[i18n.language] || contactSalesTranslations['en'];
+    if (translationsLoaded) {
+      console.log(`ContactSales translations loaded for ${i18n.language}`);
       
-      if (translations) {
-        // Add translations to i18n instance
-        i18n.addResourceBundle(i18n.language, 'common', translations, true, true);
-        console.log("ContactSales: Added translations for", i18n.language);
-        
-        // Force reload resources
-        i18n.reloadResources([i18n.language], ['common']).then(() => {
-          console.log("ContactSales: Translations reloaded");
-          setLoaded(prev => !prev); // Toggle to force re-render
-        });
+      // Check if translations actually loaded
+      const resources = i18n.getResourceBundle(i18n.language, 'common');
+      const hasContactSalesTranslations = resources && resources.contactSales;
+      
+      if (!hasContactSalesTranslations) {
+        console.error(`No contactSales translations found for ${i18n.language} after loading`);
+        toast(`Could not load contactSales translations for ${i18n.language}. Using English as fallback.`);
+      } else {
+        console.log(`Successfully loaded contactSales translations for ${i18n.language}`);
       }
-    } catch (error) {
-      console.error("ContactSales: Error loading translations", error);
     }
-  }, [i18n.language, isI18nInitialized]);
+  }, [translationsLoaded]);
 
-  // Use direct translations with fallbacks
-  const getText = (key, defaultText) => {
-    const translated = t(`contactSales.${key}`);
-    return translated.includes('contactSales.') ? defaultText : translated;
-  };
+  // Log current language
+  useEffect(() => {
+    console.log(`Current language in ContactSales component: ${i18n.language}`);
+  }, [i18n.language]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success(getText("successMessage", "Your message has been sent! Our sales team will contact you shortly."));
+    toast.success(getText("contactSales.successMessage", "Your message has been sent! Our sales team will contact you shortly."));
   };
 
   return (
     <div className="container mx-auto py-12 px-4">
+      <ContactSalesTranslationLoader
+        onTranslationsLoaded={() => setTranslationsLoaded(true)}
+      />
+      
       <PageHeader
-        title={getText("title", "Contact Our Sales Team")}
-        description={getText("description", "Have questions about our enterprise solutions? Our team is ready to help.")}
+        title={getText("contactSales.title", "Contact Our Sales Team")}
+        description={getText("contactSales.description", "Have questions about our enterprise solutions? Our team is ready to help.")}
       />
 
       <div className="grid md:grid-cols-3 gap-8 mt-12">
@@ -72,22 +66,22 @@ const ContactSales = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">
-                      {getText("form.firstName", "First Name")}
+                      {getText("contactSales.form.firstName", "First Name")}
                     </Label>
                     <Input 
                       id="firstName" 
-                      placeholder={getText("form.placeholders.firstName", "Your first name")} 
+                      placeholder={getText("contactSales.form.placeholders.firstName", "Your first name")} 
                       required 
                     />
                   </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="lastName">
-                      {getText("form.lastName", "Last Name")}
+                      {getText("contactSales.form.lastName", "Last Name")}
                     </Label>
                     <Input 
                       id="lastName" 
-                      placeholder={getText("form.placeholders.lastName", "Your last name")} 
+                      placeholder={getText("contactSales.form.placeholders.lastName", "Your last name")} 
                       required 
                     />
                   </div>
@@ -96,62 +90,62 @@ const ContactSales = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="email">
-                      {getText("form.email", "Email")}
+                      {getText("contactSales.form.email", "Email")}
                     </Label>
                     <Input 
                       id="email" 
                       type="email" 
-                      placeholder={getText("form.placeholders.email", "Your email address")} 
+                      placeholder={getText("contactSales.form.placeholders.email", "Your email address")} 
                       required 
                     />
                   </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="phone">
-                      {getText("form.phone", "Phone Number")}
+                      {getText("contactSales.form.phone", "Phone Number")}
                     </Label>
                     <Input 
                       id="phone" 
                       type="tel" 
-                      placeholder={getText("form.placeholders.phone", "Your phone number")} 
+                      placeholder={getText("contactSales.form.placeholders.phone", "Your phone number")} 
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="company">
-                    {getText("form.company", "Company")}
+                    {getText("contactSales.form.company", "Company")}
                   </Label>
                   <Input 
                     id="company" 
-                    placeholder={getText("form.placeholders.company", "Your organization name")} 
+                    placeholder={getText("contactSales.form.placeholders.company", "Your organization name")} 
                     required 
                   />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="employeeCount">
-                    {getText("form.employeeCount", "Number of Employees")}
+                    {getText("contactSales.form.employeeCount", "Number of Employees")}
                   </Label>
                   <Select>
                     <SelectTrigger id="employeeCount">
-                      <SelectValue placeholder={getText("form.placeholders.employeeCount", "Select company size")} />
+                      <SelectValue placeholder={getText("contactSales.form.placeholders.employeeCount", "Select company size")} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="1-10">
-                        {getText("form.options.employees.small", "1-10 employees")}
+                        {getText("contactSales.form.options.employees.small", "1-10 employees")}
                       </SelectItem>
                       <SelectItem value="11-50">
-                        {getText("form.options.employees.medium", "11-50 employees")}
+                        {getText("contactSales.form.options.employees.medium", "11-50 employees")}
                       </SelectItem>
                       <SelectItem value="51-200">
-                        {getText("form.options.employees.large", "51-200 employees")}
+                        {getText("contactSales.form.options.employees.large", "51-200 employees")}
                       </SelectItem>
                       <SelectItem value="201-500">
-                        {getText("form.options.employees.xlarge", "201-500 employees")}
+                        {getText("contactSales.form.options.employees.xlarge", "201-500 employees")}
                       </SelectItem>
                       <SelectItem value="501+">
-                        {getText("form.options.employees.enterprise", "501+ employees")}
+                        {getText("contactSales.form.options.employees.enterprise", "501+ employees")}
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -159,27 +153,27 @@ const ContactSales = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="interest">
-                    {getText("form.interest", "What are you interested in?")}
+                    {getText("contactSales.form.interest", "What are you interested in?")}
                   </Label>
                   <Select>
                     <SelectTrigger id="interest">
-                      <SelectValue placeholder={getText("form.placeholders.interest", "Select your interest")} />
+                      <SelectValue placeholder={getText("contactSales.form.placeholders.interest", "Select your interest")} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="enterprise">
-                        {getText("form.options.interests.enterprise", "Enterprise Solutions")}
+                        {getText("contactSales.form.options.interests.enterprise", "Enterprise Solutions")}
                       </SelectItem>
                       <SelectItem value="security">
-                        {getText("form.options.interests.security", "Security Features")}
+                        {getText("contactSales.form.options.interests.security", "Security Features")}
                       </SelectItem>
                       <SelectItem value="governance">
-                        {getText("form.options.interests.governance", "Governance Tools")}
+                        {getText("contactSales.form.options.interests.governance", "Governance Tools")}
                       </SelectItem>
                       <SelectItem value="custom">
-                        {getText("form.options.interests.custom", "Custom Integrations")}
+                        {getText("contactSales.form.options.interests.custom", "Custom Integrations")}
                       </SelectItem>
                       <SelectItem value="other">
-                        {getText("form.options.interests.other", "Other")}
+                        {getText("contactSales.form.options.interests.other", "Other")}
                       </SelectItem>
                     </SelectContent>
                   </Select>
@@ -187,18 +181,18 @@ const ContactSales = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="message">
-                    {getText("form.message", "Message")}
+                    {getText("contactSales.form.message", "Message")}
                   </Label>
                   <Textarea 
                     id="message" 
-                    placeholder={getText("form.placeholders.message", "Tell us about your needs and requirements")} 
+                    placeholder={getText("contactSales.form.placeholders.message", "Tell us about your needs and requirements")} 
                     rows={5}
                     required
                   />
                 </div>
 
                 <Button type="submit" className="w-full">
-                  {getText("form.submit", "Submit Inquiry")}
+                  {getText("contactSales.form.submit", "Submit Inquiry")}
                 </Button>
               </form>
             </CardContent>
@@ -213,13 +207,13 @@ const ContactSales = () => {
                   <PhoneCall className="h-5 w-5 text-primary mt-1" />
                   <div>
                     <h3 className="font-medium">
-                      {getText("contact.call", "Call us")}
+                      {getText("contactSales.contact.call", "Call us")}
                     </h3>
                     <p className="text-muted-foreground mt-1">
-                      {getText("contact.callDescription", "Speak directly with a sales specialist")}
+                      {getText("contactSales.contact.callDescription", "Speak directly with a sales specialist")}
                     </p>
                     <p className="mt-2">
-                      {getText("contact.phone", "+1 (555) 123-4567")}
+                      {getText("contactSales.contact.phone", "+1 (555) 123-4567")}
                     </p>
                   </div>
                 </div>
@@ -228,13 +222,13 @@ const ContactSales = () => {
                   <Mail className="h-5 w-5 text-primary mt-1" />
                   <div>
                     <h3 className="font-medium">
-                      {getText("contact.email", "Email us")}
+                      {getText("contactSales.contact.email", "Email us")}
                     </h3>
                     <p className="text-muted-foreground mt-1">
-                      {getText("contact.emailDescription", "Send us an email anytime")}
+                      {getText("contactSales.contact.emailDescription", "Send us an email anytime")}
                     </p>
                     <p className="mt-2">
-                      {getText("contact.emailAddress", "sales@paracollab.com")}
+                      {getText("contactSales.contact.emailAddress", "sales@paracollab.com")}
                     </p>
                   </div>
                 </div>
@@ -243,13 +237,13 @@ const ContactSales = () => {
                   <Clock className="h-5 w-5 text-primary mt-1" />
                   <div>
                     <h3 className="font-medium">
-                      {getText("contact.hours", "Business Hours")}
+                      {getText("contactSales.contact.hours", "Business Hours")}
                     </h3>
                     <p className="text-muted-foreground mt-1">
-                      {getText("contact.hoursDescription", "We're available")}
+                      {getText("contactSales.contact.hoursDescription", "We're available")}
                     </p>
                     <p className="mt-2">
-                      {getText("contact.hoursDetails", "Monday - Friday: 9am - 5pm EST")}
+                      {getText("contactSales.contact.hoursDetails", "Monday - Friday: 9am - 5pm EST")}
                     </p>
                   </div>
                 </div>
@@ -258,13 +252,13 @@ const ContactSales = () => {
                   <MessageSquare className="h-5 w-5 text-primary mt-1" />
                   <div>
                     <h3 className="font-medium">
-                      {getText("contact.chat", "Live Chat")}
+                      {getText("contactSales.contact.chat", "Live Chat")}
                     </h3>
                     <p className="text-muted-foreground mt-1">
-                      {getText("contact.chatDescription", "Chat with our sales team")}
+                      {getText("contactSales.contact.chatDescription", "Chat with our sales team")}
                     </p>
                     <Button variant="outline" className="mt-2 w-full">
-                      {getText("contact.startChat", "Start Chat")}
+                      {getText("contactSales.contact.startChat", "Start Chat")}
                     </Button>
                   </div>
                 </div>

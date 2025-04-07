@@ -74,11 +74,13 @@ export const addInMemoryTranslations = (language: string) => {
       console.warn(`[inMemoryTranslations] No pricing translations found for ${language}, using fallback`);
     }
     
-    // For contactSales translations
-    const contactSalesData = contactSalesTranslations[language] || contactSalesTranslations[fallbackLang];
+    // For contactSales translations, ensure we have them for all languages with fallback
+    const contactSalesData = contactSalesTranslations[language]?.contactSales || contactSalesTranslations[fallbackLang]?.contactSales;
     if (contactSalesData) {
       console.log(`[inMemoryTranslations] Adding contactSales translations for ${language}`);
-      safeAddResourceBundle(language, 'common', contactSalesData);
+      safeAddResourceBundle(language, 'common', { contactSales: contactSalesData });
+    } else {
+      console.warn(`[inMemoryTranslations] No contactSales translations found for ${language}, using fallback`);
     }
     
     // Force reload resources to ensure translations are immediately available
