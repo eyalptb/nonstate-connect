@@ -28,7 +28,7 @@ import {
   loadAllPricingTranslations
 } from './translations/componentTranslations';
 
-// Remove the first export block entirely as it's causing duplicate exports
+// Removed the first export block as it was causing duplicate exports
 
 // Export everything for backward compatibility
 export { 
