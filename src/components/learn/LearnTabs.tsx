@@ -7,27 +7,13 @@ import { VideosList } from "./VideosList";
 import { ArticlesList } from "./ArticlesList";
 
 export const LearnTabs = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   
   // Helper function to handle translations with fallbacks
   const getTranslation = (key: string, fallback: string) => {
     const translation = t(key);
     return translation === key ? fallback : translation;
   };
-
-  // Debug info
-  console.log(`[LearnTabs] Current language: ${i18n.language}`);
-  
-  const guidesLabel = getTranslation("learn.tabs.guides", "Guides");
-  console.log(`[LearnTabs] Guides tab translation:`, guidesLabel);
-  
-  // Check if translations are available
-  const hasNamespace = i18n.hasResourceBundle(i18n.language, "common");
-  console.log(`[LearnTabs] Common namespace exists:`, hasNamespace ? "Yes" : "No");
-  
-  // Get the current resource bundle for inspection
-  const bundle = i18n.getResourceBundle(i18n.language, "common");
-  console.log(`[LearnTabs] Common bundle content:`, bundle);
   
   return (
     <Tabs defaultValue="guides" className="mt-6">
