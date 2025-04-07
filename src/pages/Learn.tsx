@@ -13,8 +13,20 @@ const Learn = () => {
   
   // Load learn translations once on component mount
   useEffect(() => {
+    console.log("Learn page - Current language:", i18n.language);
+    console.log("Learn page - Available learn translations keys:", Object.keys(learnTranslations));
+    
+    // Check if translations exist for current language before trying to add them
+    const hasTranslationsForCurrentLang = !!learnTranslations[i18n.language];
+    console.log(`Learn page - Has translations for ${i18n.language}:`, hasTranslationsForCurrentLang);
+    
+    // Log the actual translation content for the current language
+    console.log(`Learn page - Translation content for ${i18n.language}:`, 
+      learnTranslations[i18n.language] || "Not available, falling back to English");
+    
     // Force-add translations for all languages to ensure they're available
     Object.keys(learnTranslations).forEach(lang => {
+      console.log(`Learn page - Adding translations for language: ${lang}`);
       i18n.addResourceBundle(
         lang, 
         'common', 
@@ -22,10 +34,35 @@ const Learn = () => {
         true,  // deep merge
         true   // overwrite
       );
+      
+      // Verify the translations were added correctly
+      const bundle = i18n.getResourceBundle(lang, 'common');
+      console.log(`Learn page - After adding, translations exist for ${lang}:`, 
+        bundle && bundle.learn ? "Yes" : "No");
     });
     
     console.log("Learn page: Added translations for all languages");
+    
+    // Log the structure to see if it contains what we expect
+    const currentBundle = i18n.getResourceBundle(i18n.language, 'common');
+    console.log("Learn page - Current bundle structure:", currentBundle);
+    console.log("Learn page - Learn section in bundle:", currentBundle?.learn);
   }, []);
+  
+  // Add this effect to track language changes
+  useEffect(() => {
+    console.log("Learn page - Language changed to:", i18n.language);
+    
+    // Check if translations are available after language change
+    const bundle = i18n.getResourceBundle(i18n.language, 'common');
+    console.log(`Learn page - After language change, translations for ${i18n.language}:`, 
+      bundle && bundle.learn ? "Available" : "Missing");
+      
+    // Log available keys for debugging
+    if (bundle && bundle.learn) {
+      console.log(`Learn page - Available learn keys for ${i18n.language}:`, Object.keys(bundle.learn));
+    }
+  }, [i18n.language]);
   
   return (
     <div className="container mx-auto py-12 px-4">
@@ -40,17 +77,6 @@ const Learn = () => {
           <h3 className="text-sm font-medium mb-2">Language</h3>
           <LanguageSelector variant="minimal" />
           <div className="text-xs mt-2 text-muted-foreground">Current: {i18n.language}</div>
-          
-          {/* Debug button to check translations */}
-          <button 
-            onClick={() => {
-              const resources = i18n.getResourceBundle(i18n.language, 'common');
-              console.log("Learn translations for current language:", resources?.learn);
-            }}
-            className="text-xs mt-2 px-2 py-1 bg-primary/10 rounded hover:bg-primary/20"
-          >
-            Check Translations
-          </button>
         </div>
       </div>
       
