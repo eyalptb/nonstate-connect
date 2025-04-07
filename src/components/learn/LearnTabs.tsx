@@ -5,52 +5,65 @@ import { useTranslation } from "react-i18next";
 import { GuidesList } from "./GuidesList";
 import { VideosList } from "./VideosList";
 import { ArticlesList } from "./ArticlesList";
-import { addLearnTranslationsDirectly } from "@/utils/translations/learnTranslations";
+import { addLearnTranslationsDirectly, getLearnTranslationForLanguage } from "@/utils/translations/learnTranslations";
 
 export const LearnTabs = () => {
-  const { t, i18n } = useTranslation(['common']);
+  const { t, i18n } = useTranslation();
   const [translationsLoaded, setTranslationsLoaded] = useState(false);
 
-  // Ensure translations are available at this level
   useEffect(() => {
-    // Add translations directly when this component mounts or language changes
-    const added = addLearnTranslationsDirectly(i18n.language);
-    console.log(`[LearnTabs] Translations directly added for ${i18n.language}: ${added ? 'Success' : 'Failed'}`);
-    
-    // If we failed, try English as a fallback
-    if (!added && i18n.language !== 'en') {
-      console.log('[LearnTabs] Trying English fallback');
-      addLearnTranslationsDirectly('en');
-    }
-    
-    // Verify translations exist
-    const resources = i18n.getResourceBundle(i18n.language, 'common');
-    const hasLearnSection = resources && resources.learn && Object.keys(resources.learn).length > 0;
-    
-    if (hasLearnSection) {
-      console.log(`[LearnTabs] Learn translations verified with ${Object.keys(resources.learn).length} keys`);
+    const loadTranslations = async () => {
+      // First try direct add
+      const added = addLearnTranslationsDirectly(i18n.language);
+      
+      if (!added) {
+        console.log(`[LearnTabs] Translations not added directly for ${i18n.language}, trying backup approach`);
+        
+        // If this failed, try to manually apply translations
+        const translations = getLearnTranslationForLanguage(i18n.language) || 
+                            getLearnTranslationForLanguage('en');  // fallback to English
+        
+        if (translations) {
+          i18n.addResourceBundle(i18n.language, 'common', translations, true, true);
+          
+          // Force reload after adding resources
+          await i18n.reloadResources([i18n.language], ['common']);
+        }
+      }
+      
+      // Verify translations are loaded
+      const bundle = i18n.getResourceBundle(i18n.language, 'common');
+      const hasLearnSection = bundle && bundle.learn && Object.keys(bundle.learn).length > 0;
+      
+      // If we still don't have translations, use a direct approach
+      if (!hasLearnSection && i18n.options.resources && i18n.options.resources[i18n.language]) {
+        const translations = getLearnTranslationForLanguage(i18n.language) || 
+                            getLearnTranslationForLanguage('en');
+        
+        if (translations) {
+          i18n.options.resources[i18n.language].common = {
+            ...i18n.options.resources[i18n.language].common,
+            ...translations
+          };
+          console.log(`[LearnTabs] Applied emergency direct translation approach for ${i18n.language}`);
+        }
+      }
+      
       setTranslationsLoaded(true);
-    } else {
-      console.error('[LearnTabs] Translations not available after attempt to add them');
-    }
+    };
     
-    // Check if specific keys exist
-    const hasGuides = i18n.exists('learn.tabs.guides', { ns: 'common' });
-    const hasVideos = i18n.exists('learn.tabs.videos', { ns: 'common' });
-    const hasArticles = i18n.exists('learn.tabs.articles', { ns: 'common' });
-    
-    console.log(`[LearnTabs] Translation keys - guides: ${hasGuides}, videos: ${hasVideos}, articles: ${hasArticles}`);
+    loadTranslations();
   }, [i18n.language]);
 
-  // Create unique key for each language to force re-render on language change
-  const tabsKey = `learn-tabs-${i18n.language}-${translationsLoaded ? 'loaded' : 'loading'}`;
+  // Create a key that forces re-render when language changes
+  const tabsKey = `learn-tabs-${i18n.language}`;
   
   return (
     <Tabs defaultValue="guides" key={tabsKey}>
       <TabsList className="grid w-full grid-cols-3 mb-8">
-        <TabsTrigger value="guides">{t("learn.tabs.guides", "Guides")}</TabsTrigger>
-        <TabsTrigger value="videos">{t("learn.tabs.videos", "Videos")}</TabsTrigger>
-        <TabsTrigger value="articles">{t("learn.tabs.articles", "Articles")}</TabsTrigger>
+        <TabsTrigger value="guides">{t("learn.tabs.guides", { defaultValue: "Guides" })}</TabsTrigger>
+        <TabsTrigger value="videos">{t("learn.tabs.videos", { defaultValue: "Videos" })}</TabsTrigger>
+        <TabsTrigger value="articles">{t("learn.tabs.articles", { defaultValue: "Articles" })}</TabsTrigger>
       </TabsList>
       
       <TabsContent value="guides" className="space-y-6">

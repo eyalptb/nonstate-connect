@@ -1,5 +1,5 @@
 
-import React, { memo, useEffect } from "react";
+import React, { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -11,10 +11,9 @@ interface ResourceCardProps {
   icon: React.ReactNode;
   metadata: string;
   cta: string;
-  id: string; // Add ID to help with unique keys
+  id: string;
 }
 
-// Use memo to optimize rendering performance
 export const ResourceCard = memo(({ 
   title, 
   description, 
@@ -25,16 +24,8 @@ export const ResourceCard = memo(({
 }: ResourceCardProps) => {
   const { i18n } = useTranslation();
   
-  // Log when this component renders to help with debugging
-  useEffect(() => {
-    console.log(`[ResourceCard] Rendering card with ID ${id} in language ${i18n.language}`);
-  }, [id, i18n.language]);
-  
-  // Create a unique key for this card that changes with language
-  const cardKey = `resource-card-${id}-${i18n.language}`;
-  
   return (
-    <Card className="border border-muted-foreground/20 hover:border-primary/20 transition-colors mb-4" key={cardKey}>
+    <Card className="border border-muted-foreground/20 hover:border-primary/20 transition-colors mb-4">
       <CardContent className="p-6">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="flex-1">
