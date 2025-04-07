@@ -76,44 +76,11 @@ export const loadAllUseCasesTranslations = () => {
   loadAllComponentTranslations('useCases');
 };
 
-// Learn translations - more direct approach to fix the loading issue
+// Learn translations - simplify to use standard approach
 export const addLearnTranslations = (language: string, namespace: string = 'common') => {
-  console.log(`Adding learn translations for ${language}`);
-  
-  // Get the translations for the specified language or fallback to English
-  const translations = learnTranslations[language] || learnTranslations['en'];
-  
-  if (!translations) {
-    console.error(`No learn translations found for ${language} or fallback`);
-    return false;
-  }
-  
-  // Add the translations directly to i18n as a nested 'learn' object
-  const result = i18n.addResourceBundle(
-    language, 
-    namespace, 
-    { learn: translations }, 
-    true,  // deep merge
-    true   // overwrite
-  );
-  
-  console.log(`Added learn translations for ${language}, result:`, result ? 'Success' : 'Failed');
-  
-  // Return the result of adding the translations
-  return result;
+  return addComponentTranslations(language, 'learn', namespace);
 };
 
 export const loadAllLearnTranslations = () => {
-  const supportedLanguages = getSupportedLanguages();
-  console.log("Loading learn translations for languages:", supportedLanguages);
-  
-  // Force load for the current language first
-  addLearnTranslations(i18n.language);
-  
-  // Then load for all supported languages
-  supportedLanguages.forEach(lang => {
-    if (lang !== i18n.language) { // Skip the current language as we already loaded it
-      addLearnTranslations(lang);
-    }
-  });
+  loadAllComponentTranslations('learn');
 };
