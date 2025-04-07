@@ -1,6 +1,5 @@
 
-import React, { useEffect } from "react";
-import { useTranslation } from "react-i18next";
+import React from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,41 +9,18 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PhoneCall, Mail, MessageSquare, Clock } from "lucide-react";
 import { toast } from "sonner";
-import { addContactSalesTranslations, loadAllContactSalesTranslations } from "@/utils/translationLoader";
 
 const ContactSales = () => {
-  const { t, i18n } = useTranslation(["common"]);
-
-  useEffect(() => {
-    // Load all contact sales translations on mount
-    loadAllContactSalesTranslations();
-    
-    // Add translations for the current language
-    addContactSalesTranslations(i18n.language);
-    
-    // Handle language changes
-    const handleLanguageChanged = () => {
-      addContactSalesTranslations(i18n.language);
-    };
-    
-    document.addEventListener('i18n-resources-loaded', handleLanguageChanged);
-    
-    return () => {
-      document.removeEventListener('i18n-resources-loaded', handleLanguageChanged);
-    };
-  }, [i18n.language]);
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success(t('contactSales.successMessage'));
+    toast.success("Your message has been sent! Our sales team will contact you shortly.");
   };
 
   return (
     <div className="container mx-auto py-12 px-4">
       <PageHeader
-        title={t('contactSales.title')}
-        description={t('contactSales.description')}
-        key={`hero-${i18n.language}`}
+        title="Contact Our Sales Team"
+        description="Have questions about our enterprise solutions? Our team is ready to help."
       />
 
       <div className="grid md:grid-cols-3 gap-8 mt-12">
@@ -54,19 +30,19 @@ const ContactSales = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">{t('contactSales.form.firstName')}</Label>
+                    <Label htmlFor="firstName">First Name</Label>
                     <Input 
                       id="firstName" 
-                      placeholder={t('contactSales.form.placeholders.firstName')} 
+                      placeholder="Your first name" 
                       required 
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">{t('contactSales.form.lastName')}</Label>
+                    <Label htmlFor="lastName">Last Name</Label>
                     <Input 
                       id="lastName" 
-                      placeholder={t('contactSales.form.placeholders.lastName')} 
+                      placeholder="Your last name" 
                       required 
                     />
                   </div>
@@ -74,77 +50,77 @@ const ContactSales = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="email">{t('contactSales.form.email')}</Label>
+                    <Label htmlFor="email">Email</Label>
                     <Input 
                       id="email" 
                       type="email" 
-                      placeholder={t('contactSales.form.placeholders.email')} 
+                      placeholder="Your email address" 
                       required 
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="phone">{t('contactSales.form.phone')}</Label>
+                    <Label htmlFor="phone">Phone Number</Label>
                     <Input 
                       id="phone" 
                       type="tel" 
-                      placeholder={t('contactSales.form.placeholders.phone')} 
+                      placeholder="Your phone number" 
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="company">{t('contactSales.form.company')}</Label>
+                  <Label htmlFor="company">Company</Label>
                   <Input 
                     id="company" 
-                    placeholder={t('contactSales.form.placeholders.company')} 
+                    placeholder="Your organization name" 
                     required 
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="employeeCount">{t('contactSales.form.employeeCount')}</Label>
+                  <Label htmlFor="employeeCount">Number of Employees</Label>
                   <Select>
                     <SelectTrigger id="employeeCount">
-                      <SelectValue placeholder={t('contactSales.form.placeholders.employeeCount')} />
+                      <SelectValue placeholder="Select company size" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1-10">{t('contactSales.form.options.employees.small')}</SelectItem>
-                      <SelectItem value="11-50">{t('contactSales.form.options.employees.medium')}</SelectItem>
-                      <SelectItem value="51-200">{t('contactSales.form.options.employees.large')}</SelectItem>
-                      <SelectItem value="201-500">{t('contactSales.form.options.employees.xlarge')}</SelectItem>
-                      <SelectItem value="501+">{t('contactSales.form.options.employees.enterprise')}</SelectItem>
+                      <SelectItem value="1-10">1-10 employees</SelectItem>
+                      <SelectItem value="11-50">11-50 employees</SelectItem>
+                      <SelectItem value="51-200">51-200 employees</SelectItem>
+                      <SelectItem value="201-500">201-500 employees</SelectItem>
+                      <SelectItem value="501+">501+ employees</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="interest">{t('contactSales.form.interest')}</Label>
+                  <Label htmlFor="interest">What are you interested in?</Label>
                   <Select>
                     <SelectTrigger id="interest">
-                      <SelectValue placeholder={t('contactSales.form.placeholders.interest')} />
+                      <SelectValue placeholder="Select your interest" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="enterprise">{t('contactSales.form.options.interests.enterprise')}</SelectItem>
-                      <SelectItem value="security">{t('contactSales.form.options.interests.security')}</SelectItem>
-                      <SelectItem value="governance">{t('contactSales.form.options.interests.governance')}</SelectItem>
-                      <SelectItem value="custom">{t('contactSales.form.options.interests.custom')}</SelectItem>
-                      <SelectItem value="other">{t('contactSales.form.options.interests.other')}</SelectItem>
+                      <SelectItem value="enterprise">Enterprise Solutions</SelectItem>
+                      <SelectItem value="security">Security Features</SelectItem>
+                      <SelectItem value="governance">Governance Tools</SelectItem>
+                      <SelectItem value="custom">Custom Integrations</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="message">{t('contactSales.form.message')}</Label>
+                  <Label htmlFor="message">Message</Label>
                   <Textarea 
                     id="message" 
-                    placeholder={t('contactSales.form.placeholders.message')} 
+                    placeholder="Tell us about your needs and requirements" 
                     rows={5}
                     required
                   />
                 </div>
 
-                <Button type="submit" className="w-full">{t('contactSales.form.submit')}</Button>
+                <Button type="submit" className="w-full">Submit Inquiry</Button>
               </form>
             </CardContent>
           </Card>
@@ -157,36 +133,36 @@ const ContactSales = () => {
                 <div className="flex items-start gap-4">
                   <PhoneCall className="h-5 w-5 text-primary mt-1" />
                   <div>
-                    <h3 className="font-medium">{t('contactSales.contact.call')}</h3>
-                    <p className="text-muted-foreground mt-1">{t('contactSales.contact.callDescription')}</p>
-                    <p className="mt-2">{t('contactSales.contact.phone')}</p>
+                    <h3 className="font-medium">Call us</h3>
+                    <p className="text-muted-foreground mt-1">Speak directly with a sales specialist</p>
+                    <p className="mt-2">+1 (555) 123-4567</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-4">
                   <Mail className="h-5 w-5 text-primary mt-1" />
                   <div>
-                    <h3 className="font-medium">{t('contactSales.contact.email')}</h3>
-                    <p className="text-muted-foreground mt-1">{t('contactSales.contact.emailDescription')}</p>
-                    <p className="mt-2">{t('contactSales.contact.emailAddress')}</p>
+                    <h3 className="font-medium">Email us</h3>
+                    <p className="text-muted-foreground mt-1">Send us an email anytime</p>
+                    <p className="mt-2">sales@paracollab.com</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-4">
                   <Clock className="h-5 w-5 text-primary mt-1" />
                   <div>
-                    <h3 className="font-medium">{t('contactSales.contact.hours')}</h3>
-                    <p className="text-muted-foreground mt-1">{t('contactSales.contact.hoursDescription')}</p>
-                    <p className="mt-2">{t('contactSales.contact.hoursDetails')}</p>
+                    <h3 className="font-medium">Business Hours</h3>
+                    <p className="text-muted-foreground mt-1">We're available</p>
+                    <p className="mt-2">Monday - Friday: 9am - 5pm EST</p>
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-4">
                   <MessageSquare className="h-5 w-5 text-primary mt-1" />
                   <div>
-                    <h3 className="font-medium">{t('contactSales.contact.chat')}</h3>
-                    <p className="text-muted-foreground mt-1">{t('contactSales.contact.chatDescription')}</p>
-                    <Button variant="outline" className="mt-2 w-full">{t('contactSales.contact.startChat')}</Button>
+                    <h3 className="font-medium">Live Chat</h3>
+                    <p className="text-muted-foreground mt-1">Chat with our sales team</p>
+                    <Button variant="outline" className="mt-2 w-full">Start Chat</Button>
                   </div>
                 </div>
               </div>
