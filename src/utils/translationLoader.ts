@@ -63,31 +63,3 @@ export {
   loadAllLearnTranslations,
   loadAllPricingTranslations
 };
-
-// Export as default for convenience
-export default {
-  addTranslations,
-  addComponentTranslations,
-  loadAllComponentTranslations,
-  loadTranslations,
-  addWalletTranslations,
-  addFeatureTranslations,
-  addJoinCtaTranslations,
-  addProjectTranslations,
-  addFooterTranslations,
-  addBackendTranslations,
-  addFeaturePageTranslations,
-  addUseCasesTranslations,
-  addLearnTranslations,
-  addPricingTranslations,
-  loadAllWalletTranslations,
-  loadAllFeatureTranslations,
-  loadAllJoinCtaTranslations,
-  loadAllProjectTranslations,
-  loadAllFooterTranslations,
-  loadAllBackendTranslations,
-  loadAllFeaturePageTranslations,
-  loadAllUseCasesTranslations,
-  loadAllLearnTranslations,
-  loadAllPricingTranslations
-};

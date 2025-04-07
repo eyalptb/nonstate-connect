@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +8,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from '@/i18n';
 import { loadAllPricingTranslations } from "@/utils/translationLoader";
+import usePricingDebug from "@/hooks/usePricingDebug";
 
 // Define feature list types for type safety
 type FeatureList = string[];
@@ -17,13 +17,21 @@ type FaqItem = { question: string; answer: string };
 const Pricing = () => {
   const { t } = useTranslation(["common"]);
   
+  // Add debugging hook without changing functionality
+  const { debugPricingTranslations } = usePricingDebug();
+  
   // Load pricing translations when component mounts or language changes
   useEffect(() => {
     if (i18n.language) {
       loadAllPricingTranslations();
       console.log(`Loading pricing translations for language: ${i18n.language}`);
+      
+      // Trigger debug for pricing translations
+      setTimeout(() => {
+        debugPricingTranslations();
+      }, 1000);
     }
-  }, [i18n.language]);
+  }, [i18n.language, debugPricingTranslations]);
 
   // Helper function to get features as an array with proper typing
   const getFeatures = (key: string, defaultFeatures: string[]): string[] => {
@@ -104,6 +112,20 @@ const Pricing = () => {
         title={t('pricing.title', 'Simple, Transparent Pricing')}
         description={t('pricing.description', 'Choose the plan that\'s right for your organization')}
       />
+
+      {/* Add debug button in development environment */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="mb-4 text-center">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={debugPricingTranslations}
+            className="text-xs"
+          >
+            Debug Translations
+          </Button>
+        </div>
+      )}
 
       <div className="mt-12">
         <Tabs defaultValue="monthly" className="w-full">
