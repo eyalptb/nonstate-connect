@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Check, X, Server } from 'lucide-react';
+import { Check, X, Server, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { apiConfig, useCustomBackend, DIGITALOCEAN_API_URL } from '@/config/api';
@@ -12,16 +12,17 @@ const BackendStatus = () => {
   const { t, i18n } = useTranslation(['common']);
   const [isConnected, setIsConnected] = useState<boolean | null>(null);
   const [isChecking, setIsChecking] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [backendType, setBackendType] = useState(useCustomBackend ? 'DigitalOcean' : 'Supabase');
 
   // Check connection status
   const checkConnection = async () => {
     setIsChecking(true);
+    setErrorMessage(null);
     
     try {
       if (useCustomBackend) {
-        // This is just a placeholder - you'd implement a real health check
-        // when your DigitalOcean backend is ready
+        // DigitalOcean connection check
         const url = `${DIGITALOCEAN_API_URL}/health`;
         
         const response = await fetch(url, {
@@ -40,25 +41,26 @@ const BackendStatus = () => {
           toast.error(t("backend.connection_failure", "Failed to connect to {{backend}} backend", { backend: backendType }));
         }
       } else {
-        // For Supabase, use a simple query to verify the connection
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('count')
-          .limit(1);
-        
-        const connectionSuccess = !error;
-        setIsConnected(connectionSuccess);
+        // For Supabase, use a simpler health check that doesn't rely on RLS policies
+        // Just check if we can connect to Supabase at all
+        const { data, error } = await supabase.auth.getSession();
         
         if (error) {
           console.error('Supabase connection check failed:', error);
+          setIsConnected(false);
+          setErrorMessage(error.message);
           toast.error(t("backend.connection_failure", "Failed to connect to {{backend}} backend", { backend: backendType }));
         } else {
+          setIsConnected(true);
           toast.success(t("backend.connection_success", "Successfully connected to {{backend}} backend", { backend: backendType }));
         }
       }
     } catch (error) {
       console.error('Connection check failed:', error);
       setIsConnected(false);
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      }
       toast.error(t("backend.connection_error", "Could not reach {{backend}} backend", { backend: backendType }));
     } finally {
       setIsChecking(false);
@@ -66,7 +68,15 @@ const BackendStatus = () => {
   };
 
   useEffect(() => {
-    checkConnection();
+    const runConnectionCheck = async () => {
+      try {
+        await checkConnection();
+      } catch (error) {
+        console.error('Error in initial connection check:', error);
+      }
+    };
+    
+    runConnectionCheck();
   }, [i18n.language]);
 
   return (
@@ -102,6 +112,18 @@ const BackendStatus = () => {
           <p>{t("backend.using_supabase", "Using Supabase backend services")}</p>
         )}
       </div>
+      
+      {errorMessage && (
+        <div className="mt-2 p-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+          <div className="flex items-start gap-2">
+            <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400 mt-0.5" />
+            <div>
+              <p className="text-xs font-medium text-red-600 dark:text-red-400">Error details:</p>
+              <p className="text-xs text-red-600/80 dark:text-red-400/80 break-words">{errorMessage}</p>
+            </div>
+          </div>
+        </div>
+      )}
       
       <div className="flex gap-2 mt-3">
         <Button 
