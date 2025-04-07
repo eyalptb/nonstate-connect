@@ -9,7 +9,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
 import i18n from '@/i18n';
 import { pricingTranslations, supportedLanguages } from "@/utils/translations/pricingTranslations";
-import { toast } from "@/components/ui/use-toast";
 
 const Pricing = () => {
   const { t } = useTranslation();
@@ -135,17 +134,7 @@ const Pricing = () => {
     }
   };
 
-  // Show fallback to English message for languages other than English and Russian
-  useEffect(() => {
-    const currentLang = i18n.language;
-    if (translationsLoaded && currentLang !== 'en' && currentLang !== 'ru') {
-      toast({
-        title: "Translation Notice",
-        description: `Using English translations for pricing content. Native ${currentLang.toUpperCase()} translations coming soon.`,
-        duration: 5000,
-      });
-    }
-  }, [translationsLoaded, i18n.language]);
+  // Removed notification toast for languages other than English and Russian
 
   return (
     <div className="container mx-auto py-12 px-4">
