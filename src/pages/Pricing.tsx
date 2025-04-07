@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import i18n from '@/i18n';
-import { loadAllPricingTranslations, addPricingTranslations } from "@/utils/translationLoader";
+import { addPricingTranslations } from "@/utils/translations/componentTranslations";
 import usePricingDebug from "@/hooks/usePricingDebug";
 
 // Define feature list types for type safety
@@ -18,42 +17,34 @@ type FaqItem = { question: string; answer: string };
 const Pricing = () => {
   const { t } = useTranslation(["common"]);
   const [isTranslationsLoaded, setIsTranslationsLoaded] = useState(false);
+  const [loadAttemptCount, setLoadAttemptCount] = useState(0);
   
   // Add debugging hook without changing functionality
   const { debugPricingTranslations } = usePricingDebug();
   
   // Load pricing translations when component mounts or language changes
   useEffect(() => {
-    // Prevent multiple loading attempts
-    if (isTranslationsLoaded) {
+    // Prevent too many loading attempts - maximum of 2 attempts per render
+    if (loadAttemptCount >= 2) {
+      console.log(`[Pricing] Maximum load attempts (${loadAttemptCount}) reached, using defaults`);
       return;
     }
     
     if (i18n.language) {
-      console.log(`[Pricing] Loading pricing translations for language: ${i18n.language}`);
+      console.log(`[Pricing] Loading pricing translations for language: ${i18n.language} (attempt ${loadAttemptCount + 1})`);
       
-      // Try to load translations and mark as loaded
-      loadAllPricingTranslations();
-      setIsTranslationsLoaded(true);
-      
-      // Also try direct method as a fallback, but only once
-      setTimeout(() => {
-        const resources = i18n.getResourceBundle(i18n.language, 'common');
-        const hasPricing = resources && resources.pricing && Object.keys(resources.pricing).length > 0;
-        
-        if (!hasPricing) {
-          console.log(`[Pricing] Still missing pricing translations, trying direct add`);
-          addPricingTranslations(i18n.language);
-        }
-      }, 1000);
+      // Try to directly add pricing translations
+      const success = addPricingTranslations(i18n.language);
+      setIsTranslationsLoaded(success);
+      setLoadAttemptCount(prev => prev + 1);
     }
-  }, [i18n.language, isTranslationsLoaded]);
+  }, [i18n.language, loadAttemptCount]);
 
-  // Update translations when language changes
+  // Reset loading state when language changes
   useEffect(() => {
-    const handleLanguageChange = (e: Event) => {
-      // Reset the loaded state when language changes to allow loading new translations
+    const handleLanguageChange = () => {
       setIsTranslationsLoaded(false);
+      setLoadAttemptCount(0);
     };
     
     // Listen for language changes

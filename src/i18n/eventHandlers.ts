@@ -1,6 +1,6 @@
 
 import i18n from 'i18next';
-import { addInMemoryTranslations, addLearnTranslations, addPricingTranslations } from './inMemoryTranslations';
+import { addInMemoryTranslations } from './inMemoryTranslations';
 
 /**
  * Sets up all i18n event handlers
@@ -8,6 +8,8 @@ import { addInMemoryTranslations, addLearnTranslations, addPricingTranslations }
 export const setupEventHandlers = () => {
   // Flag to track if we're in the middle of loading translations
   let isLoadingTranslations = false;
+  let lastLanguageChange = '';
+  let changeCount = 0;
   
   // Set up initialized event handler
   i18n.on('initialized', () => {
@@ -17,33 +19,9 @@ export const setupEventHandlers = () => {
     // Add in-memory translations for current language
     addInMemoryTranslations(i18n.language);
     
-    // Verify learn translations were added correctly
+    // Verify translations were added correctly
     const currentResources = i18n.getResourceBundle(i18n.language, 'common');
-    console.log(`[i18n] Initial resources for ${i18n.language}:`, currentResources);
-    
-    // Check if Learn translations are present
-    const hasLearnTranslations = currentResources && 
-      currentResources.learn && 
-      Object.keys(currentResources.learn).length > 0;
-    
-    if (!hasLearnTranslations) {
-      console.log(`[i18n] Learn translations not present after initialization, adding them explicitly`);
-      addLearnTranslations(i18n.language);
-    } else {
-      console.log(`[i18n] Learn translations correctly loaded during initialization`);
-    }
-    
-    // Check if Pricing translations are present
-    const hasPricingTranslations = currentResources && 
-      currentResources.pricing && 
-      Object.keys(currentResources.pricing).length > 0;
-    
-    if (!hasPricingTranslations) {
-      console.log(`[i18n] Pricing translations not present after initialization, adding them explicitly`);
-      addPricingTranslations(i18n.language);
-    } else {
-      console.log(`[i18n] Pricing translations correctly loaded during initialization`);
-    }
+    console.log(`[i18n] Initial resources for ${i18n.language}:`, currentResources ? 'Loaded' : 'Missing');
     
     // Notify listeners - but only once
     document.dispatchEvent(new CustomEvent('i18n-resources-loaded', { detail: { language: i18n.language } }));
@@ -55,8 +33,21 @@ export const setupEventHandlers = () => {
     // Don't trigger reload cycles
   });
 
-  // Set up languageChanged event handler with debounce
+  // Set up languageChanged event handler with loop prevention
   i18n.on('languageChanged', (lng) => {
+    // Strict loop prevention
+    // If we detect too many changes for the same language, stop processing
+    if (lastLanguageChange === lng) {
+      changeCount++;
+      if (changeCount > 2) {
+        console.warn(`[i18n] Detected language change loop for ${lng}, breaking cycle`);
+        return;
+      }
+    } else {
+      lastLanguageChange = lng;
+      changeCount = 0;
+    }
+    
     // Prevent multiple loading cycles
     if (isLoadingTranslations) {
       console.log(`[i18n] Already loading translations for ${lng}, skipping duplicate event`);
@@ -69,46 +60,16 @@ export const setupEventHandlers = () => {
     console.log(`[i18n] Language changed to ${lng}, updating document.documentElement.lang`);
     
     // Add in-memory translations for the new language
-    addInMemoryTranslations(lng);
-    
-    // Verify translations were added
-    const resources = i18n.getResourceBundle(lng, 'common');
-    console.log(`[i18n] Resources for ${lng} after language change:`, resources);
-    
-    // Verify Learn translations specifically
-    const hasLearnTranslations = resources && 
-      resources.learn && 
-      Object.keys(resources.learn).length > 0;
-      
-    if (!hasLearnTranslations) {
-      console.log(`[i18n] Learn translations missing after language change, adding them explicitly`);
-      addLearnTranslations(lng);
-    }
-    
-    // Verify Pricing translations specifically
-    const hasPricingTranslations = resources && 
-      resources.pricing && 
-      Object.keys(resources.pricing).length > 0;
-      
-    if (!hasPricingTranslations) {
-      console.log(`[i18n] Pricing translations missing after language change, adding them explicitly`);
-      addPricingTranslations(lng);
-    }
-    
-    // Reload resources to ensure everything is up-to-date, but don't trigger a cascade
     try {
-      i18n.reloadResources([lng], ['common'])
-        .then(() => {
-          console.log(`[i18n] Successfully reloaded resources for ${lng}`);
-          isLoadingTranslations = false;
-          document.dispatchEvent(new CustomEvent('i18n-resources-loaded', { detail: { language: lng } }));
-        })
-        .catch((error) => {
-          console.error(`[i18n] Failed to reload resources for ${lng}:`, error);
-          isLoadingTranslations = false;
-        });
+      addInMemoryTranslations(lng);
+      
+      // Dispatch event only once with a small delay to allow resources to load
+      setTimeout(() => {
+        isLoadingTranslations = false;
+        document.dispatchEvent(new CustomEvent('i18n-resources-loaded', { detail: { language: lng } }));
+      }, 100);
     } catch (error) {
-      console.error('[i18n] Error during resource reload:', error);
+      console.error('[i18n] Error in language change handler:', error);
       isLoadingTranslations = false;
     }
   });
