@@ -6,6 +6,9 @@ import { addInMemoryTranslations, addLearnTranslations, addPricingTranslations }
  * Sets up all i18n event handlers
  */
 export const setupEventHandlers = () => {
+  // Flag to track if we're in the middle of loading translations
+  let isLoadingTranslations = false;
+  
   // Set up initialized event handler
   i18n.on('initialized', () => {
     console.log('[i18n] Initialized with language:', i18n.language);
@@ -24,7 +27,7 @@ export const setupEventHandlers = () => {
       Object.keys(currentResources.learn).length > 0;
     
     if (!hasLearnTranslations) {
-      console.warn(`[i18n] Learn translations not present after initialization, adding them explicitly`);
+      console.log(`[i18n] Learn translations not present after initialization, adding them explicitly`);
       addLearnTranslations(i18n.language);
     } else {
       console.log(`[i18n] Learn translations correctly loaded during initialization`);
@@ -36,24 +39,32 @@ export const setupEventHandlers = () => {
       Object.keys(currentResources.pricing).length > 0;
     
     if (!hasPricingTranslations) {
-      console.warn(`[i18n] Pricing translations not present after initialization, adding them explicitly`);
+      console.log(`[i18n] Pricing translations not present after initialization, adding them explicitly`);
       addPricingTranslations(i18n.language);
     } else {
       console.log(`[i18n] Pricing translations correctly loaded during initialization`);
     }
     
-    // Notify listeners
-    document.dispatchEvent(new Event('i18n-resources-loaded'));
+    // Notify listeners - but only once
+    document.dispatchEvent(new CustomEvent('i18n-resources-loaded', { detail: { language: i18n.language } }));
   });
 
   // Set up loaded event handler
   i18n.on('loaded', (loaded) => {
     console.log('[i18n] Resources loaded:', loaded);
-    document.dispatchEvent(new Event('i18n-resources-loaded'));
+    // Don't trigger reload cycles
   });
 
-  // Set up languageChanged event handler
+  // Set up languageChanged event handler with debounce
   i18n.on('languageChanged', (lng) => {
+    // Prevent multiple loading cycles
+    if (isLoadingTranslations) {
+      console.log(`[i18n] Already loading translations for ${lng}, skipping duplicate event`);
+      return;
+    }
+    
+    isLoadingTranslations = true;
+    
     document.documentElement.lang = lng;
     console.log(`[i18n] Language changed to ${lng}, updating document.documentElement.lang`);
     
@@ -70,7 +81,7 @@ export const setupEventHandlers = () => {
       Object.keys(resources.learn).length > 0;
       
     if (!hasLearnTranslations) {
-      console.warn(`[i18n] Learn translations missing after language change, adding them explicitly`);
+      console.log(`[i18n] Learn translations missing after language change, adding them explicitly`);
       addLearnTranslations(lng);
     }
     
@@ -80,17 +91,25 @@ export const setupEventHandlers = () => {
       Object.keys(resources.pricing).length > 0;
       
     if (!hasPricingTranslations) {
-      console.warn(`[i18n] Pricing translations missing after language change, adding them explicitly`);
+      console.log(`[i18n] Pricing translations missing after language change, adding them explicitly`);
       addPricingTranslations(lng);
     }
     
-    // Reload resources to ensure everything is up-to-date
-    i18n.reloadResources([lng], ['common'])
-      .then(() => {
-        console.log(`[i18n] Successfully reloaded resources for ${lng}`);
-        document.dispatchEvent(new Event('i18n-resources-loaded'));
-      })
-      .catch((error) => console.error(`[i18n] Failed to reload resources for ${lng}:`, error));
+    // Reload resources to ensure everything is up-to-date, but don't trigger a cascade
+    try {
+      i18n.reloadResources([lng], ['common'])
+        .then(() => {
+          console.log(`[i18n] Successfully reloaded resources for ${lng}`);
+          isLoadingTranslations = false;
+          document.dispatchEvent(new CustomEvent('i18n-resources-loaded', { detail: { language: lng } }));
+        })
+        .catch((error) => {
+          console.error(`[i18n] Failed to reload resources for ${lng}:`, error);
+          isLoadingTranslations = false;
+        });
+    } catch (error) {
+      console.error('[i18n] Error during resource reload:', error);
+      isLoadingTranslations = false;
+    }
   });
 };
-

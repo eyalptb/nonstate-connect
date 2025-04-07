@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,17 +17,26 @@ type FaqItem = { question: string; answer: string };
 
 const Pricing = () => {
   const { t } = useTranslation(["common"]);
+  const [isTranslationsLoaded, setIsTranslationsLoaded] = useState(false);
   
   // Add debugging hook without changing functionality
   const { debugPricingTranslations } = usePricingDebug();
   
   // Load pricing translations when component mounts or language changes
   useEffect(() => {
+    // Prevent multiple loading attempts
+    if (isTranslationsLoaded) {
+      return;
+    }
+    
     if (i18n.language) {
       console.log(`[Pricing] Loading pricing translations for language: ${i18n.language}`);
-      loadAllPricingTranslations();
       
-      // Also try direct method as a fallback
+      // Try to load translations and mark as loaded
+      loadAllPricingTranslations();
+      setIsTranslationsLoaded(true);
+      
+      // Also try direct method as a fallback, but only once
       setTimeout(() => {
         const resources = i18n.getResourceBundle(i18n.language, 'common');
         const hasPricing = resources && resources.pricing && Object.keys(resources.pricing).length > 0;
@@ -36,25 +45,31 @@ const Pricing = () => {
           console.log(`[Pricing] Still missing pricing translations, trying direct add`);
           addPricingTranslations(i18n.language);
         }
-        
-        // Trigger debug for pricing translations
-        debugPricingTranslations();
       }, 1000);
     }
-  }, [i18n.language, debugPricingTranslations]);
+  }, [i18n.language, isTranslationsLoaded]);
+
+  // Update translations when language changes
+  useEffect(() => {
+    const handleLanguageChange = (e: Event) => {
+      // Reset the loaded state when language changes to allow loading new translations
+      setIsTranslationsLoaded(false);
+    };
+    
+    // Listen for language changes
+    document.addEventListener('i18n-resources-loaded', handleLanguageChange);
+    
+    return () => {
+      document.removeEventListener('i18n-resources-loaded', handleLanguageChange);
+    };
+  }, []);
 
   // Helper function to get features as an array with proper typing
   const getFeatures = (key: string, defaultFeatures: string[]): string[] => {
     try {
-      console.log(`[Pricing] Getting features for ${key}, current language: ${i18n.language}`);
-      const resources = i18n.getResourceBundle(i18n.language, 'common');
-      console.log(`[Pricing] Resources:`, resources && resources.pricing ? 'Has pricing' : 'No pricing');
-      
       const features = t(key, { defaultValue: defaultFeatures, returnObjects: true });
-      console.log(`[Pricing] Features for ${key}:`, features);
       return Array.isArray(features) ? features : defaultFeatures;
     } catch (error) {
-      console.error(`[Pricing] Error getting features for ${key}:`, error);
       return defaultFeatures;
     }
   };
@@ -63,10 +78,8 @@ const Pricing = () => {
   const getFaqItems = (key: string, defaultItems: FaqItem[]): FaqItem[] => {
     try {
       const items = t(key, { defaultValue: defaultItems, returnObjects: true });
-      console.log(`[Pricing] FAQ items for ${key}:`, items);
       return Array.isArray(items) ? items : defaultItems;
     } catch (error) {
-      console.error(`[Pricing] Error getting FAQ items for ${key}:`, error);
       return defaultItems;
     }
   };
@@ -120,8 +133,11 @@ const Pricing = () => {
     }
   ];
 
+  // Use a stable key to prevent re-renders that could trigger more translation loading
+  const stableKey = `pricing-${i18n.language}`;
+
   return (
-    <div className="container mx-auto py-12 px-4" key={`pricing-${i18n.language}`}>
+    <div className="container mx-auto py-12 px-4" key={stableKey}>
       <PageHeader
         title={t('pricing.title', 'Simple, Transparent Pricing')}
         description={t('pricing.description', 'Choose the plan that\'s right for your organization')}
@@ -355,4 +371,3 @@ const Pricing = () => {
 };
 
 export default Pricing;
-

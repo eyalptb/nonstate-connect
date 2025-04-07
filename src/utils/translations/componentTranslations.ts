@@ -13,6 +13,9 @@ import { useCasesTranslations } from './useCasesTranslations';
 import { learnTranslations } from './learnTranslations';
 import { pricingTranslations } from './pricingTranslations';
 
+// Track which translations have already been attempted to avoid infinite loops
+const attemptedTranslations = new Set<string>();
+
 // Wallet translations
 export const addWalletTranslations = (language = i18n.language) => 
   addTranslations(language, 'common', walletTranslations[language] || walletTranslations.en);
@@ -67,8 +70,19 @@ export const addLearnTranslations = (language = i18n.language) =>
 
 export const loadAllLearnTranslations = () => loadTranslations('learn', { allLanguages: true });
 
-// Pricing translations
+// Pricing translations with loop prevention
 export const addPricingTranslations = (language = i18n.language) => {
+  // Create a unique key for this translation attempt
+  const attemptKey = `pricing_${language}`;
+  
+  // Check if we've already attempted this translation recently
+  if (attemptedTranslations.has(attemptKey)) {
+    console.log(`[addPricingTranslations] Already attempted for ${language}, skipping to prevent loops`);
+    return false;
+  }
+  
+  // Mark this translation as attempted
+  attemptedTranslations.add(attemptKey);
   console.log(`[addPricingTranslations] Called for language: ${language}`);
   
   // Get translations, fallback to English if needed
@@ -76,6 +90,8 @@ export const addPricingTranslations = (language = i18n.language) => {
   
   if (!translations) {
     console.error(`[addPricingTranslations] No pricing translations found for ${language} or en fallback`);
+    // Remove from attempted after a short delay to allow future attempts
+    setTimeout(() => attemptedTranslations.delete(attemptKey), 5000);
     return false;
   }
   
@@ -91,14 +107,30 @@ export const addPricingTranslations = (language = i18n.language) => {
     addTranslations(language, 'common', pricingOnly);
   }
   
+  // Remove from attempted after a short delay to allow future attempts if needed
+  setTimeout(() => attemptedTranslations.delete(attemptKey), 5000);
+  
   return success;
 };
 
 export const loadAllPricingTranslations = () => {
+  // Create a unique key for this operation
+  const attemptKey = `loadAllPricing`;
+  
+  // Check if we've already attempted this recently
+  if (attemptedTranslations.has(attemptKey)) {
+    console.log(`[loadAllPricingTranslations] Already attempted recently, skipping to prevent loops`);
+    return false;
+  }
+  
+  // Mark this operation as attempted
+  attemptedTranslations.add(attemptKey);
   console.log(`[loadAllPricingTranslations] Called`);
+  
+  // Try to load translations
   const result = loadTranslations('pricing', { allLanguages: true });
   
-  // Verify pricing translations were loaded
+  // Verify pricing translations were loaded, but only once
   setTimeout(() => {
     const currentLanguage = i18n.language;
     const resources = i18n.getResourceBundle(currentLanguage, 'common');
@@ -107,13 +139,15 @@ export const loadAllPricingTranslations = () => {
     const hasPricing = resources && resources.pricing && Object.keys(resources.pricing).length > 0;
     
     if (!hasPricing) {
-      console.warn(`[loadAllPricingTranslations] Pricing translations missing after load for ${currentLanguage}, adding them manually`);
+      console.log(`[loadAllPricingTranslations] Pricing translations missing after load for ${currentLanguage}, adding them manually`);
       addPricingTranslations(currentLanguage);
     } else {
       console.log(`[loadAllPricingTranslations] Pricing translations loaded successfully for ${currentLanguage}`);
     }
+    
+    // Remove from attempted after a delay
+    setTimeout(() => attemptedTranslations.delete(attemptKey), 5000);
   }, 500);
   
   return result;
 };
-
