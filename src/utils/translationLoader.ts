@@ -28,12 +28,6 @@ import {
   loadAllPricingTranslations
 } from './translations/componentTranslations';
 
-// Export component-specific load function for Learn
-export { 
-  loadAllLearnTranslations,
-  loadAllPricingTranslations
-};
-
 // Export everything for backward compatibility
 export { 
   // Helpers
@@ -66,6 +60,7 @@ export {
   loadAllBackendTranslations,
   loadAllFeaturePageTranslations,
   loadAllUseCasesTranslations,
+  loadAllLearnTranslations,
   loadAllPricingTranslations
 };
 

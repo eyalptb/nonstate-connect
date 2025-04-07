@@ -1,3 +1,4 @@
+
 import { addComponentTranslations, loadAllComponentTranslations } from './translationCore';
 
 // Wallet Translations
@@ -88,28 +89,4 @@ export const addPricingTranslations = (language: string, namespace: string = 'co
 
 export const loadAllPricingTranslations = (namespace: string = 'common') => {
   loadAllComponentTranslations('pricing', namespace);
-};
-
-// Export as named exports
-export {
-  addWalletTranslations,
-  loadAllWalletTranslations,
-  addFeatureTranslations,
-  loadAllFeatureTranslations,
-  addJoinCtaTranslations,
-  loadAllJoinCtaTranslations,
-  addProjectTranslations,
-  loadAllProjectTranslations,
-  addFooterTranslations,
-  loadAllFooterTranslations,
-  addBackendTranslations,
-  loadAllBackendTranslations,
-  addFeaturePageTranslations,
-  loadAllFeaturePageTranslations,
-  addUseCasesTranslations,
-  loadAllUseCasesTranslations,
-  addLearnTranslations,
-  loadAllLearnTranslations,
-  addPricingTranslations,
-  loadAllPricingTranslations,
 };
