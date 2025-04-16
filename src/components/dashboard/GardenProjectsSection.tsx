@@ -9,7 +9,7 @@ import useTranslationHelper from "@/hooks/useTranslationHelper";
 
 export const GardenProjectsSection: React.FC = () => {
   const navigate = useNavigate();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { getText } = useTranslationHelper();
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -40,23 +40,23 @@ export const GardenProjectsSection: React.FC = () => {
     setIsLoaded(true);
   }, [i18n.language]);
 
-  // Get all text using the helper with appropriate fallbacks
-  // Fallback texts to ensure we always show something meaningful
-  const title = getText('dashboard.gardenProjects.title', 'Green Haven Garden Projects');
-  const description = getText('dashboard.gardenProjects.description', 'Plan and manage sustainable community gardens');
+  // Direct translation access for better reliability
+  // These translations use the exact same original English text as fallbacks
+  const title = t('dashboard.gardenProjects.title', { defaultValue: 'Green Haven Garden Projects' });
+  const description = t('dashboard.gardenProjects.description', { defaultValue: 'Plan and manage sustainable community gardens' });
   
-  const planningTitle = getText('dashboard.gardenProjects.planning.title', 'Community Garden Planning');
-  const planningDesc = getText('dashboard.gardenProjects.planning.description', 'Collaborative planning for local food production');
-  const planningButton = getText('dashboard.gardenProjects.planning.button', 'Browse Gardens');
+  const planningTitle = t('dashboard.gardenProjects.planning.title', { defaultValue: 'Community Garden Planning' });
+  const planningDesc = t('dashboard.gardenProjects.planning.description', { defaultValue: 'Collaborative planning for local food production' });
+  const planningButton = t('dashboard.gardenProjects.planning.button', { defaultValue: 'Browse Gardens' });
   
-  const newTitle = getText('dashboard.gardenProjects.new.title', 'Start a New Garden');
-  const newDesc = getText('dashboard.gardenProjects.new.description', 'Create your own sustainable garden project');
-  const newButton = getText('dashboard.gardenProjects.new.button', 'Create Garden');
+  const newTitle = t('dashboard.gardenProjects.new.title', { defaultValue: 'Start a New Garden' });
+  const newDesc = t('dashboard.gardenProjects.new.description', { defaultValue: 'Create your own sustainable garden project' });
+  const newButton = t('dashboard.gardenProjects.new.button', { defaultValue: 'Create Garden' });
 
   // Log translations for debugging
   useEffect(() => {
     if (isLoaded) {
-      console.log("[GardenProjectsSection] Translation results:", {
+      console.log("[GardenProjectsSection] Translation results using t():", {
         title,
         description,
         planningTitle,
@@ -66,8 +66,21 @@ export const GardenProjectsSection: React.FC = () => {
         newDesc,
         newButton
       });
+      
+      // Also check if getText helper works as an alternative
+      console.log("[GardenProjectsSection] Translation using getText:", {
+        title: getText('dashboard.gardenProjects.title', 'Green Haven Garden Projects'),
+        description: getText('dashboard.gardenProjects.description', 'Plan and manage sustainable community gardens')
+      });
+      
+      // Check if direct resource access works
+      if (i18n.exists('dashboard.gardenProjects.title')) {
+        console.log("[GardenProjectsSection] Translation exists check: true for dashboard.gardenProjects.title");
+      } else {
+        console.log("[GardenProjectsSection] Translation exists check: false for dashboard.gardenProjects.title");
+      }
     }
-  }, [isLoaded, title, description, planningTitle, planningDesc, planningButton, newTitle, newDesc, newButton]);
+  }, [isLoaded, title, description, planningTitle, planningDesc, planningButton, newTitle, newDesc, newButton, getText, t, i18n]);
 
   return (
     <div className="mb-12">
