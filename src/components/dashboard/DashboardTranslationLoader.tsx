@@ -40,6 +40,12 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
             // Log available keys for debugging
             console.log("DashboardTranslationLoader: Available garden project keys:", 
               Object.keys(dashboard.gardenProjects));
+              
+            // Explicitly log specific translations for debugging
+            if (dashboard.gardenProjects.title) {
+              console.log("DashboardTranslationLoader: Garden projects title translation:", 
+                dashboard.gardenProjects.title);
+            }
           }
         }
       } catch (error) {
