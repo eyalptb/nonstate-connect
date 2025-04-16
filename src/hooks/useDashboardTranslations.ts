@@ -17,7 +17,16 @@ export const useDashboardTranslations = () => {
   const hasLoadedRef = useRef(false);
 
   useEffect(() => {
-    // Prevent repeated loading
+    // Clear any existing timers
+    if (loadingTimerRef.current) {
+      window.clearTimeout(loadingTimerRef.current);
+    }
+    
+    if (persistTimerRef.current) {
+      window.clearInterval(persistTimerRef.current);
+    }
+    
+    // Prevent repeated loading in the same session
     if (hasLoadedRef.current) {
       setIsLoaded(true);
       return;
@@ -52,7 +61,8 @@ export const useDashboardTranslations = () => {
         if (dashboardExists) {
           const dashboard = (bundle as Record<string, any>).dashboard;
           console.log("[useDashboardTranslations] Garden projects translations:", 
-            dashboard.gardenProjects ? 'available' : 'missing');
+            dashboard.gardenProjects ? 'available' : 'missing', 
+            dashboard.gardenProjects ? Object.keys(dashboard.gardenProjects) : '');
         }
         
         // Mark as loaded to prevent repeated loading
@@ -65,7 +75,8 @@ export const useDashboardTranslations = () => {
         }
         
         persistTimerRef.current = window.setInterval(() => {
-          if (verifyAndCacheTranslations(i18n.language, i18n)) {
+          const verified = verifyAndCacheTranslations(i18n.language, i18n);
+          if (verified) {
             // Notify components that translations are stable
             notifyTranslationsLoaded(i18n.language, 'persistence-check');
           }
@@ -79,6 +90,7 @@ export const useDashboardTranslations = () => {
       }
     };
     
+    // Start loading translations immediately
     loadTranslations();
     
     // Cleanup function

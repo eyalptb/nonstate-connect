@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -7,41 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 export const GardenProjectsSection: React.FC = () => {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
-  const [translationsChecked, setTranslationsChecked] = useState(false);
-  const loadAttemptRef = useRef(0);
-
-  // Check translations only once
-  useEffect(() => {
-    if (translationsChecked || loadAttemptRef.current > 1) return;
-    
-    // Increment load attempt counter
-    loadAttemptRef.current += 1;
-    
-    // Log current language
-    console.log("[GardenProjectsSection] Current language:", i18n.language);
-    
-    // Check if translations exist in current language
-    const resources = i18n.getResourceBundle(i18n.language, 'common');
-    const dashboardExists = resources && 
-      typeof resources === 'object' && 
-      'dashboard' in resources && 
-      typeof resources.dashboard === 'object';
-    
-    console.log("[GardenProjectsSection] Dashboard translations exist:", dashboardExists);
-    
-    if (dashboardExists) {
-      const dashboard = resources.dashboard;
-      const gardenProjectsExists = 'gardenProjects' in dashboard && typeof dashboard.gardenProjects === 'object';
-      console.log("[GardenProjectsSection] Garden projects translations exist:", gardenProjectsExists);
-      
-      if (gardenProjectsExists) {
-        console.log("[GardenProjectsSection] Available keys:", Object.keys(dashboard.gardenProjects));
-      }
-    }
-    
-    setTranslationsChecked(true);
-  }, [i18n.language, translationsChecked]);
+  const { t } = useTranslation();
 
   // Static fallback values - exactly as in the original
   const defaultTitle = "Green Haven Garden Projects";

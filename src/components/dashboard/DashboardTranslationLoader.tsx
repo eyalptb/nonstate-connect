@@ -32,6 +32,9 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
         const added = addDashboardTranslations(i18n.language);
         console.log("DashboardTranslationLoader: Added directly:", added);
         
+        // Force reload resources to ensure they're loaded
+        await i18n.reloadResources([i18n.language], ['common']);
+        
         // Verify translation loading
         const bundle = i18n.getResourceBundle(i18n.language, 'common');
         const dashboardExists = bundle && typeof bundle === 'object' && 
