@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Leaf } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import useTranslationHelper from "@/hooks/useTranslationHelper";
 
 export const GardenProjectsSection: React.FC = () => {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
-  const [translationsReady, setTranslationsReady] = useState(false);
+  const { i18n } = useTranslation();
+  const { getText } = useTranslationHelper();
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // Make sure translations are properly loaded
   useEffect(() => {
@@ -21,36 +23,51 @@ export const GardenProjectsSection: React.FC = () => {
       typeof resources.dashboard === 'object';
     
     console.log("[GardenProjectsSection] Current language:", i18n.language);
-    console.log("[GardenProjectsSection] Dashboard translations loaded:", dashboardExists);
+    console.log("[GardenProjectsSection] Dashboard translations exist:", dashboardExists);
     
-    setTranslationsReady(true);
+    // If translation is loaded, verify garden projects keys exist
+    if (dashboardExists) {
+      const dashboard = resources.dashboard;
+      const gardenProjectsExists = 'gardenProjects' in dashboard && typeof dashboard.gardenProjects === 'object';
+      console.log("[GardenProjectsSection] Garden projects translations exist:", gardenProjectsExists);
+      
+      if (gardenProjectsExists) {
+        // Log the available keys for debugging
+        console.log("[GardenProjectsSection] Available keys:", Object.keys(dashboard.gardenProjects));
+      }
+    }
+    
+    setIsLoaded(true);
   }, [i18n.language]);
 
-  // Get translated text with fallback - using direct t function for guaranteed translation
-  const getTranslatedText = (key: string, fallback: string): string => {
-    try {
-      const translated = t(key);
-      // If translation is missing (key is returned), use fallback
-      return translated === key ? fallback : translated;
-    } catch (error) {
-      console.error(`Translation error for key ${key}:`, error);
-      return fallback;
-    }
-  };
+  // Get all text using the helper with appropriate fallbacks
+  // Fallback texts to ensure we always show something meaningful
+  const title = getText('dashboard.gardenProjects.title', 'Green Haven Garden Projects');
+  const description = getText('dashboard.gardenProjects.description', 'Plan and manage sustainable community gardens');
+  
+  const planningTitle = getText('dashboard.gardenProjects.planning.title', 'Community Garden Planning');
+  const planningDesc = getText('dashboard.gardenProjects.planning.description', 'Collaborative planning for local food production');
+  const planningButton = getText('dashboard.gardenProjects.planning.button', 'Browse Gardens');
+  
+  const newTitle = getText('dashboard.gardenProjects.new.title', 'Start a New Garden');
+  const newDesc = getText('dashboard.gardenProjects.new.description', 'Create your own sustainable garden project');
+  const newButton = getText('dashboard.gardenProjects.new.button', 'Create Garden');
 
-  // Get section title with fallback
-  const title = getTranslatedText('dashboard.gardenProjects.title', 'Green Haven Garden Projects');
-  const description = getTranslatedText('dashboard.gardenProjects.description', 'Plan and manage sustainable community gardens');
-  
-  // Get planning subsection with fallbacks
-  const planningTitle = getTranslatedText('dashboard.gardenProjects.planning.title', 'Community Garden Planning');
-  const planningDesc = getTranslatedText('dashboard.gardenProjects.planning.description', 'Collaborative planning for local food production');
-  const planningButton = getTranslatedText('dashboard.gardenProjects.planning.button', 'Browse Gardens');
-  
-  // Get new garden subsection with fallbacks
-  const newTitle = getTranslatedText('dashboard.gardenProjects.new.title', 'Start a New Garden');
-  const newDesc = getTranslatedText('dashboard.gardenProjects.new.description', 'Create your own sustainable garden project');
-  const newButton = getTranslatedText('dashboard.gardenProjects.new.button', 'Create Garden');
+  // Log translations for debugging
+  useEffect(() => {
+    if (isLoaded) {
+      console.log("[GardenProjectsSection] Translation results:", {
+        title,
+        description,
+        planningTitle,
+        planningDesc,
+        planningButton,
+        newTitle,
+        newDesc,
+        newButton
+      });
+    }
+  }, [isLoaded, title, description, planningTitle, planningDesc, planningButton, newTitle, newDesc, newButton]);
 
   return (
     <div className="mb-12">
