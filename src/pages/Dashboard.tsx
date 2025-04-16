@@ -11,7 +11,6 @@ import { GardenProjectsSection } from "@/components/dashboard/GardenProjectsSect
 import { TokensAndActivities } from "@/components/dashboard/TokensAndActivities";
 import { ProjectsAndMarketplace } from "@/components/dashboard/ProjectsAndMarketplace";
 import { useTranslation } from "react-i18next";
-import { addDashboardTranslations } from "@/utils/translationLoader";
 
 const mockActivities: Activity[] = [
   {
@@ -43,37 +42,7 @@ const Dashboard = () => {
   const welcomeShownRef = useRef(false);
   const { t, i18n } = useTranslation();
   
-  // Force-load dashboard translations when the dashboard mounts
-  useEffect(() => {
-    console.log("[Dashboard] Initial render - Current language:", i18n.language);
-    
-    // Force add dashboard translations immediately
-    addDashboardTranslations(i18n.language);
-    
-    // Reload resources to ensure translations are loaded
-    i18n.reloadResources([i18n.language], ['common']).then(() => {
-      console.log("[Dashboard] Force reloaded translations for:", i18n.language);
-      
-      // Check if dashboard translations are loaded properly
-      const dashboardTranslations = i18n.getResourceBundle(i18n.language, 'common')?.dashboard;
-      console.log("[Dashboard] Dashboard translations after reload:", dashboardTranslations);
-    });
-  }, []);
-  
-  // Monitor for language changes
-  useEffect(() => {
-    console.log("[Dashboard] Language changed to:", i18n.language);
-    
-    // When language changes, force add translations for the new language
-    addDashboardTranslations(i18n.language);
-    
-    // Then reload resources to ensure they're available
-    i18n.reloadResources([i18n.language], ['common']).then(() => {
-      const dashboardTranslations = i18n.getResourceBundle(i18n.language, 'common')?.dashboard;
-      console.log("[Dashboard] Dashboard translations after language change:", dashboardTranslations);
-    });
-  }, [i18n.language]);
-  
+  // Only show welcome notification, skip repeated translation loading
   useEffect(() => {
     if (user && !welcomeShownRef.current) {
       welcomeShownRef.current = true;

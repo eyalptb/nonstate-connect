@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import useDashboardTranslations from '@/hooks/useDashboardTranslations';
 import { useTranslation } from 'react-i18next';
 import { addDashboardTranslations } from '@/utils/translationLoader';
@@ -15,12 +15,18 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
   // Use our custom hook to handle all translation loading logic
   const { isLoaded } = useDashboardTranslations();
   const { i18n } = useTranslation();
+  const hasLoadedRef = useRef(false);
   
   useEffect(() => {
+    // Only load translations once to prevent loops
+    if (hasLoadedRef.current) {
+      return;
+    }
+    
     // Force reload of translations to ensure they're properly loaded
     const loadTranslations = async () => {
       try {
-        console.log("DashboardTranslationLoader: Force reloading translations for", i18n.language);
+        console.log("DashboardTranslationLoader: Loading translations for", i18n.language);
         
         // First directly add dashboard translations to make sure they're available
         addDashboardTranslations(i18n.language);
@@ -42,17 +48,8 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
             
           console.log("DashboardTranslationLoader: Garden projects translations exist:", gardenProjectsExists);
           
-          if (gardenProjectsExists) {
-            // Log available keys for debugging
-            console.log("DashboardTranslationLoader: Available garden project keys:", 
-              Object.keys(dashboard.gardenProjects));
-              
-            // Explicitly log specific translations for debugging
-            if (dashboard.gardenProjects.title) {
-              console.log("DashboardTranslationLoader: Garden projects title translation:", 
-                dashboard.gardenProjects.title);
-            }
-          }
+          // Set flag to prevent multiple loads
+          hasLoadedRef.current = true;
         }
       } catch (error) {
         console.error("DashboardTranslationLoader: Error reloading translations:", error);
@@ -60,10 +57,7 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
     };
     
     loadTranslations();
-    
-    // Log translation loading status
-    console.log("DashboardTranslationLoader: Translations loaded:", isLoaded);
-  }, [isLoaded, i18n]);
+  }, [i18n]);
   
   // Always render children - the hook handles loading state internally
   return <>{children}</>;

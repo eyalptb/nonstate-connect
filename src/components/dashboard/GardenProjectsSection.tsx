@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -9,10 +9,19 @@ import { useTranslation } from 'react-i18next';
 export const GardenProjectsSection: React.FC = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [translationsChecked, setTranslationsChecked] = useState(false);
+  const loadAttemptRef = useRef(0);
 
-  // Make sure translations are properly loaded
+  // Check translations only once
   useEffect(() => {
+    if (translationsChecked || loadAttemptRef.current > 1) return;
+    
+    // Increment load attempt counter
+    loadAttemptRef.current += 1;
+    
+    // Log current language
+    console.log("[GardenProjectsSection] Current language:", i18n.language);
+    
     // Check if translations exist in current language
     const resources = i18n.getResourceBundle(i18n.language, 'common');
     const dashboardExists = resources && 
@@ -20,59 +29,40 @@ export const GardenProjectsSection: React.FC = () => {
       'dashboard' in resources && 
       typeof resources.dashboard === 'object';
     
-    console.log("[GardenProjectsSection] Current language:", i18n.language);
     console.log("[GardenProjectsSection] Dashboard translations exist:", dashboardExists);
     
-    // If translation is loaded, verify garden projects keys exist
     if (dashboardExists) {
       const dashboard = resources.dashboard;
       const gardenProjectsExists = 'gardenProjects' in dashboard && typeof dashboard.gardenProjects === 'object';
       console.log("[GardenProjectsSection] Garden projects translations exist:", gardenProjectsExists);
       
       if (gardenProjectsExists) {
-        // Log the available keys for debugging
         console.log("[GardenProjectsSection] Available keys:", Object.keys(dashboard.gardenProjects));
       }
     }
     
-    setIsLoaded(true);
-  }, [i18n.language]);
+    setTranslationsChecked(true);
+  }, [i18n.language, translationsChecked]);
 
-  // Direct translation access for better reliability
-  // These translations use the exact same original English text as fallbacks
-  const title = t('dashboard.gardenProjects.title', { defaultValue: 'Green Haven Garden Projects' });
-  const description = t('dashboard.gardenProjects.description', { defaultValue: 'Plan and manage sustainable community gardens' });
-  
-  const planningTitle = t('dashboard.gardenProjects.planning.title', { defaultValue: 'Community Garden Planning' });
-  const planningDesc = t('dashboard.gardenProjects.planning.description', { defaultValue: 'Collaborative planning for local food production' });
-  const planningButton = t('dashboard.gardenProjects.planning.button', { defaultValue: 'Browse Gardens' });
-  
-  const newTitle = t('dashboard.gardenProjects.new.title', { defaultValue: 'Start a New Garden' });
-  const newDesc = t('dashboard.gardenProjects.new.description', { defaultValue: 'Create your own sustainable garden project' });
-  const newButton = t('dashboard.gardenProjects.new.button', { defaultValue: 'Create Garden' });
+  // Static fallback values - exactly as in the original
+  const defaultTitle = "Green Haven Garden Projects";
+  const defaultDescription = "Plan and manage sustainable community gardens";
+  const defaultPlanningTitle = "Community Garden Planning";
+  const defaultPlanningDesc = "Collaborative planning for local food production";
+  const defaultPlanningButton = "Browse Gardens";
+  const defaultNewTitle = "Start a New Garden";
+  const defaultNewDesc = "Create your own sustainable garden project";
+  const defaultNewButton = "Create Garden";
 
-  // Log translations for debugging
-  useEffect(() => {
-    if (isLoaded) {
-      console.log("[GardenProjectsSection] Translation results using t():", {
-        title,
-        description,
-        planningTitle,
-        planningDesc,
-        planningButton,
-        newTitle,
-        newDesc,
-        newButton
-      });
-      
-      // Check if direct resource access works
-      if (i18n.exists('dashboard.gardenProjects.title')) {
-        console.log("[GardenProjectsSection] Translation exists check: true for dashboard.gardenProjects.title");
-      } else {
-        console.log("[GardenProjectsSection] Translation exists check: false for dashboard.gardenProjects.title");
-      }
-    }
-  }, [isLoaded, title, description, planningTitle, planningDesc, planningButton, newTitle, newDesc, newButton, t, i18n]);
+  // Use translation with exact fallbacks to original text
+  const title = t('dashboard.gardenProjects.title', defaultTitle);
+  const description = t('dashboard.gardenProjects.description', defaultDescription);
+  const planningTitle = t('dashboard.gardenProjects.planning.title', defaultPlanningTitle);
+  const planningDesc = t('dashboard.gardenProjects.planning.description', defaultPlanningDesc);
+  const planningButton = t('dashboard.gardenProjects.planning.button', defaultPlanningButton);
+  const newTitle = t('dashboard.gardenProjects.new.title', defaultNewTitle);
+  const newDesc = t('dashboard.gardenProjects.new.description', defaultNewDesc);
+  const newButton = t('dashboard.gardenProjects.new.button', defaultNewButton);
 
   return (
     <div className="mb-12">
