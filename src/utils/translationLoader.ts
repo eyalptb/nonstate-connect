@@ -30,7 +30,7 @@ import {
   loadAllPricingTranslations,
   loadAllContactSalesTranslations,
   loadAllDashboardTranslations
-} from './translations/componentTranslations';
+} from './translations/component-helpers';
 
 // Export everything in a single export block
 export { 

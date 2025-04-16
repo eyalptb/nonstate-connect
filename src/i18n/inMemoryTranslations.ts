@@ -1,4 +1,3 @@
-
 import i18n from 'i18next';
 import { walletTranslations } from '@/utils/translations/walletTranslations';
 import { featureTranslations } from '@/utils/translations/featureTranslations';
@@ -10,6 +9,7 @@ import { learnTranslations } from '@/utils/translations/learnTranslations';
 import { pricingTranslations } from '@/utils/translations/pricingTranslations';
 import { contactSalesTranslations } from '@/utils/translations/contactSalesTranslations';
 import { dashboardTranslations } from '@/utils/translations/dashboardTranslations';
+import { getTranslationsWithFallback } from '@/utils/translations/component-helpers';
 
 // Cache successful translations to avoid reprocessing
 const successfullyLoadedTranslations = new Set<string>();
