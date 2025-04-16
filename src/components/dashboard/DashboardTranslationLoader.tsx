@@ -39,8 +39,10 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
         // Force reload resources to ensure they're loaded
         await i18n.reloadResources([i18n.language], ['common']);
         
-        // Verify translation loading
+        // Verify translation loading - explicitly log the entire bundle to identify issues
         const bundle = i18n.getResourceBundle(i18n.language, 'common');
+        console.log("DashboardTranslationLoader: Full resource bundle after loading:", bundle);
+        
         const dashboardExists = bundle && typeof bundle === 'object' && 
           'dashboard' in bundle && typeof bundle.dashboard === 'object';
         
@@ -48,12 +50,15 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
         
         if (dashboardExists) {
           const dashboard = (bundle as Record<string, any>).dashboard;
+          console.log("DashboardTranslationLoader: Dashboard keys:", Object.keys(dashboard));
+          
           const gardenProjectsExists = 'gardenProjects' in dashboard && 
             typeof dashboard.gardenProjects === 'object';
             
           console.log("DashboardTranslationLoader: Garden projects translations exist:", gardenProjectsExists);
           if (gardenProjectsExists) {
             console.log("DashboardTranslationLoader: Garden projects keys:", Object.keys(dashboard.gardenProjects));
+            console.log("DashboardTranslationLoader: Garden projects content:", dashboard.gardenProjects);
           }
         }
         

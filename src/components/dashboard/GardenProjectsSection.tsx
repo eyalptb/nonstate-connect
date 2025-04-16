@@ -21,34 +21,68 @@ export const GardenProjectsSection: React.FC = () => {
     // Force reload resources to ensure immediate availability
     i18n.reloadResources([i18n.language], ['common']).then(() => {
       console.log("GardenProjectsSection: Resources reloaded");
+      
+      // More detailed logging to diagnose translation issues
+      const bundle = i18n.getResourceBundle(i18n.language, 'common');
+      console.log(`GardenProjectsSection: Full resource bundle for ${i18n.language}:`, bundle);
+      
+      // Check if dashboard exists
+      if (bundle && typeof bundle === 'object') {
+        const dashboardExists = 'dashboard' in bundle;
+        console.log(`GardenProjectsSection: Dashboard key exists: ${dashboardExists}`);
+        
+        if (dashboardExists) {
+          const dashboard = (bundle as Record<string, any>).dashboard;
+          // Check if gardenProjects exists
+          const gardenProjectsExists = dashboard && 'gardenProjects' in dashboard;
+          console.log(`GardenProjectsSection: gardenProjects key exists: ${gardenProjectsExists}`);
+          
+          if (gardenProjectsExists) {
+            console.log('GardenProjectsSection: Garden projects data:', dashboard.gardenProjects);
+          }
+        }
+      }
+      
       setTranslationsLoaded(true);
     });
-    
-    // Verify translations are loaded
-    const bundle = i18n.getResourceBundle(i18n.language, 'common');
-    const hasGardenTranslations = bundle && 
-      typeof bundle === 'object' && 
-      'dashboard' in bundle && 
-      typeof bundle.dashboard === 'object' &&
-      'gardenProjects' in bundle.dashboard;
-    
-    console.log(`GardenProjectsSection: Translations loaded for ${i18n.language}:`, hasGardenTranslations);
-    if (hasGardenTranslations) {
-      console.log('GardenProjectsSection: Available translations:', bundle.dashboard.gardenProjects);
-    } else {
-      console.warn('GardenProjectsSection: Missing garden project translations!');
-    }
   }, [i18n.language, i18n]);
 
-  // Translations with specific fallback values to ensure consistency
-  const title = t('dashboard.gardenProjects.title', "Green Haven Garden Projects");
-  const description = t('dashboard.gardenProjects.description', "Plan and manage sustainable community gardens");
-  const planningTitle = t('dashboard.gardenProjects.planning.title', "Community Garden Planning");
-  const planningDesc = t('dashboard.gardenProjects.planning.description', "Collaborative planning for local food production");
-  const planningButton = t('dashboard.gardenProjects.planning.button', "Browse Gardens");
-  const newTitle = t('dashboard.gardenProjects.new.title', "Start a New Garden");
-  const newDesc = t('dashboard.gardenProjects.new.description', "Create your own sustainable garden project");
-  const newButton = t('dashboard.gardenProjects.new.button', "Create Garden");
+  // IMPORTANT: Get the translations directly from the resource bundle to verify
+  // what's actually available for the current language
+  const getTranslation = (path: string, fallback: string): string => {
+    try {
+      const bundle = i18n.getResourceBundle(i18n.language, 'common');
+      if (!bundle) return fallback;
+      
+      // Parse the path to navigate the object
+      const parts = path.split('.');
+      let result: any = bundle;
+      
+      for (const part of parts) {
+        if (result && typeof result === 'object' && part in result) {
+          result = result[part];
+        } else {
+          console.warn(`GardenProjectsSection: Path ${path} not found in translations`);
+          return fallback;
+        }
+      }
+      
+      return typeof result === 'string' ? result : fallback;
+    } catch (error) {
+      console.error(`GardenProjectsSection: Error getting translation for ${path}:`, error);
+      return fallback;
+    }
+  };
+
+  // Translations with direct access to translation object to bypass potential i18next issues
+  const title = getTranslation('dashboard.gardenProjects.title', "Green Haven Garden Projects");
+  const description = getTranslation('dashboard.gardenProjects.description', "Plan and manage sustainable community gardens");
+  const planningTitle = getTranslation('dashboard.gardenProjects.planning.title', "Community Garden Planning");
+  const planningDesc = getTranslation('dashboard.gardenProjects.planning.description', "Collaborative planning for local food production");
+  const planningButton = getTranslation('dashboard.gardenProjects.planning.button', "Browse Gardens");
+  const newTitle = getTranslation('dashboard.gardenProjects.new.title', "Start a New Garden");
+  const newDesc = getTranslation('dashboard.gardenProjects.new.description', "Create your own sustainable garden project");
+  const newButton = getTranslation('dashboard.gardenProjects.new.button', "Create Garden");
 
   return (
     <div className="mb-12">
