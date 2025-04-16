@@ -8,27 +8,32 @@ import { useTranslation } from 'react-i18next';
 
 export const GardenProjectsSection: React.FC = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
-  // Static fallback values - exactly as in the original
-  const defaultTitle = "Green Haven Garden Projects";
-  const defaultDescription = "Plan and manage sustainable community gardens";
-  const defaultPlanningTitle = "Community Garden Planning";
-  const defaultPlanningDesc = "Collaborative planning for local food production";
-  const defaultPlanningButton = "Browse Gardens";
-  const defaultNewTitle = "Start a New Garden";
-  const defaultNewDesc = "Create your own sustainable garden project";
-  const defaultNewButton = "Create Garden";
+  // Ensure we're using the translated text with exact paths from the dashboard translations
+  const title = t('dashboard.gardenProjects.title', "Green Haven Garden Projects");
+  const description = t('dashboard.gardenProjects.description', "Plan and manage sustainable community gardens");
+  const planningTitle = t('dashboard.gardenProjects.planning.title', "Community Garden Planning");
+  const planningDesc = t('dashboard.gardenProjects.planning.description', "Collaborative planning for local food production");
+  const planningButton = t('dashboard.gardenProjects.planning.button', "Browse Gardens");
+  const newTitle = t('dashboard.gardenProjects.new.title', "Start a New Garden");
+  const newDesc = t('dashboard.gardenProjects.new.description', "Create your own sustainable garden project");
+  const newButton = t('dashboard.gardenProjects.new.button', "Create Garden");
 
-  // Use translation with exact fallbacks to original text
-  const title = t('dashboard.gardenProjects.title', defaultTitle);
-  const description = t('dashboard.gardenProjects.description', defaultDescription);
-  const planningTitle = t('dashboard.gardenProjects.planning.title', defaultPlanningTitle);
-  const planningDesc = t('dashboard.gardenProjects.planning.description', defaultPlanningDesc);
-  const planningButton = t('dashboard.gardenProjects.planning.button', defaultPlanningButton);
-  const newTitle = t('dashboard.gardenProjects.new.title', defaultNewTitle);
-  const newDesc = t('dashboard.gardenProjects.new.description', defaultNewDesc);
-  const newButton = t('dashboard.gardenProjects.new.button', defaultNewButton);
+  // Debug log to check if translations are loaded
+  React.useEffect(() => {
+    const bundle = i18n.getResourceBundle(i18n.language, 'common');
+    const hasGardenTranslations = bundle && 
+      typeof bundle === 'object' && 
+      'dashboard' in bundle && 
+      typeof bundle.dashboard === 'object' &&
+      'gardenProjects' in bundle.dashboard;
+    
+    console.log(`GardenProjectsSection: Translations loaded for ${i18n.language}:`, hasGardenTranslations);
+    if (hasGardenTranslations) {
+      console.log('GardenProjectsSection: Available translations:', bundle.dashboard.gardenProjects);
+    }
+  }, [i18n.language, i18n]);
 
   return (
     <div className="mb-12">
