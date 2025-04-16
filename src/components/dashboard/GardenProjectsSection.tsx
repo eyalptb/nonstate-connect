@@ -1,5 +1,4 @@
-
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -10,41 +9,83 @@ import { addDashboardTranslations } from '@/utils/translationLoader';
 export const GardenProjectsSection: React.FC = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const [translationsLoaded, setTranslationsLoaded] = React.useState(false);
+  const [translationsLoaded, setTranslationsLoaded] = useState(false);
+  const translationsPersisted = useRef<boolean>(false);
+  const mountTimeRef = useRef<number>(Date.now());
 
-  // Force load dashboard translations when component mounts
-  React.useEffect(() => {
-    // Immediate direct loading of translations
-    const loadedTranslations = addDashboardTranslations(i18n.language);
-    console.log("GardenProjectsSection: Force loaded dashboard translations:", loadedTranslations);
+  // Force load dashboard translations when component mounts and persist them
+  useEffect(() => {
+    // Initialize tracking
+    console.log(`GardenProjectsSection: Component mounted at ${new Date().toISOString()}`);
     
-    // Force reload resources to ensure immediate availability
-    i18n.reloadResources([i18n.language], ['common']).then(() => {
-      console.log("GardenProjectsSection: Resources reloaded");
-      
-      // More detailed logging to diagnose translation issues
-      const bundle = i18n.getResourceBundle(i18n.language, 'common');
-      console.log(`GardenProjectsSection: Full resource bundle for ${i18n.language}:`, bundle);
-      
-      // Check if dashboard exists
-      if (bundle && typeof bundle === 'object') {
-        const dashboardExists = 'dashboard' in bundle;
-        console.log(`GardenProjectsSection: Dashboard key exists: ${dashboardExists}`);
-        
-        if (dashboardExists) {
-          const dashboard = (bundle as Record<string, any>).dashboard;
-          // Check if gardenProjects exists
-          const gardenProjectsExists = dashboard && 'gardenProjects' in dashboard;
-          console.log(`GardenProjectsSection: gardenProjects key exists: ${gardenProjectsExists}`);
-          
-          if (gardenProjectsExists) {
-            console.log('GardenProjectsSection: Garden projects data:', dashboard.gardenProjects);
-          }
-        }
+    const persistTranslations = () => {
+      if (translationsPersisted.current) {
+        return;
       }
       
-      setTranslationsLoaded(true);
-    });
+      // Immediate direct loading of translations
+      const loadedTranslations = addDashboardTranslations(i18n.language);
+      console.log("GardenProjectsSection: Force loaded dashboard translations:", loadedTranslations);
+      
+      // Force reload resources to ensure immediate availability
+      i18n.reloadResources([i18n.language], ['common']).then(() => {
+        console.log("GardenProjectsSection: Resources reloaded");
+        
+        // Set translations as persisted to prevent re-adding
+        translationsPersisted.current = true;
+        
+        // More detailed logging to diagnose translation issues
+        const bundle = i18n.getResourceBundle(i18n.language, 'common');
+        console.log(`GardenProjectsSection: Full resource bundle for ${i18n.language}:`, bundle);
+        
+        // Check if dashboard exists
+        if (bundle && typeof bundle === 'object') {
+          const dashboardExists = 'dashboard' in bundle;
+          console.log(`GardenProjectsSection: Dashboard key exists: ${dashboardExists}`);
+          
+          if (dashboardExists) {
+            const dashboard = (bundle as Record<string, any>).dashboard;
+            // Check if gardenProjects exists
+            const gardenProjectsExists = dashboard && 'gardenProjects' in dashboard;
+            console.log(`GardenProjectsSection: gardenProjects key exists: ${gardenProjectsExists}`);
+            
+            if (gardenProjectsExists) {
+              console.log('GardenProjectsSection: Garden projects data:', dashboard.gardenProjects);
+            }
+          }
+        }
+        
+        setTranslationsLoaded(true);
+      });
+    };
+    
+    // Call persistTranslations immediately
+    persistTranslations();
+    
+    // Set an interval to keep checking until translations are loaded or timeout
+    const checkInterval = setInterval(() => {
+      const elapsedTime = Date.now() - mountTimeRef.current;
+      if (!translationsPersisted.current && elapsedTime < 10000) {
+        console.log(`GardenProjectsSection: Re-attempting translation persistence, elapsed time: ${elapsedTime}ms`);
+        persistTranslations();
+      } else {
+        clearInterval(checkInterval);
+      }
+    }, 1000);
+    
+    // Also listen for language changes
+    const handleLanguageChanged = () => {
+      console.log(`GardenProjectsSection: Language changed to ${i18n.language}, resetting persistence state`);
+      translationsPersisted.current = false;
+      persistTranslations();
+    };
+    
+    i18n.on('languageChanged', handleLanguageChanged);
+    
+    return () => {
+      clearInterval(checkInterval);
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
   }, [i18n.language, i18n]);
 
   // IMPORTANT: Get the translations directly from the resource bundle to verify

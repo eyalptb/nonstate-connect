@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useDashboardTranslations from '@/hooks/useDashboardTranslations';
 import { useTranslation } from 'react-i18next';
 import { addDashboardTranslations } from '@/utils/translationLoader';
@@ -17,6 +17,7 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
   const { isLoaded } = useDashboardTranslations();
   const { i18n } = useTranslation();
   const hasLoadedRef = useRef(false);
+  const [loadingComplete, setLoadingComplete] = useState(false);
   
   useEffect(() => {
     // Only load translations once to prevent loops
@@ -73,12 +74,33 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
         
         // Set flag to prevent multiple loads
         hasLoadedRef.current = true;
+        
+        // Add a small delay to ensure translations are fully processed
+        setTimeout(() => {
+          setLoadingComplete(true);
+        }, 100);
+        
       } catch (error) {
         console.error("DashboardTranslationLoader: Error loading translations:", error);
+        setLoadingComplete(true);
       }
     };
     
     loadTranslations();
+    
+    // Set up additional listener for language changes to ensure translations
+    // are loaded again if language changes while on dashboard
+    const handleLanguageChanged = () => {
+      console.log("DashboardTranslationLoader: Language changed to", i18n.language);
+      hasLoadedRef.current = false;
+      loadTranslations();
+    };
+    
+    i18n.on('languageChanged', handleLanguageChanged);
+    
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
   }, [i18n]);
   
   // Always render children - the hook handles loading state internally
