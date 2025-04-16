@@ -47,6 +47,9 @@ const Dashboard = () => {
     if (user && !welcomeShownRef.current) {
       welcomeShownRef.current = true;
       
+      // Load actual current language on first mount
+      console.log("[Dashboard] Current language:", i18n.language);
+      
       // Use t function with proper namespace and key path
       const title = t('dashboard.welcomeNotification.title', 'Welcome Back!');
       const message = t('dashboard.welcomeNotification.message', 'Welcome back to your secure collaboration dashboard!');

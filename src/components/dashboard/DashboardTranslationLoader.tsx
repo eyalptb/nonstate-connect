@@ -23,36 +23,37 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
       return;
     }
     
-    // Force reload of translations to ensure they're properly loaded
+    // Force direct loading of translations to ensure immediate availability
     const loadTranslations = async () => {
       try {
-        console.log("DashboardTranslationLoader: Loading translations for", i18n.language);
+        console.log("DashboardTranslationLoader: Direct loading translations for", i18n.language);
         
-        // First directly add dashboard translations to make sure they're available
-        addDashboardTranslations(i18n.language);
-        
-        // Then reload resources to ensure they're properly loaded
-        await i18n.reloadResources([i18n.language], ['common']);
+        // First directly add dashboard translations
+        const added = addDashboardTranslations(i18n.language);
+        console.log("DashboardTranslationLoader: Added directly:", added);
         
         // Verify translation loading
         const bundle = i18n.getResourceBundle(i18n.language, 'common');
         const dashboardExists = bundle && typeof bundle === 'object' && 
           'dashboard' in bundle && typeof bundle.dashboard === 'object';
         
-        console.log("DashboardTranslationLoader: Dashboard translations exist after reload:", dashboardExists);
+        console.log("DashboardTranslationLoader: Dashboard translations exist after direct add:", dashboardExists);
         
         if (dashboardExists) {
-          const dashboard = bundle.dashboard;
+          const dashboard = (bundle as Record<string, any>).dashboard;
           const gardenProjectsExists = 'gardenProjects' in dashboard && 
             typeof dashboard.gardenProjects === 'object';
             
           console.log("DashboardTranslationLoader: Garden projects translations exist:", gardenProjectsExists);
-          
-          // Set flag to prevent multiple loads
-          hasLoadedRef.current = true;
+          if (gardenProjectsExists) {
+            console.log("DashboardTranslationLoader: Garden projects keys:", Object.keys(dashboard.gardenProjects));
+          }
         }
+        
+        // Set flag to prevent multiple loads
+        hasLoadedRef.current = true;
       } catch (error) {
-        console.error("DashboardTranslationLoader: Error reloading translations:", error);
+        console.error("DashboardTranslationLoader: Error loading translations:", error);
       }
     };
     

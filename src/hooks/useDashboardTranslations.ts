@@ -29,6 +29,9 @@ export const useDashboardTranslations = () => {
         
         // First try to load from cache
         const cachedLoaded = loadFromCache(i18n.language, i18n);
+        if (cachedLoaded) {
+          console.log("[useDashboardTranslations] Successfully loaded cached translations");
+        }
         
         // Then add in-memory translations
         addInMemoryTranslations(i18n.language);
@@ -39,8 +42,22 @@ export const useDashboardTranslations = () => {
         // Force reload resources
         await i18n.reloadResources([i18n.language], ['common']);
         
+        // Verify immediately that translations are loaded
+        const bundle = i18n.getResourceBundle(i18n.language, 'common');
+        const dashboardExists = bundle && typeof bundle === 'object' &&
+          'dashboard' in bundle && typeof bundle.dashboard === 'object';
+          
+        console.log("[useDashboardTranslations] Dashboard translations loaded:", dashboardExists);
+        
+        if (dashboardExists) {
+          const dashboard = (bundle as Record<string, any>).dashboard;
+          console.log("[useDashboardTranslations] Garden projects translations:", 
+            dashboard.gardenProjects ? 'available' : 'missing');
+        }
+        
         // Mark as loaded to prevent repeated loading
         hasLoadedRef.current = true;
+        setIsLoaded(true);
         
         // Set a timer to verify and persist translations periodically
         if (persistTimerRef.current) {
@@ -54,25 +71,8 @@ export const useDashboardTranslations = () => {
           }
         }, 2000); // Check less frequently
         
-        // Use a shorter delay to ensure resources are fully processed
-        if (loadingTimerRef.current) {
-          window.clearTimeout(loadingTimerRef.current);
-        }
-        
-        loadingTimerRef.current = window.setTimeout(() => {
-          setIsLoaded(true);
-          console.log("[useDashboardTranslations] Translations loaded for", i18n.language);
-          
-          // Verify translation loading
-          const bundle = i18n.getResourceBundle(i18n.language, 'common');
-          const dashboardData = bundle && typeof bundle === 'object' ? 
-            (bundle as Record<string, any>).dashboard : null;
-            
-          console.log(`[useDashboardTranslations] Dashboard translations loaded:`, dashboardData);
-          
-          // Notify components that translations have been loaded
-          notifyTranslationsLoaded(i18n.language);
-        }, 300);
+        // Notify components that translations have been loaded
+        notifyTranslationsLoaded(i18n.language);
       } catch (error) {
         console.error("[useDashboardTranslations] Error loading translations:", error);
         setIsLoaded(true); // Set to true anyway to show content
