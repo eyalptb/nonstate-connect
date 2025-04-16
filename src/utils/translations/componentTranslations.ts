@@ -142,6 +142,9 @@ export const addDashboardTranslations = (language = i18n.language) => {
   // Get the dashboard data with fallback
   const dashboardData = getTranslationsWithFallback(dashboardTranslations, language);
   
+  // Debug log what we found
+  console.log(`Dashboard data for ${language}:`, dashboardData);
+  
   // Check if we have the dashboard data
   if (!dashboardData || !dashboardData.dashboard) {
     console.error(`No dashboard data found for ${language}`);
@@ -153,11 +156,22 @@ export const addDashboardTranslations = (language = i18n.language) => {
   
   // Force a reload of resources
   if (result) {
-    i18n.reloadResources(language, ['common']);
-    
-    // Debug log to verify translations are loaded
-    console.log(`Dashboard translations added for ${language}:`, 
-      i18n.getResourceBundle(language, 'common')?.dashboard || 'None found');
+    i18n.reloadResources(language, ['common']).then(() => {
+      // Debug log to verify translations are loaded after resource reload
+      console.log(`Dashboard translations verified after reload for ${language}:`, 
+        i18n.getResourceBundle(language, 'common')?.dashboard || 'None found');
+      
+      // Check specifically for garden projects
+      const bundle = i18n.getResourceBundle(language, 'common');
+      if (bundle && typeof bundle === 'object' && 'dashboard' in bundle) {
+        const dashboard = (bundle as Record<string, any>).dashboard;
+        if (dashboard && 'gardenProjects' in dashboard) {
+          console.log(`Garden projects translations loaded for ${language}:`, dashboard.gardenProjects);
+        } else {
+          console.warn(`No garden projects translations found in dashboard for ${language}`);
+        }
+      }
+    });
   }
   
   return result;
@@ -170,18 +184,31 @@ export const loadAllDashboardTranslations = () => {
   const allLanguages = supportedLanguages;
   
   // First add the translations for the current language
-  addDashboardTranslations(i18n.language);
+  const currentResult = addDashboardTranslations(i18n.language);
+  console.log(`Dashboard translations loaded for current language (${i18n.language}):`, currentResult);
   
   // Then add translations for all other supported languages
   allLanguages.forEach(lang => {
     if (lang !== i18n.language) {
-      addDashboardTranslations(lang);
+      const result = addDashboardTranslations(lang);
+      console.log(`Dashboard translations loaded for ${lang}:`, result);
     }
   });
   
   // Force a reload of current language resources
   i18n.reloadResources(i18n.language, ['common']).then(() => {
     console.log('Dashboard translations reloaded for:', i18n.language);
+    
+    // Verify garden project translations are loaded
+    const bundle = i18n.getResourceBundle(i18n.language, 'common');
+    if (bundle && typeof bundle === 'object' && 'dashboard' in bundle) {
+      const dashboard = (bundle as Record<string, any>).dashboard;
+      if (dashboard && 'gardenProjects' in dashboard) {
+        console.log(`Garden projects translations verified for ${i18n.language}:`, dashboard.gardenProjects);
+      } else {
+        console.warn(`Garden projects translations still missing for ${i18n.language} after reload`);
+      }
+    }
   });
   
   // Dispatch an event to notify that translations have been loaded

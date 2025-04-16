@@ -5,23 +5,26 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Leaf } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { addDashboardTranslations } from '@/utils/translationLoader';
 
 export const GardenProjectsSection: React.FC = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const [translationsLoaded, setTranslationsLoaded] = React.useState(false);
 
-  // Ensure we're using the translated text with exact paths from the dashboard translations
-  const title = t('dashboard.gardenProjects.title', "Green Haven Garden Projects");
-  const description = t('dashboard.gardenProjects.description', "Plan and manage sustainable community gardens");
-  const planningTitle = t('dashboard.gardenProjects.planning.title', "Community Garden Planning");
-  const planningDesc = t('dashboard.gardenProjects.planning.description', "Collaborative planning for local food production");
-  const planningButton = t('dashboard.gardenProjects.planning.button', "Browse Gardens");
-  const newTitle = t('dashboard.gardenProjects.new.title', "Start a New Garden");
-  const newDesc = t('dashboard.gardenProjects.new.description', "Create your own sustainable garden project");
-  const newButton = t('dashboard.gardenProjects.new.button', "Create Garden");
-
-  // Debug log to check if translations are loaded
+  // Force load dashboard translations when component mounts
   React.useEffect(() => {
+    // Immediate direct loading of translations
+    const loadedTranslations = addDashboardTranslations(i18n.language);
+    console.log("GardenProjectsSection: Force loaded dashboard translations:", loadedTranslations);
+    
+    // Force reload resources to ensure immediate availability
+    i18n.reloadResources([i18n.language], ['common']).then(() => {
+      console.log("GardenProjectsSection: Resources reloaded");
+      setTranslationsLoaded(true);
+    });
+    
+    // Verify translations are loaded
     const bundle = i18n.getResourceBundle(i18n.language, 'common');
     const hasGardenTranslations = bundle && 
       typeof bundle === 'object' && 
@@ -32,8 +35,20 @@ export const GardenProjectsSection: React.FC = () => {
     console.log(`GardenProjectsSection: Translations loaded for ${i18n.language}:`, hasGardenTranslations);
     if (hasGardenTranslations) {
       console.log('GardenProjectsSection: Available translations:', bundle.dashboard.gardenProjects);
+    } else {
+      console.warn('GardenProjectsSection: Missing garden project translations!');
     }
   }, [i18n.language, i18n]);
+
+  // Translations with specific fallback values to ensure consistency
+  const title = t('dashboard.gardenProjects.title', "Green Haven Garden Projects");
+  const description = t('dashboard.gardenProjects.description', "Plan and manage sustainable community gardens");
+  const planningTitle = t('dashboard.gardenProjects.planning.title', "Community Garden Planning");
+  const planningDesc = t('dashboard.gardenProjects.planning.description', "Collaborative planning for local food production");
+  const planningButton = t('dashboard.gardenProjects.planning.button', "Browse Gardens");
+  const newTitle = t('dashboard.gardenProjects.new.title', "Start a New Garden");
+  const newDesc = t('dashboard.gardenProjects.new.description', "Create your own sustainable garden project");
+  const newButton = t('dashboard.gardenProjects.new.button', "Create Garden");
 
   return (
     <div className="mb-12">
