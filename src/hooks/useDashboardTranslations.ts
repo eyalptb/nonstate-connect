@@ -26,7 +26,7 @@ export const useDashboardTranslations = () => {
         // Then add in-memory translations
         addInMemoryTranslations(i18n.language);
         
-        // Load all dashboard translations (this will happen in background)
+        // Load all dashboard translations immediately (not in background)
         await loadAllDashboardTranslations();
         
         // Force reload resources
@@ -44,7 +44,7 @@ export const useDashboardTranslations = () => {
           }
         }, 1000); // Check every second
         
-        // Add a delay to ensure resources are fully processed
+        // Use a shorter delay to ensure resources are fully processed
         if (loadingTimerRef.current) {
           window.clearTimeout(loadingTimerRef.current);
         }
@@ -59,6 +59,13 @@ export const useDashboardTranslations = () => {
             (bundle as Record<string, any>).dashboard : null;
             
           console.log(`[useDashboardTranslations] Dashboard translations loaded:`, dashboardData);
+          
+          // Log garden projects translations specifically
+          if (dashboardData && dashboardData.gardenProjects) {
+            console.log("[useDashboardTranslations] Garden projects translations:", dashboardData.gardenProjects);
+          } else {
+            console.warn("[useDashboardTranslations] Garden projects translations missing!");
+          }
           
           if (dashboardData) {
             // Cache translations for future use
@@ -107,12 +114,24 @@ export const useDashboardTranslations = () => {
           setIsLoaded(true);
           console.log(`[useDashboardTranslations] Language changed to ${lng}, translations loaded`);
           
+          // Verify and debug log garden projects translations
+          const bundle = i18n.getResourceBundle(lng, 'common');
+          if (bundle && typeof bundle === 'object') {
+            const dashboardData = (bundle as Record<string, any>).dashboard;
+            if (dashboardData && dashboardData.gardenProjects) {
+              console.log(`[useDashboardTranslations] Garden projects translations after language change:`, 
+                dashboardData.gardenProjects);
+            } else {
+              console.warn(`[useDashboardTranslations] Garden projects translations missing after language change!`);
+            }
+          }
+          
           // Verify translation loading and cache if successful
           verifyAndCacheTranslations(lng, i18n);
           
           // Notify components
           notifyTranslationsLoaded(lng, 'language-changed');
-        }, 300);
+        }, 200); // Reduced delay for faster loading
       } catch (error) {
         console.error("[useDashboardTranslations] Error handling language change:", error);
         setIsLoaded(true); // Set to true anyway to show content

@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import useDashboardTranslations from '@/hooks/useDashboardTranslations';
 import { useTranslation } from 'react-i18next';
+import { addDashboardTranslations } from '@/utils/translationLoader';
 
 interface DashboardTranslationLoaderProps {
   children?: React.ReactNode;
@@ -20,6 +21,11 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
     const loadTranslations = async () => {
       try {
         console.log("DashboardTranslationLoader: Force reloading translations for", i18n.language);
+        
+        // First directly add dashboard translations to make sure they're available
+        addDashboardTranslations(i18n.language);
+        
+        // Then reload resources to ensure they're properly loaded
         await i18n.reloadResources([i18n.language], ['common']);
         
         // Verify translation loading

@@ -1,15 +1,14 @@
+
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Leaf } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import useTranslationHelper from "@/hooks/useTranslationHelper";
 
 export const GardenProjectsSection: React.FC = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const { getText } = useTranslationHelper();
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Make sure translations are properly loaded
@@ -66,12 +65,6 @@ export const GardenProjectsSection: React.FC = () => {
         newButton
       });
       
-      // Also check if getText helper works as an alternative
-      console.log("[GardenProjectsSection] Translation using getText:", {
-        title: getText('dashboard.gardenProjects.title', 'Green Haven Garden Projects'),
-        description: getText('dashboard.gardenProjects.description', 'Plan and manage sustainable community gardens')
-      });
-      
       // Check if direct resource access works
       if (i18n.exists('dashboard.gardenProjects.title')) {
         console.log("[GardenProjectsSection] Translation exists check: true for dashboard.gardenProjects.title");
@@ -79,7 +72,7 @@ export const GardenProjectsSection: React.FC = () => {
         console.log("[GardenProjectsSection] Translation exists check: false for dashboard.gardenProjects.title");
       }
     }
-  }, [isLoaded, title, description, planningTitle, planningDesc, planningButton, newTitle, newDesc, newButton, getText, t, i18n]);
+  }, [isLoaded, title, description, planningTitle, planningDesc, planningButton, newTitle, newDesc, newButton, t, i18n]);
 
   return (
     <div className="mb-12">
