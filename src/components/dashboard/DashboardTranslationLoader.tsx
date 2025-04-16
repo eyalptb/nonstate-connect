@@ -11,7 +11,7 @@ interface DashboardTranslationLoaderProps {
  */
 const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({ children }) => {
   // Use our custom hook to handle all translation loading logic
-  const { isLoaded } = useDashboardTranslations();
+  useDashboardTranslations();
   
   // Always render children - the hook handles loading state internally
   return <>{children}</>;
