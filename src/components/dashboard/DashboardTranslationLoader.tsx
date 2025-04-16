@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import useDashboardTranslations from '@/hooks/useDashboardTranslations';
 import { useTranslation } from 'react-i18next';
 import { addDashboardTranslations } from '@/utils/translationLoader';
+import { addBackendTranslations } from '@/utils/translationLoader';
 
 interface DashboardTranslationLoaderProps {
   children?: React.ReactNode;
@@ -28,9 +29,12 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
       try {
         console.log("DashboardTranslationLoader: Direct loading translations for", i18n.language);
         
-        // First directly add dashboard translations
-        const added = addDashboardTranslations(i18n.language);
-        console.log("DashboardTranslationLoader: Added directly:", added);
+        // Add both dashboard and backend translations
+        const dashboardAdded = addDashboardTranslations(i18n.language);
+        const backendAdded = addBackendTranslations(i18n.language);
+        
+        console.log("DashboardTranslationLoader: Dashboard added directly:", dashboardAdded);
+        console.log("DashboardTranslationLoader: Backend added directly:", backendAdded);
         
         // Force reload resources to ensure they're loaded
         await i18n.reloadResources([i18n.language], ['common']);
@@ -51,6 +55,15 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
           if (gardenProjectsExists) {
             console.log("DashboardTranslationLoader: Garden projects keys:", Object.keys(dashboard.gardenProjects));
           }
+        }
+        
+        // Verify backend translations
+        const backendExists = bundle && typeof bundle === 'object' &&
+          'backend' in bundle && typeof bundle.backend === 'object';
+          
+        console.log("DashboardTranslationLoader: Backend translations exist after direct add:", backendExists);
+        if (backendExists) {
+          console.log("DashboardTranslationLoader: Backend keys:", Object.keys((bundle as Record<string, any>).backend));
         }
         
         // Set flag to prevent multiple loads

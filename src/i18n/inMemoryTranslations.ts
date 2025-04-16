@@ -58,7 +58,13 @@ export const addInMemoryTranslations = (language: string) => {
     safeAddResourceBundle(language, 'common', joinCtaTranslations[language] || joinCtaTranslations[fallbackLang]);
     safeAddResourceBundle(language, 'common', projectTranslations[language] || projectTranslations[fallbackLang]);
     safeAddResourceBundle(language, 'common', footerTranslations[language] || footerTranslations[fallbackLang]);
-    safeAddResourceBundle(language, 'common', backendTranslations[language] || backendTranslations[fallbackLang]);
+    
+    // Explicitly add backend translations - treat this as separate resource
+    if (backendTranslations[language]) {
+      safeAddResourceBundle(language, 'common', backendTranslations[language]);
+    } else if (backendTranslations[fallbackLang]) {
+      safeAddResourceBundle(language, 'common', backendTranslations[fallbackLang]);
+    }
     
     // For learn translations, access the nested learn property
     const learnData = learnTranslations[language]?.learn || learnTranslations[fallbackLang]?.learn;
@@ -108,17 +114,30 @@ export const addInMemoryTranslations = (language: string) => {
       // Verify dashboard translations were loaded properly
       const loadedBundle = i18n.getResourceBundle(language, 'common');
       let dashboardLoaded = false;
+      let backendLoaded = false;
       
       if (loadedBundle && typeof loadedBundle === 'object') {
         const bundleAsRecord = loadedBundle as Record<string, any>;
+        
+        // Check dashboard translations
         if ('dashboard' in bundleAsRecord) {
           dashboardLoaded = true;
           console.log(`[inMemoryTranslations] Dashboard translations verified for ${language}:`, bundleAsRecord.dashboard);
+        }
+        
+        // Check backend translations
+        if ('backend' in bundleAsRecord) {
+          backendLoaded = true;
+          console.log(`[inMemoryTranslations] Backend translations verified for ${language}:`, bundleAsRecord.backend);
         }
       }
       
       if (!dashboardLoaded) {
         console.warn(`[inMemoryTranslations] Dashboard translations not found in loaded bundle for ${language}`);
+      }
+      
+      if (!backendLoaded) {
+        console.warn(`[inMemoryTranslations] Backend translations not found in loaded bundle for ${language}`);
       }
       
       // Dispatch a custom event to notify components that translations have been loaded
