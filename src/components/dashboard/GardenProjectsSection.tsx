@@ -1,14 +1,13 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Leaf } from 'lucide-react';
-import useTranslationHelper from "@/hooks/useTranslationHelper";
+import { useTranslation } from 'react-i18next';
 
 export const GardenProjectsSection: React.FC = () => {
   const navigate = useNavigate();
-  const { getText } = useTranslationHelper();
+  const { t } = useTranslation();
 
   return (
     <div className="mb-12">
@@ -16,35 +15,35 @@ export const GardenProjectsSection: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center">
             <Leaf className="mr-2 h-5 w-5 text-green-600" />
-            {getText('dashboard.gardenProjects.title', 'Green Haven Garden Projects')}
+            {t('dashboard.gardenProjects.title')}
           </CardTitle>
           <CardDescription>
-            {getText('dashboard.gardenProjects.description', 'Plan and manage sustainable community gardens')}
+            {t('dashboard.gardenProjects.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between border p-4 rounded-md bg-white dark:bg-background">
               <div>
-                <h3 className="font-medium">{getText('dashboard.gardenProjects.planning.title', 'Community Garden Planning')}</h3>
+                <h3 className="font-medium">{t('dashboard.gardenProjects.planning.title')}</h3>
                 <p className="text-sm text-muted-foreground">
-                  {getText('dashboard.gardenProjects.planning.description', 'Collaborative planning for local food production')}
+                  {t('dashboard.gardenProjects.planning.description')}
                 </p>
               </div>
               <Button variant="outline" size="sm" onClick={() => navigate('/garden')}>
-                {getText('dashboard.gardenProjects.planning.button', 'Browse Gardens')}
+                {t('dashboard.gardenProjects.planning.button')}
               </Button>
             </div>
             
             <div className="flex items-center justify-between border p-4 rounded-md bg-white dark:bg-background">
               <div>
-                <h3 className="font-medium">{getText('dashboard.gardenProjects.new.title', 'Start a New Garden')}</h3>
+                <h3 className="font-medium">{t('dashboard.gardenProjects.new.title')}</h3>
                 <p className="text-sm text-muted-foreground">
-                  {getText('dashboard.gardenProjects.new.description', 'Create your own sustainable garden project')}
+                  {t('dashboard.gardenProjects.new.description')}
                 </p>
               </div>
               <Button size="sm" onClick={() => navigate('/garden/create')}>
-                {getText('dashboard.gardenProjects.new.button', 'Create Garden')}
+                {t('dashboard.gardenProjects.new.button')}
               </Button>
             </div>
           </div>

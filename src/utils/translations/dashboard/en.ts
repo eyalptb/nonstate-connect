@@ -1,4 +1,3 @@
-
 export default {
   "title": "Dashboard",
   "greeting": {

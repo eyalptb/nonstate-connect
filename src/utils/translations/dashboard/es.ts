@@ -1,4 +1,3 @@
-
 export default {
   "title": "Panel de control",
   "greeting": {
@@ -32,7 +31,7 @@ export default {
     "button": "Nuevo proyecto de jardín"
   },
   "gardenProjects": {
-    "title": "Proyectos de jardín Green Haven",
+    "title": "Proyectos de Jardín Green Haven",
     "description": "Planifica y gestiona jardines comunitarios sostenibles",
     "planning": {
       "title": "Planificación de jardines comunitarios",

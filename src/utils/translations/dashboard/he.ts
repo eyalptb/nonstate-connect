@@ -1,4 +1,3 @@
-
 export default {
   "title": "לוח מחוונים",
   "greeting": {
@@ -32,7 +31,7 @@ export default {
     "button": "פרויקט גינה חדש"
   },
   "gardenProjects": {
-    "title": "פרויקטי גינות גרין הייבן",
+    "title": "פרויקטים של גני גרין הייבן",
     "description": "תכנן ונהל גינות קהילתיות בנות-קיימא",
     "planning": {
       "title": "תכנון גינה קהילתית",

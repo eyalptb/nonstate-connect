@@ -1,4 +1,3 @@
-
 export default {
   "title": "Painel de Controle",
   "greeting": {
