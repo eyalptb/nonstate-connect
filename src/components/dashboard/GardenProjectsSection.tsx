@@ -12,6 +12,47 @@ export const GardenProjectsSection: React.FC = () => {
   const [translationsLoaded, setTranslationsLoaded] = useState(false);
   const translationsPersisted = useRef<boolean>(false);
   const mountTimeRef = useRef<number>(Date.now());
+  const translationCache = useRef<Record<string, string>>({});
+  const persistIntervalRef = useRef<number | null>(null);
+
+  // Function to get translations with persistence
+  const getTranslation = (path: string, fallback: string): string => {
+    // First check if we have this in our local cache
+    if (translationCache.current[path]) {
+      return translationCache.current[path];
+    }
+
+    try {
+      const bundle = i18n.getResourceBundle(i18n.language, 'common');
+      if (!bundle) {
+        console.warn(`GardenProjectsSection: No bundle for ${i18n.language}, using fallback`);
+        return fallback;
+      }
+      
+      // Parse the path to navigate the object
+      const parts = path.split('.');
+      let result: any = bundle;
+      
+      for (const part of parts) {
+        if (result && typeof result === 'object' && part in result) {
+          result = result[part];
+        } else {
+          console.warn(`GardenProjectsSection: Path ${path} not found in translations`);
+          return fallback;
+        }
+      }
+      
+      const finalResult = typeof result === 'string' ? result : fallback;
+      
+      // Cache this result to prevent future lookups
+      translationCache.current[path] = finalResult;
+      
+      return finalResult;
+    } catch (error) {
+      console.error(`GardenProjectsSection: Error getting translation for ${path}:`, error);
+      return fallback;
+    }
+  };
 
   // Force load dashboard translations when component mounts and persist them
   useEffect(() => {
@@ -51,6 +92,24 @@ export const GardenProjectsSection: React.FC = () => {
             
             if (gardenProjectsExists) {
               console.log('GardenProjectsSection: Garden projects data:', dashboard.gardenProjects);
+              
+              // Cache all the translations immediately
+              translationCache.current['dashboard.gardenProjects.title'] = 
+                dashboard.gardenProjects.title || "Green Haven Garden Projects";
+              translationCache.current['dashboard.gardenProjects.description'] = 
+                dashboard.gardenProjects.description || "Plan and manage sustainable community gardens";
+              translationCache.current['dashboard.gardenProjects.planning.title'] = 
+                dashboard.gardenProjects.planning?.title || "Community Garden Planning";
+              translationCache.current['dashboard.gardenProjects.planning.description'] = 
+                dashboard.gardenProjects.planning?.description || "Collaborative planning for local food production";
+              translationCache.current['dashboard.gardenProjects.planning.button'] = 
+                dashboard.gardenProjects.planning?.button || "Browse Gardens";
+              translationCache.current['dashboard.gardenProjects.new.title'] = 
+                dashboard.gardenProjects.new?.title || "Start a New Garden";
+              translationCache.current['dashboard.gardenProjects.new.description'] = 
+                dashboard.gardenProjects.new?.description || "Create your own sustainable garden project";
+              translationCache.current['dashboard.gardenProjects.new.button'] = 
+                dashboard.gardenProjects.new?.button || "Create Garden";
             }
           }
         }
@@ -62,60 +121,59 @@ export const GardenProjectsSection: React.FC = () => {
     // Call persistTranslations immediately
     persistTranslations();
     
-    // Set an interval to keep checking until translations are loaded or timeout
-    const checkInterval = setInterval(() => {
-      const elapsedTime = Date.now() - mountTimeRef.current;
-      if (!translationsPersisted.current && elapsedTime < 10000) {
-        console.log(`GardenProjectsSection: Re-attempting translation persistence, elapsed time: ${elapsedTime}ms`);
+    // Set persistent polling interval to keep translations available
+    if (persistIntervalRef.current) {
+      window.clearInterval(persistIntervalRef.current);
+    }
+    
+    persistIntervalRef.current = window.setInterval(() => {
+      if (!translationsPersisted.current) {
+        console.log("GardenProjectsSection: Translations not persisted, retrying");
+        persistTranslations();
+        return;
+      }
+      
+      // Even when persisted, check if they're still available
+      const bundle = i18n.getResourceBundle(i18n.language, 'common');
+      const dashboardExists = bundle && typeof bundle === 'object' && 
+        'dashboard' in bundle && typeof (bundle as Record<string, any>).dashboard === 'object';
+      
+      if (!dashboardExists) {
+        console.log("GardenProjectsSection: Dashboard translations lost, reloading");
+        translationsPersisted.current = false;
         persistTranslations();
       } else {
-        clearInterval(checkInterval);
+        // Check specifically for garden projects
+        const dashboard = (bundle as Record<string, any>).dashboard;
+        const gardenProjectsExists = dashboard && 'gardenProjects' in dashboard;
+        
+        if (!gardenProjectsExists) {
+          console.log("GardenProjectsSection: Garden projects translations lost, reloading");
+          translationsPersisted.current = false;
+          persistTranslations();
+        }
       }
-    }, 1000);
+    }, 500); // Check every 500ms
     
     // Also listen for language changes
     const handleLanguageChanged = () => {
       console.log(`GardenProjectsSection: Language changed to ${i18n.language}, resetting persistence state`);
       translationsPersisted.current = false;
+      translationCache.current = {}; // Clear the cache on language change
       persistTranslations();
     };
     
     i18n.on('languageChanged', handleLanguageChanged);
     
     return () => {
-      clearInterval(checkInterval);
+      if (persistIntervalRef.current) {
+        window.clearInterval(persistIntervalRef.current);
+      }
       i18n.off('languageChanged', handleLanguageChanged);
     };
   }, [i18n.language, i18n]);
 
-  // IMPORTANT: Get the translations directly from the resource bundle to verify
-  // what's actually available for the current language
-  const getTranslation = (path: string, fallback: string): string => {
-    try {
-      const bundle = i18n.getResourceBundle(i18n.language, 'common');
-      if (!bundle) return fallback;
-      
-      // Parse the path to navigate the object
-      const parts = path.split('.');
-      let result: any = bundle;
-      
-      for (const part of parts) {
-        if (result && typeof result === 'object' && part in result) {
-          result = result[part];
-        } else {
-          console.warn(`GardenProjectsSection: Path ${path} not found in translations`);
-          return fallback;
-        }
-      }
-      
-      return typeof result === 'string' ? result : fallback;
-    } catch (error) {
-      console.error(`GardenProjectsSection: Error getting translation for ${path}:`, error);
-      return fallback;
-    }
-  };
-
-  // Translations with direct access to translation object to bypass potential i18next issues
+  // Get translations using our persisted method
   const title = getTranslation('dashboard.gardenProjects.title', "Green Haven Garden Projects");
   const description = getTranslation('dashboard.gardenProjects.description', "Plan and manage sustainable community gardens");
   const planningTitle = getTranslation('dashboard.gardenProjects.planning.title', "Community Garden Planning");

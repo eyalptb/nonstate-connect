@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { loadAllDashboardTranslations } from '@/utils/translationLoader';
+import { loadAllDashboardTranslations, addDashboardTranslations } from '@/utils/translationLoader';
 import { addInMemoryTranslations } from '@/i18n/inMemoryTranslations';
 import { loadFromCache, verifyAndCacheTranslations } from '@/utils/translationCache';
 import { notifyTranslationsLoaded } from '@/utils/translationEvents';
@@ -15,6 +15,7 @@ export const useDashboardTranslations = () => {
   const loadingTimerRef = useRef<number | null>(null);
   const persistTimerRef = useRef<number | null>(null);
   const hasLoadedRef = useRef(false);
+  const translationCheckRef = useRef<number | null>(null);
 
   useEffect(() => {
     // Clear any existing timers
@@ -26,11 +27,12 @@ export const useDashboardTranslations = () => {
       window.clearInterval(persistTimerRef.current);
     }
     
-    // Prevent repeated loading in the same session
-    if (hasLoadedRef.current) {
-      setIsLoaded(true);
-      return;
+    if (translationCheckRef.current) {
+      window.clearInterval(translationCheckRef.current);
     }
+    
+    // Force load even if hasLoadedRef.current is true, to ensure translations are always available
+    hasLoadedRef.current = false;
 
     const loadTranslations = async () => {
       try {
@@ -41,6 +43,10 @@ export const useDashboardTranslations = () => {
         if (cachedLoaded) {
           console.log("[useDashboardTranslations] Successfully loaded cached translations");
         }
+        
+        // First add translations directly
+        const added = addDashboardTranslations(i18n.language);
+        console.log("[useDashboardTranslations] Direct added translations result:", added);
         
         // Then add in-memory translations
         addInMemoryTranslations(i18n.language);
@@ -80,7 +86,27 @@ export const useDashboardTranslations = () => {
             // Notify components that translations are stable
             notifyTranslationsLoaded(i18n.language, 'persistence-check');
           }
-        }, 2000); // Check less frequently
+        }, 1000); // Check more frequently
+        
+        // Set up a continuous check to ensure translations stay loaded
+        if (translationCheckRef.current) {
+          window.clearInterval(translationCheckRef.current);
+        }
+        
+        translationCheckRef.current = window.setInterval(() => {
+          const currentBundle = i18n.getResourceBundle(i18n.language, 'common');
+          const stillLoaded = currentBundle && 
+            typeof currentBundle === 'object' && 
+            'dashboard' in currentBundle && 
+            typeof (currentBundle as Record<string, any>).dashboard === 'object' &&
+            'gardenProjects' in (currentBundle as Record<string, any>).dashboard;
+            
+          if (!stillLoaded) {
+            console.log("[useDashboardTranslations] Translations lost, reloading");
+            addDashboardTranslations(i18n.language);
+            i18n.reloadResources([i18n.language], ['common']);
+          }
+        }, 500); // Check every 500ms
         
         // Notify components that translations have been loaded
         notifyTranslationsLoaded(i18n.language);
@@ -101,6 +127,10 @@ export const useDashboardTranslations = () => {
       
       if (persistTimerRef.current) {
         window.clearInterval(persistTimerRef.current);
+      }
+      
+      if (translationCheckRef.current) {
+        window.clearInterval(translationCheckRef.current);
       }
     };
   }, [i18n]);

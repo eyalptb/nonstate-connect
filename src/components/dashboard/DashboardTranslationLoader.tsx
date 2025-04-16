@@ -18,6 +18,7 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
   const { i18n } = useTranslation();
   const hasLoadedRef = useRef(false);
   const [loadingComplete, setLoadingComplete] = useState(false);
+  const persistenceIntervalRef = useRef<number | null>(null);
   
   useEffect(() => {
     // Only load translations once to prevent loops
@@ -80,6 +81,28 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
           setLoadingComplete(true);
         }, 100);
         
+        // Set up a persistence interval to continuously check and reload translations if needed
+        if (persistenceIntervalRef.current) {
+          window.clearInterval(persistenceIntervalRef.current);
+        }
+        
+        persistenceIntervalRef.current = window.setInterval(() => {
+          // Check if translations are still available
+          const currentBundle = i18n.getResourceBundle(i18n.language, 'common');
+          const translationsStillExist = currentBundle && 
+            typeof currentBundle === 'object' && 
+            'dashboard' in currentBundle && 
+            typeof (currentBundle as Record<string, any>).dashboard === 'object' &&
+            'gardenProjects' in (currentBundle as Record<string, any>).dashboard;
+            
+          if (!translationsStillExist) {
+            console.log("DashboardTranslationLoader: Translations lost, reloading...");
+            addDashboardTranslations(i18n.language);
+            addBackendTranslations(i18n.language);
+            i18n.reloadResources([i18n.language], ['common']);
+          }
+        }, 1000); // Check every second
+        
       } catch (error) {
         console.error("DashboardTranslationLoader: Error loading translations:", error);
         setLoadingComplete(true);
@@ -100,6 +123,10 @@ const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({
     
     return () => {
       i18n.off('languageChanged', handleLanguageChanged);
+      
+      if (persistenceIntervalRef.current) {
+        window.clearInterval(persistenceIntervalRef.current);
+      }
     };
   }, [i18n]);
   
