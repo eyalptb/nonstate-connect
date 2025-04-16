@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import useDashboardTranslations from '@/hooks/useDashboardTranslations';
 
 interface DashboardTranslationLoaderProps {
@@ -11,7 +11,12 @@ interface DashboardTranslationLoaderProps {
  */
 const DashboardTranslationLoader: React.FC<DashboardTranslationLoaderProps> = ({ children }) => {
   // Use our custom hook to handle all translation loading logic
-  useDashboardTranslations();
+  const { isLoaded } = useDashboardTranslations();
+  
+  useEffect(() => {
+    // Log translation loading status
+    console.log("DashboardTranslationLoader: Translations loaded:", isLoaded);
+  }, [isLoaded]);
   
   // Always render children - the hook handles loading state internally
   return <>{children}</>;
